@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
-        private List<BoardUnitModel> _boardUnits = new List<BoardUnitModel>();
+        private List<CardModel> _boardUnits = new List<CardModel>();
 
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeActionTriggered();
         }
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
 
             if (info != null)
             {
-                _boardUnits.Add((BoardUnitModel)info);
+                _boardUnits.Add((CardModel)info);
             }
             else
             {
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in _boardUnits)
+            foreach (CardModel unit in _boardUnits)
             {
                 if (Damage != 0)
                 {
@@ -135,10 +135,10 @@ namespace Loom.ZombieBattleground
 
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
 
             base.TurnEndedHandler();
 
-            foreach (BoardUnitModel unit in _boardUnits)
+            foreach (CardModel unit in _boardUnits)
             {
                 if (unit == null)
                     continue;
@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground
 
             Action();
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

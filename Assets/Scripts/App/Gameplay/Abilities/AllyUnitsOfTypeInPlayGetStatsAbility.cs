@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            foreach (BoardUnitModel unit in PlayerCallerOfAbility.CardsOnBoard)
+            foreach (CardModel unit in PlayerCallerOfAbility.CardsOnBoard)
             {
                 if (unit.Card.Prototype.Faction == Faction && unit != AbilityUnitOwner)
                 {

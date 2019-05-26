@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Test;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,10 +19,11 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         public MultiplayerDebugClient Client => _ownerWindow.DebugClient;
 
-        private Dictionary<MouldId, string> _cardMouldIdToDescription;
+        private Dictionary<MouldId, (string metaDescription, string cardText)> _cardMouldIdToDescription;
         private bool _visible;
         private Vector2 _customDeckScrollPosition;
         private Vector2 _cardLibraryScrollPosition;
+        private string _nameFilterString = "";
 
         public void Init(MultiplayerDebugClientWindow ownerWindow)
         {
@@ -43,16 +46,20 @@ namespace Loom.ZombieBattleground.Editor.Tools
             if (Client.DebugCheats.CustomDeck == null)
             {
                 Client.DebugCheats.CustomDeck =
-                    new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
+                    new Deck(new DeckId(-1), new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
             }
 
             if (_cardMouldIdToDescription == null)
+            if (_cardMouldIdToDescription == null)
             {
-                _cardMouldIdToDescription = new Dictionary<MouldId, string>();
+                _cardMouldIdToDescription = new Dictionary<MouldId, (string metaDescription, string cardText)>();
                 foreach (Card card in cardLibrary)
                 {
                     _cardMouldIdToDescription[card.MouldId] =
-                        $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
+                    (
+                        $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})",
+                        card.Description
+                    );
                 }
             }
 
@@ -104,13 +111,24 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EditorGUILayout.LabelField("Card Library", EditorStyles.boldLabel);
                     EditorGUILayout.BeginVertical();
                     {
+                        EditorGUILayout.BeginHorizontal();
+                        {
+                            GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
+                            _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
+                        }
+                        EditorGUILayout.EndHorizontal();
+
                         _cardLibraryScrollPosition = EditorGUILayout.BeginScrollView(_cardLibraryScrollPosition, GUILayout.MaxHeight(300f));
                         {
                             foreach (Card card in cardLibrary.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                             {
+                                if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                    continue;
+
                                 EditorGUILayout.BeginHorizontal();
                                 {
-                                    GUILayout.Label(_cardMouldIdToDescription[card.MouldId]);
+                                    (string metaDescription, string cardText) = _cardMouldIdToDescription[card.MouldId];
+                                    GUILayout.Label(new GUIContent(metaDescription, cardText));
 
                                     GUILayout.FlexibleSpace();
                                     if (GUILayout.Button("Add", GUILayout.Width(70)))
@@ -152,7 +170,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     string overlordIString = GUILayout.TextField(customDeck.OverlordId.ToString());
                     if (int.TryParse(overlordIString, out int newOverlordId))
                     {
-                        customDeck.OverlordId = newOverlordId;
+                        customDeck.OverlordId = new OverlordId(newOverlordId);
                     }
                 }
                 EditorGUILayout.EndVertical();
@@ -176,7 +194,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             EditorGUILayout.BeginHorizontal();
             {
-                GUILayout.Label(_cardMouldIdToDescription[deckCard.MouldId]);
+                (string metaDescription, string cardText) = _cardMouldIdToDescription[deckCard.MouldId];
+                GUILayout.Label(new GUIContent(metaDescription, cardText));
+
                 GUILayout.FlexibleSpace();
                 string amountString = EditorGUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(35));
                 if (int.TryParse(amountString, out int newAmount))

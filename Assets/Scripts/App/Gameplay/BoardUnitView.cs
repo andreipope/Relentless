@@ -14,7 +14,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitView : IFightSequenceHandler, IView, IBoardUnitView
+    public class BoardUnitView : IFightSequenceHandler, ICardView
     {
         private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitView));
 
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
 
         public BattleBoardArrow FightTargetingArrow => _fightTargetingArrow;
 
-        public BoardUnitView(BoardUnitModel model, Transform parent)
+        public BoardUnitView(CardModel model, Transform parent)
         {
             Model = model;
 
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public BoardUnitModel Model { get; }
+        public CardModel Model { get; }
 
         public Transform Transform => GameObject != null ? GameObject.transform : null;
 
@@ -181,14 +181,14 @@ namespace Loom.ZombieBattleground
             CheckOnDie();
         }
 
-        public void DisposeGameObject()
+        public void Dispose()
         {
             Log.Info($"GameObject of BoardUnitView was disposed (Model: {Model})");
 
             Transform.DOKill();
             Object.Destroy(GameObject);
 
-            _battlegroundController.UnregisterBoardUnitView(Model.OwnerPlayer, this);
+            _battlegroundController.UnregisterCardView(this, Model.OwnerPlayer);
         }
 
         public void ForceSetGameObject(GameObject overrideObject)
@@ -201,9 +201,6 @@ namespace Loom.ZombieBattleground
         private void SetObjectInfo()
         {
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
-
-            Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
-            string rank = Model.Card.Prototype.Rank.ToString().ToLowerInvariant();
 
             _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
@@ -299,7 +296,7 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitOnUnitFromDeckRemoved()
         {
-            DisposeGameObject();
+            Dispose();
         }
 
         private void BoardUnitOnCreaturePlayableForceSet()
@@ -425,7 +422,7 @@ namespace Loom.ZombieBattleground
                 _frozenSprite.DOFade(0, 1);
             }
 
-            if (Model.OwnerPlayer != null && Model.IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(Model.OwnerPlayer))
+            if (Model.OwnerPlayer != null && Model.IsPlayable && _gameplayManager.CurrentTurnPlayer == Model.OwnerPlayer)
             {
                 if (Model.CurrentDamage > 0)
                 {
@@ -603,13 +600,16 @@ namespace Loom.ZombieBattleground
                 _glowSelectedObject.SetActive(status);
             }
 
-            if (status)
+            if (_arrivalDone)
             {
-                GameObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
-            }
-            else
-            {
-                GameObject.transform.localScale = _initialScale;
+                if (status)
+                {
+                    GameObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
+                }
+                else
+                {
+                    GameObject.transform.localScale = _initialScale;
+                }
             }
         }
 
@@ -746,9 +746,11 @@ namespace Loom.ZombieBattleground
             sequence.Play();
         }
 
-        private void UnitSelectedEventHandler(BoardObject boardObject)
+        private void UnitSelectedEventHandler(IBoardObject boardObject)
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || 
+                !_gameplayManager.CanDoDragActions ||
+                _battlegroundController.TurnWaitingForEnd)
                 return;
 
             if (boardObject == Model)
@@ -795,7 +797,7 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow.IgnoreBoardObjectsList = Model.AttackedBoardObjectsThisTurn;
                 }
 
-                if (Model.OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
+                if (Model.OwnerPlayer == _gameplayManager.CurrentPlayer)
                 {
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
@@ -821,7 +823,7 @@ namespace Loom.ZombieBattleground
                 {
                     _fightTargetingArrow.End(this);
 
-                    if (Model.OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
+                    if (Model.OwnerPlayer == _gameplayManager.CurrentPlayer)
                     {
                         _playerController.IsCardSelected = false;
                     }
@@ -878,12 +880,14 @@ namespace Loom.ZombieBattleground
                 );
         }
 
-        public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
+        public void HandleAttackCard(Action completeCallback, CardModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
-            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
+            BoardUnitView targetCardView = _battlegroundController.GetCardViewByModel<BoardUnitView>(targetCard);
 
             if (targetCardView == null || targetCardView.GameObject == null)
             {
+                _actionsQueueController.ForceContinueAction(Model.ActionForDying);
+                _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
                 Model.ActionForDying = null;
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();
@@ -1019,7 +1023,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"({nameof(Model)}: {Model})";
+            return $"([{GetType().Name}] {nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

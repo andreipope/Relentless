@@ -2,12 +2,15 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using log4net;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class CostsLessAbility : AbilityBase
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CostsLessAbility));
+
         public int Cost;
         
         private ValueHistory _currentValue;
@@ -51,15 +54,16 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (!PlayerCallerOfAbility.CardsInHand.Contains(BoardUnitModel))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(CardModel))
             {
                 Deactivate();
                 return;
             }
 
+            BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisCardInHand)
             {
-                int cost = BoardUnitModel.Prototype.Cost;
+                int cost = CardModel.Prototype.Cost;
 
                 if (PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
                     FindAll(item => item.Card.Prototype.Kind == Enumerators.CardKind.CREATURE).Count == 1)
@@ -67,7 +71,7 @@ namespace Loom.ZombieBattleground
                     cost = Cost;
                 }
 
-                Debug.LogWarning("BOH " + cost + " " + Cost + " " + PlayerCallerOfAbility.IsLocalPlayer);
+                Log.Warn("BOH " + cost + " " + Cost + " " + PlayerCallerOfAbility.IsLocalPlayer);
 
                 if (cost == Cost)
                 {
@@ -75,9 +79,9 @@ namespace Loom.ZombieBattleground
                     {
                         _currentValue = CardsController.SetGooCostOfCardInHand(
                             PlayerCallerOfAbility,
-                            BoardUnitModel,
+                            CardModel,
                             cost,
-                            BoardCardView,
+                            boardCardView,
                             forced: true
                         );
                     }
@@ -91,12 +95,12 @@ namespace Loom.ZombieBattleground
 
                         CardsController.SetGooCostOfCardInHand(
                             PlayerCallerOfAbility,
-                            BoardUnitModel,
+                            CardModel,
                             0,
-                            BoardCardView
+                            boardCardView
                         );
 
-                        Debug.LogWarning("RESULT " + BoardUnitModel.CurrentCost + " " + PlayerCallerOfAbility.IsLocalPlayer);
+                        Log.Warn("RESULT " + CardModel.CurrentCost + " " + PlayerCallerOfAbility.IsLocalPlayer);
                     }
                 }
             }
@@ -104,16 +108,16 @@ namespace Loom.ZombieBattleground
             {
                 CardsController.SetGooCostOfCardInHand(
                        PlayerCallerOfAbility,
-                       BoardUnitModel,
+                       CardModel,
                        -Cost,
-                       BoardCardView
+                       boardCardView
                    );
             }
         }
         
-        private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
+        private void CardPlayedHandler(CardModel cardModel, int position)
         {
-            if (boardUnitModel != BoardUnitModel)
+            if (cardModel != CardModel)
                 return;
 
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;

@@ -1,3 +1,4 @@
+using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication
@@ -20,13 +21,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public EndMatchRequest EndMatch(string userId, string winnerId)
+        public EndMatchRequest EndMatch(string userId, string winnerId, long[] matchExperiences)
         {
             return new EndMatchRequest
             {
                 UserId = userId,
                 MatchId = _matchId,
-                WinnerId = winnerId
+                WinnerId = winnerId,
+                MatchExperiences = { matchExperiences }
             };
         }
     }

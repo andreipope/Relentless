@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitModel unit in GetOpponentOverlord().CardsOnBoard)
+                foreach (CardModel unit in GetOpponentOverlord().CardsOnBoard)
                 {
                     StunUnit(unit);
 
@@ -54,33 +54,33 @@ namespace Loom.ZombieBattleground
                     });
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
             }
         }
 
-        protected override void UnitDamagedHandler(BoardObject info)
+        protected override void UnitDamagedHandler(IBoardObject info)
         {
             base.UnitDamagedHandler(info);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
-            if (info is BoardUnitModel unit)
+            if (info is CardModel unit)
             {
                 if (unit.HasBuffShield)
                     return;
 
                 StunUnit(unit);
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -93,23 +93,23 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitModel unit)
+            if (info is CardModel unit)
             {
                 if (unit.HasBuffShield)
                     return;
                     
                 StunUnit(unit);
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -122,11 +122,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void StunUnit(BoardUnitModel unit)
+        private void StunUnit(CardModel unit)
         {
             unit.Stun(Enumerators.StunType.FREEZE, 1);
 
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position);
+            CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position);
         }
     }
 }

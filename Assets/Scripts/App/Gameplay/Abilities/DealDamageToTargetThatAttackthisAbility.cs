@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
     {
         public int Damage { get; }
 
-        private BoardObject _targetObject;
+        private IBoardObject _targetObject;
 
         public DealDamageToTargetThatAttackThisAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -24,27 +24,27 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
-        protected override void UnitDamagedHandler(BoardObject from)
+        protected override void UnitDamagedHandler(IBoardObject from)
         {
             base.UnitDamagedHandler(from);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
-            if (from is BoardUnitModel boardUnit)
+            if (from is CardModel boardUnit)
             {
                 DamageTarget(boardUnit);
             }
         }
 
-        private void DamageTarget(BoardUnitModel unit)
+        private void DamageTarget(CardModel unit)
         {
-            BattleController.AttackUnitByAbility(BoardUnitModel, AbilityData, unit, Damage);
+            BattleController.AttackUnitByAbility(CardModel, AbilityData, unit, Damage);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAttackCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()

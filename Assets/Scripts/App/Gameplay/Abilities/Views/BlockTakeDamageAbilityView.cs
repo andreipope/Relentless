@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
         private BattlegroundController _battlegroundController;
         private AbilitiesController _abilitiesController;
 
-        private BoardUnitModel _targetedUnit;
+        private CardModel _targetedUnit;
 
         private string _cardName;
 
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targetedUnit = info as BoardUnitModel;
+            _targetedUnit = info as CardModel;
             _targetedUnit.IsPlayable = false;
             ActionCompleted();
         }
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
                 offset = Vector3.zero;
 
-                Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(_targetedUnit).Transform;
+                Transform unitTransform = _battlegroundController.GetCardViewByModel<BoardUnitView>(_targetedUnit).Transform;
 
                 Vector3 targetPosition = unitTransform.position;
 

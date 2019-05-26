@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -5,15 +6,16 @@ namespace Loom.ZombieBattleground
 {
     public interface IOverlordExperienceManager
     {
-        OverlordExperienceManager.ExperienceInfo MatchExperienceInfo { get; }
+        MatchExperienceInfo PlayerMatchMatchExperienceInfo { get; }
 
-        void ChangeExperience(OverlordModel overlord, int value);
-        int GetRequiredExperienceForNewLevel(OverlordModel overlord);
-        void ReportExperienceAction(OverlordModel overlord, Enumerators.ExperienceActionType actionType);
-        OverlordExperienceManager.LevelReward GetLevelReward(OverlordModel overlord);
+        MatchExperienceInfo OpponentMatchMatchExperienceInfo { get; }
 
-        void InitializeExperienceInfoInMatch(OverlordModel overlord);
-        void ApplyExperienceFromMatch(OverlordModel overlord);
-        void ApplyExperience(OverlordModel overlord, int experience);
+        void InitializeMatchExperience(OverlordModel playerOverlord, OverlordModel opponentOverlord);
+
+        void ReportExperienceAction(Enumerators.ExperienceActionType actionType, MatchExperienceInfo matchExperienceInfo);
+
+        long GetRequiredExperienceForLevel(int level);
+
+        Task<(int? notificationId, EndMatchResults endMatchResults)> GetEndMatchResultsFromEndMatchNotification();
     }
 }

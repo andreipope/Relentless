@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
@@ -24,7 +25,7 @@ namespace Loom.ZombieBattleground {
         private MatchMakingState _state = MatchMakingState.NotStarted;
         private MatchMetadata _matchMetadata;
         private float _currentWaitingTime;
-        private long _deckId;
+        private DeckId _deckId;
         private Address? _customGameModeAddress;
         private IList<string> _tags;
         private bool _useBackendGameLogic;
@@ -88,7 +89,7 @@ namespace Loom.ZombieBattleground {
         protected CancellationTokenSource CancellationTokenSource => _cancellationTokenSource;
 
         public async Task Start(
-            long deckId,
+            DeckId deckId,
             Address? customGameModeAddress,
             IList<string> tags,
             bool useBackendGameLogic,

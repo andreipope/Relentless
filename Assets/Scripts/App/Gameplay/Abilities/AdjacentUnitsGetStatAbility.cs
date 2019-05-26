@@ -74,11 +74,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ChangeStats(List<BoardUnitModel> units, int defense, int damage)
+        private void ChangeStats(List<CardModel> units, int defense, int damage)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in units)
+            foreach (CardModel unit in units)
             {
                 if (defense != 0)
                 {
@@ -105,10 +105,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }

@@ -37,8 +37,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense <= 0) 
             {   
-                AbilityProcessingAction?.ForceActionDone();
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+                AbilityProcessingAction?.TriggerActionExternally();
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
             }
         }
 
@@ -48,15 +48,15 @@ namespace Loom.ZombieBattleground
 
             if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
-                PlayerCallerOfAbility.PlayerCardsController.RemoveCardFromGraveyard(BoardUnitModel);
-                BoardUnitModel.ResetToInitial();
+                PlayerCallerOfAbility.PlayerCardsController.RemoveCardFromGraveyard(CardModel);
+                CardModel.ResetToInitial();
 
-                Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(BoardUnitModel.Card.Prototype.Name));
+                Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(CardModel.Card.Prototype.Name));
                 WorkingCard card = new WorkingCard(prototype, prototype, SelectedPlayer);
-                BoardUnitModel boardUnitModel = new BoardUnitModel(card);
-                PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(boardUnitModel, true);
+                CardModel cardModel = new CardModel(card);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(cardModel, true);
             }
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

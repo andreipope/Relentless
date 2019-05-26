@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilitySubTrigger SubTrigger { get; }
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private Action _vfxAnimationEndedCallback;
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             Count = ability.Count;
             SubTrigger = ability.SubTrigger;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -142,10 +142,10 @@ namespace Loom.ZombieBattleground
         {
             HealTarget(PlayerCallerOfAbility, Value);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -161,7 +161,7 @@ namespace Loom.ZombieBattleground
 
         private void HealSelectedTarget()
         {
-            BoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit;
+            IBoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit;
 
             Enumerators.ActionType actionType = AffectObjectType == Enumerators.AffectObjectType.Player ?
                                 Enumerators.ActionType.CardAffectingOverlord : Enumerators.ActionType.CardAffectingCard;
@@ -171,10 +171,10 @@ namespace Loom.ZombieBattleground
             {
                 HealTarget(boardObject, value);
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -235,11 +235,11 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int value = Value;
-            foreach (BoardObject boardObject in _targets)
+            foreach (IBoardObject boardObject in _targets)
             {
                 switch (boardObject)
                 {
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         value = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
@@ -270,34 +270,34 @@ namespace Loom.ZombieBattleground
                 );
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCardsWithOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
 
-        private void HealTarget(BoardObject boardObject, int value)
+        private void HealTarget(IBoardObject boardObject, int value)
         {
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, player, value);
+                    BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, value);
                     break;
-                case BoardUnitModel unit:
-                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, unit, value);
+                case CardModel unit:
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
         }
 
-        private bool CheckValueForRestoring(BoardObject boardObject, ref int value)
+        private bool CheckValueForRestoring(IBoardObject boardObject, ref int value)
         {
             switch (boardObject)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     value = unit.MaxCurrentDefense - unit.CurrentDefense;
                     break;
                 case Player player:

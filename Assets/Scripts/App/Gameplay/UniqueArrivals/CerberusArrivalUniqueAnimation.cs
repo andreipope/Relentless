@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 {
     public class CerberusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
+        public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
             const float delayBeforeSpawn = 0.7f;
             const float delayBeforeDestroyVFX = 3f;
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as BoardUnitModel);
+            BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
             SortingGroup unitSortingGroup = unitView.GameObject.GetComponent<SortingGroup>();
             unitSortingGroup.enabled = false;
             unitView.GameObject.SetActive(false);

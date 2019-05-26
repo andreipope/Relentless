@@ -26,9 +26,23 @@ namespace Loom.ZombieBattleground
 
         void Start()
         {
+            SettingScreenSize();
+            SettingCanvases();
+            SettingCameras();
+
+            SettingsWithCreditsPopup.OnResolutionOrScreenModeHasChanged += () =>
+            {
+                SettingScreenSize();
+                SettingCanvases();
+                SettingCameras();
+            };
+        }
+
+        private void SettingScreenSize()
+        {
             _screenSize = new Vector2(Screen.width, Screen.height);
 
-            if (_canvases.Length > 0)
+            if (_canvases.Length > 0 && _canvases[0] != null)
             {
                 int displayIndex = _canvases[0].targetDisplay;
                 if (displayIndex > 0 && displayIndex < Display.displays.Length)
@@ -40,13 +54,13 @@ namespace Loom.ZombieBattleground
 
             if (_screenSize.x / _screenSize.y < Scale_Factor)
                 _squareFactorScreen = true;
-
-            SettingCanvases();
-            SettingCameras();
         }
 
         private void SettingCanvases()
         {
+            if (_canvases == null || _canvases.Length == 0 || _canvases[0] == null)
+                return;
+                
             float canvasMatchParam = _squareFactorScreen ? _squareFactorCanvasMatch : 1f;
 
             foreach (Canvas canvas in _canvases)
@@ -55,6 +69,9 @@ namespace Loom.ZombieBattleground
 
         private void SettingCameras()
         {
+            if (_cameras == null || _cameras [0] == null)
+                return;
+
             float cameraSize = _squareFactorScreen ? _squareFactorCameraSize : _cameras[0].orthographicSize;
 
             foreach (Camera camera in _cameras)
