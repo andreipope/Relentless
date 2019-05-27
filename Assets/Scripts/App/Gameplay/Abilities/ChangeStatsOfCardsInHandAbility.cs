@@ -145,7 +145,8 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                     Caller = AbilityUnitOwner,
-                    TargetEffects = TargetEffects
+                    TargetEffects = TargetEffects,
+                    HideCardInfo = !PlayerCallerOfAbility.IsLocalPlayer
                 });
             }
         }

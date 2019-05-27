@@ -1044,6 +1044,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => 
                        {
                            opponent.CardAttack(opponentGeyzerId, playerZVirusId);
+                           opponent.CardAttack(opponentZVirusId, playerZVirusId);
                        },
                        player => 
                        {
@@ -1055,10 +1056,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(16, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZVirusId)).CurrentDamage);
-                    Assert.AreEqual(16, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZVirusId)).CurrentDefense);
                     Assert.AreEqual(10, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZVirusId)).CurrentDamage);
-                    Assert.AreEqual(12, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZVirusId)).CurrentDefense);
+                    Assert.AreEqual(8, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZVirusId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

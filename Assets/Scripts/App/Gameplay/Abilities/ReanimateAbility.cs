@@ -40,17 +40,20 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PvPManager.UseBackendGameLogic)
+            if (PvPManager.UseBackendGameLogic || AbilityUnitOwner.IsReanimated)
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
                 return;
-
-            if (AbilityUnitOwner.IsReanimated)
-                return;
+            }
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
 
             int CardOnBoard = owner.PlayerCardsController.GetCardsOnBoardCount(true);
             if (CardOnBoard >= owner.MaxCardsInPlay)
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
                 return;
+            }
 
             owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
 

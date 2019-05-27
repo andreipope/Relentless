@@ -62,7 +62,8 @@ namespace Loom.ZombieBattleground
         {
             Player playerOwner = cardModel.Owner;
 
-            if (playerOwner.CardsOnBoard.Count >= playerOwner.MaxCardsInPlay)
+            int CardOnBoard = playerOwner.PlayerCardsController.GetCardsOnBoardCount(true);
+            if (CardOnBoard >= playerOwner.MaxCardsInPlay)
                 return;
 
             playerOwner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
