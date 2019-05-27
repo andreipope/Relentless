@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             _animationEventTriggering.AnimationEventTriggered -= AnimationEventTriggeredEventHandler;
-
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;

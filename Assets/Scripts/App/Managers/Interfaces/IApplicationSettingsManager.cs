@@ -23,6 +23,7 @@ namespace Loom.ZombieBattleground
         Task SetResolution(ResolutionInfo info);
         Task SetScreenMode(Enumerators.ScreenMode screenMode);
         void FillResolutions();
+        ResolutionInfo AddResolution(Resolution resolution);
 #endif
     }
 }
