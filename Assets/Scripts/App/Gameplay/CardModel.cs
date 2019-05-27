@@ -774,8 +774,10 @@ namespace Loom.ZombieBattleground
         {
             if (!Constants.DevModeEnabled)
             {
+#if !USE_PRODUCTION_BACKEND
                 if (_gameplayManager.AvoidGooCost)
                     return true;
+#endif
 
                 return owner.CurrentGoo >= CurrentCost;
             }
