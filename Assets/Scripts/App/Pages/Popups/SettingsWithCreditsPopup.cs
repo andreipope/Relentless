@@ -163,6 +163,7 @@ namespace Loom.ZombieBattleground
             _screenModeDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             #endif
 #endif
+            FixSliderAndDropdownZPosition();
             FillInfo();
             LoadSettingData();
 
