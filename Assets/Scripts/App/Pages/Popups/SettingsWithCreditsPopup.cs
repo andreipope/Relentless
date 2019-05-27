@@ -244,7 +244,6 @@ namespace Loom.ZombieBattleground
                 return;
 #endif
 
-
             List<Transform> transformsList = new List<Transform>()
             {
                 _musicVolumeSlider.transform,
