@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.Test
 
         private readonly TestHelper _testHelper;
         private readonly IPvPManager _pvpManager;
-        private readonly IQueueManager _queueManager;
+        private readonly INetworkActionManager _networkActionManager;
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
         private readonly Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground.Test
             _testHelper = testHelper;
 
             _pvpManager = GameClient.Get<IPvPManager>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
@@ -57,21 +57,21 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
-            BoardObject entryAbilityTargetBoardObject = null;
+            IBoardObject entryAbilityTargetBoardObject = null;
             if (entryAbilityTarget != null)
             {
                 entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectByInstanceId(entryAbilityTarget.Value);
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
-            BoardUnitModel boardUnitModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
+            CardModel cardModel = _testHelper.BattlegroundController.GetCardModelByInstanceId(card);
 
             if (!forceSkipForPlayerToo)
             {
                 skipEntryAbilities = false;
             }
 
-            await _testHelper.PlayCardFromHandToBoard(boardUnitModel, position, entryAbilityTargetBoardObject, skipEntryAbilities);
+            await _testHelper.PlayCardFromHandToBoard(cardModel, position, entryAbilityTargetBoardObject, skipEntryAbilities);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
@@ -101,15 +101,15 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            BoardUnitModel boardUnitModel = _testHelper.GetBoardUnitModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
-            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+            CardModel cardModel = _testHelper.GetCardModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
 
             void CheckAttacker()
             {
-                Assert.NotNull(boardUnitModel.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
-                Assert.True(boardUnitModel.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.NotNull(cardModel.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(cardModel.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
                 Assert.True(_testHelper.GameplayManager.GetController<PlayerController>().IsActive, "PlayerController.IsActive");
-                Assert.True(boardUnitModel.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
+                Assert.True(cardModel.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
             }
 
             CheckAttacker();
@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground.Test
             MatchRequestFactory matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
             PlayerActionFactory playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
             PlayerAction action = playerActionFactory.CheatDestroyCardsOnBoard(targets);
-            _queueManager.AddAction(matchRequestFactory.CreateAction(action));
+            _networkActionManager.EnqueueMessage(matchRequestFactory.CreateAction(action));
 
             return Task.CompletedTask;
         }

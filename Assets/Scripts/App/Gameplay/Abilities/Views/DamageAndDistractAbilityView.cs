@@ -3,13 +3,14 @@ using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class DamageAndDistractAbilityView : AbilityViewBase<DamageAndDistractAbility>
     {
-        private const int LawnmowerCardId = 114;
+        private readonly MouldId LawnmowerCardId = new MouldId(114);
 
         private List<BoardUnitView> _unitsViews;
 
@@ -37,7 +38,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            List<BoardUnitModel> units = info as List<BoardUnitModel>;
+            List<CardModel> units = info as List<CardModel>;
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
             Vector3 offset = Vector3.zero;
@@ -59,13 +60,13 @@ namespace Loom.ZombieBattleground
 
                 Vector3 targetPosition = Vector3.zero;
 
-                if (Ability.BoardUnitModel != null && Ability.BoardUnitModel.Prototype.MouldId == LawnmowerCardId)
+                if (Ability.CardModel != null && Ability.CardModel.Prototype.MouldId == LawnmowerCardId)
                 {
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
                     VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
                     _lineObject = VfxObject.transform.Find("Lawnmover/BurstToxic").gameObject;
                     _cardDissapearingPrefab = VfxObject.transform.Find("Lawnmover/CardsDissapearing/Tears").gameObject;
-                    _unitsViews = units.Select(unit => _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit)).ToList();
+                    _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                     Ability.OnUpdateEvent += OnUpdateEventHandler;
                 }
@@ -79,9 +80,9 @@ namespace Loom.ZombieBattleground
                                 CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                                 break;
                             case Enumerators.Target.PLAYER_ALL_CARDS:
-                                foreach (BoardUnitModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
+                                foreach (CardModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
                                 {
-                                    BoardUnitView cardPlayerView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardPlayer);
+                                    BoardUnitView cardPlayerView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardPlayer);
                                     CreateVfx(cardPlayerView.Transform.position, true);
                                 }
                                 break;

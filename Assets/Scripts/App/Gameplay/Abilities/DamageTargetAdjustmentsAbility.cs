@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         private int Value { get; }
 
-        private List<BoardUnitModel> _targetUnits;
+        private List<CardModel> _targetUnits;
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -49,14 +49,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject boardObject, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject boardObject, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(boardObject, damage, isAttacker);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            if (boardObject is BoardUnitModel unit)
+            if (boardObject is CardModel unit)
             {
                 DamageTargetAdjacent(unit);
             }
@@ -68,22 +68,22 @@ namespace Loom.ZombieBattleground
 
             ActionCompleted();
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
-        private void DamageTargetAdjacent(BoardUnitModel targetUnit)
+        private void DamageTargetAdjacent(CardModel targetUnit)
         {
             if (targetUnit == null)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            _targetUnits = new List<BoardUnitModel>();
+            _targetUnits = new List<CardModel>();
 
             _targetUnits.Add(targetUnit);
             _targetUnits.AddRange(BattlegroundController.GetAdjacentUnitsToUnit(targetUnit));
 
-            foreach (BoardUnitModel target in _targetUnits)
+            foreach (CardModel target in _targetUnits)
             {
                 target.HandleDefenseBuffer(Value);
             }
@@ -98,9 +98,9 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in _targetUnits)
+            foreach (CardModel unit in _targetUnits)
             {
-                BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, Value);
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, Value);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -111,10 +111,10 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = TargetEffects
             });
 

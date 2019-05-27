@@ -76,9 +76,15 @@ namespace Loom.ZombieBattleground {
             }
         }
         
-        public static global::TypeSafe.SortingLayer GameUI3 {
+        public static global::TypeSafe.SortingLayer GameplayInfo {
             get {
                 return @__all[9];
+            }
+        }
+        
+        public static global::TypeSafe.SortingLayer GameUI3 {
+            get {
+                return @__all[10];
             }
         }
         
@@ -92,6 +98,7 @@ namespace Loom.ZombieBattleground {
                     new global::TypeSafe.SortingLayer("GameUI1", 540465013),
                     new global::TypeSafe.SortingLayer("HandCards", -500615965),
                     new global::TypeSafe.SortingLayer("GameUI2", -2131230863),
+                    new global::TypeSafe.SortingLayer("GameplayInfo", 1589928389),
                     new global::TypeSafe.SortingLayer("GameUI3", -1311579977)});
         
         public static global::System.Collections.Generic.IList<global::TypeSafe.SortingLayer> All {

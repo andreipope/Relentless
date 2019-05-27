@@ -151,18 +151,7 @@ namespace Loom.ZombieBattleground
 
         private void LoadDefaultDeckData()
         {
-            int defaultSelectedDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
-
-            if (defaultSelectedDeckId > _dataManager.CachedDecksData.Decks.Count)
-            {
-                defaultSelectedDeckId = 1;
-            }
-            if (_dataManager.CachedDecksData.Decks.Count > 0)
-            {
-                defaultSelectedDeckId = Mathf.Clamp(defaultSelectedDeckId, 1, defaultSelectedDeckId);
-            }
-            
-            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
+            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
             
             if(selectedDeck == null && _dataManager.CachedDecksData.Decks.Count > 0)
             {
@@ -170,11 +159,11 @@ namespace Loom.ZombieBattleground
             }
 
             _deckList = new List<Deck>();
-            _deckList.AddRange(_dataManager.CachedDecksData.Decks);
+            HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+            _deckList.AddRange(hordeSelection.GetDeckList());
 
             if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 && _deckList.Count > 0)
             {
-                _deckList.Remove(_deckList[0]);
                 selectedDeck = _deckList[_deckList.Count - 1];
             }
 
@@ -189,7 +178,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = deck.Id;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             if ((_tutorialManager.IsTutorial || _tutorialManager.BattleShouldBeWonBlocker) && _deckList.Count > 0)
@@ -202,22 +191,29 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateSelectedDeckData(int deckId)
+        private void UpdateSelectedDeckData(DeckId deckId)
         {
             UpdateSelectedDeckData
             (
                 _deckList.Find(x => x.Id == deckId)
-            );            
+            );
         }
-        
+
         public Deck GetSelectedDeck()
         {
             if (_deckList != null && _deckList.Count > 0)
+            {
                 return _deckList.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
-            else
-                return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            }
+
+            return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
         }
-        
+
+        public Deck GetDefaultDeck()
+        {
+            return _dataManager.CachedDecksData.Decks[0];
+        }
+
         public List<Deck> GetDeckList()
         {
             return _deckList;
@@ -225,8 +221,7 @@ namespace Loom.ZombieBattleground
 
         private OverlordModel GetOverlordDataFromDeck(Deck deck)
         {
-            int overlordId = deck.OverlordId;
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[overlordId];
+            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
         
@@ -302,7 +297,7 @@ namespace Loom.ZombieBattleground
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    hordeSelection.AssignCurrentDeck(index);
+                    hordeSelection.OpenDeckPage((int) deck.Id.Id);
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                 };
             }
@@ -327,6 +322,12 @@ namespace Loom.ZombieBattleground
             {
                 if (_tutorialManager.IsTutorial)
                     return;
+
+                if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
+                {
+                    _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                    return;
+                }
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                 _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab

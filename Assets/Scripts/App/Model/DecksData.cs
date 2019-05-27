@@ -30,22 +30,22 @@ namespace Loom.ZombieBattleground.Data
 
     public class Deck
     {
-        public long Id { get; set; }
+        public DeckId Id { get; set; }
 
         [JsonProperty("HeroId")]
-        public int OverlordId { get; set; }
+        public OverlordId OverlordId { get; set; }
 
         public string Name { get; set; }
 
-        public List<DeckCardData> Cards;
+        public List<DeckCardData> Cards { get; set; }
 
         public Enumerators.Skill PrimarySkill { get; set; }
 
         public Enumerators.Skill SecondarySkill { get; set; }
 
         public Deck(
-            long id,
-            int overlordId,
+            DeckId id,
+            OverlordId overlordId,
             string name,
             List<DeckCardData> cards,
 
@@ -61,12 +61,12 @@ namespace Loom.ZombieBattleground.Data
             SecondarySkill = secondarySkill;
         }
 
-        public void AddCard(string cardId)
+        public void AddCard(MouldId mouldId)
         {
             bool wasAdded = false;
             foreach (DeckCardData card in Cards)
             {
-                if (card.CardName == cardId)
+                if (card.MouldId == mouldId)
                 {
                     card.Amount++;
                     wasAdded = true;
@@ -75,16 +75,16 @@ namespace Loom.ZombieBattleground.Data
 
             if (!wasAdded)
             {
-                DeckCardData cardData = new DeckCardData(cardId, 1);
+                DeckCardData cardData = new DeckCardData(mouldId, 1);
                 Cards.Add(cardData);
             }
         }
 
-        public void RemoveCard(string cardId)
+        public void RemoveCard(MouldId mouldId)
         {
             foreach (DeckCardData card in Cards)
             {
-                if (card.CardName == cardId)
+                if (card.MouldId == mouldId)
                 {
                     card.Amount--;
                     if (card.Amount < 1)
@@ -124,24 +124,19 @@ namespace Loom.ZombieBattleground.Data
 
     public class DeckCardData
     {
-        public string CardName { get; set; }
+        public MouldId MouldId { get; set; }
 
         public int Amount { get; set; }
 
-        public DeckCardData(string cardName, int amount)
+        public DeckCardData(MouldId mouldId, int amount)
         {
-            CardName = cardName;
+            MouldId = mouldId;
             Amount = amount;
         }
 
         public DeckCardData Clone()
         {
-            DeckCardData deckCardData = new DeckCardData
-            (
-                CardName,
-                Amount
-            );
-            return deckCardData;
+            return new DeckCardData(MouldId, Amount);
         }
     }
 }

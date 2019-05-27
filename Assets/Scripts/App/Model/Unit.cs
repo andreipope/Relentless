@@ -1,5 +1,3 @@
-using Loom.ZombieBattleground.Common;
-
 namespace Loom.ZombieBattleground
 {
     public struct Unit

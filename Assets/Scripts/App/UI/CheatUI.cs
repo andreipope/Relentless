@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 160);
             GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
                 if (GUILayout.Button("Find Match"))
                 {
                     Deck deck = _dataManager.CachedDecksData.Decks[0];
-                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = deck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
                     GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                     GameClient.Get<IMatchManager>().FindMatch();
@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
                 if (_cheatUI._pvpManager.DebugCheats.CustomDeck == null)
                 {
                     _cheatUI._pvpManager.DebugCheats.CustomDeck =
-                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
+                        new Deck(new DeckId(-1), new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
                 }
 
                 foreach (Card card in cardsLibraryData.Cards)
@@ -212,8 +212,8 @@ namespace Loom.ZombieBattleground
                                 GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
                                 _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
                             }
-
                             GUILayout.EndHorizontal();
+
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
@@ -227,9 +227,9 @@ namespace Loom.ZombieBattleground
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
-                                            if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                            if (!customDeck.Cards.Any(deckCard => deckCard.MouldId == card.MouldId))
                                             {
-                                                DeckCardData deckCardData = new DeckCardData(card.Name, 0);
+                                                DeckCardData deckCardData = new DeckCardData(card.MouldId, 0);
                                                 customDeck.Cards.Add(deckCardData);
                                             }
                                         }
@@ -260,10 +260,10 @@ namespace Loom.ZombieBattleground
                         customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
 
                         GUILayout.Label("Overlord Id");
-                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.Id.ToString());
                         if (int.TryParse(overlordIdString, out int newOverlordId))
                         {
-                            customDeck.OverlordId = newOverlordId;
+                            customDeck.OverlordId = new OverlordId(newOverlordId);
                         }
                     }
                     GUILayout.EndVertical();
@@ -276,20 +276,21 @@ namespace Loom.ZombieBattleground
             private void DrawCustomDeckCard(Deck customDeck, DeckCardData deckCard)
             {
                 int deckCardIndex = customDeck.Cards.IndexOf(deckCard);
-    
+
                 void MoveCard(int direction)
                 {
                     int newDeckCardIndex = deckCardIndex + direction;
                     DeckCardData otherCard = customDeck.Cards[newDeckCardIndex];
                     customDeck.Cards[newDeckCardIndex] = deckCard;
                     customDeck.Cards[deckCardIndex] = otherCard;
-    
+
                     GUIUtility.ExitGUI();
                 }
-    
+
                 GUILayout.BeginHorizontal();
                 {
-                    if (!_cardNameToDescription.TryGetValue(deckCard.CardName, out string cardDescription))
+                    string cardName = _cheatUI._dataManager.CachedCardsLibraryData.GetCardFromMouldId(deckCard.MouldId).Name;
+                    if (!_cardNameToDescription.TryGetValue(cardName, out string cardDescription))
                     {
                         customDeck.Cards.Remove(deckCard);
                         GUIUtility.ExitGUI();

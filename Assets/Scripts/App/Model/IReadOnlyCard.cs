@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public interface IReadOnlyCard
     {
-        long MouldId { get; }
+        MouldId MouldId { get; }
 
         string Name { get; }
 
@@ -31,7 +31,6 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.CardType Type { get; }
 
-        // FIXME: should be readonly 
         IReadOnlyList<AbilityData> Abilities { get; }
 
         PictureTransform PictureTransform { get; }

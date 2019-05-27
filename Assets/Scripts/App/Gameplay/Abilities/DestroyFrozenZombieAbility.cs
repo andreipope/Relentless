@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
 
         private void HandleSubTriggers()
         {
-            List<BoardUnitModel> targets = new List<BoardUnitModel>();
+            List<CardModel> targets = new List<CardModel>();
 
             foreach(Enumerators.Target target in AbilityTargets)
             {
@@ -72,18 +72,18 @@ namespace Loom.ZombieBattleground
 
             if (TargetUnit != null)
             {
-                DestroyFrozenUnits(new List<BoardUnitModel>() { TargetUnit });
+                DestroyFrozenUnits(new List<CardModel>() { TargetUnit });
             }
         }
 
-        private void DestroyFrozenUnits(List<BoardUnitModel> boardUnits)
+        private void DestroyFrozenUnits(List<CardModel> boardUnits)
         {
             if (boardUnits == null || boardUnits.Count == 0)
                 return;
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in boardUnits)
+            foreach (CardModel unit in boardUnits)
             {
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
@@ -94,10 +94,10 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
 

@@ -6,66 +6,62 @@ using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public class Card : ICard
+    public class Card : IReadOnlyCard
     {
-        private readonly List<AbilityData> _abilities;
+        [JsonProperty]
+        public MouldId MouldId { get; }
 
         [JsonProperty]
-        public long MouldId { get; set; }
+        public string Name { get; }
 
         [JsonProperty]
-        public string Name { get; protected set; }
+        public int Cost { get; }
 
         [JsonProperty]
-        public int Cost { get; set; }
+        public string Description { get; }
 
         [JsonProperty]
-        public string Description { get; protected set; }
+        public string FlavorText { get; }
 
         [JsonProperty]
-        public string FlavorText { get; protected set; }
+        public string Picture { get; }
 
         [JsonProperty]
-        public string Picture { get; protected set; }
+        public int Damage { get;  }
 
         [JsonProperty]
-        public int Damage { get; protected set; }
+        public int Defense { get; }
 
         [JsonProperty]
-        public int Defense { get; protected set; }
+        public Enumerators.Faction Faction { get; }
 
         [JsonProperty]
-        public Enumerators.Faction Faction { get; set; }
+        public string Frame { get; }
 
         [JsonProperty]
-        public string Frame { get; protected set; }
+        public Enumerators.CardKind Kind { get; }
 
         [JsonProperty]
-        public Enumerators.CardKind Kind { get; protected set; }
+        public Enumerators.CardRank Rank { get; }
 
         [JsonProperty]
-        public Enumerators.CardRank Rank { get; protected set; }
+        public Enumerators.CardType Type { get; }
 
         [JsonProperty]
-        public Enumerators.CardType Type { get; protected set; }
+        public IReadOnlyList<AbilityData> Abilities { get; }
 
         [JsonProperty]
-        public IList<AbilityData> Abilities => _abilities;
+        public PictureTransform PictureTransform { get; }
 
         [JsonProperty]
-        public PictureTransform PictureTransform { get; protected set; }
+        public Enumerators.UniqueAnimation UniqueAnimation { get; }
 
         [JsonProperty]
-        public Enumerators.UniqueAnimation UniqueAnimation { get; protected set; }
-
-        [JsonProperty]
-        public bool Hidden { get; protected set; }
-
-        IReadOnlyList<AbilityData> IReadOnlyCard.Abilities => _abilities;
+        public bool Hidden { get; }
 
         [JsonConstructor]
         public Card(
-            long mouldId,
+            MouldId mouldId,
             string name,
             int cost,
             string description,
@@ -97,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             Kind = kind;
             Rank = rank;
             Type = type;
-            _abilities = abilities ?? new List<AbilityData>();
+            Abilities = abilities ?? new List<AbilityData>();
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
@@ -118,7 +114,7 @@ namespace Loom.ZombieBattleground.Data
             Kind = sourceCard.Kind;
             Rank = sourceCard.Rank;
             Type = sourceCard.Type;
-            _abilities =
+            Abilities =
                 sourceCard.Abilities
                     .Select(a => new AbilityData(a))
                     .ToList();
@@ -137,6 +133,7 @@ namespace Loom.ZombieBattleground.Data
     {
         [JsonProperty]
         public FloatVector3 Position { get; protected set; } = FloatVector3.Zero;
+
         [JsonProperty]
         public FloatVector3 Scale { get; protected set; } = new FloatVector3(0.38f);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Helpers;
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         public Action<bool> OnLoginButtonDisplayUpdate;
 
+        public static event Action OnResolutionOrScreenModeHasChanged;
+        
         private GameObject _panelVideoSettings,
                            _groupLogin;
 
@@ -42,13 +45,15 @@ namespace Loom.ZombieBattleground
 #if !UNITY_ANDROID && !UNITY_IOS
         private TMP_Dropdown _resolutionDropdown;
         private TMP_Dropdown _screenModeDropdown;
-
-        private const float ScrollSensitivityForWindows = 25f;
 #endif
 
-        private bool _initialInit = true;
+        private const float ScrollSensitivityForWindows = 25f;
+
+        private bool _infoDataFilled;
 
         public GameObject Self { get; private set; }
+
+        private Resolution _cachePreviousFrameResolution;
         
         public void Init()
         {
@@ -61,6 +66,11 @@ namespace Loom.ZombieBattleground
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+#if !UNITY_ANDROID && !UNITY_IOS
+            _applicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
+#endif
+            _cachePreviousFrameResolution = Screen.currentResolution;
+            OnResolutionOrScreenModeHasChanged += FixSliderAndDropdownZPosition;
         }
 
         public void Dispose()
@@ -89,6 +99,9 @@ namespace Loom.ZombieBattleground
         {
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/SettingsWithCreditsPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _infoDataFilled = false;
+            _cachePreviousFrameResolution = Screen.currentResolution;
 
             _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
@@ -149,11 +162,15 @@ namespace Loom.ZombieBattleground
             _resolutionDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             _screenModeDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             #endif
-            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
-            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
             FillInfo();
-            
+            LoadSettingData();
+
+            #if !UNITY_ANDROID && !UNITY_IOS
+            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
+            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
+            #endif
+
             OnLoginButtonDisplayUpdate?.Invoke(true);
         }
 
@@ -168,7 +185,9 @@ namespace Loom.ZombieBattleground
                 return;
 
             if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
-                return;
+                return;            
+            
+            DetectIfMonitorResolutionWasChanged();
             
             if (!Constants.AlwaysGuestLogin && 
                 _backendDataControlMediator.UserDataModel != null && 
@@ -192,11 +211,61 @@ namespace Loom.ZombieBattleground
             }         
         }
 
+        private void DetectIfMonitorResolutionWasChanged()
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
+            if
+            ( 
+                _cachePreviousFrameResolution.height != Screen.currentResolution.height ||
+                _cachePreviousFrameResolution.width != Screen.currentResolution.width 
+            )
+            {
+                _applicationSettingsManager.FillResolutions();
+                ResolutionInfo resolutionInfo = _applicationSettingsManager.AddResolution(new Resolution
+                {
+                    width = Screen.width,
+                    height = Screen.height
+                });
+                FillInfo();
+                _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(resolutionInfo);
+            }
+
+            _cachePreviousFrameResolution = Screen.currentResolution;
+#endif
+        }
+        
+        private void FixSliderAndDropdownZPosition()
+        {
+            if (_musicVolumeSlider == null || _sfxVolumeSlider == null)
+                return;
+
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (_resolutionDropdown == null || _screenModeDropdown == null)
+                return;
+#endif
+
+
+            List<Transform> transformsList = new List<Transform>()
+            {
+                _musicVolumeSlider.transform,
+                _sfxVolumeSlider.transform
+#if !UNITY_ANDROID && !UNITY_IOS
+                ,
+                _resolutionDropdown.transform,
+                _screenModeDropdown.transform
+#endif
+            };
+            Vector3 pos;
+            foreach(Transform tran in transformsList)
+            {
+                pos = tran.localPosition;
+                pos.z = 0f;
+                tran.localPosition = pos;
+            }
+        }
 
         private void FillInfo()
-        {
-            _initialInit = true;
-            
+        {            
 #if !UNITY_ANDROID && !UNITY_IOS
             _resolutionDropdown.ClearOptions();
             _screenModeDropdown.ClearOptions();
@@ -207,6 +276,10 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < length; i++)
             {
+#if UNITY_STANDALONE_WIN
+                if ((Enumerators.ScreenMode)i == Enumerators.ScreenMode.BorderlessWindow)
+                    continue;
+#endif
                 data.Add(InternalTools.ProccesEnumToString(((Enumerators.ScreenMode)i).ToString()));
             }
             _screenModeDropdown.AddOptions(data);
@@ -219,36 +292,43 @@ namespace Loom.ZombieBattleground
                 data.Add(_applicationSettingsManager.Resolutions[i].Name);
             }
             _resolutionDropdown.AddOptions(data);
-
-
+#endif 
+            _infoDataFilled = true;
+        }
+        
+        private void LoadSettingData()
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
             _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
             _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
 #endif
-
+            
             _sfxVolumeSlider.value = _soundManager.SoundVolume;
             _musicVolumeSlider.value = _soundManager.MusicVolume;
-
-            _initialInit = false;
         }
         
 #if !UNITY_ANDROID && !UNITY_IOS
-        private void ResolutionChangedHandler(int index)
+        private async void ResolutionChangedHandler(int index)
         {
-            if (!_initialInit)
+            if (_infoDataFilled)
             {
                 PlayClickSound();
 
-                _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                OnResolutionOrScreenModeHasChanged?.Invoke();
             }
         }
 
-        private void ScreenModeChangedHandler(int index)
+        private async void ScreenModeChangedHandler(int index)
         {
-            if (!_initialInit)
+            if (_infoDataFilled)
             {
                 PlayClickSound();
                 
-                _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+                await _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                OnResolutionOrScreenModeHasChanged?.Invoke();
             }
         }
 #endif
@@ -360,7 +440,7 @@ namespace Loom.ZombieBattleground
         
         private void SFXVolumeChangedHandler(float value)
         {
-            if (!_initialInit)
+            if (_infoDataFilled)
             {
                 _soundManager.SetSoundVolume(value);
             }
@@ -368,7 +448,7 @@ namespace Loom.ZombieBattleground
 
         private void MusicVolumeChangedHandler(float value)
         {
-            if (!_initialInit)
+            if (_infoDataFilled)
             {
                 _soundManager.SetMusicVolume(value);
             }
@@ -399,5 +479,17 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
         }
+        
+        private void RefreshSettingPopup()
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (Self != null)
+            {
+                _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
+                _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
+            }
+#endif
+        }
+
     }
 }

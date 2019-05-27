@@ -62,26 +62,19 @@ namespace Loom.ZombieBattleground
 
             if (isCreatureAttacker)
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.6f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, Constants.DurationUnitAttacking);
             }
             else
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, Constants.DurationUnitAttacking);
             }
 
-            source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(
+            source.transform.DOMove(partWay, Constants.DurationEndUnitAttacking).SetEase(Ease.InSine).OnComplete(
                 () =>
                 {
                     target.transform.DOShakePosition(1, new Vector3(shakeStrength, shakeStrength, 0));
 
-                    Vector2 correctEndPosition = _boardController.GetCorrectPositionOfUnitOnBoard(boardUnitView.Model.Owner, boardUnitView);
-
-                    if(correctEndPosition == Vector2.zero)
-                    {
-                        correctEndPosition = originalPos;
-                    }
-
-                    source.transform.DOMove(correctEndPosition, duration).SetEase(Ease.OutSine).OnComplete(
+                    source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
                             onCompleteCallback?.Invoke();
@@ -96,13 +89,31 @@ namespace Loom.ZombieBattleground
 
         public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCardView boardCardView)
         {
-            boardCardView.DrawCardFromOpponentDeckToPlayer();
+            _battlegroundController.RegisterCardView(boardCardView);
+
+            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
+            boardCardView.Transform.localScale = Vector3.zero;
+            boardCardView.Transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
+
+            animator.enabled = true;
+            animator.StopPlayback();
+            animator.Play("MoveCardFromOpponentDeckToPlayerHand");
+
+           _timerManager.AddTimer(
+                x =>
+                {
+                    animator.enabled = false;
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                },
+                null,
+                2f);
         }
 
-        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCard boardCardView)
+        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCardView boardCardView)
         {
-            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
+            _battlegroundController.RegisterCardView(boardCardView);
 
+            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
             boardCardView.Transform.localScale = Vector3.zero;
             boardCardView.Transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
 
@@ -114,9 +125,6 @@ namespace Loom.ZombieBattleground
                 x =>
                 {
                     animator.enabled = false;
-
-                    _battlegroundController.OpponentHandCards.Insert(ItemPosition.End, boardCardView);
-
                     _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
                 },
                 null,

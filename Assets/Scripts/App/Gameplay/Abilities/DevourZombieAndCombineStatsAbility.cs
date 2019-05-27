@@ -10,14 +10,14 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         public DevourZombiesAndCombineStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
 
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
         }
 
         public override void Activate()
@@ -59,14 +59,14 @@ namespace Loom.ZombieBattleground
         {
             if (PredefinedTargets != null)
             {
-                _units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
+                _units = PredefinedTargets.Select(x => x.BoardObject).Cast<CardModel>().ToList();
             }
             else
             {
                 _units = PlayerCallerOfAbility.CardsOnBoard.ToList();
             }
 
-            foreach (BoardUnitModel unit in _units)
+            foreach (CardModel unit in _units)
             {
                 DevourTargetZombie(unit);
             }
@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in _units)
+            foreach (CardModel unit in _units)
             {
                 if (unit == AbilityUnitOwner)
                     continue;
@@ -95,14 +95,14 @@ namespace Loom.ZombieBattleground
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = TargetEffects
             });
 
-            List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
+            List<IBoardObject> targets = _units.Cast<IBoardObject>().ToList();
 
             InvokeUseAbilityEvent(
                 targets
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
             );
         }
 
-        private void DevourTargetZombie(BoardUnitModel unit)
+        private void DevourTargetZombie(CardModel unit)
         {
             if (unit == AbilityUnitOwner)
                 return;
@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
             RanksController.AddUnitForIgnoreRankBuff(unit);
 
             unit.IsReanimated = true;
-            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+            BoardUnitView view = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
             view.StopSleepingParticles();
 
             unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);

@@ -18,8 +18,6 @@ namespace Loom.ZombieBattleground
 
         void QuitApplication();
 
-        void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true);
-
-        Task SendLeaveMatchIfInPlay();
+        void HandleNetworkExceptionFlow(Exception exception, bool keepCurrentAppState = false, bool drawErrorMessage = true);
     }
 }

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -30,11 +32,15 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private BackendDataControlMediator _backendDataControlMediator;
 
         private List<IController> _controllers = new List<IController>();
 
-        private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
+        private bool _gotApplicationWantsToQuit;
+
+        private bool _finishedApplicationQuitSequence;
 
         public Enumerators.StartingTurn StartingTurn { get; set; }
 
@@ -50,9 +56,9 @@ namespace Loom.ZombieBattleground
         public event Action TurnEnded;
 #pragma warning restore 67
 
-        public int PlayerDeckId { get; set; }
+        public DeckId PlayerDeckId { get; set; }
 
-        public int OpponentDeckId { get; set; }
+        public DeckId OpponentDeckId { get; set; }
 
         public bool IsGameStarted { get; set; }
 
@@ -78,11 +84,11 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
-        public Loom.ZombieBattleground.Data.Deck CurrentPlayerDeck { get; set; }
+        public Data.Deck CurrentPlayerDeck { get; set; }
 
-        public Loom.ZombieBattleground.Data.Deck OpponentPlayerDeck { get; set; }
+        public Data.Deck OpponentPlayerDeck { get; set; }
 
-        public int OpponentIdCheat { get; set; }
+        public DeckId OpponentIdCheat { get; set; }
 
         public bool AvoidGooCost { get; set; }
 
@@ -151,14 +157,14 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
-            //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
-            
         }
 
         public void StartGameplay()
         {
+            MainApp.Instance.ApplicationWantsToQuit += OnApplicationWantsToQuit;
+
             if (IsTutorial)
             {
                 StartPreparingToInitializeGame();
@@ -202,6 +208,8 @@ namespace Loom.ZombieBattleground
 
             CanDoDragActions = false;
             AvoidGooCost = false;
+
+            MainApp.Instance.ApplicationWantsToQuit -= OnApplicationWantsToQuit;
         }
 
         public bool IsLocalPlayerTurn()
@@ -255,6 +263,7 @@ namespace Loom.ZombieBattleground
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _matchManager.MatchFinished += MatchFinishedHandler;
@@ -267,7 +276,7 @@ namespace Loom.ZombieBattleground
                 Constants.CreatureAttackSoundVolume *= 3;
             }
 
-            OpponentIdCheat = -1;
+            OpponentIdCheat = new DeckId(-1);
             AvoidGooCost = false;
             UseInifiniteAbility = false;
             MatchDuration = new AnalyticsTimer();
@@ -289,6 +298,7 @@ namespace Loom.ZombieBattleground
                 new ParticlesController(),
                 new AbilitiesController(),
                 new ActionsQueueController(),
+                new ActionsReportController(),
                 new PlayerController(),
                 new AIController(),
                 new CardsController(),
@@ -334,8 +344,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.MatchType.PVP:
                     int localPlayerIndex =
-                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId ?
-                            0 : 1;
+                        _pvpManager.InitialGameState.PlayerStates.First(state => state.Id == _backendDataControlMediator.UserDataModel.UserId)
+                            .Index;
 
                     GetController<PlayerController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[localPlayerIndex].InstanceId.FromProtobuf());
                     GetController<OpponentController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[1 - localPlayerIndex].InstanceId.FromProtobuf());
@@ -347,6 +357,7 @@ namespace Loom.ZombieBattleground
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
+            _overlordExperienceManager.InitializeMatchExperience(CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord);
 
             if (IsTutorial)
             {
@@ -444,18 +455,19 @@ namespace Loom.ZombieBattleground
                             String.Join(
                                 "\n",
                                 (IList<WorkingCard>)opponentCardsInHand
-                                    .OrderBy(card => card.InstanceId)
+                                    .OrderBy(card => card.InstanceId.Id)
                                     .ToArray()
                             )
                         );
 
-                        BoardUnitModel[] boardUnitModels = opponentCardsInHand.Select(card => new BoardUnitModel(card)).ToArray();
-                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels, false);
+                        CardModel[] cardModels = opponentCardsInHand.Select(card => new CardModel(card)).ToArray();
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(cardModels, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
                 }
 
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
                     CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
@@ -473,6 +485,63 @@ namespace Loom.ZombieBattleground
             OpponentPlayer = null;
             CurrentTurnPlayer = null;
             PlayerMoves = null;
+        }
+
+        private async void OnApplicationWantsToQuit(Action<bool> setWantsToQuit)
+        {
+            if (_gotApplicationWantsToQuit)
+            {
+                Log.Debug($"Got quit request, {nameof(_finishedApplicationQuitSequence)} = {_finishedApplicationQuitSequence}");
+                setWantsToQuit(_finishedApplicationQuitSequence);
+                return;
+            }
+
+            if (UnitTestDetector.IsRunningUnitTests || !IsGameStarted)
+            {
+                Log.Debug("Got quit request, ignoring");
+                setWantsToQuit(true);
+                return;
+            }
+
+            BackendFacade backendFacade = GameClient.Instance.GetService<BackendFacade>();
+            if (!backendFacade.IsConnected)
+            {
+                Log.Debug("Not connected, quitting");
+                setWantsToQuit(true);
+                return;
+            }
+
+            Log.Debug("Got quit request, sending LeaveMatch");
+            _gotApplicationWantsToQuit = true;
+
+            // Do not close the game now, send the actions first
+            setWantsToQuit(false);
+            INetworkActionManager networkActionManager = GameClient.Get<INetworkActionManager>();
+
+            const float sendTimeout = 5;
+            float sendTime = Time.unscaledTime;
+            WarningPopup warningPopup = _uiManager.GetPopup<WarningPopup>();
+            warningPopup.Show("Leaving the match and closing the game...");
+            warningPopup.SetCloseButtonVisible(false);
+            CurrentPlayer.ThrowLeaveMatch();
+
+            await new WaitUntil(() => Time.unscaledTime - sendTime > sendTimeout || networkActionManager.QueuedTaskCount == 0);
+
+            if (networkActionManager.QueuedTaskCount == 0)
+            {
+                Log.Debug("LeaveMatch sent successfully, quitting");
+            }
+            else
+            {
+                Log.Warn("LeaveMatch timed out, quitting");
+            }
+
+            _finishedApplicationQuitSequence = true;
+
+            await new WaitForSeconds(0.2f);
+            await new WaitForUpdate();
+
+            Application.Quit();
         }
     }
 }

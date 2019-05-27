@@ -2,17 +2,18 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbilityView : AbilityViewBase<MassiveDamageAbility>
     {
-        private const int LawnmowerCardId = 114;
+        private static readonly MouldId LawnmowerCardId = new MouldId(114);
 
         private List<BoardUnitView> _unitsViews;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private BattlegroundController _battlegroundController;
 
@@ -28,7 +29,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targets = info as List<BoardObject>;
+            _targets = info as List<IBoardObject>;
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
             Vector3 offset = Vector3.zero;
@@ -58,9 +59,9 @@ namespace Loom.ZombieBattleground
                             CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                             break;
                         case Enumerators.Target.PLAYER_ALL_CARDS:
-                            foreach (BoardUnitModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
+                            foreach (CardModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
                             {
-                                BoardUnitView cardPlayerView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardPlayer);
+                                BoardUnitView cardPlayerView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardPlayer);
                                 CreateVfx(cardPlayerView.Transform.position, true);
                             }
                             break;

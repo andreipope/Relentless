@@ -7,7 +7,6 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -123,10 +122,13 @@ namespace Loom.ZombieBattleground.Test
 
             await StartOnlineMatch(null, createOpponent: false);
 
-            GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+            GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
             await TestHelper.MainMenuTransition("Button_Battle");
-            GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
+            if (GameClient.Get<IPvPManager>()?.MatchMakingFlowController != null)
+            {
+                GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
+            }
 
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
 
@@ -171,35 +173,35 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public static BoardUnitModel GetCardOnBoard(Player player, string name)
+        public static CardModel GetCardOnBoard(Player player, string name)
         {
-            BoardUnitModel boardUnitModel =
+            CardModel cardModel =
                 player
                 .CardsOnBoard
                 .Concat(player.CardsOnBoard)
                 .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (boardUnitModel == null)
+            if (cardModel == null)
             {
                 throw new Exception($"No '{name}' cards found on board for player {player}");
             }
 
-            return boardUnitModel;
+            return cardModel;
         }
 
-        public static BoardUnitModel GetCardInHand(Player player, string name)
+        public static CardModel GetCardInHand(Player player, string name)
         {
-            BoardUnitModel boardUnitModel =
+            CardModel cardModel =
                 player
                     .CardsInHand
                     .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (boardUnitModel == null)
+            if (cardModel == null)
             {
                 throw new Exception($"No '{name}' cards found in hand of player {player}");
             }
 
-            return boardUnitModel;
+            return cardModel;
         }
 
         public static bool CardNameEqual(string name1, string name2)
@@ -207,13 +209,13 @@ namespace Loom.ZombieBattleground.Test
             return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static Deck GetDeckWithCards(string name, int overlordId = 0, params DeckCardData[] cards)
+        public static Deck GetDeckWithCards(string name, int overlordId = 0, params TestCardData[] cards)
         {
             Deck deck = new Deck(
-                 0,
-                 overlordId,
+                 new DeckId(0),
+                 new OverlordId(overlordId),
                  name,
-                 cards.ToList(),
+                 cards.Select(card => card.ToDeckCardData()).ToList(),
                  Enumerators.Skill.NONE,
                  Enumerators.Skill.NONE
              );
@@ -221,11 +223,16 @@ namespace Loom.ZombieBattleground.Test
             return deck;
         }
 
+        public static string GetCardNameFromMouldId(MouldId mouldId)
+        {
+           return GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardNameFromMouldId(mouldId);
+        }
+
         public static Deck GetDeckWithCards(string name,
                                     int overlordId = 0,
                                     Enumerators.Skill primarySkill = Enumerators.Skill.NONE,
                                     Enumerators.Skill secondarySkill = Enumerators.Skill.NONE,
-                                    params DeckCardData[] cards)
+                                    params TestCardData[] cards)
         {
             Deck deck = GetDeckWithCards(name, overlordId, cards);
             deck.PrimarySkill = primarySkill;

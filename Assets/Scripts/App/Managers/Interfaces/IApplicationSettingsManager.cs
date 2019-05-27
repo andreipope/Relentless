@@ -1,6 +1,8 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -12,12 +14,16 @@ namespace Loom.ZombieBattleground
         Enumerators.ScreenMode CurrentScreenMode { get; }
 
         ResolutionInfo CurrentResolution { get; }
+        
+        event Action OnResolutionChanged;
 
         void SetDefaults();
         void ApplySettings();
 #if !UNITY_ANDROID && !UNITY_IOS
-        void SetResolution(ResolutionInfo info);
-        void SetScreenMode(Enumerators.ScreenMode screenMode);
+        Task SetResolution(ResolutionInfo info);
+        Task SetScreenMode(Enumerators.ScreenMode screenMode);
+        void FillResolutions();
+        ResolutionInfo AddResolution(Resolution resolution);
 #endif
     }
 }

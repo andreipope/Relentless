@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://127.0.0.1:46658/queryws",
                         "ws://127.0.0.1:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v5",
+                        "v18",
                         false,
                         false,
                         false
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-staging.dappchains.com:46658/queryws",
                         "ws://gamechain-staging.dappchains.com:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v18",
+                        "v20",
                         false,
                         false,
                         false

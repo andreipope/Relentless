@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            BoardUnitView targetUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(info as BoardUnitModel);
+            BoardUnitView targetUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(info as CardModel);
 
             float delayAfter = 0;
             float delaySound = 0;

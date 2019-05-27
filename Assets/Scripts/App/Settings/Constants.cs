@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.19";
+        internal const string CurrentVersionBase = "0.1.22";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -17,8 +17,6 @@ namespace Loom.ZombieBattleground.Common
         internal const string LocalBuffsTooltipDataFileName = "buffs_tooltip_data.json";
 
         internal const string LocalConfigDataFileName = "config_data.json";
-
-        internal const string LocalOverlordsDataFileName = "overlords_data.json";
 
         internal const string LocalCollectionDataFileName = "collection_data.json";
 
@@ -143,6 +141,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
+        internal const int MaxDecksCount = 10;
+
         public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
@@ -158,6 +158,10 @@ namespace Loom.ZombieBattleground.Common
         internal const float HandPointerSpeed = 4f;
 
         internal const float DurationHoveringHandCard = 0.15f;
+
+        internal const float DurationUnitAttacking = 0.65f;
+
+        internal const float DurationEndUnitAttacking = 0.1f;
 
         internal const int BackendCallTimeout = 10000;
 
@@ -176,6 +180,8 @@ namespace Loom.ZombieBattleground.Common
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
+        public const string ErrorMessageForMaxDecks =
+            "You can't have more than 10 decks, delete 1 or more decks and try again.";
 
         public const bool MulliganEnabled = true;
 
@@ -187,7 +193,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool UsingCardTooltips = false;
 
-        public const bool RankSystemEnabled = false;
+        public static readonly bool RankSystemEnabled = false;
 
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR

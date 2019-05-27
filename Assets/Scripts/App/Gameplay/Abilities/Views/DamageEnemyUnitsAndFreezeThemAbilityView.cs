@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private string _cardName;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         public DamageEnemyUnitsAndFreezeThemAbilityView(DamageEnemyUnitsAndFreezeThemAbility ability) : base(ability)
         {
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targets = info as List<BoardObject>;
+            _targets = info as List<IBoardObject>;
 
             ActionCompleted();
         }
@@ -54,12 +54,12 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    foreach (BoardObject boardObject in _targets)
+                    foreach (IBoardObject boardObject in _targets)
                     {
                         switch (boardObject)
                         {
-                            case BoardUnitModel unit:
-                                targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                            case CardModel unit:
+                                targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                                 break;
                             case Player player:
                                 targetPosition = player.AvatarObject.transform.position;

@@ -68,12 +68,12 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             FindOpponentTime.StartTimer();
-                            GameClient.Get<IQueueManager>().Clear();
+                            GameClient.Get<INetworkActionManager>().Clear();
 
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;
                             matchMakingPopup.Show();
-                            await _pvpManager.StartMatchmaking((int)_gameplayManager.CurrentPlayerDeck.Id);
+                            await _pvpManager.StartMatchmaking(_gameplayManager.CurrentPlayerDeck.Id);
                             _pvpManager.MatchMakingFlowController.StateChanged += MatchMakingFlowControllerOnStateChanged;
 
                             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;

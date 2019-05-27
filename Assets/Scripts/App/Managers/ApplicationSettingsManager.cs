@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
         public Enumerators.ScreenMode CurrentScreenMode { get; private set; }
 
         public ResolutionInfo CurrentResolution { get; private set; }
+
+        public event Action OnResolutionChanged;
 
         public void Dispose()
         {
@@ -42,6 +45,8 @@ namespace Loom.ZombieBattleground
             CurrentScreenMode = _dataManager.CachedUserLocalData.AppScreenMode;
             CurrentResolution = Resolutions.Find(x => x.Resolution.x == _dataManager.CachedUserLocalData.AppResolution.x &&
                 x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
+
+            SetScreenMode(CurrentScreenMode);
 #endif
         }
 
@@ -54,20 +59,20 @@ namespace Loom.ZombieBattleground
         }
 
 #if !UNITY_ANDROID && !UNITY_IOS
-        public void SetResolution(ResolutionInfo info)
+        public async Task SetResolution(ResolutionInfo info)
         {
             CurrentResolution = info;
 
-            Screen.SetResolution(info.Resolution.x, info.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen ? true : false);
-
-            SetScreenMode(CurrentScreenMode);
+            Screen.SetResolution(info.Resolution.x, info.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen);
 
             _dataManager.CachedUserLocalData.AppResolution = CurrentResolution.Resolution;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            OnResolutionChanged?.Invoke();
         }
 #endif
 
-        public async void SetScreenMode(Enumerators.ScreenMode screenMode)
+        public async Task SetScreenMode(Enumerators.ScreenMode screenMode)
         {
             CurrentScreenMode = screenMode;
 
@@ -97,15 +102,30 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
-#if !UNITY_ANDROID && !UNITY_IOS
-            Screen.SetResolution(CurrentResolution.Resolution.x, CurrentResolution.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen ? true : false);          
+#if !UNITY_ANDROID && !UNITY_IOS 
+            MakeResolutionHighestInFullScreenMode();
 #endif
         }
-
-#if !UNITY_ANDROID && !UNITY_IOS
-        private void FillResolutions()
+  
+#if !UNITY_ANDROID && !UNITY_IOS      
+        private async Task MakeResolutionHighestInFullScreenMode()
         {
+            if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
+            {
+                await SetResolution(Resolutions[Resolutions.Count - 1]);
+            }
+            else
+            {
+                await SetResolution(CurrentResolution);
+            }
+        }
+
+        public void FillResolutions()
+        {
+            if(Resolutions != null)
+            {
+                Resolutions.Clear();
+            }
             Resolutions = new List<ResolutionInfo>();
 
             ResolutionInfo info;
@@ -119,6 +139,23 @@ namespace Loom.ZombieBattleground
 
                 Resolutions.Add(info);
             }
+        }
+
+        public ResolutionInfo AddResolution(Resolution resolution)
+        {
+            ResolutionInfo resolutionInfo = Resolutions.Find(info => info.Resolution.x == resolution.width && info.Resolution.y == resolution.height);
+            if (resolutionInfo != null)
+                return resolutionInfo;
+
+            resolutionInfo = new ResolutionInfo
+            {
+                Name = $"{resolution.width} x {resolution.height}",
+                Resolution = new Vector2Int(resolution.width, resolution.height)
+            };
+
+            Resolutions.Add(resolutionInfo);
+
+            return resolutionInfo;
         }
 
         private void HandleSpecificUserActions()

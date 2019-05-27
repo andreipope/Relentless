@@ -38,11 +38,21 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            base.UnitHpChangedHandler(oldValue, newValue);
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            }
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            List<BoardUnitModel> targets = new List<BoardUnitModel>();
+            List<CardModel> targets = new List<CardModel>();
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             Player playerOwner = null;
@@ -59,8 +69,11 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                List<BoardUnitModel> elements = playerOwner.PlayerCardsController.CardsInGraveyard.
-                                    FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE && card != AbilityUnitOwner);
+                List<CardModel> elements =
+                    playerOwner.PlayerCardsController.CardsInGraveyard
+                        .FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE && card != AbilityUnitOwner);
+
+                elements = elements.OrderByDescending(x => x.InstanceId.Id).ToList();
 
                 if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
                 {
@@ -81,30 +94,37 @@ namespace Loom.ZombieBattleground
 
             if (targets.Count > 0)
             {
-                foreach (BoardUnitModel target in targets)
+                foreach (CardModel target in targets)
                 {
                     PutCardOnBoard(target.OwnerPlayer, target, ref targetEffects);
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
             }
+
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
-        private void PutCardOnBoard(Player owner, BoardUnitModel boardUnitModel, ref List<PastActionsPopup.TargetEffectParam> targetEffects)
+        private void PutCardOnBoard(Player owner, CardModel cardModel, ref List<PastActionsPopup.TargetEffectParam> targetEffects)
         {
-            owner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
-            boardUnitModel.ResetToInitial();
-            owner.PlayerCardsController.SpawnUnitOnBoard(boardUnitModel, ItemPosition.End, IsPVPAbility);
+            owner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
+            cardModel.ResetToInitial();
+
+            Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(cardModel.Card.Prototype.Name));
+            WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer, cardModel.Card.InstanceId);
+            CardModel resurrectedUnitModel = new CardModel(card);
+
+            owner.PlayerCardsController.SpawnUnitOnBoard(resurrectedUnitModel, ItemPosition.End, IsPVPAbility);
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                Target = boardUnitModel
+                Target = cardModel
             });
         }
     }

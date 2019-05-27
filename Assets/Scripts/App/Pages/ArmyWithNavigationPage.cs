@@ -22,9 +22,9 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
 
         private IDataManager _dataManager;
-        
+
         private ILoadObjectsManager _loadObjectsManager;
-        
+
         private GameObject _selfPage;
 
         private Button _buttonLeftArrow,
@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                        _buttonFilter,
                        _buttonBuyPacks,
                        _buttonMarketplace;
-                       
+
         private TMP_InputField _inputFieldSearchName;
 
         #region Cache Data
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         private int _countAllCardsAmount;
 
         private bool _isAllCardsCounted;
-        
+
         private const float BoardCardScale = 0.2574f;
 
         #endregion
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
-            
+
             CardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             CardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersMyCards");
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
             _createdBoardCards = new List<BoardCardView>();
             _cacheFilteredSetTypeCardsList = new List<Card>();
 
-            _isAllCardsCounted = false;          
+            _isAllCardsCounted = false;
         }
 
         public void Update()
@@ -79,59 +79,59 @@ namespace Loom.ZombieBattleground
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyCardsPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-            
+
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);
             _uiManager.DrawPopup<AreaBarPopup>();
-            
+
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
-            
+
             _cardCounter = _selfPage.transform.Find("Panel_Frame/Upper_Items/Image_CardfCounter/Text_CardCounter").GetComponent<TextMeshProUGUI>();
-            
+
             _buttonFilter = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonFilterHandler);
-            
+
             _buttonMarketplace = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_MarketPlace").GetComponent<Button>();
             _buttonMarketplace.onClick.AddListener(ButtonMarketplace);
-            
+
             _buttonBuyPacks = _selfPage.transform.Find("Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
             _buttonBuyPacks.onClick.AddListener(ButtonBuyPacksHandler);
-            
+
             _buttonLeftArrow = _selfPage.transform.Find("Panel_Content/Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
-            
+
             _buttonRightArrow = _selfPage.transform.Find("Panel_Content/Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
-            
+
             _inputFieldSearchName = _selfPage.transform.Find("Panel_Frame/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
-            _uiManager.GetPopup<CardFilterPopup>().FilterData.Reset();  
-            
-            UpdatePageScaleToMatchResolution(); 
-            
-            UpdateAllCardsCount();         
-            
-            LoadObjects();                        
+            _uiManager.GetPopup<CardFilterPopup>().FilterData.Reset();
+
+            UpdatePageScaleToMatchResolution();
+
+            UpdateAllCardsCount();
+
+            LoadObjects();
         }
-        
+
         public void Hide()
         {
             Dispose();
-        
+
             if (_selfPage == null)
                 return;
-        
+
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
         }
-        
+
         public void Dispose()
-        {          
+        {
             ResetBoardCards();
             Object.Destroy(CardPlaceholders);
             if (_cacheFilteredSetTypeCardsList != null)
@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
+
         private void UpdatePageScaleToMatchResolution()
         {
             float screenRatio = (float)Screen.width/Screen.height;
@@ -161,39 +161,39 @@ namespace Loom.ZombieBattleground
             CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
-        
+
         private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)
         {
             ResetPageState();
             CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
         }
-        
+
         private void ButtonBuyPacksHandler()
         {
             PlayClickSound();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
-        
+
         private void ButtonLeftArrowHandler()
         {
             PlayClickSound();
             MoveCardsPage(-1);
         }
-        
+
         private void ButtonRightArrowHandler()
         {
             PlayClickSound();
             MoveCardsPage(1);
         }
-        
+
         private void ButtonMarketplace()
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
             _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
         }
-        
+
         private void ConfirmRedirectMarketplaceLink(bool status)
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectMarketplaceLink;
@@ -213,28 +213,28 @@ namespace Loom.ZombieBattleground
         #region Board Cards
 
         private TextMeshProUGUI _cardCounter;
-        
+
         public List<Transform> CardPositions;
 
         public GameObject CardCreaturePrefab,
                           CardItemPrefab,
                           CardPlaceholdersPrefab;
-        
+
         public GameObject CardPlaceholders;
 
         private GameObject _createdBoardCardContainer;
-        
+
         private List<BoardCardView> _createdBoardCards;
 
         private CardHighlightingVFXItem _highlightingVFXItem;
-        
+
         private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
             CardPlaceholders.transform.position = _selfPage.transform.Find("Panel_Content/Locator_CardPosition").position;
-            
+
             _createdBoardCardContainer = new GameObject("BoardCardContainer");
-            
+
             CardPositions = new List<Transform>();
 
             foreach (Transform placeholder in CardPlaceholders.transform)
@@ -242,7 +242,7 @@ namespace Loom.ZombieBattleground
                 CardPositions.Add(placeholder);
             }
 
-            ResetPageState();            
+            ResetPageState();
         }
 
         public void LoadCards()
@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.MouldId);
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)
@@ -271,10 +271,10 @@ namespace Loom.ZombieBattleground
                 (
                     card,
                     cardData,
-                    position                    
+                    position
                 );
                 _createdBoardCards.Add(boardCard);
-                
+
                 MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.SingleClickReceived += ()=>
                 {
@@ -286,12 +286,12 @@ namespace Loom.ZombieBattleground
                 };
             }
         }
-        
+
         private void BoardCardSingleClickHandler(BoardCardView boardCard)
         {
             if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
-                return;    
-                
+                return;
+
             List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.Model.Card.Prototype).ToList();
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
@@ -300,21 +300,21 @@ namespace Loom.ZombieBattleground
                 CardInfoWithSearchPopup.PopupType.NONE
             });
         }
-        
+
         private BoardCardView CreateBoardCard(Card card, CollectionCardData cardData, Vector3 position)
         {
             GameObject go;
             BoardCardView boardCard;
-            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
+            CardModel cardModel = new CardModel(new WorkingCard(card, card, null));
             switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go, boardUnitModel);
+                    boardCard = new UnitBoardCardView(go, cardModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new ItemBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCardView(go, cardModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
@@ -326,9 +326,9 @@ namespace Loom.ZombieBattleground
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * BoardCardScale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-            
+
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
-            
+
             if (boardCard.Model.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
             {
                 _highlightingVFXItem.ChangeState(true);
@@ -346,14 +346,14 @@ namespace Loom.ZombieBattleground
 
             _createdBoardCards.Clear();
         }
-        
+
         public void MoveCardsPage(int direction)
         {
             _currentPage += direction;
 
             if (_currentPage < 0)
-            {                
-                _currentPage = Mathf.Max(_currentPagesAmount - 1, 0);               
+            {
+                _currentPage = Mathf.Max(_currentPagesAmount - 1, 0);
             }
             else if (_currentPage >= _currentPagesAmount)
             {
@@ -364,7 +364,7 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
+
         private void ResetPageState()
         {
             _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilteredFactionList();
@@ -411,10 +411,10 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            
+
             UpdateCacheFilteredCardList(resultList);
         }
-        
+
         private void UpdateCardCounterText()
         {
             int amount = 0;
@@ -459,16 +459,16 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            
+
             _cardCounter.text = amount + "/" +
                 _countAllCardsAmount;
         }
-        
+
         private void UpdateAllCardsCount()
         {
             if (_isAllCardsCounted)
                 return;
-                
+
             int amount = 0;
             Faction set;
             List<Enumerators.Faction> allFactions = _uiManager.GetPopup<CardFilterPopup>().AllAvailableFactionList;
@@ -478,14 +478,14 @@ namespace Loom.ZombieBattleground
                 amount += set.Cards.ToList().Count;
             }
             _countAllCardsAmount = amount;
-            _isAllCardsCounted = true;       
+            _isAllCardsCounted = true;
         }
 
         private bool CheckIfSatisfyGooCostFilter(Card card)
         {
             if (card.Cost < 0)
                 return false;
-                
+
             if(card.Cost >= 10)
             {
                 if (_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[10])
@@ -523,14 +523,14 @@ namespace Loom.ZombieBattleground
                 _cacheFilteredSetTypeCardsList.Count / (float) CardPositions.Count
             );
         }
-        
+
         #region Util
 
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
-        
+
         public void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,

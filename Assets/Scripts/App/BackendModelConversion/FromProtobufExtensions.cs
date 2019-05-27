@@ -1,10 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -13,10 +12,10 @@ namespace Loom.ZombieBattleground.Data
         public static CollectionCardData FromProtobuf(this CardCollectionCard cardCollection)
         {
             return new CollectionCardData
-            {
-                Amount = (int) cardCollection.Amount,
-                CardName = cardCollection.CardName
-            };
+            (
+                new MouldId(cardCollection.MouldId),
+                (int) cardCollection.Amount
+            );
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
@@ -25,6 +24,15 @@ namespace Loom.ZombieBattleground.Data
             {
                 Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
             };
+        }
+
+        public static DecksData FromProtobuf(this ListDecksResponse listDecksResponse)
+        {
+            return new DecksData(
+                listDecksResponse.Decks != null ?
+                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
+                    new List<Deck>()
+            );
         }
 
         public static Unit FromProtobuf(this Protobuf.Unit unit)
@@ -88,7 +96,7 @@ namespace Loom.ZombieBattleground.Data
         public static OverlordModel FromProtobuf(this Protobuf.Overlord overlord)
         {
             return new OverlordModel(
-                (int) overlord.OverlordId,
+                new OverlordId(overlord.OverlordId),
                 overlord.Icon,
                 overlord.Name,
                 overlord.ShortDescription,
@@ -97,8 +105,7 @@ namespace Loom.ZombieBattleground.Data
                 (int) overlord.Level,
                 (Enumerators.Faction) overlord.Faction,
                 overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                (Enumerators.Skill)overlord.PrimarySkill,
-                (Enumerators.Skill)overlord.SecondarySkill
+                overlord.InitialDefense
             );
         }
 
@@ -135,8 +142,8 @@ namespace Loom.ZombieBattleground.Data
         public static Deck FromProtobuf(this Protobuf.Deck deck)
         {
             return new Deck(
-                deck.Id,
-                (int) deck.OverlordId,
+                new DeckId(deck.Id),
+                new OverlordId(deck.OverlordId),
                 deck.Name,
                 deck.Cards.Select(card => card.FromProtobuf()).ToList(),
                 (Enumerators.Skill)deck.PrimarySkill,
@@ -146,10 +153,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
         {
-            return new DeckCardData(
-                card.CardName,
-                (int) card.Amount
-            );
+            return new DeckCardData(new MouldId(card.MouldId), (int) card.Amount);
         }
 
         public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
@@ -180,7 +184,7 @@ namespace Loom.ZombieBattleground.Data
         public static Card FromProtobuf(this Protobuf.Card card)
         {
             return new Card(
-                card.MouldId,
+                new MouldId(card.MouldId),
                 card.Name,
                 card.Cost,
                 card.Description,
@@ -223,9 +227,66 @@ namespace Loom.ZombieBattleground.Data
                 );
         }
 
-        public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
+        public static InstanceId FromProtobuf(this Protobuf.InstanceId id)
         {
-            return new InstanceId(cardInstance.Id);
+            return new InstanceId(id.Id);
+        }
+
+        public static ExperienceAction FromProtobuf(this Protobuf.ExperienceAction experienceAction)
+        {
+            return new ExperienceAction(
+                (Enumerators.ExperienceActionType) experienceAction.Action,
+                experienceAction.Experience
+            );
+        }
+
+        public static LevelReward FromProtobuf(this Protobuf.LevelReward levelReward)
+        {
+            switch (levelReward.RewardCase)
+            {
+                case Protobuf.LevelReward.RewardOneofCase.SkillReward:
+                    return new OverlordSkillRewardItem(levelReward.Level, levelReward.SkillReward.SkillIndex);
+                case Protobuf.LevelReward.RewardOneofCase.UnitReward:
+                    return new UnitRewardItem(levelReward.Level, (Enumerators.CardRank) levelReward.UnitReward.Rank, levelReward.UnitReward.Count);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static OverlordLevelingData FromProtobuf(this Protobuf.OverlordLevelingData overlordLevelingData)
+        {
+            return new OverlordLevelingData(
+                overlordLevelingData.Rewards.Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.ExperienceActions.Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.Fixed,
+                overlordLevelingData.ExperienceStep,
+                overlordLevelingData.GooRewardStep,
+                overlordLevelingData.MaxLevel
+            );
+        }
+
+        public static Notification FromProtobuf(this Protobuf.Notification notification)
+        {
+            switch (notification.Type)
+            {
+                case NotificationType.Types.Enum.EndMatch:
+                    NotificationEndMatch notificationEndMatch = notification.EndMatch;
+                    return new EndMatchNotification(
+                        notification.Id,
+                        Utilites.UnixTimeStampToDateTime(notification.CreatedAt),
+                        notification.Seen,
+                        new DeckId(notificationEndMatch.DeckId),
+                        new OverlordId(notificationEndMatch.OverlordId),
+                        notificationEndMatch.OldLevel,
+                        notificationEndMatch.OldExperience,
+                        notificationEndMatch.NewLevel,
+                        notificationEndMatch.NewExperience,
+                        notificationEndMatch.IsWin,
+                        notificationEndMatch.Rewards.Select(reward => reward.FromProtobuf()).ToList()
+                        );
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

@@ -34,7 +34,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                RestoreGainedStats(AbilityUnitOwner);
+                RestoreGainedStats(AbilityUnitOwner, _addedDamage, _addedDefense);
+                ResetStoredStats();
             }
         }
 
@@ -42,22 +43,24 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if(AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead)
+            if(AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityUnitOwner.CurrentDefense > 0 && LastAuraState)
             {
-                RestoreGainedStats(AbilityUnitOwner);
+                int oldAddedDefense = _addedDefense;
+                int oldAddedDamage = _addedDamage;
                 GainStats(AbilityUnitOwner, BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner));
+                RestoreGainedStats(AbilityUnitOwner, oldAddedDamage, oldAddedDefense);
             }
         }
 
-        private void GainStats(BoardUnitModel boardUnit, List<BoardUnitModel> boardUnits)
+        private void GainStats(CardModel boardUnit, List<CardModel> boardUnits)
         {
             _addedDefense = 0;
             _addedDamage = 0;
 
-            foreach (BoardUnitModel boardUnitModel in boardUnits)
+            foreach (CardModel cardModel in boardUnits)
             {
-                _addedDefense += boardUnitModel.CurrentDefense;
-                _addedDamage += boardUnitModel.CurrentDamage;
+                _addedDefense += cardModel.CurrentDefense;
+                _addedDamage += cardModel.CurrentDamage;
             }
 
             boardUnit.BuffedDefense += _addedDefense;
@@ -66,15 +69,18 @@ namespace Loom.ZombieBattleground
             boardUnit.AddToCurrentDamageHistory(_addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
-        private void RestoreGainedStats(BoardUnitModel boardUnit)
+        private void RestoreGainedStats(CardModel card, int addedDamage, int addedDefense)
         {
-            boardUnit.BuffedDefense -= _addedDefense;
-            boardUnit.AddToCurrentDefenseHistory(-_addedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
-            boardUnit.BuffedDamage -= _addedDamage;
-            boardUnit.AddToCurrentDamageHistory(-_addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.BuffedDefense -= addedDefense;
+            card.AddToCurrentDefenseHistory(-addedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.BuffedDamage -= addedDamage;
+            card.AddToCurrentDamageHistory(-addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
+        }
 
-            _addedDefense = 0;
+        private void ResetStoredStats ()
+        {
             _addedDamage = 0;
+            _addedDefense = 0;
         }
     }
 }

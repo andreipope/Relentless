@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground.Data
     /// <summary>
     /// Represents an unique object in a match.
     /// </summary>
-    public struct InstanceId : IEquatable<InstanceId>, IComparable<InstanceId>
+    public struct InstanceId : IEquatable<InstanceId>
     {
         public static InstanceId Invalid = new InstanceId(-1);
 
@@ -41,11 +41,6 @@ namespace Loom.ZombieBattleground.Data
         public static bool operator !=(InstanceId left, InstanceId right)
         {
             return !left.Equals(right);
-        }
-
-        public int CompareTo(InstanceId other)
-        {
-            return Id.CompareTo(other.Id);
         }
 
         public override string ToString()

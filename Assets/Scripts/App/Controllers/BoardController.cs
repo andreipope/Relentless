@@ -85,11 +85,13 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
-            UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
+            UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
         {
+            const float Duration = 0.4f;
+
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
 
@@ -101,9 +103,8 @@ namespace Loom.ZombieBattleground
             updateSequence.Id = _sequenceUniqueId;
 
             Tween tween;
-            const float Duration = 0.4f;
 
-            for (int i = 0; i < units.Count; i++)
+            for (int i = 0; i < newPositions.Count; i++)
             {
                 updateSequence.AddTween(null, Duration);
             }
@@ -112,7 +113,7 @@ namespace Loom.ZombieBattleground
             {
                 if (i != skipIndex)
                 {
-                    BoardUnitView card = units[i];
+                    BoardUnitView card = newPositions[i].BoardUnitView;
 
                     card.PositionOfBoard = newPositions[i].Position;
 
@@ -146,8 +147,7 @@ namespace Loom.ZombieBattleground
         public Vector2 GetCorrectPositionOfUnitOnBoard(Player player, BoardUnitView boardUnitView)
         {
             UnitPositionOnBoard unitPositionOnBoard =
-                GetPositionsForUnits(_battlegroundController.GetBoardUnitViewsFromModels(
-                                        player.PlayerCardsController.CardsOnBoard),
+                GetPositionsForUnits(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard),
                                      player.IsLocalPlayer).Find(item => item.BoardUnitView == boardUnitView);
 
             if (unitPositionOnBoard != null)
@@ -188,14 +188,16 @@ namespace Loom.ZombieBattleground
             Vector3 pivot = isBottom ? _battlegroundController.PlayerBoardObject.transform.position :
                                        _battlegroundController.OpponentBoardObject.transform.position;
 
+            UnitPositionOnBoard unitPositionOnBoard;
             for (int i = 0; i < units.Count; i++)
             {
-                newPositions.Add(new UnitPositionOnBoard()
+                unitPositionOnBoard = new UnitPositionOnBoard()
                 {
                     BoardUnitView = units[i],
                     Position = new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + (isBottom ? -1.7f : 0f))
-                });
+                };
                 pivot.x += boardWidth / units.Count;
+                newPositions.Add(unitPositionOnBoard);
             }
 
             return newPositions;

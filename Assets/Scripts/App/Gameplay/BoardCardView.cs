@@ -15,7 +15,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCardView : IBoardUnitView
+    public abstract class BoardCardView : ICardView
     {
         public int CardsAmountDeckEditing;
         
@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
 
         private bool _hasDestroyed = false;
 
-        public BoardCardView(GameObject selfObject, BoardUnitModel boardUnitModel)
+        public BoardCardView(GameObject selfObject, CardModel cardModel)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             SoundManager = GameClient.Get<ISoundManager>();
@@ -131,8 +131,7 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
 
-            Model = boardUnitModel;
-            //Model.ResetToInitial();
+            Model = cardModel;
 
             NameText.text = Model.Card.Prototype.Name;
             BodyText.text = Model.Card.Prototype.Description;
@@ -193,7 +192,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject costHighlightObject { get; protected set; }
 
-        public BoardUnitModel Model { get; }
+        public CardModel Model { get; }
 
         public HandBoardCard HandBoardCard { get; set; }
         
@@ -349,28 +348,6 @@ namespace Loom.ZombieBattleground
             _hasDestroyed = true;
             Object.Destroy(GameObject);
             Model.CardPictureWasUpdated -= PictureUpdatedEvent;
-        }
-
-        public void DrawCardFromOpponentDeckToPlayer()
-        {
-            GameObject.transform.localScale = Vector3.zero;
-
-            GameObject.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
-
-            CardAnimator.enabled = true;
-            CardAnimator.StopPlayback();
-            CardAnimator.Play("MoveCardFromOpponentDeckToPlayerHand");
-
-            TimerManager.AddTimer(
-                x =>
-                {
-                    CardAnimator.enabled = false;
-
-                    BattlegroundController.PlayerHandCards.Insert(ItemPosition.End, this);
-                    BattlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                },
-                null,
-                2f);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)
@@ -707,7 +684,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"({nameof(Model)}: {Model})";
+            return $"([{GetType().Name}] {nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

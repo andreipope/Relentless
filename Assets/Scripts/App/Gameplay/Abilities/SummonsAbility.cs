@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
             base.TurnStartedHandler();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.TURN ||
-                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility)
                 return;
 
             Action();
@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
             base.TurnEndedHandler();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-               !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility)
                 return;
 
             Action();

@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilitySubTrigger SubTrigger { get; }
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private Action _vfxAnimationEndedCallback;
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             Count = ability.Count;
             SubTrigger = ability.SubTrigger;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -116,7 +116,9 @@ namespace Loom.ZombieBattleground
             {
                 _targets.Clear();
 
-                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.
+                            CardsOnBoard.Where(unit => unit != AbilityUnitOwner && !unit.IsDead &&
+                                                unit.CurrentDefense > 0 && unit.IsUnitActive));
 
                 _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
                 InvokeActionTriggered(_targets);
@@ -140,10 +142,10 @@ namespace Loom.ZombieBattleground
         {
             HealTarget(PlayerCallerOfAbility, Value);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -159,12 +161,32 @@ namespace Loom.ZombieBattleground
 
         private void HealSelectedTarget()
         {
-            BoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit;
+            IBoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit;
 
             Enumerators.ActionType actionType = AffectObjectType == Enumerators.AffectObjectType.Player ?
                                 Enumerators.ActionType.CardAffectingOverlord : Enumerators.ActionType.CardAffectingCard;
 
-            HealTarget(boardObject, Value);
+            int value = Value;
+            if (CheckValueForRestoring(boardObject, ref value))
+            {
+                HealTarget(boardObject, value);
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                            Target = boardObject,
+                            HasValue = true,
+                            Value = value
+                        }
+                    }
+                });
+            }
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
@@ -172,22 +194,6 @@ namespace Loom.ZombieBattleground
                     new ParametrizedAbilityBoardObject(boardObject)
                 }
             );
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = actionType,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = boardObject,
-                        HasValue = true,
-                        Value = AbilityData.Value
-                    }
-                }
-            });
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -229,11 +235,11 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int value = Value;
-            foreach (BoardObject boardObject in _targets)
+            foreach (IBoardObject boardObject in _targets)
             {
                 switch (boardObject)
                 {
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         value = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
@@ -241,21 +247,18 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                if (value > Value)
-                    value = Value;
-
-                if (value == 0)
-                    continue;
-
-                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                if (CheckValueForRestoring(boardObject, ref value))
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                    Target = boardObject,
-                    HasValue = true,
-                    Value = value
-                });
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        Target = boardObject,
+                        HasValue = true,
+                        Value = value
+                    });
 
-                HealTarget(boardObject, value);
+                    HealTarget(boardObject, value);
+                }
             }
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.END)
@@ -267,27 +270,45 @@ namespace Loom.ZombieBattleground
                 );
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCardsWithOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
 
-        private void HealTarget(BoardObject boardObject, int value)
+        private void HealTarget(IBoardObject boardObject, int value)
         {
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, player, value);
+                    BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, value);
                     break;
-                case BoardUnitModel unit:
-                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, unit, value);
+                case CardModel unit:
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
+        }
+
+        private bool CheckValueForRestoring(IBoardObject boardObject, ref int value)
+        {
+            switch (boardObject)
+            {
+                case CardModel unit:
+                    value = unit.MaxCurrentDefense - unit.CurrentDefense;
+                    break;
+                case Player player:
+                    value = player.MaxCurrentDefense - player.Defense;
+                    break;
+            }
+
+            if (value > Value)
+                value = Value;
+
+            return value != 0;
         }
     }
 }

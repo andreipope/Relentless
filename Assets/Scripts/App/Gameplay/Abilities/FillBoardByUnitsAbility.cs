@@ -46,20 +46,31 @@ namespace Loom.ZombieBattleground
 
         private void FillBoard(Player targetPlayer)
         {
-            long maxUnits = targetPlayer.MaxCardsInPlay - targetPlayer.PlayerCardsController.CardsOnBoard.Count;
+            if (!HasEmptySpaceOnBoard(targetPlayer, out int maxUnits))
+                return;
 
-            List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Faction != Enumerators.Faction.ITEM);
+            if(AbilityUnitOwner.HasActiveMechanic(Enumerators.GameMechanicDescription.Reanimate))
+            {
+                if(!AbilityUnitOwner.IsAlive())
+                {
+                    maxUnits--;
+                }
+            }
 
-            cards = cards.OrderByDescending(x => x.MouldId).ToList();
+            List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Kind == Enumerators.CardKind.CREATURE);
 
-            cards = GetRandomElements(cards, (int)maxUnits);
+            cards = GetRandomElements(cards, maxUnits);
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            BoardUnitModel boardUnit;
+            CardModel boardUnit;
             for (int i = 0; i < cards.Count; i++)
             {
-                boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility).Model;
+                int CardOnBoard = targetPlayer.PlayerCardsController.GetCardsOnBoardCount(true);
+                if (CardOnBoard >= targetPlayer.MaxCardsInPlay)
+                    break;
+
+                boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility, null, false).Model;
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -70,13 +81,27 @@ namespace Loom.ZombieBattleground
 
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }
+        }
+
+        private int GetCardOnBoard(Player targetPlayer)
+        {
+            int count = 0;
+            for (int i = 0; i < targetPlayer.PlayerCardsController.CardsOnBoard.Count; i++)
+            {
+                if (targetPlayer.PlayerCardsController.CardsOnBoard[i].IsDead == false || targetPlayer.PlayerCardsController.CardsOnBoard[i].CurrentDefense <= 0)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
     }
 }

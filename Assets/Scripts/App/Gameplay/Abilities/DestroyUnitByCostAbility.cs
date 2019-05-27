@@ -8,13 +8,11 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyUnitByCostAbility : AbilityBase
     {
-        private const int TorchCardId = 147;
+        private static readonly MouldId TorchCardId = new MouldId(147);
 
         public int Cost { get; }
 
-        private BoardUnitModel _unit;
-
-        private bool _isRandom;
+        private CardModel _unit;
 
         private bool _checkForCardOwner;
 
@@ -33,7 +31,6 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                _isRandom = true;
                 _unit = GetRandomUnit();
                 InvokeActionTriggered(_unit);
 
@@ -46,7 +43,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                _isRandom = false;
                 _unit = TargetUnit;
                 InvokeActionTriggered(_unit);
             }
@@ -59,13 +55,13 @@ namespace Loom.ZombieBattleground
             DestroyUnit(_unit);
         }
 
-        private BoardUnitModel GetRandomUnit()
+        private CardModel GetRandomUnit()
         {
-            List<BoardUnitModel> units = new List<BoardUnitModel>();
+            List<CardModel> units = new List<CardModel>();
 
             if (PredefinedTargets != null)
             {
-                units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
+                units = PredefinedTargets.Select(x => x.BoardObject).Cast<CardModel>().ToList();
             }
             else
             {
@@ -88,7 +84,7 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        private void DestroyUnit(BoardUnitModel unit)
+        private void DestroyUnit(CardModel unit)
         {
             if (unit != null)
             {
@@ -101,17 +97,15 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                BoardUnitModel card = BoardItem?.Model;
-
-                if(card != null && card.Prototype.MouldId == TorchCardId)
+                if(AbilityUnitOwner != null && AbilityUnitOwner.Prototype.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -121,7 +115,7 @@ namespace Loom.ZombieBattleground
                         }
                     },
                     CheckForCardOwner = _checkForCardOwner,
-                    Model = card
+                    Model = AbilityUnitOwner
                 });
             }
         }

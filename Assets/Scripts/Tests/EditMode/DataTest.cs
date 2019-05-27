@@ -5,7 +5,9 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using UnityEngine;
 using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
@@ -17,16 +19,24 @@ namespace Loom.ZombieBattleground.Test
     public class DataTest
     {
         [Test]
+        public void MouldIdSerialization()
+        {
+            MouldId original = new MouldId(long.MaxValue);
+            string serialized = JsonConvert.SerializeObject(original);
+            MouldId deserialized = JsonConvert.DeserializeObject<MouldId>(serialized);
+            Assert.AreEqual(original, deserialized);
+        }
+        [Test]
         public void DeckProtobufSerialization()
         {
             Deck original = new Deck(
-                1,
-                2,
+                new DeckId(1),
+                new OverlordId(2),
                 "deck name",
                 new List<DeckCardData>
                 {
-                    new DeckCardData("card 1", 3),
-                    new DeckCardData("card 2", 4)
+                    new DeckCardData(new MouldId(1), 3),
+                    new DeckCardData(new MouldId(2), 4)
                 },
                 Enumerators.Skill.HEALING_TOUCH,
                 Enumerators.Skill.MEND
@@ -40,7 +50,7 @@ namespace Loom.ZombieBattleground.Test
         public void CardProtobufSerialization()
         {
             Card card = new Card(
-                123,
+                new MouldId(123),
                 "Foo",
                 3,
                 "description",
@@ -92,6 +102,7 @@ namespace Loom.ZombieBattleground.Test
                 {
                     new Skill
                     {
+                        Id = 333,
                         Title = "title",
                         IconPath = "supericon",
                         Description = "desc",
@@ -113,15 +124,15 @@ namespace Loom.ZombieBattleground.Test
                             Protobuf.Faction.Types.Enum.Life
                         },
                         Unlocked = true,
-                        CanSelectTarget = true
+                        CanSelectTarget = true,
+                        SingleUse = true
                     }
                 },
-                PrimarySkill = Protobuf.OverlordSkill.Types.Enum.HealingTouch,
-                SecondarySkill = Protobuf.OverlordSkill.Types.Enum.Mend
+                InitialDefense = 50
             };
 
             OverlordModel client = new OverlordModel(
-                1,
+                new OverlordId(1),
                 "icon",
                 "name",
                 "short desc",
@@ -132,7 +143,7 @@ namespace Loom.ZombieBattleground.Test
                 new List<Data.OverlordSkill>
                 {
                     new Data.OverlordSkill(
-                        0,
+                        333,
                         "title",
                         "supericon",
                         "desc",
@@ -155,11 +166,10 @@ namespace Loom.ZombieBattleground.Test
                         },
                         true,
                         true,
-                        false
+                        true
                     )
                 },
-                Enumerators.Skill.HEALING_TOUCH,
-                Enumerators.Skill.MEND
+                50
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());
@@ -208,8 +218,12 @@ namespace Loom.ZombieBattleground.Test
                     choosableAbilities,
                     7,
                     8,
-                    Enumerators.CardKind.UNDEFINED,
-                    new List<Enumerators.GameMechanicDescription>()
+                    Enumerators.CardKind.CREATURE,
+                    new List<Enumerators.GameMechanicDescription>
+                    {
+                        Enumerators.GameMechanicDescription.Death,
+                        Enumerators.GameMechanicDescription.Aura
+                    }
                 );
         }
     }
