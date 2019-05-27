@@ -89,6 +89,9 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.IsGameplayInputBlocked = false;
             OnLoginButtonDisplayUpdate?.Invoke(false);
+#if !UNITY_ANDROID && !UNITY_IOS
+            OnResolutionOrScreenModeHasChanged?.Invoke();
+#endif
         }
 
         public void SetMainPriority()
