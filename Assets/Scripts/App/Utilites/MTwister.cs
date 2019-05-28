@@ -53,12 +53,12 @@ public class MTwister
             byte[] i1 = BitConverter.GetBytes(((r >> 12) | 0x3FF00000));
             byte[] bytes = { i0[0], i0[1], i0[2], i0[3], i1[0], i1[1], i1[2], i1[3] };
             double f = BitConverter.ToDouble(bytes, 0);
-            Log.Debug("Random request returns " + (f - 1.0));
+            Log.Debug("Random request returns : " + (f - 1.0));
             return f - 1.0;
         }
         else
         {
-            Log.Debug("Random request returns " + r * (1.0 / (0xFFFFFFFF + 1.0)));
+            Log.Debug("Random request returns 2 : " + r * (1.0 / (0xFFFFFFFF + 1.0)));
             return r * (1.0 / (0xFFFFFFFF + 1.0));
         }
     }

@@ -772,17 +772,21 @@ namespace Loom.ZombieBattleground
 
         public bool CanBeBuyed(Player owner)
         {
+#if !USE_PRODUCTION_BACKEND
             if (!Constants.DevModeEnabled)
             {
                 if (_gameplayManager.AvoidGooCost)
                     return true;
+#endif
 
                 return owner.CurrentGoo >= CurrentCost;
+#if !USE_PRODUCTION_BACKEND
             }
             else
             {
                 return true;
             }
+#endif
         }
 
         public void DoCombat(IBoardObject target)

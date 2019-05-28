@@ -830,6 +830,7 @@ namespace Loom.ZombieBattleground
             unit.Card.Owner = Player;
 
             _cardsOnBoard.Insert(ItemPosition.End, unit);
+            InvokeBoardChanged();
         }
 
         public bool CheckIsMoreThanMaxCards(CardModel cardModel = null, int addToMaxCards = 0)
