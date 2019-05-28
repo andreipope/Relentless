@@ -426,7 +426,7 @@ namespace Loom.ZombieBattleground
 
                 string setName = prototype.Faction.ToString();
 
-                string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+                string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
 
                 if (!string.IsNullOrEmpty(prototype.Frame))
                 {
@@ -541,7 +541,7 @@ namespace Loom.ZombieBattleground
 
                 string setName = prototype.Faction.ToString();
 
-                string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+                string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
 
                 if (!string.IsNullOrEmpty(prototype.Frame))
                 {

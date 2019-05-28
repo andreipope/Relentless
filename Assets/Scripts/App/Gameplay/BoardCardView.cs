@@ -142,8 +142,7 @@ namespace Loom.ZombieBattleground
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.Rank);
 
             string setName = Model.Card.Prototype.Faction.ToString();
-
-            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
 
             if (!string.IsNullOrEmpty(Model.Card.Prototype.Frame))
             {

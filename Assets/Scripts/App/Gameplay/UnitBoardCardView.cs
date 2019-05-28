@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
             : base(selfObject, cardModel)
         {
             AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
-            DefenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
+            DefenseText = selfObject.transform.Find("DefenseText").GetComponent<TextMeshPro>();
             TypeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
 
             DrawStats();

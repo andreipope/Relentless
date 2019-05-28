@@ -251,6 +251,7 @@ namespace Loom.ZombieBattleground
             this.CardModel = cardModel;
 
             selfObject = Object.Instantiate(prefab, parent, false);
+            selfObject.transform.localScale = Vector3.one * 0.8f;
 
             _recycleObject = selfObject.transform.Find("Image_Recycle").gameObject;
 

@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isAllCardsCounted;
 
-        private const float BoardCardScale = 0.2574f;
+        private const float BoardCardScale = 0.19f;
 
         #endregion
 

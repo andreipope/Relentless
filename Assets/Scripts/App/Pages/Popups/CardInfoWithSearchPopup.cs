@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _createdBoardCard;
 
-        private const float BoardCardScale = 0.5858f;
+        private const float BoardCardScale = 0.42f;
 
         private List<IReadOnlyCard> _cardList,
                                     _filteredCardList;
