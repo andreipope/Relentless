@@ -143,6 +143,8 @@ namespace Loom.ZombieBattleground
 
             _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
             _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
+            
+            SettingsWithCreditsPopup.OnResolutionOrScreenModeHasChanged += UpdateActionReportPanelPosition;
         }
 
         public void Hide()
@@ -190,8 +192,12 @@ namespace Loom.ZombieBattleground
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
-
-            _reportGameActionsPanel = new PastActionReportPanel(_selfPage.transform.Find("ActionReportPanel").gameObject);
+            
+            UpdateActionReportPanelPosition();
+            _reportGameActionsPanel = new PastActionReportPanel
+            (
+                _selfPage.transform.Find("ActionReportPanel").gameObject
+            );
 
             if (_zippingVfx == null)
             {
@@ -400,6 +406,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void UpdateActionReportPanelPosition()
+        {
+            if (_selfPage == null)
+                return;
+                
+            GameObject actionReportPanelObject = _selfPage.transform.Find("ActionReportPanel").gameObject;
+            Vector3 pos = GameObject.Find("ActionReportPivot").transform.position;
+            pos.z = actionReportPanelObject.transform.position.z;
+            actionReportPanelObject.transform.position = pos;
+        }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {

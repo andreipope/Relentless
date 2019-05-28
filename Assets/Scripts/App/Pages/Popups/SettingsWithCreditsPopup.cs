@@ -89,6 +89,9 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.IsGameplayInputBlocked = false;
             OnLoginButtonDisplayUpdate?.Invoke(false);
+#if !UNITY_ANDROID && !UNITY_IOS
+            OnResolutionOrScreenModeHasChanged?.Invoke();
+#endif
         }
 
         public void SetMainPriority()
@@ -162,13 +165,16 @@ namespace Loom.ZombieBattleground
             _resolutionDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             _screenModeDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             #endif
-
-            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
-            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
+            FixSliderAndDropdownZPosition();
             FillInfo();
             LoadSettingData();
-            
+
+            #if !UNITY_ANDROID && !UNITY_IOS
+            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
+            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
+            #endif
+
             OnLoginButtonDisplayUpdate?.Invoke(true);
         }
 
@@ -219,7 +225,13 @@ namespace Loom.ZombieBattleground
             )
             {
                 _applicationSettingsManager.FillResolutions();
-                FillInfo();                                
+                ResolutionInfo resolutionInfo = _applicationSettingsManager.AddResolution(new Resolution
+                {
+                    width = Screen.width,
+                    height = Screen.height
+                });
+                FillInfo();
+                _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(resolutionInfo);
             }
 
             _cachePreviousFrameResolution = Screen.currentResolution;
