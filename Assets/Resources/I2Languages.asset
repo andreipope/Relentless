@@ -86,7 +86,7 @@ MonoBehaviour:
     GoogleUpdateSynchronization: 1
     GoogleUpdateDelay: 0
     Assets: []
-    Spreadsheet_LocalFileName: Data/I2Loc localization_proj Localization - Default.csv
+    Spreadsheet_LocalFileName: Assets/DynamicLoad/Data/localization_data.csv
     Spreadsheet_LocalCSVSeparator: ','
     Spreadsheet_LocalCSVEncoding: utf-8
     Spreadsheet_SpecializationAsRows: 1
