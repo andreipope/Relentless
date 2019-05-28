@@ -4,7 +4,7 @@ using UnityEngine;
 namespace I2.Loc
 {
 	[CustomEditor(typeof(SetLanguage))]
-	public class SetLanguageInspector : Editor
+	public class SetLanguageInspector : UnityEditor.Editor
 	{
 		public SetLanguage setLan;
 		public SerializedProperty mProp_Language;

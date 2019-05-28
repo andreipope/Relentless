@@ -76,11 +76,11 @@ MonoBehaviour:
       Flags: 0
     IgnoreDeviceLanguage: 0
     _AllowUnloadingLanguages: 0
-    Google_WebServiceURL: https://script.google.com/a/loomx.io/macros/s/AKfycbzVqbZq0K6RW1wzf7b3y7yzFEOmP3mW_cSUVO4u/exec
-    Google_SpreadsheetKey: 1nCZT41ehTu3fDZGneB4xg-KA3ES14nk4wKXDM8wZABg
-    Google_SpreadsheetName: I2Loc localization_proj Localization
+    Google_WebServiceURL: 
+    Google_SpreadsheetKey: 
+    Google_SpreadsheetName: 
     Google_LastUpdatedVersion: 1559031159989
-    Google_Password: 6GLq4pEK
+    Google_Password: 
     GoogleUpdateFrequency: 3
     GoogleInEditorCheckFrequency: 2
     GoogleUpdateSynchronization: 1

@@ -8,7 +8,7 @@ namespace I2.Loc
 	#if !UNITY_5_0 && !UNITY_5_1
 
 	[CustomEditor(typeof(LocalizeDropdown))]
-	public class LocalizeDropdownInspector : Editor
+	public class LocalizeDropdownInspector : UnityEditor.Editor
 	{
 		private ReorderableList mList;
 

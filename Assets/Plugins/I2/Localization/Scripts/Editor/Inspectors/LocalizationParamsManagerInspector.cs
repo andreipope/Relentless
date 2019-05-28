@@ -5,7 +5,7 @@ using UnityEngine;
 namespace I2.Loc
 {
     [CustomEditor(typeof(LocalizationParamsManager))]
-	public class LocalizationParamsManagerInspector : Editor
+	public class LocalizationParamsManagerInspector : UnityEditor.Editor
 	{
 		private ReorderableList mList;
         private SerializedProperty mProp_IsGlobalManager;

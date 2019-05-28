@@ -733,7 +733,7 @@ namespace I2.Loc
         static public void RepaintInspectors()
         {
             EditorApplication.update -= RepaintInspectors;
-            var assemblyEditor = Assembly.GetAssembly(typeof(Editor));
+            var assemblyEditor = Assembly.GetAssembly(typeof(UnityEditor.Editor));
             var typeInspectorWindow = assemblyEditor.GetType("UnityEditor.InspectorWindow");
             typeInspectorWindow.GetMethod("RepaintAllInspectors", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
         }
