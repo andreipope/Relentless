@@ -813,14 +813,14 @@ namespace Loom.ZombieBattleground
 
             float handWidth = 0.0f;
             float spacing = -1.5f;
-            float scaling = 0.25f;
+            float scaling = 0.2f;
             Vector3 pivot = new Vector3(6f, -7.5f, 0f);
             int twistPerCard = -5;
 
             if (CardsZoomed)
             {
                 spacing = -2.6f;
-                scaling = 0.31f;
+                scaling = 0.25f;
                 pivot = new Vector3(-1.3f, -6.5f, 0f);
                 twistPerCard = -3;
             }

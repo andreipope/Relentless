@@ -635,6 +635,7 @@ namespace Loom.ZombieBattleground
         {
             card.GameObject.transform.Find("Frame").GetComponent<SpriteRenderer>().material = material;
             card.GameObject.transform.Find("Picture").GetComponent<SpriteRenderer>().material = material;
+            card.GameObject.transform.Find("RankIcon").GetComponent<SpriteRenderer>().material = material;
         }
 
         private void SubtractInitialDeckCardsAmountFromCollections(Deck deck)

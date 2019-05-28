@@ -5,7 +5,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -50,6 +49,8 @@ namespace Loom.ZombieBattleground
         protected GameObject GlowObject;
 
         protected SpriteRenderer BackgroundSprite;
+
+        protected SpriteRenderer RankIconSprite;
 
         protected GameObject DistibuteCardObject;
 
@@ -104,6 +105,7 @@ namespace Loom.ZombieBattleground
             GlowObject = Transform.Find("GlowContainer/Glow").gameObject;
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
+            RankIconSprite = Transform.Find("RankIcon").GetComponent<SpriteRenderer>();
 
             CostText = Transform.Find("GooText").GetComponent<TextMeshPro>();
             NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
@@ -143,6 +145,7 @@ namespace Loom.ZombieBattleground
 
             string setName = Model.Card.Prototype.Faction.ToString();
             string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
+            string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
 
             if (!string.IsNullOrEmpty(Model.Card.Prototype.Frame))
             {
@@ -150,6 +153,7 @@ namespace Loom.ZombieBattleground
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
+            RankIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(rankName);
             Model.CardPictureWasUpdated += PictureUpdatedEvent;
             PictureUpdatedEvent();
 

@@ -339,7 +339,8 @@ namespace Loom.ZombieBattleground
             private Image _frameImage,
                           _unitTypeIconImage,
                           _pictureImage,
-                          _effectImage;
+                          _effectImage,
+                          _rankIconImage;
 
             private int _defense, _damage;
 
@@ -385,6 +386,7 @@ namespace Loom.ZombieBattleground
                 _defenseText = _selfObject.transform.Find("Text_Defense").GetComponent<TextMeshProUGUI>();
 
                 _frameImage = _selfObject.transform.Find("Frame").GetComponent<Image>();
+                _rankIconImage = _selfObject.transform.Find("RankIcon").GetComponent<Image>();
                 _unitTypeIconImage = _selfObject.transform.Find("Image_UnitType").GetComponent<Image>();
                 _pictureImage = _selfObject.transform.Find("Image_Mask/Image_Picture").GetComponent<Image>();
 
@@ -427,6 +429,7 @@ namespace Loom.ZombieBattleground
                 string setName = prototype.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
+                string rankIconName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
 
                 if (!string.IsNullOrEmpty(prototype.Frame))
                 {
@@ -434,6 +437,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
+                _rankIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(rankIconName);
                 _pictureImage.sprite = cardPicture;
                 _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.Type + "_icon"));
 
@@ -503,7 +507,8 @@ namespace Loom.ZombieBattleground
 
             private Image _frameImage,
                           _pictureImage,
-                          _effectImage;
+                          _effectImage,
+                          _rankIconImage;
 
             private bool _withEffect;
 
@@ -517,6 +522,7 @@ namespace Loom.ZombieBattleground
                 _bodyText = _selfObject.transform.Find("Text_Body").GetComponent<TextMeshProUGUI>();
 
                 _frameImage = _selfObject.transform.Find("Frame").GetComponent<Image>();
+                _rankIconImage = _selfObject.transform.Find("RankIcon").GetComponent<Image>();
                 _pictureImage = _selfObject.transform.Find("Image_Mask/Image_Picture").GetComponent<Image>();
 
                 if (_withEffect)
@@ -542,6 +548,7 @@ namespace Loom.ZombieBattleground
                 string setName = prototype.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
+                string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
 
                 if (!string.IsNullOrEmpty(prototype.Frame))
                 {
@@ -549,6 +556,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
+                _rankIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(rankName);
                 _pictureImage.sprite = cardPicture;
 
                 if (_withEffect)
