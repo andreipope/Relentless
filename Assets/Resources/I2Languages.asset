@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0b0c553be8edd4682e9180fdd13e37, type: 3}
+  m_Name: I2Languages
+  m_EditorClassIdentifier: 
+  mSource:
+    UserAgreesToHaveItOnTheScene: 0
+    UserAgreesToHaveItInsideThePluginsFolder: 0
+    GoogleLiveSyncIsUptoDate: 1
+    mTerms:
+    - Term: Menu
+      TermType: 0
+      Description: 
+      Languages:
+      - <size=28>Menu</size>
+      - "<size=36>\u0E40\u0E21\u0E19\u0E39</size>"
+      - "<size=36>\u30E1\u30CB\u30E5\u30FC</size>"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: Start
+      TermType: 0
+      Description: 
+      Languages:
+      - <size=28>Start</size>
+      - "<size=36>\u0E40\u0E23\u0E34\u0E48\u0E21</size>"
+      - "<size=36>\u30B9\u30BF\u30FC\u30C8</size>"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: Settings
+      TermType: 0
+      Description: 
+      Languages:
+      - <size=28>Settings</size>
+      - "<size=36>\u0E15\u0E31\u0E49\u0E07\u0E04\u0E48\u0E32</size>"
+      - "<size=36>\u30BB\u30C6\u30A3\u30F3\u30B0\u30BA</size>"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: Save
+      TermType: 0
+      Description: 
+      Languages:
+      - <size=28>Save</size>
+      - "<size=36>\u0E40\u0E0B\u0E1F</size>"
+      - "<size=36>\u30BB\u30FC\u30D6</size>"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: Load
+      TermType: 0
+      Description: 
+      Languages:
+      - <size=28>Load</size>
+      - "<size=36>\u0E42\u0E2B\u0E25\u0E14</size>"
+      - "<size=36>\u30ED\u30FC\u30C9</size>"
+      Flags: 000000
+      Languages_Touch: []
+    CaseInsensitiveTerms: 0
+    OnMissingTranslation: 1
+    mTerm_AppName: 
+    mLanguages:
+    - Name: English
+      Code: en
+      Flags: 0
+    - Name: Thai
+      Code: th
+      Flags: 0
+    - Name: Japanese
+      Code: ja
+      Flags: 0
+    IgnoreDeviceLanguage: 0
+    _AllowUnloadingLanguages: 0
+    Google_WebServiceURL: https://script.google.com/a/loomx.io/macros/s/AKfycbzVqbZq0K6RW1wzf7b3y7yzFEOmP3mW_cSUVO4u/exec
+    Google_SpreadsheetKey: 1nCZT41ehTu3fDZGneB4xg-KA3ES14nk4wKXDM8wZABg
+    Google_SpreadsheetName: I2Loc localization_proj Localization
+    Google_LastUpdatedVersion: 1559031159989
+    Google_Password: 6GLq4pEK
+    GoogleUpdateFrequency: 3
+    GoogleInEditorCheckFrequency: 2
+    GoogleUpdateSynchronization: 1
+    GoogleUpdateDelay: 0
+    Assets: []
+    Spreadsheet_LocalFileName: Data/I2Loc localization_proj Localization - Default.csv
+    Spreadsheet_LocalCSVSeparator: ','
+    Spreadsheet_LocalCSVEncoding: utf-8
+    Spreadsheet_SpecializationAsRows: 1
