@@ -100,27 +100,22 @@ namespace Loom.ZombieBattleground
                 if (Damage != 0)
                 {
                     unit.DamageDebuffUntillEndOfTurn += Damage;
-                    int buffresult = unit.CurrentDamage + Damage;
 
-                    if (buffresult < 0)
-                    {
-                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
-                    }
-
-                    unit.AddToCurrentDamageHistory(unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.AddToCurrentDamageHistory(Damage, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = unit.DamageDebuffUntillEndOfTurn > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        ActionEffectType = Damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
                         Target = unit,
                         HasValue = true,
-                        Value = unit.DamageDebuffUntillEndOfTurn
+                        Value = Damage
                     });
                 }
 
                 if (Defense != 0)
                 {
                     unit.HpDebuffUntillEndOfTurn += Defense;
+
                     unit.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -158,14 +153,14 @@ namespace Loom.ZombieBattleground
 
                 if (unit.DamageDebuffUntillEndOfTurn != 0)
                 {
-                    unit.AddToCurrentDamageHistory(-unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
-                    unit.DamageDebuffUntillEndOfTurn = 0;
+                    unit.AddToCurrentDamageHistory(-Damage, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.DamageDebuffUntillEndOfTurn -= Damage;
                 }
 
                 if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.AddToCurrentDefenseHistory(-unit.HpDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
-                    unit.HpDebuffUntillEndOfTurn = 0;
+                    unit.AddToCurrentDefenseHistory(-Defense, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.HpDebuffUntillEndOfTurn -= Defense;
                 }
             }
 
