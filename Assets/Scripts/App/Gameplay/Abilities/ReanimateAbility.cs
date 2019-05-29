@@ -87,8 +87,6 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(reanimatedUnitModel);
 
-            Debug.LogWarning("DOING BOARD CARD");
-            
             reanimatedUnitModel.Owner.PlayerCardsController.AddCardToBoard(reanimatedUnitModel, ItemPosition.End);
 
             InvokeActionTriggered(_reanimatedUnit);

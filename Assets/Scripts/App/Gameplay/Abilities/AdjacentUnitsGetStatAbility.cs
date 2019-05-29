@@ -26,8 +26,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            Debug.LogWarning("ACTIVATING" + " - " + AbilityUnitOwner.Card.InstanceId.Id);
-
             if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
                 InvokeUseAbilityEvent();
@@ -64,15 +62,8 @@ namespace Loom.ZombieBattleground
             ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
         }
 
-        public override void Update () 
-        {
-            base.Update();
-            Debug.LogWarning("FOUND: " + AbilityUnitOwner.OwnerPlayer.PlayerCardsController.CardsOnBoard.Contains(AbilityUnitOwner));
-        }
-
         protected override void ChangeAuraStatusAction(bool status)
         {
-            Debug.LogWarning("AURA STATE " + status + " - " + AbilityUnitOwner.Card.InstanceId.Id);
             base.ChangeAuraStatusAction(status);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
@@ -87,14 +78,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                Debug.LogWarning("RESET");
                 ResetStats();
             }
         }
 
         protected override void BoardChangedHandler(int count)
         {
-            Debug.LogWarning("DOING THIS");
             base.BoardChangedHandler(count);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)

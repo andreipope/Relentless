@@ -1169,10 +1169,9 @@ namespace Loom.ZombieBattleground
 
         public List<CardModel> GetAdjacentUnitsToUnit(CardModel targetUnit)
         {
-            IReadOnlyList<CardModel> boardCards = GetAliveUnits(targetUnit.OwnerPlayer.CardsOnBoard).ToList();
+            IReadOnlyList<CardModel> boardCards = targetUnit.OwnerPlayer.CardsOnBoard;
             int targetIndex = boardCards.IndexOf(targetUnit);
 
-            Debug.LogWarning("TARGET INDEX " + targetIndex);
             boardCards = boardCards.Where(unit =>
                     unit != targetUnit &&
                     (boardCards.IndexOf(unit) == Mathf.Clamp(targetIndex - 1, 0, boardCards.Count - 1) ||
