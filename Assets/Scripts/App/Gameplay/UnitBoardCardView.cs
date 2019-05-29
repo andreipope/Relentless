@@ -16,12 +16,8 @@ namespace Loom.ZombieBattleground
         {
             AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
             DefenseText = selfObject.transform.Find("DefenseText").GetComponent<TextMeshPro>();
-            TypeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
 
             DrawStats();
-
-            TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", cardModel.Card.InstanceCard.CardType + "_icon"));
 
             // TODO: refactor-state: unsubscribe
             Model.UnitDamageChanged += InstanceCardOnStatChanged;
