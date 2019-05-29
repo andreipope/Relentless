@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
                 if (unit.HasBuffShield)
                     return;
 
-                if (CardModel.CurrentDamage <= 0 || from is CardModel && -Mathf.Min(CardModel.CurrentDamage, ((CardModel) from).MaximumDamageFromAnySource) <= 0)
+                if (CardModel.CurrentDamage <= 0 || from is CardModel && Mathf.Min(CardModel.CurrentDamage, ((CardModel) from).MaximumDamageFromAnySource) <= 0)
                     return;
 
                 unit.Stun(Enumerators.StunType.FREEZE, Value);
