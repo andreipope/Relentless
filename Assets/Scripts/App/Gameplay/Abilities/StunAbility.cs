@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitDamagedHandler(IBoardObject info)
+        protected override void UnitDamagedHandler(IBoardObject info, bool fromGettingAttacked = false)
         {
             base.UnitDamagedHandler(info);
 
@@ -73,6 +73,9 @@ namespace Loom.ZombieBattleground
             if (info is CardModel unit)
             {
                 if (unit.HasBuffShield)
+                    return;
+
+                if (CardModel.CurrentDamage <= 0 || -Mathf.Min(CardModel.CurrentDamage, unit.MaximumDamageFromAnySource) <= 0)
                     return;
 
                 StunUnit(unit);
@@ -101,7 +104,7 @@ namespace Loom.ZombieBattleground
 
             if (info is CardModel unit)
             {
-                if (unit.HasBuffShield)
+                if (unit.HasBuffShield || damage <= 0)
                     return;
                     
                 StunUnit(unit);

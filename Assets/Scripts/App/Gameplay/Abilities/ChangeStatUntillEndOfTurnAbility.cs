@@ -20,6 +20,16 @@ namespace Loom.ZombieBattleground
             Damage = ability.Damage;
         }
 
+        public override void Deactivate()
+        {
+            //This ability must leave after the owner disappears to complete the "until end of turn" request
+        }
+
+        public override void Dispose()
+        {
+            //This ability must leave after the owner disappears to complete the "until end of turn" request
+        }
+
         public override void Activate()
         {
             base.Activate();
@@ -166,7 +176,8 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            Deactivate();
+            base.Deactivate();
+            base.Dispose();
         }
 
         protected override void VFXAnimationEndedHandler()
