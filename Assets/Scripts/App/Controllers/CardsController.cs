@@ -610,6 +610,15 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
+                                        #if !USE_PRODUCTION_BACKEND
+                                        if (!_gameplayManager.AvoidGooCost)
+                                        {
+                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        }
+#else
+                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+#endif
+
                                         rankBuffAction?.TriggerActionExternally();
                                     },
                                     target,
