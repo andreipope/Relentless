@@ -438,6 +438,8 @@ namespace Loom.ZombieBattleground
 
             _cacheDeckListToDisplay = GetDeckList();
             SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
+            
+            _selectedDeckId = (int)_cacheDeckListToDisplay[SelectDeckIndex].Id.Id;
             ChangeTab(Tab.SelectDeck);
         }
 

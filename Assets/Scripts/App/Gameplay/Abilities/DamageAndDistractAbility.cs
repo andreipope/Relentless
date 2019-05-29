@@ -70,6 +70,7 @@ namespace Loom.ZombieBattleground
             if (_units.Count == 0)
                 return;
 
+            _units = _units.Where(x => x.IsUnitActive).ToList();
             _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
@@ -119,10 +120,7 @@ namespace Loom.ZombieBattleground
                 Value = -Damage
             });
 
-            if (boardUnit.IsUnitActive)
-            {
-                BattlegroundController.DistractUnit(boardUnit);
-            }
+            BattlegroundController.DistractUnit(boardUnit);
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
         }
