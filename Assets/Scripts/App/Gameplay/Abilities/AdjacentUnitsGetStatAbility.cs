@@ -64,6 +64,12 @@ namespace Loom.ZombieBattleground
             ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
         }
 
+        public override void Update () 
+        {
+            base.Update();
+            Debug.LogWarning("FOUND: " + AbilityUnitOwner.OwnerPlayer.PlayerCardsController.CardsOnBoard.Contains(AbilityUnitOwner));
+        }
+
         protected override void ChangeAuraStatusAction(bool status)
         {
             Debug.LogWarning("AURA STATE " + status + " - " + AbilityUnitOwner.Card.InstanceId.Id);
