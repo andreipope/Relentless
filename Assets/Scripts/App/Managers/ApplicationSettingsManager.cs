@@ -141,6 +141,23 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public ResolutionInfo AddResolution(Resolution resolution)
+        {
+            ResolutionInfo resolutionInfo = Resolutions.Find(info => info.Resolution.x == resolution.width && info.Resolution.y == resolution.height);
+            if (resolutionInfo != null)
+                return resolutionInfo;
+
+            resolutionInfo = new ResolutionInfo
+            {
+                Name = $"{resolution.width} x {resolution.height}",
+                Resolution = new Vector2Int(resolution.width, resolution.height)
+            };
+
+            Resolutions.Add(resolutionInfo);
+
+            return resolutionInfo;
+        }
+
         private void HandleSpecificUserActions()
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKeyUp(KeyCode.Return))

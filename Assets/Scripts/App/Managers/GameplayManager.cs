@@ -6,6 +6,7 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -466,6 +467,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
                 }
 
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
                     CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
