@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
                 if (unit.HasBuffShield)
                     return;
 
-                if (CardModel.CurrentDamage <= 0 || -Mathf.Min(CardModel.CurrentDamage, unit.MaximumDamageFromAnySource) <= 0)
+                if (CardModel.CurrentDamage <= 0 || Mathf.Min(CardModel.CurrentDamage, unit.MaximumDamageFromAnySource) <= 0)
                     return;
 
                 StunUnit(unit);
