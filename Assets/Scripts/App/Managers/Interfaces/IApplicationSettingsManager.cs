@@ -14,8 +14,6 @@ namespace Loom.ZombieBattleground
         Enumerators.ScreenMode CurrentScreenMode { get; }
 
         ResolutionInfo CurrentResolution { get; }
-        
-        event Action OnResolutionChanged;
 
         void SetDefaults();
         void ApplySettings();
@@ -23,6 +21,7 @@ namespace Loom.ZombieBattleground
         Task SetResolution(ResolutionInfo info);
         Task SetScreenMode(Enumerators.ScreenMode screenMode);
         void FillResolutions();
+        ResolutionInfo AddResolution(Resolution resolution);
 #endif
     }
 }

@@ -732,6 +732,10 @@ namespace Loom.ZombieBattleground
                             questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
 
                             _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                        } 
+                        else 
+                        {
+                            _tutorialManager.SkipTutorial();
                         }
                     }
                     else
@@ -761,6 +765,7 @@ namespace Loom.ZombieBattleground
             {
                 if(_uiManager.GetPopup<QuestionPopup>().Self != null)
                 {
+                    _tutorialManager.SkipTutorial();
                     _uiManager.HidePopup<QuestionPopup>();
                 }
                 _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { endMatchResults.IsWin });

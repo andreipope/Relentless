@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public override void Update()
         {
-            if(AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense > 0 || !LastAuraState)
+            if(AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
                 
             int currentDamage = 0;

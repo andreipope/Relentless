@@ -23,8 +23,6 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         public Action<bool> OnLoginButtonDisplayUpdate;
-
-        public static event Action OnResolutionOrScreenModeHasChanged;
         
         private GameObject _panelVideoSettings,
                            _groupLogin;
@@ -67,10 +65,10 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 #if !UNITY_ANDROID && !UNITY_IOS
-            _applicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
+            ApplicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
 #endif
             _cachePreviousFrameResolution = Screen.currentResolution;
-            OnResolutionOrScreenModeHasChanged += FixSliderAndDropdownZPosition;
+            ApplicationSettingsManager.OnResolutionChanged += FixSliderAndDropdownZPosition;
         }
 
         public void Dispose()
@@ -162,13 +160,16 @@ namespace Loom.ZombieBattleground
             _resolutionDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             _screenModeDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
             #endif
-
-            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
-            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
+            FixSliderAndDropdownZPosition();
             FillInfo();
             LoadSettingData();
-            
+
+            #if !UNITY_ANDROID && !UNITY_IOS
+            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
+            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
+            #endif
+
             OnLoginButtonDisplayUpdate?.Invoke(true);
         }
 
@@ -219,7 +220,13 @@ namespace Loom.ZombieBattleground
             )
             {
                 _applicationSettingsManager.FillResolutions();
-                FillInfo();                                
+                ResolutionInfo resolutionInfo = _applicationSettingsManager.AddResolution(new Resolution
+                {
+                    width = Screen.width,
+                    height = Screen.height
+                });
+                FillInfo();
+                _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(resolutionInfo);
             }
 
             _cachePreviousFrameResolution = Screen.currentResolution;
@@ -306,21 +313,26 @@ namespace Loom.ZombieBattleground
             {
                 PlayClickSound();
 
-                await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
-                OnResolutionOrScreenModeHasChanged?.Invoke();
+                _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                
+                Hide();
+                GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Apply settings ...");
+                await Task.Delay(TimeSpan.FromSeconds
+                (
+                    ApplicationSettingsManager.WaitForResolutionChangeFinishAnimating
+                ));
+                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                Show();                
             }
         }
 
-        private async void ScreenModeChangedHandler(int index)
+        private void ScreenModeChangedHandler(int index)
         {
             if (_infoDataFilled)
             {
                 PlayClickSound();
                 
-                await _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
-                OnResolutionOrScreenModeHasChanged?.Invoke();
+                _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
             }
         }
 #endif
