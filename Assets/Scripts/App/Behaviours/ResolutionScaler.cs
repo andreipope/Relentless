@@ -12,13 +12,15 @@ namespace Loom.ZombieBattleground
         [SerializeField]
         private Camera[] _cameras;
 
-        private static float _squareFactorCanvasMatch = 0.6f;
+        private const float SquareFactorCanvasMatch = 0.6f;
 
-        private static float _squareFactorCameraSize = 9.6f;
+        private const float SquareFactorCameraSize = 9.6f;
+        
+        private const float NonSquareFactorCameraSize = 7.6f;
 
-        private static Vector2 _screenSize;
+        private Vector2 _screenSize;
 
-        private static bool _squareFactorScreen;
+        private bool _squareFactorScreen;
 
         private const float Scale_Factor = 1.5f;
 
@@ -27,6 +29,11 @@ namespace Loom.ZombieBattleground
             UpdateScale();
 
             ApplicationSettingsManager.OnResolutionChanged += UpdateScale;
+        }
+
+        private void OnDestroy()
+        {
+            ApplicationSettingsManager.OnResolutionChanged -= UpdateScale;
         }
 
         private void UpdateScale()
@@ -50,8 +57,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (_screenSize.x / _screenSize.y < Scale_Factor)
-                _squareFactorScreen = true;
+            _squareFactorScreen = _screenSize.x / _screenSize.y < Scale_Factor;
         }
 
         private void SettingCanvases()
@@ -59,7 +65,7 @@ namespace Loom.ZombieBattleground
             if (_canvases == null || _canvases.Length == 0 || _canvases[0] == null)
                 return;
                 
-            float canvasMatchParam = _squareFactorScreen ? _squareFactorCanvasMatch : 1f;
+            float canvasMatchParam = _squareFactorScreen ? SquareFactorCanvasMatch : 1f;
 
             foreach (Canvas canvas in _canvases)
                 canvas.GetComponent<CanvasScaler>().matchWidthOrHeight = canvasMatchParam;
@@ -69,9 +75,9 @@ namespace Loom.ZombieBattleground
         {
             if (_cameras == null || _cameras [0] == null)
                 return;
-
-            float cameraSize = _squareFactorScreen ? _squareFactorCameraSize : _cameras[0].orthographicSize;
-
+                
+            float cameraSize = _squareFactorScreen ? SquareFactorCameraSize : NonSquareFactorCameraSize;
+           
             foreach (Camera camera in _cameras)
                 camera.orthographicSize = cameraSize;
         }

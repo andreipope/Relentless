@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -406,8 +407,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateActionReportPanelPosition()
+        private async void UpdateActionReportPanelPosition()
         {
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            
             if (_selfPage == null)
                 return;
                 
