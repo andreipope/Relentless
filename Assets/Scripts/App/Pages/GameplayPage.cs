@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
             _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
             _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
             
-            SettingsWithCreditsPopup.OnResolutionOrScreenModeHasChanged += UpdateActionReportPanelPosition;
+            ApplicationSettingsManager.OnResolutionChanged += UpdateActionReportPanelPosition;
         }
 
         public void Hide()

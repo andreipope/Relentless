@@ -12,30 +12,28 @@ namespace Loom.ZombieBattleground
         [SerializeField]
         private Camera[] _cameras;
 
-        [SerializeField]
-        private float _squareFactorCanvasMatch = 0.6f;
+        private static float _squareFactorCanvasMatch = 0.6f;
 
-        [SerializeField]
-        private float _squareFactorCameraSize = 9.6f;
+        private static float _squareFactorCameraSize = 9.6f;
 
-        private Vector2 _screenSize;
+        private static Vector2 _screenSize;
 
-        private bool _squareFactorScreen;
+        private static bool _squareFactorScreen;
 
         private const float Scale_Factor = 1.5f;
 
         void Start()
         {
+            UpdateScale();
+
+            ApplicationSettingsManager.OnResolutionChanged += UpdateScale;
+        }
+
+        private void UpdateScale()
+        {
             SettingScreenSize();
             SettingCanvases();
             SettingCameras();
-
-            SettingsWithCreditsPopup.OnResolutionOrScreenModeHasChanged += () =>
-            {
-                SettingScreenSize();
-                SettingCanvases();
-                SettingCameras();
-            };
         }
 
         private void SettingScreenSize()
