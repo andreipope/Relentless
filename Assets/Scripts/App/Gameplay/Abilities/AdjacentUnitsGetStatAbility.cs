@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -24,6 +25,8 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            Debug.LogWarning("ACTIVATING" + " - " + AbilityUnitOwner.Card.InstanceId.Id);
 
             if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
@@ -63,6 +66,7 @@ namespace Loom.ZombieBattleground
 
         protected override void ChangeAuraStatusAction(bool status)
         {
+            Debug.LogWarning("AURA STATE " + status + " - " + AbilityUnitOwner.Card.InstanceId.Id);
             base.ChangeAuraStatusAction(status);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
@@ -70,10 +74,12 @@ namespace Loom.ZombieBattleground
 
             if (status)
             {
+                Debug.LogWarning("GIVING");
                 ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
             }
             else
             {
+                Debug.LogWarning("RESET");
                 ResetStats();
             }
         }
