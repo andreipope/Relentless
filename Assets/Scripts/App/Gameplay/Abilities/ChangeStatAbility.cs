@@ -106,11 +106,6 @@ namespace Loom.ZombieBattleground
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
-            {
-                ResetAffectedUnits();
-            }
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 

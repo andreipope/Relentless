@@ -212,7 +212,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     new TestCardData("Zlab", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                    new TestCardData("Firewall", 1),
+                    new TestCardData("Firewall", 2),
                     new TestCardData("Zlab", 10)
                 );
 
@@ -221,7 +221,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId playerFirewallId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Firewall", 1);
                 InstanceId playerZlab1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 1);
                 InstanceId playerZlab2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 2);
+                InstanceId playerZlab3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 3);
                 InstanceId opponentFirewallId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Firewall", 1);
+                InstanceId opponentFirewall2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Firewall", 2);
                 InstanceId opponentZlab1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
                 InstanceId opponentZlab2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 2);
 
@@ -232,13 +234,28 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     player => {
                         player.CardPlay(playerZlab1Id, ItemPosition.Start);
                         player.CardPlay(playerZlab2Id, ItemPosition.Start);
+                        player.CardAbilityUsed(playerFirewallId, Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT, new List<ParametrizedAbilityInstanceId>());
                         player.CardPlay(playerFirewallId, ItemPosition.Start);
                     },
                     opponent => {
                         opponent.CardPlay(opponentZlab1Id, ItemPosition.Start);
                         opponent.CardPlay(opponentZlab2Id, ItemPosition.Start);
+                        opponent.CardAbilityUsed(opponentFirewallId, Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT, new List<ParametrizedAbilityInstanceId>());
                         opponent.CardPlay(opponentFirewallId, ItemPosition.Start);
                     },
+                    player => {
+                        player.CardAttack(playerZlab1Id, opponentFirewallId);
+                        player.CardPlay(playerZlab3Id, ItemPosition.End);
+                    },
+                    opponent => {
+                        opponent.CardAbilityUsed(opponentFirewall2Id, Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardPlay(opponentFirewall2Id, ItemPosition.Start);
+                        opponent.CardAttack(opponentZlab2Id, playerZlab1Id);
+                    },
+                    player => {
+                        player.CardAttack(playerZlab3Id, opponentZlab2Id);
+                    },
+                    opponent => {},
                     player => {}
                 };
                 Action validateEndState = () =>
@@ -248,11 +265,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     CardModel opponentZlab1Unit = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab1Id));
                     CardModel opponentZlab2Unit = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id));
 
-                    Assert.AreEqual(playerZlab1Unit.Card.Prototype.Damage, playerZlab1Unit.CurrentDamage);
                     Assert.AreEqual(playerZlab2Unit.Card.Prototype.Damage + 2, playerZlab2Unit.CurrentDamage);
 
-                    Assert.AreEqual(opponentZlab1Unit.Card.Prototype.Damage, opponentZlab1Unit.CurrentDamage);
-                    Assert.AreEqual(opponentZlab2Unit.Card.Prototype.Damage + 2, opponentZlab2Unit.CurrentDamage);
+                    Assert.AreEqual(opponentZlab1Unit.Card.Prototype.Damage + 2, opponentZlab1Unit.CurrentDamage);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

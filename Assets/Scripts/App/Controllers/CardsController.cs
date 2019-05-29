@@ -464,10 +464,6 @@ namespace Loom.ZombieBattleground
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
-                if (!_gameplayManager.AvoidGooCost)
-                {
-                    card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
-                }
 
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CardsMoveSoundVolume);
 
@@ -565,6 +561,15 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
                                         }
+
+#if !USE_PRODUCTION_BACKEND
+                                        if (!_gameplayManager.AvoidGooCost)
+                                        {
+                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        }
+#else
+                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+#endif
                                     },
                                     target,
                                     handCard,

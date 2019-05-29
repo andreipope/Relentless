@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,11 +11,14 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
+        private List<CardModel> _affectedUnits;
+
         public AdjacentUnitsGetStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Damage = ability.Damage;
             Defense = ability.Defense;
+            _affectedUnits = new List<CardModel>();
         }
 
         public override void Activate()
@@ -70,7 +74,35 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), -Defense, -Damage);
+                ResetStats();
+            }
+        }
+
+        protected override void BoardChangedHandler(int count)
+        {
+            base.BoardChangedHandler(count);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            if(!AbilityUnitOwner.IsDead && AbilityUnitOwner.CurrentDefense > 0 && LastAuraState)
+            {
+                ResetStats();
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+            }
+        }
+
+        private void ResetStats()
+        {
+            for (int i = _affectedUnits.Count-1; i >= 0; i--)
+            {
+                _affectedUnits[i].BuffedDefense -= Defense;
+                _affectedUnits[i].AddToCurrentDefenseHistory(-Defense, Enumerators.ReasonForValueChange.AbilityBuff);
+
+                _affectedUnits[i].BuffedDamage -= Damage;
+                _affectedUnits[i].AddToCurrentDamageHistory(-Damage, Enumerators.ReasonForValueChange.AbilityBuff);
+
+                _affectedUnits.Remove(_affectedUnits[i]);
             }
         }
 
@@ -80,6 +112,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardModel unit in units)
             {
+                _affectedUnits.Add(unit);
                 if (defense != 0)
                 {
                     unit.BuffedDefense += defense;

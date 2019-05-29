@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
 
         public event Action UnitAttackedEnded;
 
-        public event Action<IBoardObject> UnitDamaged;
+        public event Action<IBoardObject, bool> UnitDamaged;
 
         public event Action<IBoardObject> PrepairingToDie;
 
@@ -997,9 +997,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void InvokeUnitDamaged(IBoardObject from)
+        public void InvokeUnitDamaged(IBoardObject from, bool fromGettingAttacked = false)
         {
-            UnitDamaged?.Invoke(from);
+            UnitDamaged?.Invoke(from, fromGettingAttacked);
         }
 
         public void InvokeUnitAttacked(IBoardObject target, int damage, bool isAttacker)
