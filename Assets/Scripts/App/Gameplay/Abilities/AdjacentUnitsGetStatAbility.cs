@@ -74,8 +74,10 @@ namespace Loom.ZombieBattleground
 
             if (status)
             {
-                Debug.LogWarning("GIVING");
-                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+                if (AbilityUnitOwner.OwnerPlayer.PlayerCardsController.CardsOnBoard.Contains(AbilityUnitOwner))
+                {
+                    ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+                }
             }
             else
             {
@@ -86,6 +88,7 @@ namespace Loom.ZombieBattleground
 
         protected override void BoardChangedHandler(int count)
         {
+            Debug.LogWarning("DOING THIS");
             base.BoardChangedHandler(count);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
