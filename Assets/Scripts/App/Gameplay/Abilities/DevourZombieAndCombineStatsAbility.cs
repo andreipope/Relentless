@@ -37,6 +37,7 @@ namespace Loom.ZombieBattleground
 
         public override void Update()
         {
+            base.Update();
         }
 
         public override void Dispose()

@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -70,7 +71,10 @@ namespace Loom.ZombieBattleground
 
             if (status)
             {
-                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+                if (AbilityUnitOwner.OwnerPlayer.PlayerCardsController.CardsOnBoard.Contains(AbilityUnitOwner))
+                {
+                    ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+                }
             }
             else
             {
