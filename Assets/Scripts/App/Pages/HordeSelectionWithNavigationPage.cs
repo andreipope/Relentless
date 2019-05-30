@@ -460,6 +460,7 @@ namespace Loom.ZombieBattleground
                 if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
+                    _selectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
                 }
                 return tutorialDeckList;
             }
@@ -597,7 +598,7 @@ namespace Loom.ZombieBattleground
             {
                 SelectDeckIndex = 1;
             }
-            
+
             AssignCurrentDeck();    
         }
 

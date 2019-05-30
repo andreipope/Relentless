@@ -65,6 +65,10 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            if (_tutorialManager.IsTutorial)
+            {
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
+            }
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
