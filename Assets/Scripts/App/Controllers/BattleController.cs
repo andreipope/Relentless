@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
-                finalDamageAttacking = Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource);
+                finalDamageAttacking = Mathf.Min(damageAttacking, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
                 attackedUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacking,
                     Enumerators.ReasonForValueChange.Attack);
 
@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        finalDamageAttacked = Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource);
+                        finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
                         attackingUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacked,
                     Enumerators.ReasonForValueChange.Attack);
 
@@ -199,7 +199,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.ResolveBuffShield();
                 }
                 attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -268,7 +268,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.AbilityDamage);
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }
