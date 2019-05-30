@@ -460,6 +460,7 @@ namespace Loom.ZombieBattleground
                 if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
+                    _selectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
                 }
                 return tutorialDeckList;
             }
@@ -488,6 +489,7 @@ namespace Loom.ZombieBattleground
         { 
             if (GetSelectedDeck() != null)
             {
+                Debug.LogWarning("DONE");
                 CurrentEditDeck = GetSelectedDeck().Clone();
                 CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Id == CurrentEditDeck.OverlordId);
                 IsEditingNewDeck = false;
@@ -598,6 +600,7 @@ namespace Loom.ZombieBattleground
                 SelectDeckIndex = 1;
             }
             
+            Debug.LogWarning("HOW CAN IT NOT GET THERE");
             AssignCurrentDeck();    
         }
 
@@ -846,6 +849,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
+            Debug.LogWarning("PRETTY SURE WE ARE HERE");
             UpdatePageDotObjects(_cacheDeckListToDisplay);
             ChangeSelectDeckIndex(GetDefaultDeckIndex());
         }
