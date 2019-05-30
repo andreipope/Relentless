@@ -70,6 +70,69 @@ MonoBehaviour:
       - "\u308F\u304B\u308A\u307E\u3059"
       Flags: 000000
       Languages_Touch: []
+    - Term: Common.Button.Auto
+      TermType: 0
+      Description: 
+      Languages:
+      - AUTO
+      - "\u0E2D\u0E2D\u0E42\u0E15\u0E49"
+      - "\u30AA\u30FC\u30C8\u30FC"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: Common.Button.Filter
+      TermType: 0
+      Description: 
+      Languages:
+      - FILTER
+      - "\u0E1F\u0E34\u0E25\u0E40\u0E15\u0E2D\u0E23\u0E4C"
+      - "\u30D5\u30A3\u30EB\u30BF\u30FC"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: HordeSelection.Header
+      TermType: 0
+      Description: 
+      Languages:
+      - SELECT DECK
+      - "\u0E40\u0E14\u0E47\u0E04\u0E02\u0E2D\u0E07\u0E09\u0E31\u0E19"
+      - "\u30BB\u30EC\u30AF\u30C8\u30FB\u30C7\u30C3\u30AF"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: HordeSelection.Edit
+      TermType: 0
+      Description: 
+      Languages:
+      - EDIT
+      - "\u0E41\u0E01\u0E49\u0E44\u0E02"
+      - "\u30A8\u30C7\u30A3\u30C3\u30C8"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: HordeSelection.Delete
+      TermType: 0
+      Description: 
+      Languages:
+      - DELETE
+      - "\u0E25\u0E1A"
+      - "\u30C7\u30EA\u30FC\u30C8"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: HordeSelection.Rename
+      TermType: 0
+      Description: 
+      Languages:
+      - RENAME
+      - "\u0E40\u0E1B\u0E25\u0E37\u0E48\u0E22\u0E19\u0E0A\u0E37\u0E48\u0E2D"
+      - "\u30EA\u30FC\u30CD\u30FC\u30E0"
+      Flags: 000000
+      Languages_Touch: []
+    - Term: HordeSelection.Build
+      TermType: 0
+      Description: 
+      Languages:
+      - BUILD A NEW DECK
+      - "\u0E2A\u0E23\u0E49\u0E32\u0E07\u0E40\u0E14\u0E47\u0E04\u0E43\u0E2B\u0E21\u0E48"
+      - "\u30D3\u30EB\u30C9\u30FB\u30C7\u30C3\u30AF"
+      Flags: 000000
+      Languages_Touch: []
     CaseInsensitiveTerms: 0
     OnMissingTranslation: 1
     mTerm_AppName: 

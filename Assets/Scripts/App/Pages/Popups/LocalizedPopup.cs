@@ -7,13 +7,11 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class LocalizedPopup : IUIPopup, ILocalizableUI
+    public class LocalizedPopup : LocalizableUIBase, IUIPopup
     {
         public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
-
-        private LocalizationControlManager _localizationControlManager;
 
         private IUIManager _uiManager;
 
@@ -24,16 +22,13 @@ namespace Loom.ZombieBattleground
         private ButtonShiftingContent _gotItButton;
 
         public GameObject Self { get; private set; }
-        
-        public List<TextMeshProUGUI> LocalizedTextList { get; private set; }
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _localizationControlManager = GameClient.Get<LocalizationControlManager>();
-            LocalizedTextList = new List<TextMeshProUGUI>();
-        }
+            InitializeLocalization();
+        }        
 
         public void Dispose()
         {
@@ -42,12 +37,13 @@ namespace Loom.ZombieBattleground
         public void Hide()
         {
             PopupHiding?.Invoke();
-            
-            _localizationControlManager.UnRegisterTextLabels(this);
+
+            UnRegisterLocalizedTextList();            
 
             if (Self == null)
                 return;
 
+            
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -77,7 +73,7 @@ namespace Loom.ZombieBattleground
 
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
 
-            _localizationControlManager.RegisterTextLabels(this);
+            RegisterLocalizedTextList();
         }
 
         public void Show(object data)

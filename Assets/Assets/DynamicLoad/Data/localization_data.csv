@@ -5,3 +5,12 @@ Settings,<size=28>Settings</size>,<size=36>ตั้งค่า</size>,<size=36
 Save,<size=28>Save</size>,<size=36>เซฟ</size>,<size=36>セーブ</size>
 Load,<size=28>Load</size>,<size=36>โหลด</size>,<size=36>ロード</size>
 GotIt,GOT IT,ตกลง,わかります
+,,,
+Common.Button.Auto,AUTO,ออโต้,オートー
+Common.Button.Filter,FILTER,ฟิลเตอร์,フィルター
+,,,
+HordeSelection.Header,SELECT DECK,เด็คของฉัน,セレクト・デック
+HordeSelection.Edit,EDIT,แก้ไข,エディット
+HordeSelection.Delete,DELETE,ลบ,デリート
+HordeSelection.Rename,RENAME,เปลื่ยนชื่อ,リーネーム
+HordeSelection.Build,BUILD A NEW DECK,สร้างเด็คใหม่,ビルド・デック
