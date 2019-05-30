@@ -501,6 +501,7 @@ namespace Loom.ZombieBattleground
 
                 if (attackerUnit == null || target == null)
                 {
+                    completeCallback?.Invoke();
                     ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}"));
                     return;
                 }
