@@ -9,7 +9,8 @@
         "DOTween.Modules",
         "AdvancedFPSCounter",
         "ZombieBattleground.RuntimeEditorOnly",
-        "Mixpanel.Runtime"
+        "Mixpanel.Runtime",
+        "I2"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

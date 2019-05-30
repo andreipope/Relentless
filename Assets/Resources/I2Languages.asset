@@ -61,6 +61,15 @@ MonoBehaviour:
       - "<size=36>\u30ED\u30FC\u30C9</size>"
       Flags: 000000
       Languages_Touch: []
+    - Term: GotIt
+      TermType: 0
+      Description: 
+      Languages:
+      - GOT IT
+      - "\u0E15\u0E01\u0E25\u0E07"
+      - "\u308F\u304B\u308A\u307E\u3059"
+      Flags: 000000
+      Languages_Touch: []
     CaseInsensitiveTerms: 0
     OnMissingTranslation: 1
     mTerm_AppName: 

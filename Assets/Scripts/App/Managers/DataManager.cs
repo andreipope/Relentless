@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
 
         private ILocalizationManager _localizationManager;
 
+        private LocalizationControlManager _localizationControlManager;
+
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -105,6 +107,7 @@ namespace Loom.ZombieBattleground
             FillFullCollection();
 
             _localizationManager.ApplyLocalization();
+            _localizationControlManager.ApplyLocalization();
 
             if (Constants.DevModeEnabled)
             {
@@ -183,6 +186,7 @@ namespace Loom.ZombieBattleground
             Log.Info("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
 
             _localizationManager = GameClient.Get<ILocalizationManager>();
+            _localizationControlManager = GameClient.Get<LocalizationControlManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
