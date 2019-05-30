@@ -639,20 +639,22 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new TestCardData("Super Serum", 1),
+                    new TestCardData("Super Serum", 2),
                     new TestCardData("Mountain", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new TestCardData("Super Serum", 1),
+                    new TestCardData("Super Serum", 2),
                     new TestCardData("Mountain", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerSuperSerumId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Super Serum", 1);
+                InstanceId playerSuperSerum2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Super Serum", 2);
                 InstanceId playerMountainId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Mountain", 1);
 
                 InstanceId opponentSuperSerumId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Super Serum", 1);
+                InstanceId opponentSuperSerum2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Super Serum", 2);
                 InstanceId opponentMountainId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Mountain", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
@@ -663,15 +665,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentMountainId, ItemPosition.Start);
                            opponent.LetsThink(10);
                            opponent.CardPlay(opponentSuperSerumId, ItemPosition.Start, opponentMountainId);
+                           opponent.LetsThink(10);
+                           opponent.CardPlay(opponentSuperSerum2Id, ItemPosition.Start, opponentMountainId);
                        },
                        player =>
                        {
                            player.CardPlay(playerSuperSerumId, ItemPosition.Start, playerMountainId);
-                           player.LetsThink(10);
+                           player.LetsThink(20);
                            player.CardAttack(playerMountainId, opponentMountainId);
                        },
                        opponent => {},
-                       player => {}
+                       player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
