@@ -45,7 +45,9 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 7bc52d40e980449e2b4b5b6992e3e4ae, type: 3}
+  - {fileID: 21300000, guid: c6e976d6b7b21469bae828bb3d2b0ebb, type: 3}
   m_PackedSpriteNamesToIndex:
   - messagebox
+  - card_popup_panel
   m_Tag: General Popup_Atlas
   m_IsVariant: 0
