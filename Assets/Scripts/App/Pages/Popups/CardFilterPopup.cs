@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
@@ -44,17 +45,13 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank.COMMANDER
         };
 
-        public readonly List<Enumerators.CardType> AllAvailableTypeList = new List<Enumerators.CardType>()
-        {
-            Enumerators.CardType.FERAL,
-            Enumerators.CardType.WALKER,
-            Enumerators.CardType.HEAVY,
-            Enumerators.CardType.UNDEFINED
-        };
-
         public CardFilterData FilterData;
 
         private CardFilterData _cacheFilterData;
+
+        public UnityAction<Enumerators.Faction> UpdateElementFilterEvent;
+        public UnityAction<Enumerators.CardRank> UpdateRankFilterEvent;
+        public UnityAction<int> UpdateGooCostFilterEvent;
 
         public enum Tab
         {
@@ -80,8 +77,7 @@ namespace Loom.ZombieBattleground
             FilterData = new CardFilterData
             (
                 AllAvailableFactionList,
-                AllAvailableRankList,
-                AllAvailableTypeList
+                AllAvailableRankList
             );
             SaveCacheFilterData();
             _buttonGooCostList = new List<Button>();
@@ -156,6 +152,7 @@ namespace Loom.ZombieBattleground
                     PlayClickSound();
                     FilterData.GooCostList[gooIndex] = !FilterData.GooCostList[gooIndex];
                     UpdateGooCostButtonDisplay(gooIndex);
+                    UpdateGooCostFilterEvent?.Invoke(gooIndex);
                 });
                 _buttonGooCostList.Add(button);
             }
@@ -192,6 +189,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             ToggleSelectedFaction(faction);
+            UpdateElementFilterEvent?.Invoke(faction);
         }
 
         private void ButtonRankIconHandler(Enumerators.CardRank rank)
@@ -199,6 +197,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             FilterData.RankDictionary[rank] = !FilterData.RankDictionary[rank];
             UpdateRankButtonDisplay(rank);
+            UpdateRankFilterEvent?.Invoke(rank);
         }
 
         private void ButtonElementHandler()
@@ -332,11 +331,6 @@ namespace Loom.ZombieBattleground
             return FilterData.RankDictionary.Any(kvp => kvp.Value);
         }
 
-        private bool CheckIfAnyTypeSelected()
-        {
-            return FilterData.TypeDictionary.Any(kvp => kvp.Value);
-        }
-
         private void UpdateAllButtonsStatus()
         {
             foreach (Enumerators.Faction faction in AllAvailableFactionList)
@@ -371,7 +365,6 @@ namespace Loom.ZombieBattleground
         {
             public Dictionary<Enumerators.Faction, bool> FactionDictionary;
             public Dictionary<Enumerators.CardRank, bool> RankDictionary;
-            public Dictionary<Enumerators.CardType, bool> TypeDictionary;
             public List<bool> GooCostList;
 
             public CardFilterData(CardFilterData originalData)
@@ -386,19 +379,13 @@ namespace Loom.ZombieBattleground
                     entry => entry.Key,
                     entry => entry.Value
                 );
-                TypeDictionary = originalData.TypeDictionary.ToDictionary
-                (
-                    entry => entry.Key,
-                    entry => entry.Value
-                );
-                GooCostList = originalData.GooCostList.ToList();
+               GooCostList = originalData.GooCostList.ToList();
             }
 
             public CardFilterData
             (
                 List<Enumerators.Faction> availableFactionList,
-                List<Enumerators.CardRank> availableRankList,
-                List<Enumerators.CardType> availableTypeList
+                List<Enumerators.CardRank> availableRankList
             )
             {
                 FactionDictionary = new Dictionary<Enumerators.Faction, bool>();
@@ -411,12 +398,6 @@ namespace Loom.ZombieBattleground
                 foreach(Enumerators.CardRank rank in availableRankList)
                 {
                     RankDictionary.Add(rank, true);
-                }
-
-                TypeDictionary = new Dictionary<Enumerators.CardType, bool>();
-                foreach(Enumerators.CardType type in availableTypeList)
-                {
-                    TypeDictionary.Add(type, true);
                 }
 
                 GooCostList = new List<bool>();
@@ -437,6 +418,29 @@ namespace Loom.ZombieBattleground
                 return factionList;
             }
 
+            public List<Enumerators.CardRank> GetFilteredRankList()
+            {
+                List<Enumerators.CardRank> rankList = new List<Enumerators.CardRank>();
+                foreach (KeyValuePair<Enumerators.CardRank, bool> kvp in RankDictionary)
+                {
+                    if(kvp.Value)
+                        rankList.Add(kvp.Key);
+                }
+                return rankList;
+            }
+
+
+            public List<int> GetGooCostList()
+            {
+                var gooCostList = new List<int>();
+                for (int i = 0; i < GooCostList.Count; i++)
+                {
+                    if(GooCostList[i])
+                        gooCostList.Add(i);
+                }
+                return gooCostList;
+            }
+
             public void Reset()
             {
                 for (int i = 0; i < FactionDictionary.Count;++i)
@@ -448,11 +452,6 @@ namespace Loom.ZombieBattleground
                 {
                     KeyValuePair<Enumerators.CardRank, bool> kvp = RankDictionary.ElementAt(i);
                     RankDictionary[kvp.Key] = true;
-                }
-                for (int i = 0; i < TypeDictionary.Count;++i)
-                {
-                    KeyValuePair<Enumerators.CardType, bool> kvp = TypeDictionary.ElementAt(i);
-                    TypeDictionary[kvp.Key] = true;
                 }
                 for (int i = 0; i < GooCostList.Count; ++i)
                 {

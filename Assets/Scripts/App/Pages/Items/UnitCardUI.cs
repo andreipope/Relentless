@@ -25,6 +25,8 @@ public class UnitCardUI
 
     private ILoadObjectsManager _loadObjectsManager;
 
+    private Card _card;
+
     public void Init(GameObject obj)
     {
         _selfObj = obj;
@@ -45,6 +47,7 @@ public class UnitCardUI
 
     public void FillCardData(Card card, int cardCount = 0)
     {
+        _card = card;
         _titleText.text = card.Name;
         _bodyText.text = card.Description;
         _gooText.text = card.Cost.ToString();
@@ -62,6 +65,13 @@ public class UnitCardUI
         string imagePath = $"{Constants.PathToCardsIllustrations}{card.Picture.ToLowerInvariant()}";
         _unitImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
     }
+
+    public Card GetCard()
+    {
+        return _card;
+    }
+
+
 
     public RectTransform GetFrameRectTransform()
     {
@@ -81,5 +91,10 @@ public class UnitCardUI
         _bodyText.enabled = enable;
         _titleText.enabled = enable;
         _cardCountText.enabled = enable;
+    }
+
+    public void EnableObject(bool enable)
+    {
+        _selfObj.SetActive(enable);
     }
 }
