@@ -36,11 +36,7 @@ namespace Loom.ZombieBattleground
 
         #region Cache Data
 
-        private List<Enumerators.Faction> _availableSetType;
-
-        private List<Card> _cacheFilteredSetTypeCardsList;
-
-        private const float BoardCardScale = 0.19f;
+        private const float BoardCardScale = 0.33f;
 
         private CardFilter _cardFilter;
 
@@ -48,6 +44,12 @@ namespace Loom.ZombieBattleground
         private Camera _mainCamera;
 
         private int _allCardsCount;
+
+        private TextMeshProUGUI _cardCounter;
+
+        private GameObject CardCreaturePrefab;
+
+        private CardHighlightingVFXItem _highlightingVFXItem;
 
         #endregion
 
@@ -60,11 +62,6 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
 
             CardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/CreatureCard_UI");
-            CardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/CreatureCard_UI");
-            CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersMyCards");
-
-            _createdBoardCards = new List<BoardCardView>();
-            _cacheFilteredSetTypeCardsList = new List<Card>();
 
             _cardFilter = new CardFilter();
             _cardFilter.Init();
@@ -107,41 +104,88 @@ namespace Loom.ZombieBattleground
             LoadAllCards();
             _allCardsCount = _cardUIList.Count;
 
-            LoadObjects();
+            UpdateCardsUiList();
             _cardFilter.Show(_selfPage.transform.Find("Panel_Frame/Lower_Items/Filters").gameObject);
+        }
+
+        private void UpdateCardsUiList()
+        {
+            List<Enumerators.Faction> availableSetType = _cardFilter.FilterData.GetFilteredFactionList();
+            List<Card> resultList = new List<Card>();
+            foreach (Enumerators.Faction item in availableSetType)
+            {
+                Faction  set = SetTypeUtility.GetCardFaction(_dataManager, item);
+                List<Card> cards = set.Cards.ToList();
+                foreach(Card card in cards)
+                {
+                    if
+                    (
+                        CheckIfSatisfyFactionFilter(card) &&
+                        CheckIfSatisfyGooCostFilter(card) &&
+                        CheckIfSatisfyRankFilter(card)
+                    )
+                    {
+                        resultList.Add(card);
+                    }
+                }
+            }
+
+            DisplayCards(resultList);
+            UpdateCardCounterText(resultList.Count);
         }
 
         private void UpdateElementFilterHandler(Enumerators.Faction faction)
         {
+            _inputFieldSearchName.text = string.Empty;
+            OnInputFieldSearchEndedEdit(string.Empty);
+
             List<Enumerators.Faction> factionList = _cardFilter.FilterData.GetFilteredFactionList();
             List<UnitCardUI> cardUiList = _cardUIList.FindAll(card => card.GetCard().Faction == faction);
             bool isFilter = factionList.Contains(faction);
             for (int i = 0; i < cardUiList.Count; i++)
             {
-                cardUiList[i].EnableObject(isFilter);
+                Card card = cardUiList[i].GetCard();
+                if(CheckIfSatisfyRankFilter(card) && CheckIfSatisfyGooCostFilter(card))
+                    cardUiList[i].EnableObject(isFilter);
             }
+
+            UpdateCardCounterText();
         }
 
         private void UpdateRankFilterHandler(Enumerators.CardRank rank)
         {
+            _inputFieldSearchName.text = string.Empty;
+            OnInputFieldSearchEndedEdit(string.Empty);
+
             List<Enumerators.CardRank> rankList = _cardFilter.FilterData.GetFilteredRankList();
             List<UnitCardUI> cardUiList = _cardUIList.FindAll(card => card.GetCard().Rank == rank);
             bool isFilter = rankList.Contains(rank);
             for (int i = 0; i < cardUiList.Count; i++)
             {
-                cardUiList[i].EnableObject(isFilter);
+                Card card = cardUiList[i].GetCard();
+                if(CheckIfSatisfyFactionFilter(card) && CheckIfSatisfyGooCostFilter(card))
+                    cardUiList[i].EnableObject(isFilter);
             }
+
+            UpdateCardCounterText();
         }
 
         private void UpdateGooCostFilterHandler(int gooCost)
         {
+            _inputFieldSearchName.text = string.Empty;
+            OnInputFieldSearchEndedEdit(string.Empty);
+
             List<int> gooCostList = _cardFilter.FilterData.GetGooCostList();
             List<UnitCardUI> cardUiList = _cardUIList.FindAll(card => card.GetCard().Cost == gooCost);
             bool isFilter = gooCostList.Contains(gooCost);
             for (int i = 0; i < cardUiList.Count; i++)
             {
-                cardUiList[i].EnableObject(isFilter);
+                Card card = cardUiList[i].GetCard();
+                if(CheckIfSatisfyFactionFilter(card) && CheckIfSatisfyRankFilter(card))
+                    cardUiList[i].EnableObject(isFilter);
             }
+
+            UpdateCardCounterText();
         }
 
         private void LoadAllCards()
@@ -155,7 +199,7 @@ namespace Loom.ZombieBattleground
                     Card card = _dataManager.CachedCardsLibraryData.Factions[i].Cards[j];
                     GameObject go = Object.Instantiate(CardCreaturePrefab);
                     go.transform.SetParent(_allCardsContent);
-                    go.transform.localScale = Vector3.one * 0.33f;
+                    go.transform.localScale = Vector3.one * BoardCardScale;
 
                     UnitCardUI unitCard = new UnitCardUI();
                     unitCard.Init(go);
@@ -163,6 +207,16 @@ namespace Loom.ZombieBattleground
                     int cardCount = index != -1 ?_dataManager.CachedCollectionData.Cards[index].Amount : 0;
                     unitCard.FillCardData(card, cardCount);
                     _cardUIList.Add(unitCard);
+
+                    MultiPointerClickHandler multiPointerClickHandler = go.AddComponent<MultiPointerClickHandler>();
+                    multiPointerClickHandler.SingleClickReceived += () =>
+                    {
+                        BoardCardSingleClickHandler(unitCard.GetCard());
+                    };
+                    multiPointerClickHandler.DoubleClickReceived += () =>
+                    {
+                        BoardCardSingleClickHandler(unitCard.GetCard());
+                    };
                 }
             }
         }
@@ -203,13 +257,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            ResetBoardCards();
-            Object.Destroy(CardPlaceholders);
-            if (_cacheFilteredSetTypeCardsList != null)
-            {
-                _cacheFilteredSetTypeCardsList.Clear();
-            }
-            Object.Destroy(_createdBoardCardContainer);
+
         }
 
         #endregion
@@ -224,13 +272,6 @@ namespace Loom.ZombieBattleground
         }
 
         #region UI Handlers
-
-        /*private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)
-        {
-            ResetPageState();
-            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
-            popup.ActionPopupHiding -= FilterPopupHidingHandler;
-        }*/
 
         private void ButtonBuyPacksHandler()
         {
@@ -256,148 +297,6 @@ namespace Loom.ZombieBattleground
 
         public void OnInputFieldSearchEndedEdit(string value)
         {
-            ResetPageState();
-        }
-
-        #endregion
-
-        #region Board Cards
-
-        private TextMeshProUGUI _cardCounter;
-
-        public List<Transform> CardPositions;
-
-        public GameObject CardCreaturePrefab,
-                          CardItemPrefab,
-                          CardPlaceholdersPrefab;
-
-        public GameObject CardPlaceholders;
-
-        private GameObject _createdBoardCardContainer;
-
-        private List<BoardCardView> _createdBoardCards;
-
-        private CardHighlightingVFXItem _highlightingVFXItem;
-
-        private void LoadObjects()
-        {
-            ResetPageState();
-        }
-
-        /*public void LoadCards()
-        {
-            ResetBoardCards();
-            List<Card> cards = _cacheFilteredSetTypeCardsList.ToList();
-
-            int startIndex = _currentPage * CardPositions.Count;
-            int endIndex = Mathf.Min(startIndex + CardPositions.Count, cards.Count);
-
-            _highlightingVFXItem.ChangeState(false);
-
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                if (i >= cards.Count)
-                    break;
-
-                Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.MouldId);
-
-                // hack !!!! CHECK IT!!!
-                if (cardData == null)
-                    continue;
-                Vector3 position = CardPositions[i % CardPositions.Count].position;
-                BoardCardView boardCard = CreateBoardCard
-                (
-                    card,
-                    cardData,
-                    position
-                );
-                _createdBoardCards.Add(boardCard);
-
-                MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.SingleClickReceived += ()=>
-                {
-                    BoardCardSingleClickHandler(boardCard);
-                };
-                multiPointerClickHandler.DoubleClickReceived += ()=>
-                {
-                    BoardCardSingleClickHandler(boardCard);
-                };
-            }
-        }*/
-
-        private void BoardCardSingleClickHandler(BoardCardView boardCard)
-        {
-            if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
-                return;
-
-            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.Model.Card.Prototype).ToList();
-            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
-            {
-                cardList,
-                boardCard.Model.Card.Prototype,
-                CardInfoWithSearchPopup.PopupType.NONE
-            });
-        }
-
-        private BoardCardView CreateBoardCard(Card card, CollectionCardData cardData, Vector3 position)
-        {
-            GameObject go;
-            BoardCardView boardCard;
-            CardModel cardModel = new CardModel(new WorkingCard(card, card, null));
-            switch (card.Kind)
-            {
-                case Enumerators.CardKind.CREATURE:
-                    go = Object.Instantiate(CardCreaturePrefab);
-                    boardCard = new UnitBoardCardView(go, cardModel);
-                    break;
-                case Enumerators.CardKind.ITEM:
-                    go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new ItemBoardCardView(go, cardModel);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
-            }
-
-            int amount = cardData.Amount;
-            boardCard.SetAmount(BoardCardView.AmountTrayType.Counter, amount);
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.Transform.position = position;
-            boardCard.Transform.localScale = Vector3.one * BoardCardScale;
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-
-            boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
-
-            if (boardCard.Model.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
-            {
-                _highlightingVFXItem.ChangeState(true);
-            }
-
-            return boardCard;
-        }
-
-        private void ResetBoardCards()
-        {
-            foreach (BoardCardView item in _createdBoardCards)
-            {
-                item.Dispose();
-            }
-
-            _createdBoardCards.Clear();
-        }
-
-
-        #endregion
-
-        private void ResetPageState()
-        {
-            _availableSetType = _cardFilter.FilterData.GetFilteredFactionList();
-            UpdateAvailableSetTypeCards();
-            UpdateCardCounterText();
-        }
-
-        private void UpdateAvailableSetTypeCards()
-        {
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             Faction set;
             List<Card> cards;
@@ -411,77 +310,69 @@ namespace Loom.ZombieBattleground
 
                 foreach (Card card in cards)
                 {
-                    if (string.IsNullOrEmpty(keyword))
+                    if
+                    (
+                        card.Name.ToLower().Contains(keyword) &&
+                        CheckIfSatisfyFactionFilter(card) &&
+                        CheckIfSatisfyGooCostFilter(card) &&
+                        CheckIfSatisfyRankFilter(card)
+                    )
                     {
-                        if
-                        (
-                            CheckIfSatisfyFactionFilter(card) &&
-                            CheckIfSatisfyGooCostFilter(card) &&
-                            CheckIfSatisfyRankFilter(card)
-                        )
-                        {
-                            resultList.Add(card);
-                        }
-                    }
-                    else
-                    {
-                        if (card.Name.ToLower().Contains(keyword))
-                        {
-                            resultList.Add(card);
-                        }
+                        resultList.Add(card);
                     }
                 }
             }
 
-            UpdateCacheFilteredCardList(resultList);
+            DisplayCards(resultList);
+            UpdateCardCounterText(resultList.Count);
+        }
+
+        private void DisplayCards(List<Card> cards)
+        {
+            List<UnitCardUI> cardUiList = _cardUIList.Where(uiCard =>
+                cards.Any(resultCard => uiCard.GetCard().MouldId == resultCard.MouldId)).ToList();
+            for (int i = 0; i < cardUiList.Count; i++)
+            {
+                cardUiList[i].EnableObject(true);
+            }
+
+            cardUiList.Clear();
+            cardUiList = _cardUIList.Where(uiCard =>
+                cards.All(resultCard => uiCard.GetCard().MouldId != resultCard.MouldId)).ToList();
+            for (int i = 0; i < cardUiList.Count; i++)
+            {
+                cardUiList[i].EnableObject(false);
+            }
+        }
+
+        #endregion
+
+        #region Board Cards
+        private void BoardCardSingleClickHandler(Card selectedCard)
+        {
+            if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
+                return;
+
+            List<IReadOnlyCard> cardList = _cardUIList.Select(card => card.GetCardInteface()).ToList();
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
+            {
+                cardList,
+                selectedCard,
+                CardInfoWithSearchPopup.PopupType.NONE
+            });
+        }
+
+        #endregion
+
+        private void UpdateCardCounterText(int cardCount)
+        {
+            _cardCounter.text = cardCount + "/" + _allCardsCount;
         }
 
         private void UpdateCardCounterText()
         {
-            int amount = 0;
-            string keyword = _inputFieldSearchName.text.Trim();
-            Faction set;
-            List<Card> cards;
-            if (string.IsNullOrEmpty(keyword))
-            {
-                foreach (Enumerators.Faction item in _availableSetType)
-                {
-                    set = SetTypeUtility.GetCardFaction(_dataManager, item);
-                    cards = set.Cards.ToList();
-                    foreach(Card card in cards)
-                    {
-                        if
-                        (
-                            CheckIfSatisfyFactionFilter(card) &&
-                            CheckIfSatisfyGooCostFilter(card) &&
-                            CheckIfSatisfyRankFilter(card)
-                        )
-                        {
-                            ++amount;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                keyword = keyword.ToLower();
-                List<Enumerators.Faction> allAvailableSetTypeList = _cardFilter.AllAvailableFactionList;
-                foreach (Enumerators.Faction item in allAvailableSetTypeList)
-                {
-                    set = SetTypeUtility.GetCardFaction(_dataManager, item);
-                    cards = set.Cards.ToList();
-                    foreach (Card card in cards)
-                    {
-                        if (card.Name.ToLower().Contains(keyword))
-                        {
-                            ++amount;
-                        }
-                    }
-                }
-            }
-
-            _cardCounter.text = amount + "/" +
-                                _allCardsCount;
+            var activeCards = _cardUIList.FindAll(card => card.IsActive());
+           _cardCounter.text = activeCards.Count + "/" + _allCardsCount;
         }
 
         private bool CheckIfSatisfyGooCostFilter(Card card)
@@ -513,25 +404,12 @@ namespace Loom.ZombieBattleground
             return _cardFilter.FilterData.FactionDictionary[card.Faction];
         }
 
-        private void UpdateCacheFilteredCardList(List<Card> cardList)
-        {
-            _cacheFilteredSetTypeCardsList = cardList.FindAll(card => !card.Hidden).ToList();
-        }
-
         #region Util
 
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
-
-        public void OpenAlertDialog(string msg)
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
-                false, false, true);
-            _uiManager.DrawPopup<WarningPopup>(msg);
-        }
-
         #endregion
     }
 }

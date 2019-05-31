@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
     public class CardInfoWithSearchPopup : IUIPopup
     {
         private static readonly ILog Log = Logging.GetLog(nameof(CardInfoWithSearchPopup));
-        
+
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -36,9 +36,8 @@ namespace Loom.ZombieBattleground
         private TMP_InputField _inputFieldSearch;
 
         private Transform _groupCreatureCard;
-        
-        private GameObject _cardCreaturePrefab, 
-                           _cardItemPrefab;
+
+        private GameObject _cardCreaturePrefab;
 
         private GameObject _createdBoardCard;
 
@@ -48,7 +47,10 @@ namespace Loom.ZombieBattleground
                                     _filteredCardList;
 
         private int _currentCardIndex;
-        
+
+
+        private UnitCardUI _unitCardUi;
+
         public enum PopupType
         {
             NONE,
@@ -68,7 +70,7 @@ namespace Loom.ZombieBattleground
             _filteredCardList = new List<IReadOnlyCard>();
             _currentCardIndex = -1;
         }
-        
+
         public void Dispose()
         {
             if (_createdBoardCard != null)
@@ -84,7 +86,7 @@ namespace Loom.ZombieBattleground
         public void Hide()
         {
             Dispose();
-            
+
             if (Self == null)
                 return;
 
@@ -105,43 +107,54 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoWithSearchPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
-            
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>
-            (
-                "Prefabs/Gameplay/Cards/CreatureCard"
-            );
-            _cardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>
-            (
-                "Prefabs/Gameplay/Cards/ItemCard"
-            );
-            
+
+            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/CreatureCard_UI");
+
             _buttonLeftArrow = Self.transform.Find("Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
-            
+
             _buttonRightArrow = Self.transform.Find("Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
-            
-            _buttonAdd = Self.transform.Find("Button_AddToDeck").GetComponent<Button>();
+
+            _buttonAdd = Self.transform.Find("Panel/Button_AddToDeck").GetComponent<Button>();
             _buttonAdd.onClick.AddListener(ButtonAddCardHandler);
-            
-            _buttonRemove = Self.transform.Find("Button_Remove").GetComponent<Button>();
+
+            _buttonRemove = Self.transform.Find("Panel/Button_Remove").GetComponent<Button>();
             _buttonRemove.onClick.AddListener(ButtonRemoveCardHandler);
-            
+
             _buttonBack = Self.transform.Find("Background/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
-            
+
             _inputFieldSearch = Self.transform.Find("InputText_SearchDeckName").GetComponent<TMP_InputField>();
             _inputFieldSearch.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearch.text = "";
-            
-            _textHeader = Self.transform.Find("Text_CardTitle").GetComponent<TextMeshProUGUI>();            
-            _textDescription = Self.transform.Find("Text_CardDesc").GetComponent<TextMeshProUGUI>();
+
+            _textDescription = Self.transform.Find("Panel/Text_CardDesc").GetComponent<TextMeshProUGUI>();
 
             _groupCreatureCard = Self.transform.Find("Group_CreatureCard");
 
-            UpdatePopupType();
-            UpdateFilteredCardList();
-            UpdateBoardCard();
+            CreateUnitCard();
+            UpdateCardDetails();
+            //UpdatePopupType();
+            //UpdateFilteredCardList();
+            //UpdateBoardCard();
+        }
+
+        private void CreateUnitCard()
+        {
+            GameObject go = Object.Instantiate(_cardCreaturePrefab);
+            go.transform.SetParent(_groupCreatureCard);
+            go.transform.localScale = Vector3.one * 0.8f;
+            go.transform.localPosition = Vector3.zero;
+
+            _unitCardUi = new UnitCardUI();
+            _unitCardUi.Init(go);
+        }
+
+        private void UpdateCardDetails()
+        {
+            _unitCardUi.FillCardData(_cardList[_currentCardIndex] as Card);
+            _textDescription.text = !string.IsNullOrEmpty(_cardList[_currentCardIndex].FlavorText) ? _cardList[_currentCardIndex].FlavorText : string.Empty;
         }
 
         public void Show(object data)
@@ -152,7 +165,7 @@ namespace Loom.ZombieBattleground
                 IReadOnlyCard card = (IReadOnlyCard)param[1];
                 _currentCardIndex = _cardList.IndexOf(card);
                 _currentPopupType = (PopupType)param[2];
-                            
+
             }
             Show();
         }
@@ -162,13 +175,13 @@ namespace Loom.ZombieBattleground
         }
 
         #region UI Handlers
-        
+
         private void ButtonBackHandler()
         {
             PlayClickSound();
             Hide();
         }
-        
+
         private void ButtonAddCardHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonAdd.name))
@@ -182,7 +195,7 @@ namespace Loom.ZombieBattleground
             );
             Hide();
         }
-        
+
         private void ButtonRemoveCardHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonRemove.name))
@@ -193,10 +206,10 @@ namespace Loom.ZombieBattleground
             (
                 _filteredCardList[_currentCardIndex],
                 true
-            ); 
+            );
             Hide();
         }
-        
+
         private void ButtonLeftArrowHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonLeftArrow.name))
@@ -205,7 +218,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             MoveCardIndex(-1);
         }
-        
+
         private void ButtonRightArrowHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonRightArrow.name))
@@ -214,7 +227,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             MoveCardIndex(1);
         }
-        
+
         public void OnInputFieldSearchEndedEdit(string value)
         {
             UpdateFilteredCardList();
@@ -223,7 +236,7 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
+
         private void UpdatePopupType()
         {
             switch(_currentPopupType)
@@ -257,29 +270,29 @@ namespace Loom.ZombieBattleground
             }
 
             if (_currentCardIndex < 0 || _currentCardIndex >= _filteredCardList.Count)
-            {                
+            {
                 Log.Info($"No matching card index for {nameof(CardInfoWithSearchPopup)}");
                 return;
             }
 
             IReadOnlyCard card = _filteredCardList[_currentCardIndex];
-                
+
             RectTransform rectContainer = _groupCreatureCard.GetComponent<RectTransform>();
             BoardCardView boardCard = CreateBoardCard
             (
-                card, 
+                card,
                 rectContainer,
-                _groupCreatureCard.position, 
+                _groupCreatureCard.position,
                 BoardCardScale
             );
             boardCard.Transform.SetParent(_groupCreatureCard);
-            
+
             _createdBoardCard = boardCard.GameObject;
 
             _textHeader.text = "";
             _textDescription.text = card.FlavorText;
         }
-        
+
         private void UpdateFilteredCardList()
         {
             string keyword = _inputFieldSearch.text.Trim();
@@ -340,7 +353,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCardView(go, cardModel);
                     break;
                 case Enumerators.CardKind.ITEM:
-                    go = Object.Instantiate(_cardItemPrefab);
+                    go = Object.Instantiate(_cardCreaturePrefab);
                     boardCard = new ItemBoardCardView(go, cardModel);
                     break;
                 default:
@@ -351,7 +364,7 @@ namespace Loom.ZombieBattleground
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameplayInfo;
-            
+
             boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
 
@@ -373,7 +386,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
-        
+
         public void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,

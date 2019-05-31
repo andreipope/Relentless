@@ -150,6 +150,14 @@ namespace Loom.ZombieBattleground
                 button.onClick.AddListener(() =>
                 {
                     PlayClickSound();
+
+                    if (FilterData.GooCostList[gooIndex] && FilterData.GooCostList.FindAll(gooBottle => gooBottle).Count <= 1)
+                    {
+                        OpenAlertDialog("Atleast one goo cost should be selected.");
+                        return;
+                    }
+
+
                     FilterData.GooCostList[gooIndex] = !FilterData.GooCostList[gooIndex];
                     UpdateGooCostButtonDisplay(gooIndex);
                     UpdateGooCostFilterEvent?.Invoke(gooIndex);
@@ -177,17 +185,30 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _scrollRectGooCost.horizontalNormalizedPosition = 0;
+
+            _buttonGooCostLeftArrow.interactable = false;
+            _buttonGooCostRightArrow.interactable = true;
         }
 
         private void ButtonGooCostRightArrowHandler()
         {
             PlayClickSound();
             _scrollRectGooCost.horizontalNormalizedPosition = 1;
+
+            _buttonGooCostLeftArrow.interactable = true;
+            _buttonGooCostRightArrow.interactable = false;
         }
 
         private void ButtonElementIconHandler(Enumerators.Faction faction)
         {
             PlayClickSound();
+
+            if (FilterData.FactionDictionary[faction] && FilterData.GetActiveElementFilterCount() <= 1)
+            {
+                OpenAlertDialog("Atleast one element should be selected.");
+                return;
+            }
+
             ToggleSelectedFaction(faction);
             UpdateElementFilterEvent?.Invoke(faction);
         }
@@ -195,6 +216,13 @@ namespace Loom.ZombieBattleground
         private void ButtonRankIconHandler(Enumerators.CardRank rank)
         {
             PlayClickSound();
+
+            if (FilterData.RankDictionary[rank] && FilterData.GetActiveRankFilterCount() <= 1)
+            {
+                OpenAlertDialog("Atleast one rank should be selected.");
+                return;
+            }
+
             FilterData.RankDictionary[rank] = !FilterData.RankDictionary[rank];
             UpdateRankButtonDisplay(rank);
             UpdateRankFilterEvent?.Invoke(rank);
@@ -345,6 +373,9 @@ namespace Loom.ZombieBattleground
             {
                 UpdateGooCostButtonDisplay(i);
             }
+
+            _buttonGooCostLeftArrow.interactable = false;
+            _buttonGooCostRightArrow.interactable = true;
         }
 
         #endregion
@@ -354,7 +385,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
-        public void OpenAlertDialog(string msg)
+        private void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
@@ -416,6 +447,28 @@ namespace Loom.ZombieBattleground
                         factionList.Add(kvp.Key);
                 }
                 return factionList;
+            }
+
+            public int GetActiveElementFilterCount()
+            {
+                int count = 0;
+                foreach (KeyValuePair<Enumerators.Faction, bool> kvp in FactionDictionary)
+                {
+                    if (kvp.Value)
+                        count++;
+                }
+                return count;
+            }
+
+            public int GetActiveRankFilterCount()
+            {
+                int count = 0;
+                foreach (KeyValuePair<Enumerators.CardRank, bool> kvp in RankDictionary)
+                {
+                    if (kvp.Value)
+                        count++;
+                }
+                return count;
             }
 
             public List<Enumerators.CardRank> GetFilteredRankList()

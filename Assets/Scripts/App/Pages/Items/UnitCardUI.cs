@@ -10,6 +10,7 @@ using Loom.ZombieBattleground.Common;
 public class UnitCardUI
 {
     private GameObject _selfObj;
+    private GameObject _cardAmountTray;
 
     private Image _frameImage;
     private Image _unitImage;
@@ -42,6 +43,8 @@ public class UnitCardUI
         _titleText = _selfObj.transform.Find("TitleText").GetComponent<TextMeshProUGUI>();
         _cardCountText = _selfObj.transform.Find("AmountWithCounterTray/Text").GetComponent<TextMeshProUGUI>();
 
+        _cardAmountTray = _selfObj.transform.Find("AmountWithCounterTray").gameObject;
+
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
     }
 
@@ -51,8 +54,9 @@ public class UnitCardUI
         _titleText.text = card.Name;
         _bodyText.text = card.Description;
         _gooText.text = card.Cost.ToString();
-        _attackText.text = card.Damage.ToString();
-        _defenseText.text = card.Defense.ToString();
+
+        _attackText.text = card.Damage != 0 ? card.Damage.ToString() : string.Empty;
+        _defenseText.text = card.Defense != 0 ? card.Defense.ToString() : string.Empty;
         _cardCountText.text = cardCount.ToString();
 
         string frameName = string.Format("Images/Cards/Frames/frame_{0}", card.Faction);
@@ -64,11 +68,26 @@ public class UnitCardUI
 
         string imagePath = $"{Constants.PathToCardsIllustrations}{card.Picture.ToLowerInvariant()}";
         _unitImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
+
+        _cardAmountTray.SetActive(cardCount != 0);
     }
 
     public Card GetCard()
     {
         return _card;
+    }
+
+    public IReadOnlyCard GetCardInteface()
+    {
+        return _card;
+    }
+
+    public bool IsActive()
+    {
+        if (_selfObj == null)
+            return false;
+
+        return _selfObj.activeSelf;
     }
 
 
