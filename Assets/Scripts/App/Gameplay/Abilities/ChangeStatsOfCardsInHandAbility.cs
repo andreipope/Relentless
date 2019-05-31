@@ -92,7 +92,9 @@ namespace Loom.ZombieBattleground
 
         protected override void HandChangedHandler(int count)
         {
-
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+                
             if (LastAuraState) 
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
@@ -145,7 +147,8 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                     Caller = AbilityUnitOwner,
-                    TargetEffects = TargetEffects
+                    TargetEffects = TargetEffects,
+                    HideCardInfo = !PlayerCallerOfAbility.IsLocalPlayer
                 });
             }
         }

@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
 
         public event Action UnitAttackedEnded;
 
-        public event Action<IBoardObject> UnitDamaged;
+        public event Action<IBoardObject, bool> UnitDamaged;
 
         public event Action<IBoardObject> PrepairingToDie;
 
@@ -772,17 +772,21 @@ namespace Loom.ZombieBattleground
 
         public bool CanBeBuyed(Player owner)
         {
+#if !USE_PRODUCTION_BACKEND
             if (!Constants.DevModeEnabled)
             {
                 if (_gameplayManager.AvoidGooCost)
                     return true;
+#endif
 
                 return owner.CurrentGoo >= CurrentCost;
+#if !USE_PRODUCTION_BACKEND
             }
             else
             {
                 return true;
             }
+#endif
         }
 
         public void DoCombat(IBoardObject target)
@@ -993,9 +997,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void InvokeUnitDamaged(IBoardObject from)
+        public void InvokeUnitDamaged(IBoardObject from, bool fromGettingAttacked = false)
         {
-            UnitDamaged?.Invoke(from);
+            UnitDamaged?.Invoke(from, fromGettingAttacked);
         }
 
         public void InvokeUnitAttacked(IBoardObject target, int damage, bool isAttacker)

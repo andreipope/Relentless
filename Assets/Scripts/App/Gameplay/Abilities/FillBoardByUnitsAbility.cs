@@ -23,12 +23,27 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            base.UnitHpChangedHandler(oldValue, newValue);
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            }
+        }
+
         protected override void UnitDiedHandler()
         {
             base.UnitDiedHandler();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
+
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            
 
             foreach(Enumerators.Target target in AbilityData.Targets)
             {
@@ -47,7 +62,10 @@ namespace Loom.ZombieBattleground
         private void FillBoard(Player targetPlayer)
         {
             if (!HasEmptySpaceOnBoard(targetPlayer, out int maxUnits))
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
                 return;
+            }
 
             if(AbilityUnitOwner.HasActiveMechanic(Enumerators.GameMechanicDescription.Reanimate))
             {
@@ -78,6 +96,8 @@ namespace Loom.ZombieBattleground
                     Target = boardUnit
                 });
             }
+
+            AbilityProcessingAction?.TriggerActionExternally();
 
             if (TargetEffects.Count > 0)
             {

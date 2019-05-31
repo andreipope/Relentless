@@ -17,7 +17,9 @@ namespace Loom.ZombieBattleground
 
         public ResolutionInfo CurrentResolution { get; private set; }
 
-        public event Action OnResolutionChanged;
+        public static event Action OnResolutionChanged;
+
+        public const float WaitForResolutionChangeFinishAnimating = 1.5f;
 
         public void Dispose()
         {
@@ -68,6 +70,8 @@ namespace Loom.ZombieBattleground
             _dataManager.CachedUserLocalData.AppResolution = CurrentResolution.Resolution;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
+            //Wait until game screen has finish animating for it's resolution changes
+            await Task.Delay(TimeSpan.FromSeconds(WaitForResolutionChangeFinishAnimating));
             OnResolutionChanged?.Invoke();
         }
 #endif
@@ -139,6 +143,23 @@ namespace Loom.ZombieBattleground
 
                 Resolutions.Add(info);
             }
+        }
+
+        public ResolutionInfo AddResolution(Resolution resolution)
+        {
+            ResolutionInfo resolutionInfo = Resolutions.Find(info => info.Resolution.x == resolution.width && info.Resolution.y == resolution.height);
+            if (resolutionInfo != null)
+                return resolutionInfo;
+
+            resolutionInfo = new ResolutionInfo
+            {
+                Name = $"{resolution.width} x {resolution.height}",
+                Resolution = new Vector2Int(resolution.width, resolution.height)
+            };
+
+            Resolutions.Add(resolutionInfo);
+
+            return resolutionInfo;
         }
 
         private void HandleSpecificUserActions()
