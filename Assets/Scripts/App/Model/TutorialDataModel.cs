@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
                 CardsInDeck = new List<OverlordCardInfo>();
                 CardsOnBoard = new List<UnitOnBoardInfo>();
 
-                MaximumDefense = Constants.DefaultPlayerHp;
+                MaximumDefense = Constants.TutorialDefaultOverlordDefense;
                 Defense = MaximumDefense;
 
                 MaximumGoo = Constants.DefaultPlayerGoo;

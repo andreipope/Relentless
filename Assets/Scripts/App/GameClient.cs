@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
@@ -72,10 +73,12 @@ namespace Loom.ZombieBattleground
             AddService<INetworkActionManager>(new NetworkActionManager());
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
-            AddService<FiatBackendManager>(new FiatBackendManager());
+            AddService<AuthFiatApiFacade>(new AuthFiatApiFacade());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
-            AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
+            AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
+            AddService<IapMediator>(new IapMediator());
+            AddService<ContractManager>(new ContractManager());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
         }
 
@@ -101,16 +104,7 @@ namespace Loom.ZombieBattleground
                 return configData.Backend;
             }
 
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
-            const BackendPurpose defaultBackend = BackendPurpose.Local;
-#elif USE_PRODUCTION_BACKEND
-            const BackendPurpose defaultBackend = BackendPurpose.Production;
-#elif USE_BRANCH_TESTING_BACKEND
-            const BackendPurpose defaultBackend = BackendPurpose.BranchTesting;
-#else
-            const BackendPurpose defaultBackend = BackendPurpose.Staging;
-#endif
-            BackendPurpose backend = defaultBackend;
+            BackendPurpose backend = GetDefaultBackendPurpose();
 
 #if UNITY_EDITOR
             const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
@@ -123,6 +117,21 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
             return backendEndpoint;
+        }
+
+        public static BackendPurpose GetDefaultBackendPurpose()
+        {
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
+            const BackendPurpose defaultBackend = BackendPurpose.Local;
+#elif USE_PRODUCTION_BACKEND
+            const BackendPurpose defaultBackend = BackendPurpose.Production;
+#elif USE_BRANCH_TESTING_BACKEND
+            const BackendPurpose defaultBackend = BackendPurpose.BranchTesting;
+#else
+            const BackendPurpose defaultBackend = BackendPurpose.Staging;
+#endif
+            BackendPurpose backend = defaultBackend;
+            return backend;
         }
 
         public static GameClient Instance

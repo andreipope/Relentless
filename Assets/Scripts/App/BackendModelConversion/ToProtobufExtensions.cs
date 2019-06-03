@@ -26,8 +26,8 @@ namespace Loom.ZombieBattleground.Data
                 {
                     deck.Cards.Select(card => card.ToProtobuf())
                 },
-                PrimarySkill = (Protobuf.OverlordSkill.Types.Enum)deck.PrimarySkill,
-                SecondarySkill = (Protobuf.OverlordSkill.Types.Enum)deck.SecondarySkill
+                PrimarySkill = (OverlordSkillType.Types.Enum)deck.PrimarySkill,
+                SecondarySkill = (OverlordSkillType.Types.Enum)deck.SecondarySkill
             };
         }
 

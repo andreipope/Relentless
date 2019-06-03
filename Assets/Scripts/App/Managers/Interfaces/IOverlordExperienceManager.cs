@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 
         MatchExperienceInfo OpponentMatchMatchExperienceInfo { get; }
 
-        void InitializeMatchExperience(OverlordModel playerOverlord, OverlordModel opponentOverlord);
+        void InitializeMatchExperience();
 
         void ReportExperienceAction(Enumerators.ExperienceActionType actionType, MatchExperienceInfo matchExperienceInfo);
 

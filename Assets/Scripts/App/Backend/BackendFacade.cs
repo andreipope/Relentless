@@ -231,41 +231,30 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Overlords
 
-        private const string OverlordsList = "ListOverlords";
-        private const string GetOverlordMethod = "GetOverlord";
+        private const string ListOverlordUserInstancesMethod = "ListOverlordUserInstances";
+        private const string GetOverlordUserInstanceMethod = "GetOverlordUserInstance";
 
-        public async Task<ListOverlordsResponse> GetOverlordList(string userId)
+        public async Task<ListOverlordUserInstancesResponse> ListOverlordUserInstances(string userId)
         {
-            ListOverlordsRequest request = new ListOverlordsRequest
-            {
-                UserId = userId
-            };
-
-            return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
-        }
-
-        public async Task<GetOverlordResponse> GetOverlord(string userId, OverlordId overlordId)
-        {
-            GetOverlordRequest request = new GetOverlordRequest()
+            ListOverlordUserInstancesRequest request = new ListOverlordUserInstancesRequest
             {
                 UserId = userId,
-                OverlordId = overlordId.Id
-            };
-
-            return await _contractCallProxy.StaticCallAsync<GetOverlordResponse>(GetOverlordMethod, request);
-        }
-
-
-        private const string GlobalOverlordsList = "ListOverlordLibrary";
-
-        public async Task<ListOverlordLibraryResponse> GetGlobalOverlordsList()
-        {
-            ListOverlordLibraryRequest request = new ListOverlordLibraryRequest
-            {
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListOverlordLibraryResponse>(GlobalOverlordsList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordUserInstancesResponse>(ListOverlordUserInstancesMethod, request);
+        }
+
+        public async Task<GetOverlordUserInstanceResponse> GetOverlordUserInstance(string userId, OverlordId overlordId)
+        {
+            GetOverlordUserInstanceRequest request = new GetOverlordUserInstanceRequest
+            {
+                UserId = userId,
+                OverlordId = overlordId.Id,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetOverlordUserInstanceResponse>(GetOverlordUserInstanceMethod, request);
         }
 
         private const string GetOverlordLevelingDataMethod = "GetOverlordLevelingData";
@@ -321,11 +310,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Url = BackendEndpoint.AuthHost + userInfoEndPoint;
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + accessToken);
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
                 httpResponseMessage.ReadToEnd(),
@@ -351,11 +337,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             Log.Debug(httpResponseMessage.ReadToEnd());
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
@@ -377,13 +360,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ToString());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
                 httpResponseMessage.ReadToEnd());
@@ -395,12 +373,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email + "&kind=signup";
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception(
-                    $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             return true;
         }
@@ -419,13 +393,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
 
             CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
                 httpResponseMessage.ReadToEnd());
@@ -446,13 +416,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Log.Debug(JsonConvert.SerializeObject(vaultTokenRequest));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
 
             CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
                 httpResponseMessage.ReadToEnd());
@@ -472,8 +438,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Log.Debug(httpResponseMessage.ReadToEnd());
-
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 if (httpResponseMessage.StatusCode.ToString() == Constants.VaultEmptyErrorCode)
@@ -482,9 +446,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
                 else
                 {
-                    throw new Exception($"{nameof(GetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
+                    httpResponseMessage.ThrowOnError(webrequestCreationInfo);
                 }
             }
+            Log.Debug(httpResponseMessage.ReadToEnd());
+
 
             GetVaultDataResponse getVaultDataResponse = JsonConvert.DeserializeObject<GetVaultDataResponse>(
                 httpResponseMessage.ReadToEnd());
@@ -505,15 +471,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                throw new Exception($"{nameof(SetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
-            }
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             return true;
         }
@@ -527,12 +487,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             Log.Debug(webrequestCreationInfo.Url);
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetServerURLs)} failed with error code {httpResponseMessage.StatusCode}");
 
             ServerUrlsResponse serverInfo = JsonConvert.DeserializeObject<ServerUrlsResponse>(
                 httpResponseMessage.ReadToEnd()
