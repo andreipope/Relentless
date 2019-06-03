@@ -55,7 +55,11 @@ namespace Loom.ZombieBattleground
         public async Task SetDefaults()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            await SetResolution(Resolutions[Resolutions.Count - 1]);
+            if (Resolutions.Count > 0)
+            {
+                await SetResolution(Resolutions[Resolutions.Count - 1]);
+            }
+
             await SetScreenMode(Enumerators.ScreenMode.Window);
 #endif
         }
@@ -114,6 +118,9 @@ namespace Loom.ZombieBattleground
 #if !UNITY_ANDROID && !UNITY_IOS      
         private async Task MakeResolutionHighestInFullScreenMode()
         {
+            if (Resolutions.Count == 0)
+                return;
+
             if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
             {
                 await SetResolution(Resolutions[Resolutions.Count - 1]);
