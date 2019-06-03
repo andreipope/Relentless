@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
 
         private List<ChoosableCardForAbility> _currentListOfChoosableCards;
 
-        public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
+        public bool HasChoosableCardsForAbilities => _currentListOfChoosableCards.Count > 0;
 
         private Transform _parentOfSelectableCards;
         

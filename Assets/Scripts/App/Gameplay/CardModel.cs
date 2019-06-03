@@ -170,26 +170,17 @@ namespace Loom.ZombieBattleground
 
         public int BuffedDamage { get; set; }
 
-        public int CurrentDamage
-        {
-            get => CalculateValueBasedOnHistory(CurrentDamageHistory, Card.Prototype.Damage);
-        }
+        public int CurrentDamage => CalculateValueBasedOnHistory(CurrentDamageHistory, Card.Prototype.Damage);
 
         public int MaxCurrentDamage => Card.Prototype.Damage + BuffedDamage;
 
         public int BuffedDefense { get; set; }
 
-        public int CurrentCost
-        {
-            get => CalculateValueBasedOnHistory(CurrentCostHistory, Card.Prototype.Cost);
-        }
+        public int CurrentCost => CalculateValueBasedOnHistory(CurrentCostHistory, Card.Prototype.Cost);
 
         public List<ValueHistory> CurrentCostHistory;
 
-        public int CurrentDefense
-        {
-            get => CalculateValueBasedOnHistory(CurrentDefenseHistory, Card.Prototype.Defense);
-        }
+        public int CurrentDefense => CalculateValueBasedOnHistory(CurrentDefenseHistory, Card.Prototype.Defense);
 
         public int MaxCurrentDefense => Card.Prototype.Defense + BuffedDefense;
 

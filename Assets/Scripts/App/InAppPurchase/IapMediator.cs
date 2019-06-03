@@ -8,7 +8,7 @@ using OneOf;
 using OneOf.Types;
 using UnityEngine.Purchasing;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Iap
 {
     public class IapMediator : IService
     {

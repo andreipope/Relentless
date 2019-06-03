@@ -4,7 +4,7 @@
 // </auto-generated>
 #pragma warning disable 1591, 0612, 3021
 #region Designer generated code
-//1
+
 using pb = global::Loom.Google.Protobuf;
 using pbc = global::Loom.Google.Protobuf.Collections;
 using pbr = global::Loom.Google.Protobuf.Reflection;

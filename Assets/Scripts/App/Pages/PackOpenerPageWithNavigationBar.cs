@@ -9,6 +9,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Iap;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;

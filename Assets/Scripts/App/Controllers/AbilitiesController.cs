@@ -358,10 +358,7 @@ namespace Loom.ZombieBattleground
         }
 
         private ActiveAbility _activeAbility;
-        public ActiveAbility CurrentActiveAbility
-        {
-            get { return _activeAbility; }
-        }
+        public ActiveAbility CurrentActiveAbility => _activeAbility;
 
         public GameplayActionQueueAction CallAbility(
             BoardCardView card,

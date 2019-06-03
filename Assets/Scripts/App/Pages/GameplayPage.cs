@@ -46,29 +46,11 @@ namespace Loom.ZombieBattleground
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
 
-        public PlayerManaBarItem PlayerManaBar
-        {
-            get
-            {
-                return _playerManaBar;
-            }
-        }
+        public PlayerManaBarItem PlayerManaBar => _playerManaBar;
 
-        public PlayerManaBarItem OpponentManaBar
-        {
-            get
-            {
-                return _opponentManaBar;
-            }
-        }
+        public PlayerManaBarItem OpponentManaBar => _opponentManaBar;
 
-        public GameObject Self
-        {
-            get
-            {
-                return _selfPage;
-            }
-        }
+        public GameObject Self => _selfPage;
 
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 

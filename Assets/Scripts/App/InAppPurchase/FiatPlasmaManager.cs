@@ -17,7 +17,7 @@ using log4net;
 using log4netUnitySupport;
 using Loom.ZombieBattleground.Iap;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Iap
 {
     public class FiatPlasmaManager : IService
     {

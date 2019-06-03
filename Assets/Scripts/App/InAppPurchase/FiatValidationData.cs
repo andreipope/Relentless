@@ -24,6 +24,7 @@ namespace Loom.ZombieBattleground.Iap
     {
         [JsonProperty("purchaseToken")]
         public string PurchaseToken { get; }
+
         public override string StoreName => "GooglePlay";
 
         public FiatValidationDataPlayStore(string productId, string transactionId, string purchaseToken) : base(productId, transactionId)

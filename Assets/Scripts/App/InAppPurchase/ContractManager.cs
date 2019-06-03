@@ -9,7 +9,7 @@ using log4net;
 using log4netUnitySupport;
 using Loom.ZombieBattleground.Iap;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Iap
 {
     public class ContractManager : IService
     {
@@ -28,22 +28,10 @@ namespace Loom.ZombieBattleground
         
         public event Action<IapContractType, EvmContract, EvmContract> OnContractCreated;
 
-        private byte[] PrivateKey
-        {
-            get
-            {
-                return _backendDataControlMediator.UserDataModel.PrivateKey;
-            }
-        }
-        
-        public byte[] PublicKey
-        {
-            get 
-            { 
-                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
-            }
-        }
-        
+        private byte[] PrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
+
+        public byte[] PublicKey => CryptoUtils.PublicKeyFromPrivateKey(PrivateKey);
+
         public void Init()
         {
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();

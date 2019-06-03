@@ -29,21 +29,10 @@ namespace Loom.ZombieBattleground
         #endregion
         
         #region Key
-        private byte[] PrivateKey
-        {
-            get
-            {
-                return _backendDataControlMediator.UserDataModel.PrivateKey;
-            }
-        }
-        
-        private byte[] PublicKey
-        {
-            get 
-            { 
-                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
-            }
-        }
+        private byte[] PrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
+
+        private byte[] PublicKey => CryptoUtils.PublicKeyFromPrivateKey(PrivateKey);
+
         #endregion
         
         private BackendDataControlMediator _backendDataControlMediator;

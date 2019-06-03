@@ -316,12 +316,12 @@ namespace Loom.ZombieBattleground
                 _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
                 
                 Hide();
-                GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Apply settings ...");
+                GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Apply settings ...");
                 await Task.Delay(TimeSpan.FromSeconds
                 (
                     ApplicationSettingsManager.WaitForResolutionChangeFinishAnimating
                 ));
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 Show();                
             }
         }

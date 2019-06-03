@@ -18,7 +18,7 @@ using Object = UnityEngine.Object;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Iap
 {
     public class AuthFiatApiFacade : IService
     {

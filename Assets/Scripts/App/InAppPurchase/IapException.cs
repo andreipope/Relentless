@@ -1,6 +1,6 @@
 using System;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Iap
 {
     public class IapException : Exception
     {
