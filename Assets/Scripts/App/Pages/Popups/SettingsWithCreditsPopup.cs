@@ -313,7 +313,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayClickSound();
 
-                _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
                 
                 Hide();
                 GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Apply settings ...");

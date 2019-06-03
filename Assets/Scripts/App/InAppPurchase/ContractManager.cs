@@ -21,8 +21,6 @@ namespace Loom.ZombieBattleground.Iap
         private ILoadObjectsManager _loadObjectsManager;
         
         private Dictionary<IapContractType, TextAsset> _abiDictionary;
-        
-        private Dictionary<IapContractType, string> _contractAddressDictionary;
 
         private Dictionary<IapContractType, EvmContract> _contractDictionary;
         
@@ -38,8 +36,7 @@ namespace Loom.ZombieBattleground.Iap
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _contractDictionary = new Dictionary<IapContractType, EvmContract>();
-            
-            InitContractAddress();
+
             InitABITextAssets();            
         }
         
@@ -100,7 +97,7 @@ namespace Loom.ZombieBattleground.Iap
                 PrivateKey,
                 PublicKey,
                 _abiDictionary[contractType].ToString(),
-                _contractAddressDictionary[contractType]
+                GetContractAddress(contractType)
             );
             _contractDictionary.Add
             (
@@ -113,7 +110,7 @@ namespace Loom.ZombieBattleground.Iap
             return newContract;
         }
         
-        public async void HandleNetworkExceptionFlow(Exception exception)
+        public void HandleNetworkExceptionFlow(Exception exception)
         {
             if (!ScenePlaybackDetector.IsPlaying || UnitTestDetector.IsRunningUnitTests) {
                 throw exception;
@@ -184,21 +181,13 @@ namespace Loom.ZombieBattleground.Iap
         private void InitABITextAssets()
         {
             _abiDictionary = new Dictionary<IapContractType, TextAsset>();
-            _abiDictionary.Add
-            (
+            _abiDictionary.Add(
                 IapContractType.FiatPurchase,
-                _loadObjectsManager.GetObjectByPath<TextAsset>
-                (
-                    "Data/abi/FiatPurchaseABI"
-                )
+                _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/FiatPurchaseABI")
             );
-            _abiDictionary.Add
-            (
+            _abiDictionary.Add(
                 IapContractType.CardFaucet,
-                _loadObjectsManager.GetObjectByPath<TextAsset>
-                (
-                    "Data/abi/CardFaucetABI"
-                )
+                _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI")
             );
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
             List<IapContractType> packContractTypes = new List<IapContractType>
@@ -216,82 +205,44 @@ namespace Loom.ZombieBattleground.Iap
             };
             for (int i = 0;i < packTypes.Length;++i)
             {
-                _abiDictionary.Add
-                (
+                _abiDictionary.Add(
                     packContractTypes[i],
-                    _loadObjectsManager.GetObjectByPath<TextAsset>
-                    (
-                        $"Data/abi/{packTypes[i].ToString()}PackABI"
-                    )
+                    _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{packTypes[i].ToString()}PackABI")
                 );
             }
         }
         
-        private void InitContractAddress()
+        private string GetContractAddress(IapContractType contractType)
         {
-            _contractAddressDictionary = new Dictionary<IapContractType, string>();
-
-            _contractAddressDictionary.Add
-            (
-                IapContractType.FiatPurchase,
-                PlasmaChainEndpointsContainer.ContractAddressFiatPurchase
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.CardFaucet,
-                PlasmaChainEndpointsContainer.ContractAddressCardFaucet
-            );
-            
-            _contractAddressDictionary.Add
-            (
-                IapContractType.BoosterPack,
-                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.SuperPack,
-                PlasmaChainEndpointsContainer.ContractAddressSuperPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.AirPack,
-                PlasmaChainEndpointsContainer.ContractAddressAirPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.EarthPack,
-                PlasmaChainEndpointsContainer.ContractAddressEarthPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.FirePack,
-                PlasmaChainEndpointsContainer.ContractAddressFirePack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.LifePack,
-                PlasmaChainEndpointsContainer.ContractAddressLifePack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.ToxicPack,
-                PlasmaChainEndpointsContainer.ContractAddressToxicPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.WaterPack,
-                PlasmaChainEndpointsContainer.ContractAddressWaterPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.SmallPack,
-                PlasmaChainEndpointsContainer.ContractAddressSmallPack
-            );
-            _contractAddressDictionary.Add
-            (
-                IapContractType.MinionPack,
-                PlasmaChainEndpointsContainer.ContractAddressMinionPack
-            );
+            switch (contractType)
+            {
+                case IapContractType.FiatPurchase:
+                    return PlasmaChainEndpointsContainer.ContractAddressFiatPurchase;
+                case IapContractType.CardFaucet:
+                    return PlasmaChainEndpointsContainer.ContractAddressCardFaucet;
+                case IapContractType.BoosterPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressBoosterPack;
+                case IapContractType.SuperPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressSuperPack;
+                case IapContractType.AirPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressAirPack;
+                case IapContractType.EarthPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressEarthPack;
+                case IapContractType.FirePack:
+                    return PlasmaChainEndpointsContainer.ContractAddressFirePack;
+                case IapContractType.LifePack:
+                    return PlasmaChainEndpointsContainer.ContractAddressLifePack;
+                case IapContractType.ToxicPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressToxicPack;
+                case IapContractType.WaterPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressWaterPack;
+                case IapContractType.SmallPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressSmallPack;
+                case IapContractType.MinionPack:
+                    return PlasmaChainEndpointsContainer.ContractAddressMinionPack;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(contractType), contractType, null);
+            }
         }
     }
 }

@@ -411,7 +411,7 @@ namespace Loom.ZombieBattleground
             ApplyDeckSearch();
         }
         
-        private void ConfirmDeleteDeckReceivedHandler(bool status)
+        private async void ConfirmDeleteDeckReceivedHandler(bool status)
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
 
@@ -425,7 +425,7 @@ namespace Loom.ZombieBattleground
 
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
             deckGeneratorController.FinishDeleteDeck += FinishDeleteDeck;
-            deckGeneratorController.ProcessDeleteDeck(deck);
+            await deckGeneratorController.ProcessDeleteDeck(deck);
 
             _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
         }

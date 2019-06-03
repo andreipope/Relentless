@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.Iap
             {
                 RawPurchaseReceipt rawPurchaseReceipt = ParseRawReceipt(receiptJson, "GooglePlay");
                 GooglePlayReceiptWrapper wrapper = JsonConvert.DeserializeObject<GooglePlayReceiptWrapper>(rawPurchaseReceipt.Payload);
-                Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(wrapper.json);
+                Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(wrapper.Json);
                 dictionary.TryGetValue("orderId", out object orderId);
                 dictionary.TryGetValue("packageName", out object packageName);
                 dictionary.TryGetValue("productId", out object productId);
@@ -58,7 +58,8 @@ namespace Loom.ZombieBattleground.Iap
 
         private class GooglePlayReceiptWrapper
         {
-            public string json;
+            [JsonProperty("json")]
+            public string Json { get; set; }
         }
     }
 }

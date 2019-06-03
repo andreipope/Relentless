@@ -34,29 +34,29 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public void Update()
+        public async void Update()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            HandleSpecificUserActions();
+            await HandleSpecificUserActions();
 #endif
         }
 
-        public void ApplySettings()
+        public async Task ApplySettings()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
             CurrentScreenMode = _dataManager.CachedUserLocalData.AppScreenMode;
             CurrentResolution = Resolutions.Find(x => x.Resolution.x == _dataManager.CachedUserLocalData.AppResolution.x &&
                 x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
 
-            SetScreenMode(CurrentScreenMode);
+            await SetScreenMode(CurrentScreenMode);
 #endif
         }
 
-        public void SetDefaults()
+        public async Task SetDefaults()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            SetResolution(Resolutions[Resolutions.Count - 1]);
-            SetScreenMode(Enumerators.ScreenMode.Window);
+            await SetResolution(Resolutions[Resolutions.Count - 1]);
+            await SetScreenMode(Enumerators.ScreenMode.Window);
 #endif
         }
 
@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 #if !UNITY_ANDROID && !UNITY_IOS 
-            MakeResolutionHighestInFullScreenMode();
+            await MakeResolutionHighestInFullScreenMode();
 #endif
         }
   
@@ -162,20 +162,20 @@ namespace Loom.ZombieBattleground
             return resolutionInfo;
         }
 
-        private void HandleSpecificUserActions()
+        private async Task HandleSpecificUserActions()
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKeyUp(KeyCode.Return))
             {
                 switch (Screen.fullScreenMode)
                 {
                     case FullScreenMode.FullScreenWindow:
-                        SetScreenMode(Enumerators.ScreenMode.FullScreen);
+                        await SetScreenMode(Enumerators.ScreenMode.FullScreen);
                         break;
                     case FullScreenMode.MaximizedWindow:
-                        SetScreenMode(Enumerators.ScreenMode.Window);
+                        await SetScreenMode(Enumerators.ScreenMode.Window);
                         break;
                     case FullScreenMode.Windowed:
-                        SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
+                        await SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(Screen.fullScreenMode), Screen.fullScreenMode, null);

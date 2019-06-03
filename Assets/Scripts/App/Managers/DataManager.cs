@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
                 CachedUserLocalData.Tutorial = false;
             }
 
-            GameClient.Get<IApplicationSettingsManager>().ApplySettings();
+            await GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             //GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
 
@@ -394,7 +394,7 @@ namespace Loom.ZombieBattleground
                         GetOverlordLevelingDataResponse overlordLevelingData = await _backendFacade.GetOverlordLevelingData();
                         CachedOverlordLevelingData = overlordLevelingData.OverlordLeveling.FromProtobuf();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Overlord Leveling Data");
                         throw;

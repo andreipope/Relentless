@@ -111,26 +111,6 @@ namespace Loom.ZombieBattleground
             _loadedAssetBundles.Add(name, request.assetBundle);
         }
 
-        public IEnumerator LoadFromCacheAndDownload(string name, string link, int bundleVersion)
-        {
-            while (!Caching.ready)
-                yield return null;
-
-            string url = Path.Combine(link, name);
-            using (WWW www = WWW.LoadFromCacheOrDownload(url, bundleVersion))
-            {
-                yield return www;
-
-                if (!string.IsNullOrEmpty(www.error))
-                {
-                    throw new Exception("WWW download had an error:" + www.error);
-                }
-
-                _loadedAssetBundles.Add(name, www.assetBundle);
-                www.assetBundle.Unload(false);
-            }
-        }
-
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
         private void PrepareAssetPaths()
         {

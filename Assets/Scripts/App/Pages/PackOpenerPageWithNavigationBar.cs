@@ -260,7 +260,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+#pragma warning disable 4014
                 RetrievePackBalanceAmount();
+#pragma warning restore 4014
             }
             
             ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
