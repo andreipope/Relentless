@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            Log.Info("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+            Log.Info($"Starting game, version ${BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName}");
 
             DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
