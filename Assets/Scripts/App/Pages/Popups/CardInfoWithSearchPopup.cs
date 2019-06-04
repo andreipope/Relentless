@@ -40,9 +40,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardCreaturePrefab;
 
-        private GameObject _createdBoardCard;
-
-        private const float BoardCardScale = 0.42f;
+        private const float BoardCardScale = 0.8f;
 
         private List<IReadOnlyCard> _cardList,
                                     _filteredCardList;
@@ -74,9 +72,6 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            if (_createdBoardCard != null)
-                Object.Destroy(_createdBoardCard);
-
             if (_cardList != null)
                 _cardList.Clear();
 
@@ -147,7 +142,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject go = Object.Instantiate(_cardCreaturePrefab);
             go.transform.SetParent(_groupCreatureCard);
-            go.transform.localScale = Vector3.one * 0.8f;
+            go.transform.localScale = Vector3.one * BoardCardScale;
             go.transform.localPosition = Vector3.zero;
 
             _unitCardUi = new UnitCardUI();
@@ -268,41 +263,6 @@ namespace Loom.ZombieBattleground
                 default:
                     return;
             }
-        }
-
-        private void UpdateBoardCard()
-        {
-            if (_createdBoardCard != null)
-                Object.Destroy(_createdBoardCard);
-
-            if (_cardList == null)
-            {
-                Log.Info($"Current _cardList in {nameof(CardInfoWithSearchPopup)} is null");
-                return;
-            }
-
-            if (_currentCardIndex < 0 || _currentCardIndex >= _filteredCardList.Count)
-            {
-                Log.Info($"No matching card index for {nameof(CardInfoWithSearchPopup)}");
-                return;
-            }
-
-            IReadOnlyCard card = _filteredCardList[_currentCardIndex];
-
-            RectTransform rectContainer = _groupCreatureCard.GetComponent<RectTransform>();
-            BoardCardView boardCard = CreateBoardCard
-            (
-                card,
-                rectContainer,
-                _groupCreatureCard.position,
-                BoardCardScale
-            );
-            boardCard.Transform.SetParent(_groupCreatureCard);
-
-            _createdBoardCard = boardCard.GameObject;
-
-            _textHeader.text = "";
-            _textDescription.text = card.FlavorText;
         }
 
         private void UpdateFilteredCardList()
