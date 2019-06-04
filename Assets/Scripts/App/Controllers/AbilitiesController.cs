@@ -358,10 +358,7 @@ namespace Loom.ZombieBattleground
         }
 
         private ActiveAbility _activeAbility;
-        public ActiveAbility CurrentActiveAbility
-        {
-            get { return _activeAbility; }
-        }
+        public ActiveAbility CurrentActiveAbility => _activeAbility;
 
         public GameplayActionQueueAction CallAbility(
             BoardCardView card,
@@ -474,7 +471,6 @@ namespace Loom.ZombieBattleground
                                            _overlordExperienceManager.ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.PlayerMatchMatchExperienceInfo);
 
                                            cardModel.Owner.PlayerCardsController.RemoveCardFromHand(cardModel, true);
-                                           cardModel.Owner.PlayerCardsController.AddCardToGraveyard(cardModel);
 
                                            if (card.Model.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
                                            {
@@ -645,11 +641,7 @@ namespace Loom.ZombieBattleground
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
 
-
                                abilityHelperAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
-
-
 
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, cardModel);

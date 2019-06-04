@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: VSSelection_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -41,6 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 83cc156b948c445b0a2819a1a3666d6d, type: 3}
+    totalSpriteSurfaceArea: 2997120
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

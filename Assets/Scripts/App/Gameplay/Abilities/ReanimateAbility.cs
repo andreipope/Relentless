@@ -40,51 +40,54 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PvPManager.UseBackendGameLogic)
+            if (PvPManager.UseBackendGameLogic || AbilityUnitOwner.IsReanimated)
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
                 return;
-
-            if (AbilityUnitOwner.IsReanimated)
-                return;
+            }
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
 
             int CardOnBoard = owner.PlayerCardsController.GetCardsOnBoardCount(true);
             if (CardOnBoard >= owner.MaxCardsInPlay)
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
                 return;
+            }
 
             owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
 
             AbilityUnitOwner.ResetToInitial();
 
             Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(AbilityUnitOwner.Card.Prototype.Name));
-            WorkingCard card = new WorkingCard(prototype, prototype, owner, AbilityUnitOwner.Card.InstanceId);
+            WorkingCard card = new WorkingCard(prototype, prototype, owner);
             CardModel reanimatedUnitModel = new CardModel(card);
-            _reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
             reanimatedUnitModel.IsReanimated = true;
 
-            if (_reanimatedUnit != null)
+            _reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
+            BattlegroundController.RegisterCardView(_reanimatedUnit, reanimatedUnitModel.OwnerPlayer);
+
+            if (reanimatedUnitModel != null)
             {
-                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
+                reanimatedUnitModel.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
             }
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(_reanimatedUnit.Model, false);
+            _abilitiesController.ResolveAllAbilitiesOnUnit(reanimatedUnitModel, false);
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BattlegroundController.RegisterCardView(_reanimatedUnit, GameplayManager.CurrentPlayer);
-                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, reanimatedUnitModel, reanimatedUnitModel.Owner);
+                _abilitiesController.ActivateAbilitiesOnCard(reanimatedUnitModel, reanimatedUnitModel, reanimatedUnitModel.Owner);
             }
             else
             {
-                BattlegroundController.RegisterCardView(_reanimatedUnit, GameplayManager.OpponentPlayer);
                 if (_gameplayManager.IsLocalPlayerTurn()) {
-                    _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, reanimatedUnitModel, reanimatedUnitModel.Owner);
+                    _abilitiesController.ActivateAbilitiesOnCard(reanimatedUnitModel, reanimatedUnitModel, reanimatedUnitModel.Owner);
                 }
             }
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(_reanimatedUnit.Model);
+            _abilitiesController.ResolveAllAbilitiesOnUnit(reanimatedUnitModel);
 
-            owner.PlayerCardsController.AddCardToBoard(reanimatedUnitModel, ItemPosition.End);
+            reanimatedUnitModel.Owner.PlayerCardsController.AddCardToBoard(reanimatedUnitModel, ItemPosition.End);
 
             InvokeActionTriggered(_reanimatedUnit);
         }

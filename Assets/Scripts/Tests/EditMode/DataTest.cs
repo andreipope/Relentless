@@ -88,19 +88,18 @@ namespace Loom.ZombieBattleground.Test
         [Test]
         public void OverlordProtobufSerialization()
         {
-            Protobuf.Overlord protobuf = new Protobuf.Overlord
+            Protobuf.OverlordPrototype protobufPrototype = new Protobuf.OverlordPrototype
             {
-                OverlordId = 1,
+                Id = 1,
                 Icon = "icon",
                 Name = "name",
                 ShortDescription = "short desc",
                 LongDescription = "long desc",
-                Experience = 100500,
-                Level = 373,
+
                 Faction = Protobuf.Faction.Types.Enum.Life,
                 Skills =
                 {
-                    new Skill
+                    new Protobuf.OverlordSkillPrototype
                     {
                         Id = 333,
                         Title = "title",
@@ -111,7 +110,7 @@ namespace Loom.ZombieBattleground.Test
                         Value = 3,
                         Damage = 4,
                         Count = 5,
-                        Skill_ = Protobuf.OverlordSkill.Types.Enum.Freeze,
+                        Skill = OverlordSkillType.Types.Enum.Freeze,
                         SkillTargets =
                         {
                             SkillTarget.Types.Enum.Opponent,
@@ -123,7 +122,6 @@ namespace Loom.ZombieBattleground.Test
                             Protobuf.Faction.Types.Enum.Fire,
                             Protobuf.Faction.Types.Enum.Life
                         },
-                        Unlocked = true,
                         CanSelectTarget = true,
                         SingleUse = true
                     }
@@ -131,19 +129,24 @@ namespace Loom.ZombieBattleground.Test
                 InitialDefense = 50
             };
 
-            OverlordModel client = new OverlordModel(
+            Protobuf.OverlordUserData protobufUserData = new Protobuf.OverlordUserData
+            {
+                Level = 373,
+                Experience = 100500,
+                UnlockedSkillIds = { 1, 2, 3 }
+            };
+
+            Data.OverlordPrototype clientPrototype = new Data.OverlordPrototype(
                 new OverlordId(1),
                 "icon",
                 "name",
                 "short desc",
                 "long desc",
-                100500,
-                373,
                 Enumerators.Faction.LIFE,
-                new List<Data.OverlordSkill>
+                new List<Data.OverlordSkillPrototype>
                 {
-                    new Data.OverlordSkill(
-                        333,
+                    new Data.OverlordSkillPrototype(
+                        new SkillId(333),
                         "title",
                         "supericon",
                         "desc",
@@ -165,14 +168,19 @@ namespace Loom.ZombieBattleground.Test
                             Enumerators.Faction.LIFE
                         },
                         true,
-                        true,
                         true
                     )
                 },
                 50
             );
 
-            client.ShouldDeepEqual(protobuf.FromProtobuf());
+            Data.OverlordUserData clientUserData = new Data.OverlordUserData(
+                373,
+                100500
+            );
+
+            clientPrototype.ShouldDeepEqual(protobufPrototype.FromProtobuf());
+            clientUserData.ShouldDeepEqual(protobufUserData.FromProtobuf());
         }
 
         private static AbilityData CreateAbilityData(bool includeChoosableAbility, Func<List<AbilityData.ChoosableAbility>> choosableAbilityFunc)

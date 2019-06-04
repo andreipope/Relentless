@@ -24,11 +24,11 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
-        protected override void UnitDamagedHandler(IBoardObject from)
+        protected override void UnitDamagedHandler(IBoardObject from, bool fromGettingAttacked = false)
         {
             base.UnitDamagedHandler(from);
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE && fromGettingAttacked)
                 return;
 
             if (from is CardModel boardUnit)

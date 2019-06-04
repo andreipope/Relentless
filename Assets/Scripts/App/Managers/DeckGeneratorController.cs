@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
 
         public async void ProcessAddDeck(Deck deck)
         {
-            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
+            GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Saving Deck . . .");
 
             bool success = false;
             try
@@ -96,14 +96,14 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 FinishAddDeck?.Invoke(success, deck);
             }
         }
 
         public async void ProcessEditDeck(Deck deck)
         {
-            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
+            GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Saving Deck . . .");
             bool success = false;
             try
             {
@@ -153,14 +153,14 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 FinishEditDeck?.Invoke(success, deck);
             }
         }
 
         public async Task ProcessDeleteDeck(Deck deck)
         {
-            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Deleting Deck . . .");
+            GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Deleting Deck . . .");
             bool success = false;
             try
             {
@@ -192,7 +192,7 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 FinishDeleteDeck?.Invoke(success, deck);
             }
         }
@@ -226,8 +226,8 @@ namespace Loom.ZombieBattleground
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
-            Enumerators.Faction faction = overlord.Faction;
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            Enumerators.Faction faction = overlord.Prototype.Faction;
 
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> creatureCards = overlordElementSet.Cards.ToList();

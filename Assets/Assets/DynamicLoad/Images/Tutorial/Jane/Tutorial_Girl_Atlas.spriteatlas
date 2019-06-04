@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Tutorial_Girl_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -41,6 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: a0e0951a8d80c64499d1e79ab8f413b5, type: 3}
+    totalSpriteSurfaceArea: 6519680
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

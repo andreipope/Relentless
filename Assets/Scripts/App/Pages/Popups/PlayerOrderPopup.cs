@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             _animationEventTriggering.AnimationEventTriggered -= AnimationEventTriggeredEventHandler;
-
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -64,6 +65,10 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            if (_tutorialManager.IsTutorial)
+            {
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
+            }
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
@@ -98,24 +103,24 @@ namespace Loom.ZombieBattleground
 
             object[] param = (object[])data;
 
-            ApplyInfoAboutOverlords((OverlordModel)param[0], (OverlordModel)param[1]);
+            ApplyInfoAboutOverlords((OverlordUserInstance)param[0], (OverlordUserInstance)param[1]);
         }
 
         public void Update()
         {
         }
 
-        private void ApplyInfoAboutOverlords(OverlordModel player, OverlordModel opponent)
+        private void ApplyInfoAboutOverlords(OverlordUserInstance player, OverlordUserInstance opponent)
         {
-            _playerOverlordNameText.text = player.Name.ToUpperInvariant();
-            _opponentOverlordNameText.text = opponent.Name.ToUpperInvariant();
+            _playerOverlordNameText.text = player.Prototype.Name.ToUpperInvariant();
+            _opponentOverlordNameText.text = opponent.Prototype.Name.ToUpperInvariant();
 
             _playerOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
-                    player.Faction.ToString().ToLowerInvariant());
+                    player.Prototype.Faction.ToString().ToLowerInvariant());
             _opponentOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
-                    opponent.Faction.ToString().ToLowerInvariant());
+                    opponent.Prototype.Faction.ToString().ToLowerInvariant());
 
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();

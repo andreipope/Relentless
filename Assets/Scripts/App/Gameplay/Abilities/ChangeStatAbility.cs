@@ -106,11 +106,6 @@ namespace Loom.ZombieBattleground
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
-            {
-                ResetAffectedUnits();
-            }
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
@@ -139,7 +134,7 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
 
             ChangeStatsOfPlayerAllyCards(Defense, Attack, false, _affectedUnits);

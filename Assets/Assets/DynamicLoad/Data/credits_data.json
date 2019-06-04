@@ -42,6 +42,9 @@
           "Post": "Lead Programmer",
           "credits": [
             {
+              "FullName": "Cristian Esposito"
+            },
+            {
               "FullName": "Stanislav Sorokin"
             }
           ]
@@ -51,9 +54,6 @@
           "credits": [
             {
               "FullName": "Serhii Yolkin"
-            },
-            {
-              "FullName": "Cristian Esposito"
             }
           ]
         },
@@ -61,13 +61,16 @@
           "Post": "Programmer",
           "credits": [
             {
+              "FullName": "Pansavuth Khehasukcharoen"
+            },
+            {
+              "FullName": "Gaurav Garg"
+            },
+            {
               "FullName": "Artem Shyriaiev"
             },
             {
               "FullName": "Eugene Grudniy"
-            },
-            {
-              "FullName": "Pansavuth Khehasukcharoen"
             }
           ]
         },
@@ -78,18 +81,10 @@
               "FullName": "Lock Thepdusith"
             },
             {
-              "FullName": "Parth Desai"
+              "FullName": "Pathorn Tengkiattrakul"
             },
             {
-              "FullName": "Pathorn Tengkiattrakul"
-            }
-          ]
-        },
-        {
-          "Post": "Serverside Programmer",
-          "credits": [
-            {
-              "FullName": "Gaurav Garg"
+              "FullName": "Parth Desai"
             }
           ]
         },
@@ -272,6 +267,10 @@
       ]
     },
     {
+      "subsectionType": "AUDIO",
+      "posts": []
+    },
+    {
       "subsectionType": "Music and Sound",
       "posts": [
         {
@@ -329,6 +328,17 @@
               "FullName": "Amit Kumar"
             }
           ]
+        },
+        {
+          "Post": "Game Tester",
+          "credits": [
+            {
+              "FullName": "Paras Sethi"
+            },
+            {
+              "FullName": "John Carlo"
+            }
+          ]
         }
       ]
     },
@@ -336,83 +346,41 @@
       "subsectionType": "Marketing",
       "posts": [
         {
-          "Post": "Head of Marketing",
+          "Post": "Marketing Team",
           "credits": [
             {
-              "FullName": "Mohit Tater"
-            }
-          ]
-        },
-        {
-          "Post": "Growth Hacker",
-          "credits": [
+              "FullName": "James Duffy"
+            },
             {
-              "FullName": "Dilanka McLovin"
-            }
-          ]
-        },
-        {
-          "Post": "Game Marketing Manager",
-          "credits": [
+              "FullName": "Dr. Dilanka McLovin"
+            },
             {
-              "FullName": "Michaela Thompson"
-            }
-          ]
-        },
-        {
-          "Post": "Marketing Manager",
-          "credits": [
+              "FullName": "Robert Hacala"
+            },
             {
               "FullName": "Stephanie Xiao"
-            }
-          ]
-        },
-        {
-          "Post": "Korean Marketing Manager",
-          "credits": [
+            },
+            {
+              "FullName": "Michaela Thompson"
+            },
+            {
+              "FullName": "Veronica Shim"
+            },
             {
               "FullName": "Sijun Kim"
             },
             {
-              "FullName": "Veronica Shim"
-            }
-          ]
-        },
-        {
-          "Post": "Japanese Marketing Manager",
-          "credits": [
-            {
               "FullName": "Mami Mordovets"
-            }
-          ]
-        },
-        {
-          "Post": "Chinese Marketing Manager",
-          "credits": [
+            },
             {
               "FullName": "Tina Tang"
-            }
-          ]
-        },
-        {
-          "Post": "Content & Community Manager",
-          "credits": [
-            {
-              "FullName": "Robert Hacala"
-            }
-          ]
-        },
-        {
-          "Post": "Community Manager",
-          "credits": [
+            },
             {
               "FullName": "Juan Hernandez"
-            }
-          ]
-        },
-        {
-          "Post": "Content Creator",
-          "credits": [
+            },
+            {
+              "FullName": "Michael Cullinan"
+            },
             {
               "FullName": "Peter Savkovich"
             }
@@ -448,7 +416,7 @@
           ]
         },
         {
-          "Post": "Front-end Development",
+          "Post": "Front-end Developer",
           "credits": [
             {
               "FullName": "Hank Xiao"
@@ -472,7 +440,7 @@
       "subsectionType": "Human Resources",
       "posts": [
         {
-          "Post": "Operations Manager",
+          "Post": "Chief People Officer",
           "credits": [
             {
               "FullName": "Molly Thamrongvorapon"

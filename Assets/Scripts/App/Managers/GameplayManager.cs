@@ -6,6 +6,7 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -156,10 +157,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
-            //GameClient.Get<INetworkActionManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
-            
         }
 
         public void StartGameplay()
@@ -358,7 +357,7 @@ namespace Loom.ZombieBattleground
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
-            _overlordExperienceManager.InitializeMatchExperience(CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord);
+            _overlordExperienceManager.InitializeMatchExperience();
 
             if (IsTutorial)
             {
@@ -468,6 +467,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
                 }
 
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
                     CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
@@ -537,6 +537,10 @@ namespace Loom.ZombieBattleground
             }
 
             _finishedApplicationQuitSequence = true;
+
+            await new WaitForSeconds(0.2f);
+            await new WaitForUpdate();
+
             Application.Quit();
         }
     }

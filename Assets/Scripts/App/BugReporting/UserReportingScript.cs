@@ -21,6 +21,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CompressionLevel = SharpCompress.Compressors.Deflate.CompressionLevel;
+using CompressionType = SharpCompress.Common.CompressionType;
 
 /// <summary>
 /// Represents a behavior for working with the user reporting client.
@@ -258,7 +259,7 @@ public class UserReportingScript : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(transform.root.gameObject);
 
-#if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
+#if (!UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER) && !DISABLE_CRASH_REPORTER
         Application.logMessageReceived += OnLogMessageReceived;
 #endif
     }

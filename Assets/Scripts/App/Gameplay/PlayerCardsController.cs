@@ -108,9 +108,9 @@ namespace Loom.ZombieBattleground
             if (filterOutDeadCards) 
             {
                 int count = 0;
-                for (int i = 0; i < CardsOnBoard.Count; i++)
+                for (int i = CardsOnBoard.Count-1; i >= 0; i--)
                 {
-                    if (CardsOnBoard[i].IsDead == false || CardsOnBoard[i].CurrentDefense <= 0)
+                    if (CardsOnBoard[i].IsDead == false && CardsOnBoard[i].CurrentDefense > 0)
                     {
                         count++;
                     }
@@ -711,6 +711,10 @@ namespace Loom.ZombieBattleground
         {
             CallLog($"{nameof(ClearCardsOnBoard)}()");
 
+            foreach(CardModel model in _cardsOnBoard)
+            {
+                _battlegroundController.GetCardViewByModel<BoardUnitView>(model).CancelTargetingArrows();
+            }
             _cardsOnBoard.Clear();
         }
         
@@ -762,26 +766,17 @@ namespace Loom.ZombieBattleground
             }
 
             BoardUnitView unit = CreateBoardUnitForSpawn(cardModel, Player);
+            _battlegroundController.RegisterCardView(unit, Player);
+            
+            if (cardModel.Owner.IsLocalPlayer || _gameplayManager.IsLocalPlayerTurn()) 
+            {
+                _abilitiesController.ResolveAllAbilitiesOnUnit(cardModel, false);
+                _abilitiesController.ActivateAbilitiesOnCard(cardModel, cardModel, cardModel.Owner);
+            }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(cardModel);
 
             AddCardToBoard(cardModel, position);
-
-            if (isPVPNetwork)
-            {
-                _battlegroundController.RegisterCardView(unit, Player);
-            }
-            else
-            {
-                //Player.BoardCards.Insert(position, unit);
-                _battlegroundController.RegisterCardView(unit, Player);
-            }
-
-            if (unit.Model.Owner.IsLocalPlayer || _gameplayManager.IsLocalPlayerTurn()) 
-            {
-                _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model, false);
-                _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.Owner);
-            }
-
-            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
             _boardController.UpdateCurrentBoardOfPlayer(Player, onComplete);
 
@@ -835,6 +830,7 @@ namespace Loom.ZombieBattleground
             unit.Card.Owner = Player;
 
             _cardsOnBoard.Insert(ItemPosition.End, unit);
+            InvokeBoardChanged();
         }
 
         public bool CheckIsMoreThanMaxCards(CardModel cardModel = null, int addToMaxCards = 0)

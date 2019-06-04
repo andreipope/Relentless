@@ -576,7 +576,6 @@ namespace Loom.ZombieBattleground
                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
                     InternalTools.DoActionDelayed(() =>
                     {
-                        TurnWaitingForEnd = false;
                         ValidateGameState(pvpControlGameState);
                         EndTurnPart1Prepare();
                         completeCallback.Invoke();
@@ -593,6 +592,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController.EnqueueAction(
                 completeCallback =>
                 {
+                    TurnWaitingForEnd = false;
                     EndTurnPart3Finish();
                     if (_gameplayManager.IsLocalPlayerTurn())
                     {
@@ -763,7 +763,7 @@ namespace Loom.ZombieBattleground
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
-            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI3;
+            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameplayInfo;
             CurrentBoardCard.layer = LayerMask.NameToLayer("Default");
             CurrentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
@@ -952,7 +952,8 @@ namespace Loom.ZombieBattleground
         {
             if (!isForceDestroy && unit.HasBuffShield && handleShield)
             {
-                unit.UseShieldFromBuff();
+                unit.HasUsedBuffShield = true;
+                unit.ResolveBuffShield();
             }
             else
             {
@@ -992,7 +993,8 @@ namespace Loom.ZombieBattleground
             card.HasBuffHeavy = false;
             card.SetMaximumDamageToUnit(999);
             card.SetAsWalkerUnit();
-            card.UseShieldFromBuff();
+            card.HasUsedBuffShield = true;
+            card.ResolveBuffShield();
             card.AttackRestriction = Enumerators.AttackRestriction.ANY;
             card.AttackTargetsAvailability = new List<Enumerators.SkillTarget>()
             {
@@ -1348,6 +1350,17 @@ namespace Loom.ZombieBattleground
         public List<T> GetDeterministicRandomElements<T>(List<T> elements, int count)
         {
             return InternalTools.GetRandomElementsFromList(elements, count, true);
+        }
+
+        public List<CardModel> GetRandomUnits(List<CardModel> units, int count)
+        {
+            return GetRandomElements(units, count)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }
+
+        public List<T> GetRandomElements<T>(List<T> elements, int count)
+        {
+            return InternalTools.GetRandomElementsFromList(elements, count);
         }
 
         public IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)

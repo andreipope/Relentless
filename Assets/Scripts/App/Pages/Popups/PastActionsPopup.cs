@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
                             switch (unit.Card.Prototype.Kind)
                             {
                                 case Enumerators.CardKind.CREATURE:
-                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true, pastActionParam.HideCardInfo);
                                     actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
                                     break;
                                 case Enumerators.CardKind.ITEM:
@@ -223,11 +223,15 @@ namespace Loom.ZombieBattleground
                             }
                             else
                             {
-                                actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                                actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true, pastActionParam.HideCardInfo);
                             }
 
                             actionElement.Init(card.CardModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
                                 card.CardModel.CardPicture);
+                            break;
+                        case Player player:
+                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -289,6 +293,7 @@ namespace Loom.ZombieBattleground
             public List<TargetEffectParam> TargetEffects;
             public bool CheckForCardOwner;
             public CardModel Model;
+            public bool HideCardInfo = false;
         }
 
         public class TargetEffectParam
@@ -606,7 +611,7 @@ namespace Loom.ZombieBattleground
             public override void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                _overlordImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("CZB_2D_Hero_Portrait_" + player.SelfOverlord.Faction.ToString() + "_EXP");
+                _overlordImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("CZB_2D_Hero_Portrait_" + player.SelfOverlord.Prototype.Faction.ToString() + "_EXP");
 
                 if (_withEffect)
                 {
@@ -717,11 +722,19 @@ namespace Loom.ZombieBattleground
                           _effectImage;
 
             private bool _withEffect;
+            private bool _hideCardInfo;
 
-            public SmallUnitCardElement(Transform parent, bool withEffect = false)
+            public SmallUnitCardElement(Transform parent, bool withEffect = false, bool hideCardInfo = false)
             {
-                _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/PastActionBar/Item_CardUnitSmall"), parent, false);
+                GameObject cardUnit = hideCardInfo ?
+                    _loadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/UI/Elements/PastActionBar/Item_CardUnitSmall_Hidden") :
+                    _loadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/UI/Elements/PastActionBar/Item_CardUnitSmall");
+
+                _selfObject = Object.Instantiate(cardUnit, parent, false);
                 _withEffect = withEffect;
+                _hideCardInfo = hideCardInfo;
 
                 _gooText = _selfObject.transform.Find("Root/Text_Goo").GetComponent<TextMeshProUGUI>();
                 _titleText = _selfObject.transform.Find("Root/Text_Title").GetComponent<TextMeshProUGUI>();
@@ -753,21 +766,6 @@ namespace Loom.ZombieBattleground
                 _attackText.text = prototype.Damage.ToString();
                 _defenseText.text = prototype.Defense.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.Rank);
-
-                string setName = prototype.Faction.ToString();
-
-                string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
-
-                if (!string.IsNullOrEmpty(prototype.Frame))
-                {
-                    frameName = "Images/Cards/Frames/" + prototype.Frame;
-                }
-
-                _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = cardPicture;
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.Type + "_icon"));
-
                 if (_withEffect)
                 {
                     if (actionEffectType != Enumerators.ActionEffectType.None)
@@ -793,6 +791,27 @@ namespace Loom.ZombieBattleground
                         _valueText.text = string.Empty;
                     }
                 }
+
+                if (_hideCardInfo)
+                {
+                    _selfObject.SetActive(true);
+                    return;
+                }
+
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.Rank);
+
+                string setName = prototype.Faction.ToString();
+
+                string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+                if (!string.IsNullOrEmpty(prototype.Frame))
+                {
+                    frameName = "Images/Cards/Frames/" + prototype.Frame;
+                }
+
+                _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
+                _pictureImage.sprite = cardPicture;
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.Type + "_icon"));
 
                 _selfObject.SetActive(true);
             }

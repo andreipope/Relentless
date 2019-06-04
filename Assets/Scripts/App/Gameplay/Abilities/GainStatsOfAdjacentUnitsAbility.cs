@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -9,9 +10,11 @@ namespace Loom.ZombieBattleground
         private int _addedDamage,
                     _addedDefense;
 
+        private List<CardModel> _adjacentUnits;
         public GainStatsOfAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            _adjacentUnits = new List<CardModel>();
         }
 
         public override void Activate()
@@ -19,6 +22,27 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            
+            if(AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
+                return;
+                
+            int currentDamage = 0;
+            int currentDefense = 0;
+
+            foreach (CardModel unit in _adjacentUnits) {
+                currentDamage += unit.CurrentDamage;
+                currentDefense += unit.CurrentDefense;
+            }
+
+            if (currentDamage != _addedDamage || currentDefense != _addedDefense) 
+            {
+                TriggerAdjacentsRecheck();
+            }
         }
 
         protected override void ChangeAuraStatusAction(bool status)
@@ -30,7 +54,7 @@ namespace Loom.ZombieBattleground
 
             if (status)
             {
-                GainStats(AbilityUnitOwner, BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner));
+                GainStats(AbilityUnitOwner, GetAdjacentUnits());
             }
             else
             {
@@ -43,13 +67,18 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if(AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead)
+            if(AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityUnitOwner.CurrentDefense > 0 && LastAuraState)
             {
-                int oldAddedDefense = _addedDefense;
-                int oldAddedDamage = _addedDamage;
-                GainStats(AbilityUnitOwner, BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner));
-                RestoreGainedStats(AbilityUnitOwner, oldAddedDamage, oldAddedDefense);
+                TriggerAdjacentsRecheck();
             }
+        }
+
+        private void TriggerAdjacentsRecheck () 
+        {
+            int oldAddedDefense = _addedDefense;
+            int oldAddedDamage = _addedDamage;
+            GainStats(AbilityUnitOwner, GetAdjacentUnits());
+            RestoreGainedStats(AbilityUnitOwner, oldAddedDamage, oldAddedDefense);
         }
 
         private void GainStats(CardModel boardUnit, List<CardModel> boardUnits)
@@ -77,8 +106,20 @@ namespace Loom.ZombieBattleground
             card.AddToCurrentDamageHistory(-addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
+        private List<CardModel> GetAdjacentUnits () 
+        {
+            List<CardModel> units = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
+            if (units.Count > 0)
+            {
+                units = units.Where(x => x.Prototype.MouldId != AbilityUnitOwner.Prototype.MouldId).ToList();
+            }
+
+            return units;
+        }
+
         private void ResetStoredStats ()
         {
+            _adjacentUnits = new List<CardModel>();
             _addedDamage = 0;
             _addedDefense = 0;
         }

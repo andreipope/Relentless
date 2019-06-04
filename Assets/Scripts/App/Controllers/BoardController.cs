@@ -90,17 +90,10 @@ namespace Loom.ZombieBattleground
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
         {
+            const float Duration = 0.4f;
+
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
-
-            if(_battlegroundController.HasUnitInAttackingState(units))
-            {
-                InternalTools.DoActionDelayed(() =>
-                {
-                    UpdateBoard(units, isBottom, boardUpdated, skipIndex);
-                }, Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f);
-                return;
-            }
 
             List<UnitPositionOnBoard> newPositions = GetPositionsForUnits(units, isBottom);
 
@@ -110,7 +103,6 @@ namespace Loom.ZombieBattleground
             updateSequence.Id = _sequenceUniqueId;
 
             Tween tween;
-            const float Duration = 0.4f;
 
             for (int i = 0; i < newPositions.Count; i++)
             {

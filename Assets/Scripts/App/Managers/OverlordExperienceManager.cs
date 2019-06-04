@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
-using OverlordSkill = Loom.ZombieBattleground.Data.OverlordSkill;
+using OverlordSkillPrototype = Loom.ZombieBattleground.Data.OverlordSkillPrototype;
+using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground
 {
@@ -40,7 +41,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void InitializeMatchExperience(OverlordModel playerOverlord, OverlordModel opponentOverlord)
+        public void InitializeMatchExperience()
         {
             PlayerMatchMatchExperienceInfo = new MatchExperienceInfo();
             OpponentMatchMatchExperienceInfo = new MatchExperienceInfo();
@@ -92,7 +93,7 @@ namespace Loom.ZombieBattleground
             return (null, null);
         }
 
-        /*private void SaveSkillInDecks(int overlordId, OverlordSkill skill)
+        /*private void SaveSkillInDecks(int overlordId, OverlordSkillPrototype skill)
         {
             List<Deck> decks = _dataManager.CachedDecksData.Decks.FindAll((x) =>
                 x.OverlordId == overlordId &&

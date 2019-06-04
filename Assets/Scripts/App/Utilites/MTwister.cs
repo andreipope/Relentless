@@ -1,7 +1,10 @@
 ﻿using System;
+using log4net;
+using Loom.ZombieBattleground;
 
 public class MTwister
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(MTwister));
     const int MERS_N = 624;
     const int MERS_M = 397;
     const int MERS_R = 31;
@@ -16,8 +19,11 @@ public class MTwister
     static uint[] mt = new uint[MERS_N];
     static uint mti;
 
+    static int callCount;
+
     static public void RandomInit(uint seed)
     {
+        callCount = 0;
         mt[0] = seed;
         for (mti = 1; mti < MERS_N; mti++)
         {
@@ -26,15 +32,20 @@ public class MTwister
     }
     static public int IRandom(int min, int max)
     {
+        Log.Debug("Random Range request");
         int r;
         r = (int)((max - min + 1) * Random()) + min;
         if (r > max) r = max;
         if (max < min)
             return -2147483648;
+        
+        Log.Debug("Random range returns " + r);
         return r;
     }
     static public double Random()
     {
+        callCount++;
+        Log.Debug("Random request number " + callCount);
         uint r = BRandom(); // get 32 random bits
         if (BitConverter.IsLittleEndian)
         {
@@ -42,10 +53,12 @@ public class MTwister
             byte[] i1 = BitConverter.GetBytes(((r >> 12) | 0x3FF00000));
             byte[] bytes = { i0[0], i0[1], i0[2], i0[3], i1[0], i1[1], i1[2], i1[3] };
             double f = BitConverter.ToDouble(bytes, 0);
+            Log.Debug("Random request returns : " + (f - 1.0));
             return f - 1.0;
         }
         else
         {
+            Log.Debug("Random request returns 2 : " + r * (1.0 / (0xFFFFFFFF + 1.0)));
             return r * (1.0 / (0xFFFFFFFF + 1.0));
         }
     }

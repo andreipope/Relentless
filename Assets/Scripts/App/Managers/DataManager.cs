@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
         {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData(new List<Card>());
-            CachedOverlordData = new OverlordData(new List<OverlordModel>());
+            CachedOverlordData = new OverlordData(new List<Data.OverlordUserInstance>());
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData(new List<Deck>());
             CachedAiDecksData = new AIDecksData();
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
                 CachedUserLocalData.Tutorial = false;
             }
 
-            GameClient.Get<IApplicationSettingsManager>().ApplySettings();
+            await GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             //GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
 
@@ -190,11 +190,10 @@ namespace Loom.ZombieBattleground
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
+            CheckVersion();
             LoadLocalCachedData();
 
             GameClient.Get<ISoundManager>().ApplySoundData();
-
-            CheckVersion();
         }
 
         public void Update()
@@ -318,7 +317,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
                     {
-                        ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
+                        ListOverlordUserInstancesResponse overlordsList = await _backendFacade.ListOverlordUserInstances(_backendDataControlMediator.UserDataModel.UserId);
                         CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
                     }
                     catch (Exception)
@@ -395,7 +394,7 @@ namespace Loom.ZombieBattleground
                         GetOverlordLevelingDataResponse overlordLevelingData = await _backendFacade.GetOverlordLevelingData();
                         CachedOverlordLevelingData = overlordLevelingData.OverlordLeveling.FromProtobuf();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Overlord Leveling Data");
                         throw;

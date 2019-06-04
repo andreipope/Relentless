@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground
 
         private async void OnPlayerActionReceivedHandler(byte[] data)
         {
-            Func<Task> taskFunc = async () =>
+            Func<Task> taskFunc = () =>
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
@@ -302,8 +302,7 @@ namespace Loom.ZombieBattleground
                         if (endGameData != null)
                         {
                             Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
-                            await _backendFacade.UnsubscribeEvent();
-                            return;
+                            return Task.CompletedTask;
                         }
                     }
                 }
@@ -373,15 +372,15 @@ namespace Loom.ZombieBattleground
 
                                GameClient.Get<IUIManager>().GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
 
-                               return;
+                               return Task.CompletedTask;
                             } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
                             {
                                 OnReceivePlayerActionType(playerActionEvent);
-                                return;
+                                return Task.CompletedTask;
                             }
                             else
                             {
-                                return;
+                                return Task.CompletedTask;
                             }
                         }
 
@@ -403,6 +402,7 @@ namespace Loom.ZombieBattleground
                             playerActionEvent.Match.Status + " not found"
                         );
                 }
+                return Task.CompletedTask;
             };
 
             try
@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground
             catch
             {
                 // No additional handling
-}
+            }
         }
 
         private async Task LoadInitialGameState()

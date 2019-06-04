@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: LevelUp_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -41,6 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: fc3df0a1a97fcc14b914c7f49bc6e73d, type: 3}
+    totalSpriteSurfaceArea: 3282426
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

@@ -74,11 +74,13 @@ namespace Loom.ZombieBattleground
 
         private List<ChoosableCardForAbility> _currentListOfChoosableCards;
 
-        public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
+        public bool HasChoosableCardsForAbilities => _currentListOfChoosableCards.Count > 0;
 
         private Transform _parentOfSelectableCards;
         
         public bool BlockEndTurnButton { get; private set; }
+
+        public bool BlockPlayFromHand { get; private set; }
 
         public void Init()
         {
@@ -119,6 +121,7 @@ namespace Loom.ZombieBattleground
         {
             ResetChoosalbeCardsList();
             BlockEndTurnButton = false;
+            BlockPlayFromHand = false;
         }
 
         public void Update()
@@ -448,21 +451,19 @@ namespace Loom.ZombieBattleground
             IBoardObject target = null,
             bool skipEntryAbilities = false)
         {
+            BlockPlayFromHand = true;
             GameplayActionQueueAction.ExecutedActionDelegate playCardAction = completeCallback =>
             {
                 if (!card.Model.CanBePlayed(card.Model.Card.Owner))
                 {
                     card.HandBoardCard.ResetToInitialPosition();
                     completeCallback();
+                    BlockPlayFromHand = false;
                     return;
                 }
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
-                if (!_gameplayManager.AvoidGooCost)
-                {
-                    card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
-                }
 
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CardsMoveSoundVolume);
 
@@ -560,6 +561,15 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
                                         }
+
+#if !USE_PRODUCTION_BACKEND
+                                        if (!_gameplayManager.AvoidGooCost)
+                                        {
+                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        }
+#else
+                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+#endif
                                     },
                                     target,
                                     handCard,
@@ -567,6 +577,7 @@ namespace Loom.ZombieBattleground
 
                                 completeCallback();
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                BlockPlayFromHand = false;
                             });
                         boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                         break;
@@ -599,6 +610,15 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
+                                        #if !USE_PRODUCTION_BACKEND
+                                        if (!_gameplayManager.AvoidGooCost)
+                                        {
+                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        }
+#else
+                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+#endif
+
                                         rankBuffAction?.TriggerActionExternally();
                                     },
                                     target,
@@ -608,6 +628,7 @@ namespace Loom.ZombieBattleground
                                 completeCallback();
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 BlockEndTurnButton = false;
+                                BlockPlayFromHand = false;
                             }, 0.75f);
                             break;
                         }
@@ -831,7 +852,7 @@ namespace Loom.ZombieBattleground
             _parentOfSelectableCards = container.transform;
             collider.size = Vector2.one * 100f;
             group.sortingOrder = 22;
-            group.sortingLayerID = SRSortingLayers.GameUI3;
+            group.sortingLayerID = SRSortingLayers.GameplayInfo;
 
             foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
             {

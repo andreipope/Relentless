@@ -44,9 +44,9 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, TargetUnit, Damage);
-
             BattlegroundController.DistractUnit(TargetUnit);
+            
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, TargetUnit, Damage);
 
             ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

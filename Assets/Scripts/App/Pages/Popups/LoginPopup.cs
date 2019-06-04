@@ -694,6 +694,7 @@ namespace Loom.ZombieBattleground
 
         private async void SuccessfulLogin()
         {
+            bool tutorialBegan = false;
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
@@ -725,14 +726,22 @@ namespace Loom.ZombieBattleground
                     {
                         _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
-                        string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
-                        QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
-                        questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
+                        if(_uiManager.GetPopup<YouWonYouLostPopup>().Self == null)
+                        {
+                            string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                            QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+                            questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
 
-                        _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                            _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                        } 
+                        else 
+                        {
+                            _tutorialManager.SkipTutorial();
+                        }
                     }
                     else
                     {
+                        tutorialBegan = true;
                         await GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                     }
                 }
@@ -754,8 +763,13 @@ namespace Loom.ZombieBattleground
             (int? notificationId, EndMatchResults endMatchResults) =
                 await GameClient.Get<IOverlordExperienceManager>().GetEndMatchResultsFromEndMatchNotification();
 
-            if (endMatchResults != null)
+            if(endMatchResults != null && !tutorialBegan)
             {
+                if(_uiManager.GetPopup<QuestionPopup>().Self != null)
+                {
+                    _tutorialManager.SkipTutorial();
+                    _uiManager.HidePopup<QuestionPopup>();
+                }
                 _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { endMatchResults.IsWin });
             }
 

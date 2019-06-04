@@ -754,8 +754,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
         [Serializable]
         private class DebugCheatsConfigurationWrapper : JsonUnityNewtonsoftSerializationWrapper<DebugCheatsConfiguration>
         {
-            public bool IsExpanded;
-
             public DebugCheatsConfigurationWrapper(DebugCheatsConfiguration instance) : base(instance)
             {
             }

@@ -217,9 +217,11 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
+
+            CompleteTargetingAction();
         }
 
-        public virtual void Activate()
+        public async virtual void Activate()
         {
             GameplayManager.GameEnded += GameEndedHandler;
 
@@ -254,8 +256,10 @@ namespace Loom.ZombieBattleground
 
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
 
-            ChangeAuraStatusAction(true);
+            await new WaitForUpdate();
+
             LastAuraState = true;
+            ChangeAuraStatusAction(true);
         }
 
         public virtual void Update()
@@ -429,6 +433,7 @@ namespace Loom.ZombieBattleground
         {
             SelectedTargetAction();
             DeactivateSelectTarget();
+            AbilityUnitOwner.Owner.PlayerCardsController.InvokeHandChanged();
         }
 
         protected virtual void InputCanceledHandler()
@@ -455,8 +460,8 @@ namespace Loom.ZombieBattleground
         {
             if (LastAuraState)
             {
-                ChangeAuraStatusAction(false);
                 LastAuraState = false;
+                ChangeAuraStatusAction(false);
             }
 
             Deactivate();
@@ -479,8 +484,8 @@ namespace Loom.ZombieBattleground
             {
                 if (LastAuraState)
                 {
-                    ChangeAuraStatusAction(false);
                     LastAuraState = false;
+                    ChangeAuraStatusAction(false);
                 }
             }
         }
@@ -489,7 +494,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitDamagedHandler(IBoardObject from)
+        protected virtual void UnitDamagedHandler(IBoardObject from, bool fromGettingAttacked = false)
         {
         }
 

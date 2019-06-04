@@ -100,6 +100,9 @@ namespace Loom.ZombieBattleground
                 int additionalDamageAttacked =
                     _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
+                int finalDamageAttacked = 0;
+                int finalDamageAttacking = 0;
+
                 damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
@@ -108,8 +111,9 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
+                finalDamageAttacking = Mathf.Min(damageAttacking, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
+                attackedUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacking,
                     Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -119,10 +123,10 @@ namespace Loom.ZombieBattleground
                     attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
                 }
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackedUnitModel), -finalDamageAttacking);
 
-                attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
-                attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
+                attackedUnitModel.InvokeUnitDamaged(attackingUnitModel, true);
+                attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, finalDamageAttacking, true);
 
                 if (hasCounterAttack)
                 {
@@ -137,7 +141,8 @@ namespace Loom.ZombieBattleground
                         }
 
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        attackingUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource),
+                        finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
+                        attackingUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacked,
                     Enumerators.ReasonForValueChange.Attack);
 
                         if (attackingUnitModel.CurrentDefense <= 0)
@@ -145,10 +150,10 @@ namespace Loom.ZombieBattleground
                             attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
                         }
 
-                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
+                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackingUnitModel), -finalDamageAttacked);
 
-                        attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
-                        attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
+                        attackingUnitModel.InvokeUnitDamaged(attackedUnitModel, false);
+                        attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, finalDamageAttacked, false);
                     }
                 }
 
@@ -163,7 +168,7 @@ namespace Loom.ZombieBattleground
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                             Target = attackedUnitModel,
                             HasValue = true,
-                            Value = -damageAttacking
+                            Value = -finalDamageAttacking
                         }
                     }
                 });
@@ -175,7 +180,7 @@ namespace Loom.ZombieBattleground
                     _gameplayManager.PlayerMoves.AddPlayerMove(
                         new PlayerMove(
                             Enumerators.PlayerActionType.AttackOnUnit,
-                            new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking))
+                            new AttackUnit(attackingUnitModel, attackedUnitModel, finalDamageAttacked, finalDamageAttacking))
                         );
                 }
             }
@@ -190,10 +195,11 @@ namespace Loom.ZombieBattleground
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnitModel.UseShieldFromBuff();
+                    attackedUnitModel.HasUsedBuffShield = true;
+                    attackedUnitModel.ResolveBuffShield();
                 }
-                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Prototype.Faction;
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -249,7 +255,8 @@ namespace Loom.ZombieBattleground
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnitModel.UseShieldFromBuff();
+                    attackedUnitModel.HasUsedBuffShield = true;
+                    attackedUnitModel.ResolveBuffShield();
                 }
 
                 switch (attacker)
@@ -261,7 +268,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.AbilityDamage);
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }

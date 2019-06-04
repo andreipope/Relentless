@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
@@ -16,7 +17,9 @@ namespace Loom.ZombieBattleground
 
         public ResolutionInfo CurrentResolution { get; private set; }
 
-        public event Action OnResolutionChanged;
+        public static event Action OnResolutionChanged;
+
+        public const float WaitForResolutionChangeFinishAnimating = 1.5f;
 
         public void Dispose()
         {
@@ -31,45 +34,53 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public void Update()
+        public async void Update()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            HandleSpecificUserActions();
+            await HandleSpecificUserActions();
 #endif
         }
 
-        public void ApplySettings()
+        public async Task ApplySettings()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
             CurrentScreenMode = _dataManager.CachedUserLocalData.AppScreenMode;
             CurrentResolution = Resolutions.Find(x => x.Resolution.x == _dataManager.CachedUserLocalData.AppResolution.x &&
                 x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
+
+            await SetScreenMode(CurrentScreenMode);
 #endif
         }
 
-        public void SetDefaults()
+        public async Task SetDefaults()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            SetResolution(Resolutions[Resolutions.Count - 1]);
-            SetScreenMode(Enumerators.ScreenMode.Window);
+            if (Resolutions.Count > 0)
+            {
+                await SetResolution(Resolutions[Resolutions.Count - 1]);
+            }
+
+            await SetScreenMode(Enumerators.ScreenMode.Window);
 #endif
         }
 
 #if !UNITY_ANDROID && !UNITY_IOS
-        public void SetResolution(ResolutionInfo info)
+        public async Task SetResolution(ResolutionInfo info)
         {
             CurrentResolution = info;
 
             Screen.SetResolution(info.Resolution.x, info.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen);
 
             _dataManager.CachedUserLocalData.AppResolution = CurrentResolution.Resolution;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
+            //Wait until game screen has finish animating for it's resolution changes
+            await Task.Delay(TimeSpan.FromSeconds(WaitForResolutionChangeFinishAnimating));
             OnResolutionChanged?.Invoke();
         }
 #endif
 
-        public void SetScreenMode(Enumerators.ScreenMode screenMode)
+        public async Task SetScreenMode(Enumerators.ScreenMode screenMode)
         {
             CurrentScreenMode = screenMode;
 
@@ -98,27 +109,34 @@ namespace Loom.ZombieBattleground
             }
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 #if !UNITY_ANDROID && !UNITY_IOS 
-            MakeResolutionHighestInFullScreenMode();
+            await MakeResolutionHighestInFullScreenMode();
 #endif
         }
   
 #if !UNITY_ANDROID && !UNITY_IOS      
-        private void MakeResolutionHighestInFullScreenMode()
+        private async Task MakeResolutionHighestInFullScreenMode()
         {
+            if (Resolutions.Count == 0)
+                return;
+
             if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
             {
-                SetResolution(Resolutions[Resolutions.Count - 1]);
+                await SetResolution(Resolutions[Resolutions.Count - 1]);
             }
             else
             {
-                SetResolution(CurrentResolution);
+                await SetResolution(CurrentResolution);
             }
         }
 
-        private void FillResolutions()
+        public void FillResolutions()
         {
+            if(Resolutions != null)
+            {
+                Resolutions.Clear();
+            }
             Resolutions = new List<ResolutionInfo>();
 
             ResolutionInfo info;
@@ -134,20 +152,37 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void HandleSpecificUserActions()
+        public ResolutionInfo AddResolution(Resolution resolution)
+        {
+            ResolutionInfo resolutionInfo = Resolutions.Find(info => info.Resolution.x == resolution.width && info.Resolution.y == resolution.height);
+            if (resolutionInfo != null)
+                return resolutionInfo;
+
+            resolutionInfo = new ResolutionInfo
+            {
+                Name = $"{resolution.width} x {resolution.height}",
+                Resolution = new Vector2Int(resolution.width, resolution.height)
+            };
+
+            Resolutions.Add(resolutionInfo);
+
+            return resolutionInfo;
+        }
+
+        private async Task HandleSpecificUserActions()
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKeyUp(KeyCode.Return))
             {
                 switch (Screen.fullScreenMode)
                 {
                     case FullScreenMode.FullScreenWindow:
-                        SetScreenMode(Enumerators.ScreenMode.FullScreen);
+                        await SetScreenMode(Enumerators.ScreenMode.FullScreen);
                         break;
                     case FullScreenMode.MaximizedWindow:
-                        SetScreenMode(Enumerators.ScreenMode.Window);
+                        await SetScreenMode(Enumerators.ScreenMode.Window);
                         break;
                     case FullScreenMode.Windowed:
-                        SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
+                        await SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(Screen.fullScreenMode), Screen.fullScreenMode, null);
