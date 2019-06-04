@@ -15,6 +15,7 @@ public class UnitCardUI
     private Image _frameImage;
     private Image _unitImage;
     private Image _rankImage;
+    private Image _setImage;
     private Image _cardCountTrayImage;
 
     private TextMeshProUGUI _gooText;
@@ -34,6 +35,7 @@ public class UnitCardUI
         _frameImage = _selfObj.transform.Find("Frame").GetComponent<Image>();
         _unitImage = _selfObj.transform.Find("Viewport/Picture").GetComponent<Image>();
         _rankImage = _selfObj.transform.Find("RankIcon").GetComponent<Image>();
+        _setImage = _selfObj.transform.Find("SetIcon").GetComponent<Image>();
         _cardCountTrayImage = _selfObj.transform.Find("AmountWithCounterTray/Tray").GetComponent<Image>();
 
         _gooText = _selfObj.transform.Find("GooText").GetComponent<TextMeshProUGUI>();
@@ -70,6 +72,12 @@ public class UnitCardUI
         _unitImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
 
         _cardAmountTray.SetActive(cardCount != 0);
+
+        //TODO : Set icon according to card details filled by designer
+        //TODO : right now there is no way to get set type information
+        string setType = Enum.GetName(typeof(Enumerators.CardSetType), Enumerators.CardSetType.Basic);
+        string setName = string.Format("Images/IconsSet/seticon_{0}", setType.ToLower());
+        _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
     }
 
     public Card GetCard()

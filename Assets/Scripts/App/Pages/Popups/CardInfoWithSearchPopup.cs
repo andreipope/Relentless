@@ -133,11 +133,10 @@ namespace Loom.ZombieBattleground
 
             _groupCreatureCard = Self.transform.Find("Group_CreatureCard");
 
+            UpdateFilteredCardList();
             CreateUnitCard();
             UpdateCardDetails();
-            //UpdatePopupType();
-            //UpdateFilteredCardList();
-            //UpdateBoardCard();
+            UpdatePopupType();
         }
 
         private void CreateUnitCard()
@@ -153,7 +152,7 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardDetails()
         {
-            _unitCardUi.FillCardData(_cardList[_currentCardIndex] as Card);
+            _unitCardUi.FillCardData(_filteredCardList[_currentCardIndex] as Card);
             _textDescription.text = !string.IsNullOrEmpty(_cardList[_currentCardIndex].FlavorText) ? _cardList[_currentCardIndex].FlavorText : string.Empty;
         }
 
@@ -337,7 +336,7 @@ namespace Loom.ZombieBattleground
 
                 _currentCardIndex = newIndex;
             }
-            UpdateBoardCard();
+            UpdateCardDetails();
         }
 
         private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)

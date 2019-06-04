@@ -1,17 +1,9 @@
-using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using DG.Tweening;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -406,7 +398,7 @@ namespace Loom.ZombieBattleground
 
         #region Util
 
-        public void PlayClickSound()
+        private void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
