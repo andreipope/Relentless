@@ -812,17 +812,17 @@ namespace Loom.ZombieBattleground
             IReadOnlyList<BoardCardView> boardCardViews = GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
 
             float handWidth = 0.0f;
-            float spacing = -1.5f;
-            float scaling = 0.2f;
-            Vector3 pivot = new Vector3(6f, -7.5f, 0f);
-            int twistPerCard = -5;
+            float spacing = -2.5f;
+            float scaling = 0.28f;
+            Vector3 pivot = new Vector3(4f, -7.5f, 0f);
+            int twistPerCard = -6;
 
             if (CardsZoomed)
             {
-                spacing = -2.6f;
-                scaling = 0.25f;
-                pivot = new Vector3(-1.3f, -6.5f, 0f);
-                twistPerCard = -3;
+                spacing = -5f;
+                scaling = 0.4f;
+                pivot = new Vector3(-1.3f, -6.0f, 0f);
+                twistPerCard = -2;
             }
 
             for (int i = 0; i < boardCardViews.Count; i++)
@@ -862,7 +862,7 @@ namespace Loom.ZombieBattleground
                 pivot.x += handWidth / boardCardViews.Count;
 
                 card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
-                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
+                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i * -1;
             }
         }
 

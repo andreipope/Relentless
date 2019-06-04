@@ -31,7 +31,8 @@ namespace Loom.ZombieBattleground
                        _buttonRemove,
                        _buttonBack,
                        _buttonLeftArrow,
-                       _buttonRightArrow;
+                       _buttonRightArrow,
+                       _buttonOk;
 
         private TMP_InputField _inputFieldSearch;
 
@@ -116,6 +117,9 @@ namespace Loom.ZombieBattleground
             _buttonRightArrow = Self.transform.Find("Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
 
+            _buttonOk = Self.transform.Find("Panel/Button_Ok").GetComponent<Button>();
+            _buttonOk.onClick.AddListener(ButtonOkHandler);
+
             _buttonAdd = Self.transform.Find("Panel/Button_AddToDeck").GetComponent<Button>();
             _buttonAdd.onClick.AddListener(ButtonAddCardHandler);
 
@@ -195,6 +199,12 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
+        private void ButtonOkHandler()
+        {
+            PlayClickSound();
+            Hide();
+        }
+
         private void ButtonRemoveCardHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonRemove.name))
@@ -241,14 +251,17 @@ namespace Loom.ZombieBattleground
             switch(_currentPopupType)
             {
                 case PopupType.NONE:
+                    _buttonOk.gameObject.SetActive(true);
                     _buttonAdd.gameObject.SetActive(false);
                     _buttonRemove.gameObject.SetActive(false);
                     break;
                 case PopupType.ADD_CARD:
+                    _buttonOk.gameObject.SetActive(false);
                     _buttonAdd.gameObject.SetActive(true);
                     _buttonRemove.gameObject.SetActive(false);
                     break;
                 case PopupType.REMOVE_CARD:
+                    _buttonOk.gameObject.SetActive(false);
                     _buttonAdd.gameObject.SetActive(false);
                     _buttonRemove.gameObject.SetActive(true);
                     break;
