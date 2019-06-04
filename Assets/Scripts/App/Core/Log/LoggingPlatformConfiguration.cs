@@ -40,7 +40,8 @@ namespace Loom.ZombieBattleground
                 "A ping was received.",
                 "A pong to this ping has been sent.",
                 "The current output action has been changed",
-                "Not a WebSocket handshake response"
+                "Not a WebSocket handshake response",
+                "Could not produce class with ID" // harmless (for now) side effect of Strip Engine Code
             };
 
             return
