@@ -225,7 +225,7 @@ namespace Loom.ZombieBattleground.Iap
         {
             Log.Info("[Purchase Receipt]:\n" + receiptJson);
 
-#if !UNITY_EDITOR && IAP_PRINT_RECEIPT_AND_FAIL && false
+#if !UNITY_EDITOR && IAP_PRINT_RECEIPT_AND_FAIL
             throw new IapException("printing receipt and failing");
 #endif
 
