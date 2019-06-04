@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
         private const string DefaultLogFileName = "Log.html";
         private const string RepositoryName = "ZBLogRepository";
 
+        private static readonly ILog UnityLog = GetLog("Unity");
+
         private static bool _isRepositoryCreated;
         private static bool _isConfigured;
 
@@ -78,6 +80,8 @@ namespace Loom.ZombieBattleground
             Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
 #endif
 
+        private static bool UsingHtmlUnityConsolePattern { get; set; }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #if UNITY_EDITOR
         [DidReloadScripts]
@@ -90,15 +94,18 @@ namespace Loom.ZombieBattleground
             _isConfigured = true;
             Hierarchy hierarchy = (Hierarchy) GetRepository();
 
-            IFilter[] spammyLogsFilters = LoggingPlatformConfiguration.CreateSpammyLogsFilters();
-
             // Unity console
+            UsingHtmlUnityConsolePattern = Application.isEditor && !Application.isBatchMode;
+
             PatternLayout unityConsolePattern = new PatternLayout();
-            unityConsolePattern.ConversionPattern = "[%logger] %message";
-            if (Application.isEditor && !Application.isBatchMode)
+            unityConsolePattern.ConversionPattern = "[%logger]";
+            if (UsingHtmlUnityConsolePattern)
             {
-                unityConsolePattern.ConversionPattern = "<i>[%logger]</i> %message%exceptionpadding{\n}%exception";
+                unityConsolePattern.ConversionPattern = "<i>[%logger]</i>";
             }
+
+            unityConsolePattern.ConversionPattern += "\u00A0%message%exceptionpadding{\n}%exception";
+
             unityConsolePattern.AddConverter("exceptionpadding", typeof(ExceptionPaddingPatternLayoutConverter));
             unityConsolePattern.ActivateOptions();
 
@@ -107,10 +114,15 @@ namespace Loom.ZombieBattleground
                 Layout = unityConsolePattern
             };
 
-            foreach (IFilter logsFilter in spammyLogsFilters)
+            foreach (IFilter logsFilter in LoggingPlatformConfiguration.CreateSpammyLogsFilters())
             {
                 unityConsoleAppender.AddFilter(logsFilter);
             }
+            unityConsoleAppender.AddFilter(new LoggerMatchFilter
+            {
+                LoggerToMatch = UnityLog.Logger.Name,
+                AcceptOnMatch = false
+            });
 
             hierarchy.Root.AddAppender(unityConsoleAppender);
 
@@ -131,7 +143,7 @@ namespace Loom.ZombieBattleground
                     PreserveLogFileNameExtension = true
                 };
 
-                foreach (IFilter logsFilter in spammyLogsFilters)
+                foreach (IFilter logsFilter in LoggingPlatformConfiguration.CreateSpammyLogsFilters())
                 {
                     fileAppender.AddFilter(logsFilter);
                 }
@@ -139,6 +151,8 @@ namespace Loom.ZombieBattleground
                 fileAppender.ActivateOptions();
                 hierarchy.Root.AddAppender(fileAppender);
             }
+
+            Application.logMessageReceivedThreaded += ApplicationOnLogMessageReceivedThreaded;
 
             // Finish up
             hierarchy.Root.Level = Level.All;
@@ -152,6 +166,40 @@ namespace Loom.ZombieBattleground
                 return Path.GetFullPath(path);
 
             return null;
+        }
+
+        private static void ApplicationOnLogMessageReceivedThreaded(string condition, string stacktrace, LogType type)
+        {
+            // Detect our own logs and only log the rest
+            int patternStartIndex =
+                condition.IndexOf(UsingHtmlUnityConsolePattern ? "<i>[" : "[", StringComparison.Ordinal);
+            int patternEndIndex =
+                condition.IndexOf(UsingHtmlUnityConsolePattern ? "]</i>\u00A0" : "]\u00A0", StringComparison.Ordinal);
+
+            if (!(patternStartIndex == 0 && patternEndIndex > patternStartIndex))
+            {
+                if (!String.IsNullOrWhiteSpace(stacktrace))
+                {
+                    condition = condition + "\n" + stacktrace;
+                }
+
+                switch (type)
+                {
+                    case LogType.Log:
+                        UnityLog.Info(condition);
+                        break;
+                    case LogType.Warning:
+                        UnityLog.Warn(condition);
+                        break;
+                    case LogType.Error:
+                    case LogType.Assert:
+                    case LogType.Exception:
+                        UnityLog.Error(condition);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                }
+            }
         }
     }
 }
