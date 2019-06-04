@@ -23,8 +23,6 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         public Action<bool> OnLoginButtonDisplayUpdate;
-
-        public static event Action OnResolutionOrScreenModeHasChanged;
         
         private GameObject _panelVideoSettings,
                            _groupLogin;
@@ -67,10 +65,10 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 #if !UNITY_ANDROID && !UNITY_IOS
-            _applicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
+            ApplicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
 #endif
             _cachePreviousFrameResolution = Screen.currentResolution;
-            OnResolutionOrScreenModeHasChanged += FixSliderAndDropdownZPosition;
+            ApplicationSettingsManager.OnResolutionChanged += FixSliderAndDropdownZPosition;
         }
 
         public void Dispose()
@@ -89,9 +87,6 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.IsGameplayInputBlocked = false;
             OnLoginButtonDisplayUpdate?.Invoke(false);
-#if !UNITY_ANDROID && !UNITY_IOS
-            OnResolutionOrScreenModeHasChanged?.Invoke();
-#endif
         }
 
         public void SetMainPriority()
@@ -319,20 +314,25 @@ namespace Loom.ZombieBattleground
                 PlayClickSound();
 
                 await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
-                OnResolutionOrScreenModeHasChanged?.Invoke();
+                
+                Hide();
+                GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Apply settings ...");
+                await Task.Delay(TimeSpan.FromSeconds
+                (
+                    ApplicationSettingsManager.WaitForResolutionChangeFinishAnimating
+                ));
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
+                Show();                
             }
         }
 
-        private async void ScreenModeChangedHandler(int index)
+        private void ScreenModeChangedHandler(int index)
         {
             if (_infoDataFilled)
             {
                 PlayClickSound();
                 
-                await _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
-                OnResolutionOrScreenModeHasChanged?.Invoke();
+                _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
             }
         }
 #endif

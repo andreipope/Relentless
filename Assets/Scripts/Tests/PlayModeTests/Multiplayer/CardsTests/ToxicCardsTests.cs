@@ -565,7 +565,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            });
                            opponent.LetsThink(2);
                            
-                       }
+                       },
+                       player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>

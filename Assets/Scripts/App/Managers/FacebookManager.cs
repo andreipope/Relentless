@@ -19,11 +19,11 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
-        public FBUser FacebookUser { get { return _fbUser; } }
+        public FBUser FacebookUser => _fbUser;
 
-        public bool IsLoggined { get { return FB.IsLoggedIn; } }
-        public bool IsInitialized { get { return FB.IsInitialized; } }
+        public bool IsLoggined => FB.IsLoggedIn;
 
+        public bool IsInitialized => FB.IsInitialized;
 
         public void Dispose()
         {

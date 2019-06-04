@@ -101,9 +101,9 @@ namespace Loom.ZombieBattleground
             return $"[({list.Count} items) {String.Join(", ", list)}]";
         }
 
-        public static string FormatCallLogList<T>(IReadOnlyList<T> list)
+        public static string FormatCallLogList<T>(IEnumerable<T> list)
         {
-            return $"[({list.Count} items) {String.Join(", ", list)}]";
+            return $"[({list.Count()} items) {String.Join(", ", list)}]";
         }
         
         /// <summary>

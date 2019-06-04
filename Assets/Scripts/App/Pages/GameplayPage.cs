@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -45,29 +46,11 @@ namespace Loom.ZombieBattleground
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
 
-        public PlayerManaBarItem PlayerManaBar
-        {
-            get
-            {
-                return _playerManaBar;
-            }
-        }
+        public PlayerManaBarItem PlayerManaBar => _playerManaBar;
 
-        public PlayerManaBarItem OpponentManaBar
-        {
-            get
-            {
-                return _opponentManaBar;
-            }
-        }
+        public PlayerManaBarItem OpponentManaBar => _opponentManaBar;
 
-        public GameObject Self
-        {
-            get
-            {
-                return _selfPage;
-            }
-        }
+        public GameObject Self => _selfPage;
 
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
@@ -99,8 +82,7 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
-        private OverlordModel _playerOverlord,
-                     _opponentOverlord;
+        private OverlordUserInstance _playerOverlord, _opponentOverlord;
 
         public void Init()
         {
@@ -144,7 +126,7 @@ namespace Loom.ZombieBattleground
             _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
             _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
             
-            SettingsWithCreditsPopup.OnResolutionOrScreenModeHasChanged += UpdateActionReportPanelPosition;
+            ApplicationSettingsManager.OnResolutionChanged += UpdateActionReportPanelPosition;
         }
 
         public void Hide()
@@ -327,7 +309,7 @@ namespace Loom.ZombieBattleground
             if (_playerOverlord != null)
             {
                 SetOverlordInfo(_playerOverlord, Constants.Player);
-                string playerNameText = _playerOverlord.FullName;
+                string playerNameText = _playerOverlord.Prototype.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
                 {
                     playerNameText = _backendDataControlMediator.UserDataModel.UserId;
@@ -341,7 +323,7 @@ namespace Loom.ZombieBattleground
                 SetOverlordInfo(_opponentOverlord, Constants.Opponent);
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
-                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.FullName;
+                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.Prototype.FullName;
             }
 
             _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
@@ -352,10 +334,10 @@ namespace Loom.ZombieBattleground
             _isPlayerInited = true;
         }
 
-        public void SetOverlordInfo(OverlordModel overlord, string objectName)
+        public void SetOverlordInfo(OverlordUserInstance overlord, string objectName)
         {
             Texture2D overlordTexture =
-                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Faction + "_EXP");
+                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Prototype.Faction + "_EXP");
             Transform overlordObjectTransform = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
 
             Material overlordAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
@@ -373,7 +355,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetupSkills(OverlordSkill primary, OverlordSkill secondary, bool isOpponent)
+        public void SetupSkills(OverlordSkillPrototype primary, OverlordSkillPrototype secondary, bool isOpponent)
         {
             if (isOpponent)
             {
@@ -391,7 +373,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetupSkills(OverlordSkill skillPrim, OverlordSkill skillSecond, GameObject skillPrimary, GameObject skillSecondary)
+        private void SetupSkills(OverlordSkillPrototype skillPrim, OverlordSkillPrototype skillSecond, GameObject skillPrimary, GameObject skillSecondary)
         {
             if (skillPrim != null)
             {
@@ -406,8 +388,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateActionReportPanelPosition()
+        private async void UpdateActionReportPanelPosition()
         {
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            
             if (_selfPage == null)
                 return;
                 

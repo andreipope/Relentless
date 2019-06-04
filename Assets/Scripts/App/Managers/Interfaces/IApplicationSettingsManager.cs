@@ -14,11 +14,9 @@ namespace Loom.ZombieBattleground
         Enumerators.ScreenMode CurrentScreenMode { get; }
 
         ResolutionInfo CurrentResolution { get; }
-        
-        event Action OnResolutionChanged;
 
-        void SetDefaults();
-        void ApplySettings();
+        Task SetDefaults();
+        Task ApplySettings();
 #if !UNITY_ANDROID && !UNITY_IOS
         Task SetResolution(ResolutionInfo info);
         Task SetScreenMode(Enumerators.ScreenMode screenMode);
