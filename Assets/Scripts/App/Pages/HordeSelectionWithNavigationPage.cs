@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         #region Cache Data
         
-        private const int _deckInfoAmountPerPage = 4;
+        private const int DeckInfoAmountPerPage = 4;
 
         public enum Tab
         {
@@ -99,9 +99,7 @@ namespace Loom.ZombieBattleground
         
         private Tab _tab;
         
-        public int SelectDeckIndex;
-
-        private int _selectedDeckId;
+        private DeckId _selectedDeckId;
 
         public Deck CurrentEditDeck;
 
@@ -110,10 +108,18 @@ namespace Loom.ZombieBattleground
         public bool IsEditingNewDeck;    
         
         public bool IsRenameWhileEditing;    
-        
-        private int _deckPageIndex;
 
-        private List<Deck> _cacheDeckListToDisplay;
+        private class Page
+        {
+            public List<Deck> DeckList;
+            
+            public Page()
+            {
+                DeckList = new List<Deck>();
+            }
+        }
+
+        private List<Page> _pageList;
 
         #endregion
 
@@ -130,8 +136,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             
             _deckInfoObjectList = new List<DeckInfoObject>();
-            _cacheDeckListToDisplay = new List<Deck>();
-            SelectDeckIndex = 0;       
+            _pageList = new List<Page>();
 
             HordeEditTab = new HordeEditingTab();
             HordeEditTab.Init();
@@ -191,13 +196,12 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
             
             UpdatePageScaleToMatchResolution();
+            RefreshPageListData();
 
             HordeEditTab.Show(_selfPage);
             SelectOverlordTab.Show(_selfPage);
             SelectOverlordSkillTab.Show(_selfPage);
-
-            _selectedDeckId = (int)_dataManager.CachedDecksData.Decks[0].Id.Id;
-
+            
             LoadButtons();
             LoadObjects();            
             LoadTabs();
@@ -224,7 +228,7 @@ namespace Loom.ZombieBattleground
             SelectOverlordTab.Dispose();
             SelectOverlordSkillTab.Dispose();
             _deckInfoObjectList.Clear();  
-            _cacheDeckListToDisplay.Clear();
+            _pageList.Clear();
         }
 
         #endregion
@@ -251,7 +255,6 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-
             PlayClickSound();
             ChangeTab(Tab.SelectOverlord);
         }
@@ -262,14 +265,15 @@ namespace Loom.ZombieBattleground
                 return;
                 
             PlayClickSound();
-            int previousIndex = _deckPageIndex;
-            MoveDeckPageIndex(-1);
+            int previousIndex = GetPageIndex();
             
-            if (previousIndex == _deckPageIndex)
+            if (previousIndex <= 0)
                 return;
-                
-            UpdateDeckInfoObjects(); 
-            ChangeSelectDeckIndex(GetDefaultDeckIndex());          
+
+            AssignSelectedDeck
+            (
+                _pageList[previousIndex - 1].DeckList[0]
+            );        
         }
         
         private void ButtonRightArrowHandler()
@@ -278,13 +282,15 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            int previousIndex = _deckPageIndex;
-            MoveDeckPageIndex(1);
-            if (previousIndex == _deckPageIndex)
-                return;
-                
-            UpdateDeckInfoObjects();
-            ChangeSelectDeckIndex(GetDefaultDeckIndex());       
+            int previousIndex = GetPageIndex();
+            
+            if (previousIndex >= _pageList.Count - 1)
+                return;                
+            
+            AssignSelectedDeck
+            (
+                _pageList[previousIndex + 1].DeckList[0]
+            );       
         }
         
         private void ButtonBackHandler()
@@ -336,15 +342,14 @@ namespace Loom.ZombieBattleground
 
         private void ApplyFilter()
         {
-            if(CheckAvailableDeckExist())
-            {
-                ApplyDeckFilter();
-            }
-            else
+            if(!CheckAvailableDeckExist())
             {
                 _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
+                _uiManager.GetPopup<ElementFilterPopup>().ResetSelectedFactionList();
                 _uiManager.DrawPopup<ElementFilterPopup>();
             }
+            
+            ApplyDeckFilter();
 
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
@@ -355,7 +360,11 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonEdit.name))
                 return;
                 
-            PlayClickSound();
+            PlayClickSound();            
+            AssignCurrentEditDeck
+            (
+                GetSelectedDeck()
+            );
             ChangeTab(Tab.Editing);
         }        
         
@@ -365,13 +374,11 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            if (GetDeckList().Count <= 1)
+            if (GetDeckListFromUserCache().Count <= 1)
             {
                 OpenAlertDialog("Cannot delete. You must have at least one deck.");
                 return;
             }
-
-
 
             Deck deck = GetSelectedDeck();
             if (deck != null)
@@ -434,12 +441,14 @@ namespace Loom.ZombieBattleground
         {
             _buttonDelete.enabled = true;
             
-            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck; 
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck;
 
-            _cacheDeckListToDisplay = GetDeckList();
-            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
-            
-            _selectedDeckId = (int)_cacheDeckListToDisplay[SelectDeckIndex].Id.Id;
+            RefreshPageListData();
+            ApplySelectedDeckIdByDefault();
+            if(!success)
+            {
+                OpenAlertDialog("Something went wrong.\nPlease try again.");                
+            }
             ChangeTab(Tab.SelectDeck);
         }
 
@@ -447,12 +456,56 @@ namespace Loom.ZombieBattleground
 
         #region Data and State
         
-        private int GetDefaultDeckIndex()
+        public void RefreshPageListData()
         {
-            return _deckPageIndex == 0 ? 1 : 0;
+            UpdatePagesListData
+            (
+                GetDeckListFromUserCache()
+            );
         }
 
-        public List<Deck> GetDeckList()
+        private void UpdatePagesListData(List<Deck> deckList)
+        {
+            _pageList.Clear();
+            List<Deck> queqeDeckList = deckList.ToList();
+            int page = 0;
+            int maxDeckPerPage;
+            bool displayNewDeckButton;
+            
+            while(queqeDeckList.Count > 0)
+            {
+                displayNewDeckButton = page == 0;
+                maxDeckPerPage = displayNewDeckButton ? DeckInfoAmountPerPage - 1 : DeckInfoAmountPerPage;
+                
+                if(page >= _pageList.Count)
+                {
+                    _pageList.Add
+                    (
+                        new Page()
+                    );
+                }
+
+                _pageList[page].DeckList.Add(queqeDeckList[0]);
+                queqeDeckList.RemoveAt(0);
+                
+                if(_pageList[page].DeckList.Count >= maxDeckPerPage)
+                {
+                    ++page;
+                }
+            }            
+        }
+        
+        private int GetPageIndex()
+        {
+            int pageIndex = _pageList.FindIndex
+            (
+                page => page.DeckList.Exists(deck => deck.Id == _selectedDeckId)
+            );
+
+            return pageIndex;
+        }
+
+        public List<Deck> GetDeckListFromUserCache()
         {
             if (_tutorialManager.IsTutorial)
             {
@@ -460,7 +513,7 @@ namespace Loom.ZombieBattleground
                 if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
-                    _selectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
+                    _selectedDeckId = _dataManager.CachedUserLocalData.TutorialSavedDeck.Id;
                 }
                 return tutorialDeckList;
             }
@@ -472,39 +525,24 @@ namespace Loom.ZombieBattleground
         
         private Deck GetSelectedDeck()
         {
-            List<Deck> deckList = GetDeckList();
-            if(deckList.Count <= 0)
-            {
-                SelectDeckIndex = 0;
-                return null;
-            }
-            else if(SelectDeckIndex < 0 || SelectDeckIndex >= deckList.Count)
-            {
-                SelectDeckIndex = 0;
-            }
-            return deckList.Find(deck => deck.Id.Id == _selectedDeckId);
+            return GetDeckListFromUserCache().Find(deck => deck.Id == _selectedDeckId);
         }
 
-        public void AssignCurrentDeck()
-        { 
-            if (GetSelectedDeck() != null)
-            {
-                CurrentEditDeck = GetSelectedDeck().Clone();
-                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Prototype.Id == CurrentEditDeck.OverlordId);
-                IsEditingNewDeck = false;
-            }
-        }
-
-        public void AssignCurrentDeck(int deckIndex)
+        public void AssignSelectedDeck(Deck deck)
         {
-            SelectDeckIndex = deckIndex;
-            AssignCurrentDeck();
-        }
+            _selectedDeckId = deck.Id;
 
-        public void OpenDeckPage(int deckId)
+            if (_selfPage != null)
+            {
+                UpdateDeckInfoDisplay();
+            }
+        }
+        
+        public void AssignCurrentEditDeck(Deck deck)
         {
-            _selectedDeckId = deckId;
-            AssignCurrentDeck();
+            CurrentEditDeck = deck.Clone();
+            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Prototype.Id == CurrentEditDeck.OverlordId);
+            IsEditingNewDeck = false;
         }
 
         public void AssignNewDeck()
@@ -556,9 +594,26 @@ namespace Loom.ZombieBattleground
                     break;
                 case Tab.SelectDeck:
                     _inputFieldSearchDeckName.text = "";
-                    ApplyDeckByLastSelected();
-                    if (!_tutorialManager.IsTutorial)
+
+                    if (_tutorialManager.IsTutorial)
+                    {
+                        RefreshPageListData();
+                        if (_dataManager.CachedDecksData.Decks.Count > 1)
+                        {
+                            AssignSelectedDeck
+                            (
+                                _dataManager.CachedDecksData.Decks[1]
+                            );
+                        }
+                        else
+                        {
+                            UpdateDeckInfoDisplay(0, new List<Deck>());
+                        }
+                    }
+                    else
+                    {                        
                         ApplyFilter();
+                    }
                     break;
                 case Tab.Rename:
                     _inputFieldRenameDeckName.text = CurrentEditDeck.Name;
@@ -581,26 +636,6 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
             }
         }
-        
-        private void ChangeSelectDeckIndex(int newIndexInPage)
-        {
-            UpdateSelectedDeckDisplay(newIndexInPage);
-            if(_deckPageIndex == 0)
-            {
-                SelectDeckIndex = newIndexInPage-1;
-            }
-            else
-            {
-                SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
-            }
-            
-            if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
-            {
-                SelectDeckIndex = 1;
-            }
-
-            AssignCurrentDeck();    
-        }
 
         private void UpdateShowBackButton(bool isShow)
         {
@@ -612,26 +647,9 @@ namespace Loom.ZombieBattleground
             _trayButtonAuto.gameObject.SetActive(isShow);
         }
         
-        private void MoveDeckPageIndex(int direction)
-        {
-            _deckPageIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount(_cacheDeckListToDisplay) - 1);
-        }
-        
-        private int GetDeckPageAmount(List<Deck> deckList)
-        {
-            if(deckList.Count <= _deckInfoAmountPerPage-1)
-            {
-                return 1;
-            }
-            else
-            {
-                return (deckList.Count - _deckInfoAmountPerPage) / _deckInfoAmountPerPage + 2;
-            }            
-        }
-        
         private List<Deck> GetDeckListByElementToDisplay(Enumerators.Faction faction)
         {
-            List<Deck> deckList = GetDeckList();
+            List<Deck> deckList = GetDeckListFromUserCache();
 
             List<Deck> deckListToDisplay = new List<Deck>();
             for (int i = 0; i < deckList.Count; ++i)
@@ -648,7 +666,7 @@ namespace Loom.ZombieBattleground
         
         private List<Deck> GetDeckListBySearchKeywordToDisplay()
         {
-            List<Deck> deckList = GetDeckList();
+            List<Deck> deckList = GetDeckListFromUserCache();
             string keyword = _inputFieldSearchDeckName.text.Trim().ToLower();
             
             if(string.IsNullOrEmpty(keyword))            
@@ -669,30 +687,7 @@ namespace Loom.ZombieBattleground
             }
 
             return deckListToDisplay;
-        }
-        
-        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList, bool displayNewDeckButton = false)
-        {
-            List<Deck> deckListFromSelectedPageToDisplay = new List<Deck>();
-            
-            int startIndex = 0;
-            int endIndex = _deckInfoAmountPerPage-1;
-            if(!displayNewDeckButton)
-            {
-                startIndex = (_deckInfoAmountPerPage-1) + (_deckPageIndex-1) * _deckInfoAmountPerPage;
-                endIndex = startIndex + _deckInfoAmountPerPage;
-            }
-
-            for (int i = 0; i < deckList.Count; ++i)
-            {
-                if (i >= startIndex && i < endIndex)
-                {
-                    deckListFromSelectedPageToDisplay.Add(deckList[i]);
-                }
-            }
-
-            return deckListFromSelectedPageToDisplay;
-        }
+        } 
 
         #endregion
 
@@ -752,6 +747,7 @@ namespace Loom.ZombieBattleground
                     _selfPage.transform.Find(path+"/Image_SkillIcon_1").GetComponent<Image>(),
                     _selfPage.transform.Find(path+"/Image_SkillIcon_2").GetComponent<Image>()
                 };
+                deckInfoObject.DoubleClickAction = null;
                 _deckInfoObjectList.Add(deckInfoObject);
             }
 
@@ -765,43 +761,63 @@ namespace Loom.ZombieBattleground
             };
         }
         
-        public void UpdateDeckInfoObjects()
+        private void UpdateDeckInfoDisplay()
         {
-            bool displayNewDeckButton = (_deckPageIndex == 0);
+            int pageIndex = GetPageIndex();
+            UpdateDeckInfoDisplay
+            (
+                pageIndex,
+                _pageList[pageIndex].DeckList.ToList()
+            );
+        }
+
+        private void UpdateDeckInfoDisplay(int pageIndex, List<Deck> deckList)
+        {            
+            bool displayNewDeckButton = (pageIndex == 0);
+            
             _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
             _deckInfoObjectList[0].Button.gameObject.SetActive(!displayNewDeckButton);
-            
-            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
-           
-            int startObjectIndex = displayNewDeckButton?1:0;
-            int deckDataIndex = 0;
 
-            for (int i=startObjectIndex; i < _deckInfoObjectList.Count; ++i, ++deckDataIndex)
-            {
+            int startObjectIndex = displayNewDeckButton?1:0;
+
+            for 
+            (
+                int i=startObjectIndex, deckDataIndex = 0; 
+                i < _deckInfoObjectList.Count;
+                ++i, ++deckDataIndex
+            )
+            {                
+                DeckInfoObject deckInfoObject = _deckInfoObjectList[i];                
                 
-                DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
-                if(deckDataIndex >= deckListToDisplay.Count)
+                if(deckDataIndex >= deckList.Count)
                 {
                     deckInfoObject.Button.gameObject.SetActive(false);
                     continue;
                 }
-
-                int index = i;
+                
+                Deck deck = deckList[deckDataIndex];
+                
                 deckInfoObject.Button.gameObject.SetActive(true);
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
                 MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.GetComponent<MultiPointerClickHandler>();
-                if(multiPointerClickHandler == null)
+                if (multiPointerClickHandler == null)
+                {
                     multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.DoubleClickReceived += ()=>
-                {                    
-                    ChangeSelectDeckIndex(index);
+                }
+
+                if (deckInfoObject.DoubleClickAction != null)
+                {
+                    multiPointerClickHandler.DoubleClickReceived -= deckInfoObject.DoubleClickAction;
+                }
+                deckInfoObject.DoubleClickAction = ()=>
+                {
+                    AssignSelectedDeck(deck);
                     ButtonEditHandler();
                     PlayClickSound();
                 };
-#endif
-                
-                Deck deck = deckListToDisplay[deckDataIndex];
+                multiPointerClickHandler.DoubleClickReceived += deckInfoObject.DoubleClickAction;
+#endif               
                 
                 string deckName = deck.Name;
                 int cardsAmount = deck.GetNumCards();
@@ -841,74 +857,77 @@ namespace Loom.ZombieBattleground
                 deckInfoObject.Button.onClick.RemoveAllListeners();                
                 deckInfoObject.Button.onClick.AddListener(() =>
                 {
-                    _selectedDeckId = (int) deck.Id.Id;
-                    ChangeSelectDeckIndex(index);
+                    AssignSelectedDeck(deck);
                     PlayClickSound();
                 });
+                
+                Sprite sprite = deck.Id == _selectedDeckId ? 
+                    _spriteDeckThumbnailSelected : 
+                    _spriteDeckThumbnailNormal;
+                deckInfoObject.ImagePanel.sprite = sprite;
             }
-
-            UpdatePageDotObjects(_cacheDeckListToDisplay);
-            ChangeSelectDeckIndex(GetDefaultDeckIndex());
+            
+            UpdatePageDotObjects();
         }
         
-        private void UpdatePageDotObjects(List<Deck> deckList)
+        private void UpdatePageDotObjects()
         {
             foreach (Transform child in _paginationGroup)
             {
                 Object.Destroy(child.gameObject);
             }
             
-            int page = _deckPageIndex;
-            int maxPage = GetDeckPageAmount(deckList);
-            
-            for (int i = 0; i < maxPage; ++i)
+            for (int i = 0; i < _pageList.Count; ++i)
             {
                 GameObject pageDot = Object.Instantiate
                 (
-                    i == page? _imagePageDotSelected:_imagePageDotNormal
+                    i == GetPageIndex()? _imagePageDotSelected:_imagePageDotNormal
                 );
                 pageDot.transform.SetParent(_paginationGroup);
                 pageDot.transform.localScale = _imagePageDotNormal.transform.localScale;
                 pageDot.SetActive(true);
             }
         }
-        
-        private void ApplyDeckByDefault()
-        {
-            _cacheDeckListToDisplay = GetDeckList();
-            _deckPageIndex = 0;
-            UpdateDeckInfoObjects();
-        }
-        
-        private void ApplyDeckByLastSelected()
-        {
-            _cacheDeckListToDisplay = GetDeckList();
-            
-            int indexInPage = 0;
-            if(SelectDeckIndex < _deckInfoAmountPerPage-1)
+
+        private void ApplySelectedDeckIdByDefault()
+        {            
+            if (_pageList.Count <= 0)
             {
-                _deckPageIndex = 0;
-                indexInPage = SelectDeckIndex + 1;
+                throw new Exception("PageList contain no element");
             }
-            else
+            
+            if(_pageList[0].DeckList.Count <= 0)
             {
-                int deckIndexAfterSubtractFistPage = SelectDeckIndex - (_deckInfoAmountPerPage - 1);
-                _deckPageIndex = (deckIndexAfterSubtractFistPage / _deckInfoAmountPerPage) + 1;
-                indexInPage = deckIndexAfterSubtractFistPage % _deckInfoAmountPerPage;
+                throw new Exception("DeckList contain no element");
             }
 
-            UpdateDeckInfoObjects();
-            ChangeSelectDeckIndex(indexInPage);
+            AssignSelectedDeck
+            (
+                _pageList[0].DeckList[0]
+            );
+        }
+        
+        private void ApplySelectIndexByLastSelected()
+        {            
+            if(GetPageIndex() == -1)
+            {
+                ApplySelectedDeckIdByDefault();                
+            }
+            else 
+            {
+                UpdateDeckInfoDisplay();
+            }
         }
 
         public void ApplyDeckFilter()
         {
-            _inputFieldSearchDeckName.text = "";            
+            _inputFieldSearchDeckName.text = "";
+            List<Deck> deckList;
             
             ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
             if(elementFilterPopup.SelectedFactionList.Count == elementFilterPopup.AvailableFactionList.Count)
             {
-                _cacheDeckListToDisplay = GetDeckList();
+                deckList = GetDeckListFromUserCache();
             }
             else
             {
@@ -922,18 +941,20 @@ namespace Loom.ZombieBattleground
     
                     decks = decks.Union(deckListByFaction).ToList();
                 }
-                _cacheDeckListToDisplay = decks;
+                deckList = decks;
             }
-            
-            _deckPageIndex = 0;
-            UpdateDeckInfoObjects();
+
+            UpdatePagesListData(deckList);
+            ApplySelectIndexByLastSelected();
         }
         
         private void ApplyDeckSearch()
         {
-            _cacheDeckListToDisplay = GetDeckListBySearchKeywordToDisplay();
-            _deckPageIndex = 0;
-            UpdateDeckInfoObjects();
+            UpdatePagesListData
+            (
+                GetDeckListBySearchKeywordToDisplay()
+            );
+            UpdateDeckInfoDisplay();
         }
         
         private bool CheckAvailableDeckExist()
@@ -951,16 +972,6 @@ namespace Loom.ZombieBattleground
                 }
             }
             return isAvailable;
-        }
-
-        private void UpdateSelectedDeckDisplay(int selectedDeckIndex)
-        {
-            for (int i = 0; i < _deckInfoObjectList.Count; ++i)
-            {
-                DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
-                Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
-                deckInfoObject.ImagePanel.sprite = sprite;
-            }
         }
 
         private Sprite GetOverlordThumbnailSprite(Enumerators.Faction overlordFaction)
@@ -994,6 +1005,7 @@ namespace Loom.ZombieBattleground
             public Image ImageOverlordThumbnail;
             public Image[] ImageAbilityIcons;
             public TextMeshProUGUI TextCardsAmount;
+            public Action DoubleClickAction;
         }
 
 #endregion

@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
 
             _deckList = new List<Deck>();
             HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-            _deckList.AddRange(hordeSelection.GetDeckList());
+            _deckList.AddRange(hordeSelection.GetDeckListFromUserCache());
 
             if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 && _deckList.Count > 0)
             {
@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
-        public Deck GetSelectedDeck()
+        private Deck GetSelectedDeck()
         {
             if (_deckList != null && _deckList.Count > 0)
             {
@@ -193,6 +193,16 @@ namespace Loom.ZombieBattleground
             }
 
             return _dataManager.CachedDecksData.Decks.Find(x => x.Id.Equals(_selectedDeckId));
+        }
+        
+        public Deck GetLastSelectedDeckFromCache()
+        {
+            if (_deckList != null && _deckList.Count > 0)
+            {
+                return _deckList.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            }
+
+            return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
         }
 
         private int GetSelectedDeckIndex()
@@ -289,7 +299,7 @@ namespace Loom.ZombieBattleground
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    hordeSelection.OpenDeckPage((int) deck.Id.Id);
+                    hordeSelection.AssignSelectedDeck(deck);
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                 };
             }

@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
             Enumerators.SoundType soundType = _isWin ? Enumerators.SoundType.WON_POPUP : Enumerators.SoundType.LOST_POPUP;
             _soundManager.PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);  
 
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             
