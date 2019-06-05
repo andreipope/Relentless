@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: c5efdf6834c734d69bc61d410631d4c0, type: 3}
-    totalSpriteSurfaceArea: 5593135
+    totalSpriteSurfaceArea: 8427567
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -70,6 +70,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 05fdae5eccc024e2a9544522ef6a0f9b, type: 3}
   - {fileID: 21300000, guid: 6a241e3fed420411aa63d453cae3fd62, type: 3}
   - {fileID: 21300000, guid: e73d907fa8a51435c8c4934593dbb8a3, type: 3}
+  - {fileID: 21300000, guid: bde54e7fb2e0e4db18385ad8df79185e, type: 3}
   m_PackedSpriteNamesToIndex:
   - element_toxic
   - deck_cardcounttray_bottom
@@ -95,5 +96,6 @@ SpriteAtlas:
   - element_x
   - deck_thumbnail_new
   - element_life
+  - editdeck_panel
   m_Tag: HordePage_Atlas
   m_IsVariant: 0
