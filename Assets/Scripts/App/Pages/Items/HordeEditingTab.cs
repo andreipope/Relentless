@@ -178,6 +178,9 @@ namespace Loom.ZombieBattleground
             _cacheCollectionCardsList = new List<Card>();
             _cacheDeckPageIndexDictionary = new Dictionary<string, int>();
             _cacheCollectionPageIndexDictionary = new Dictionary<string, int>();
+            
+            ApplicationSettingsManager.OnResolutionChanged += UpdateDeckCardPage;
+            ApplicationSettingsManager.OnResolutionChanged += LoadCollectionsCards;
         }
 
         public void Show(GameObject selfPage)

@@ -68,6 +68,7 @@ namespace Loom.ZombieBattleground
             _cacheFilteredSetTypeCardsList = new List<Card>();
 
             _isAllCardsCounted = false;
+            ApplicationSettingsManager.OnResolutionChanged += LoadCards;
         }
 
         public void Update()
