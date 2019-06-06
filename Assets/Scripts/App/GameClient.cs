@@ -150,6 +150,8 @@ namespace Loom.ZombieBattleground
             return Instance.GetService<T>();
         }
 
+        public static bool InstanceExists => _instance != null;
+
         public static void ClearInstance()
         {
             _instance = null;
