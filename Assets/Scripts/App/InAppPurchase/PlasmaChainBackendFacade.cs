@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground.Iap
 
         public async Task<DAppChainClient> GetConnectedClient()
         {
-            Log.Debug("Creating PlasmaChain client");
+            RpcLog.Debug("Creating PlasmaChain client");
 
             DAppChainClient client = CreateClient();
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
@@ -381,7 +381,7 @@ namespace Loom.ZombieBattleground.Iap
             public override void Dispose()
             {
                 base.Dispose();
-                Log.Debug("Disposing PlasmaChain client");
+                RpcLog.Debug("Disposing PlasmaChain client");
             }
         }
 

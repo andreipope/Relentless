@@ -337,7 +337,7 @@ namespace Loom.ZombieBattleground.Iap
                 await ExecutePostPurchaseProcessingInternal(plasmaChainClient, receipt, product, setFailFinishStates);
             if (result.IsT0)
             {
-                Log.Debug($"{nameof(ExecutePostPurchaseProcessingInternal)} success, removing product from pending purchases");
+                Log.Debug($"{nameof(ExecutePostPurchaseProcessingInternal)} success, removing product {product.definition.storeSpecificId} from pending purchases");
                 _storePendingPurchases.Remove(product);
             }
 

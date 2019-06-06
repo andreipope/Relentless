@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ShopWithNavigationPage));
 
-        private const float IapInitializationTimeout = 5;
+        private const float IapInitializationTimeout = 10;
 
         private IUIManager _uiManager;
 

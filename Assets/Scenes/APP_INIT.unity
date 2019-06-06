@@ -2595,11 +2595,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 223250986720782450, guid: d7d403c27a1f7e9418edf2a7eb153728,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 224535167193121672, guid: d7d403c27a1f7e9418edf2a7eb153728,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2745,15 +2740,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1709920709447448, guid: d7d403c27a1f7e9418edf2a7eb153728, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114508277153244054, guid: d7d403c27a1f7e9418edf2a7eb153728,
-        type: 3}
-      propertyPath: UserReportButton
-      value: 
-      objectReference: {fileID: 2013688084}
     - target: {fileID: 114542574320069014, guid: d7d403c27a1f7e9418edf2a7eb153728,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -2763,11 +2749,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 223719113816343352, guid: d7d403c27a1f7e9418edf2a7eb153728,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7d403c27a1f7e9418edf2a7eb153728, type: 3}
