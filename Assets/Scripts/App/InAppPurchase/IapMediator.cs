@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
+using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Iap;
 using OneOf;
 using OneOf.Types;
@@ -15,6 +17,8 @@ namespace Loom.ZombieBattleground.Iap
         private static readonly ILog Log = Logging.GetLog(nameof(IapMediator));
 
         private AuthFiatApiFacade _authFiatApiFacade;
+
+        private ContractManager _contractManager;
 
         private FiatPlasmaManager _fiatPlasmaManager;
 
@@ -98,7 +102,8 @@ namespace Loom.ZombieBattleground.Iap
 
             Log.Debug($"{nameof(InitiatePurchase)} ({product.definition.storeSpecificId})");
             SetState(IapPurchaseState.StorePurchaseInitiated, null);
-            OneOf<Success, IapPlatformStorePurchaseError> initiatePurchaseResult = _iapPlatformStoreFacade.InitiatePurchase(product.definition.id);
+            OneOf<Success, IapPlatformStorePurchaseError> initiatePurchaseResult =
+                _iapPlatformStoreFacade.InitiatePurchase(product.definition.id);
             OneOf<IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException>? stateFailure = null;
             OneOf<Success, IapPlatformStorePurchaseError> result = new Success();
             initiatePurchaseResult.Switch(
@@ -123,9 +128,25 @@ namespace Loom.ZombieBattleground.Iap
         /// <param name="receiptJson">Purchase receipt JSON</param>
         /// <param name="product">Product to process the purchase for. If set, any pending purchase for this product will be confirmed. Optional.</param>
         /// <returns></returns>
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ExecutePostPurchaseProcessing(string receiptJson, Product product = null)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ExecutePostPurchaseProcessing(
+            string receiptJson,
+            Product product = null)
         {
-            return await ExecutePostPurchaseProcessingInternal(receiptJson, product, true);
+            DAppChainClient plasmaChainClient;
+            try
+            {
+                plasmaChainClient = await _contractManager.GetConnectedClient();
+            }
+            catch (Exception e)
+            {
+                IapException iapException = new IapException("Failed to connect to PlasmaChain", e);
+                return iapException;
+            }
+
+            using (plasmaChainClient)
+            {
+                return await ExecutePostPurchaseProcessingInternal(plasmaChainClient, receiptJson, product, true);
+            }
         }
 
         /// <summary>
@@ -146,32 +167,47 @@ namespace Loom.ZombieBattleground.Iap
                 return new IapException("Failed to list pending transactions", e);
             }
 
-            Log.Debug("Pending transaction TxIDs: " + Utilites.FormatCallLogList(transactions.Select(tx => tx.TxID)));
-            foreach (AuthFiatApiFacade.TransactionResponse transaction in transactions)
+            DAppChainClient plasmaChainClient;
+            try
             {
-                Log.Debug("Claiming transaction with TxId " + transaction.TxID);
-                IapPurchaseProcessor iapPurchaseProcessor = new IapPurchaseProcessor(_authFiatApiFacade, _fiatPlasmaManager, SetState);
-                OneOf<Success, IapPurchaseProcessingError, IapException> requestFiatTransactionResult =
-                    await iapPurchaseProcessor.RequestFiatTransaction(transaction.TxID);
-                Log.Debug($"{nameof(iapPurchaseProcessor.RequestFiatTransaction)} result: " + requestFiatTransactionResult);
+                plasmaChainClient = await _contractManager.GetConnectedClient();
+            }
+            catch (Exception e)
+            {
+                IapException iapException = new IapException("Failed to connect to PlasmaChain", e);
+                return iapException;
+            }
 
-                bool isFailed = false;
-                requestFiatTransactionResult.Switch(
-                    success => { },
-                    error =>
-                    {
-                        isFailed = true;
-                        SetState(IapPurchaseState.Failed, error);
-                    },
-                    exception =>
-                    {
-                        isFailed = true;
-                        SetState(IapPurchaseState.Failed, exception);
-                    }
-                );
+            using (plasmaChainClient)
+            {
+                Log.Debug("Pending transaction TxIDs: " + Utilites.FormatCallLogList(transactions.Select(tx => tx.TxID)));
+                foreach (AuthFiatApiFacade.TransactionResponse transaction in transactions)
+                {
+                    Log.Debug("Claiming transaction with TxId " + transaction.TxID);
+                    IapPurchaseProcessor iapPurchaseProcessor =
+                        new IapPurchaseProcessor(_authFiatApiFacade, _fiatPlasmaManager, plasmaChainClient, SetState);
+                    OneOf<Success, IapPurchaseProcessingError, IapException> requestFiatTransactionResult =
+                        await iapPurchaseProcessor.RequestFiatTransaction(transaction.TxID);
+                    Log.Debug($"{nameof(iapPurchaseProcessor.RequestFiatTransaction)} result: " + requestFiatTransactionResult);
 
-                if (isFailed)
-                    return requestFiatTransactionResult;
+                    bool isFailed = false;
+                    requestFiatTransactionResult.Switch(
+                        success => { },
+                        error =>
+                        {
+                            isFailed = true;
+                            SetState(IapPurchaseState.Failed, error);
+                        },
+                        exception =>
+                        {
+                            isFailed = true;
+                            SetState(IapPurchaseState.Failed, exception);
+                        }
+                    );
+
+                    if (isFailed)
+                        return requestFiatTransactionResult;
+                }
             }
 
             SetState(IapPurchaseState.Finished, default);
@@ -188,30 +224,44 @@ namespace Loom.ZombieBattleground.Iap
             Log.Debug(nameof(ClaimStorePurchases));
             List<Product> pendingPurchases = _storePendingPurchases.ToList();
             Log.Debug("Pending product purchases: " + Utilites.FormatCallLogList(pendingPurchases.Select(p => p.definition.storeSpecificId)));
-            foreach (Product pendingPurchase in pendingPurchases)
+
+            DAppChainClient plasmaChainClient;
+            try
             {
-                Log.Debug("Claiming product purchase: " + pendingPurchase.definition.storeSpecificId);
-                OneOf<Success, IapPurchaseProcessingError, IapException> processPurchaseResult =
-                    await ExecutePostPurchaseProcessingInternal(pendingPurchase, false);
-                Log.Debug($"Claiming product {pendingPurchase.definition.storeSpecificId} purchase, result: " + processPurchaseResult);
+                plasmaChainClient = await _contractManager.GetConnectedClient();
+            }
+            catch (Exception e)
+            {
+                return new IapException("Failed to connect to PlasmaChain", e);
+            }
 
-                bool isFailed = false;
-                processPurchaseResult.Switch(
-                    success => { },
-                    error =>
-                    {
-                        isFailed = true;
-                        SetState(IapPurchaseState.Failed, error);
-                    },
-                    exception =>
-                    {
-                        isFailed = true;
-                        SetState(IapPurchaseState.Failed, exception);
-                    }
-                );
+            using (plasmaChainClient)
+            {
+                foreach (Product pendingPurchase in pendingPurchases)
+                {
+                    Log.Debug("Claiming product purchase: " + pendingPurchase.definition.storeSpecificId);
+                    OneOf<Success, IapPurchaseProcessingError, IapException> processPurchaseResult =
+                        await ExecutePostPurchaseProcessingInternal(plasmaChainClient, pendingPurchase, false);
+                    Log.Debug($"Claiming product {pendingPurchase.definition.storeSpecificId} purchase, result: " + processPurchaseResult);
 
-                if (isFailed)
-                    return processPurchaseResult;
+                    bool isFailed = false;
+                    processPurchaseResult.Switch(
+                        success => { },
+                        error =>
+                        {
+                            isFailed = true;
+                            SetState(IapPurchaseState.Failed, error);
+                        },
+                        exception =>
+                        {
+                            isFailed = true;
+                            SetState(IapPurchaseState.Failed, exception);
+                        }
+                    );
+
+                    if (isFailed)
+                        return processPurchaseResult;
+                }
             }
 
             SetState(IapPurchaseState.Finished, default);
@@ -219,6 +269,7 @@ namespace Loom.ZombieBattleground.Iap
         }
 
         private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ExecutePostPurchaseProcessingInternal(
+            DAppChainClient plasmaChainClient,
             string receiptJson,
             Product product,
             bool setFailFinishStates)
@@ -229,7 +280,7 @@ namespace Loom.ZombieBattleground.Iap
             throw new IapException("printing receipt and failing");
 #endif
 
-            IapPurchaseProcessor iapPurchaseProcessor = new IapPurchaseProcessor(_authFiatApiFacade, _fiatPlasmaManager, SetState);
+            IapPurchaseProcessor iapPurchaseProcessor = new IapPurchaseProcessor(_authFiatApiFacade, _fiatPlasmaManager, plasmaChainClient, SetState);
             OneOf<Success, IapPurchaseProcessingError, IapException> processPurchaseResult =
                 await iapPurchaseProcessor.ProcessPurchase(receiptJson);
             Log.Debug("ProcessPurchase result: " + processPurchaseResult);
@@ -281,12 +332,13 @@ namespace Loom.ZombieBattleground.Iap
         }
 
         private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ExecutePostPurchaseProcessingInternal(
+            DAppChainClient plasmaChainClient,
             Product product,
             bool setFailFinishStates)
         {
             string receipt = product.receipt;
             OneOf<Success, IapPurchaseProcessingError, IapException> result =
-                await ExecutePostPurchaseProcessingInternal(receipt, product, setFailFinishStates);
+                await ExecutePostPurchaseProcessingInternal(plasmaChainClient, receipt, product, setFailFinishStates);
             if (result.IsT0)
             {
                 Log.Debug($"{nameof(ExecutePostPurchaseProcessingInternal)} success, removing product from pending purchases");
@@ -329,7 +381,21 @@ namespace Loom.ZombieBattleground.Iap
             _storePendingPurchases.Add(args.purchasedProduct);
             if (AllowProcessingPendingStorePurchase)
             {
-                await ExecutePostPurchaseProcessingInternal(args.purchasedProduct, true);
+                DAppChainClient plasmaChainClient;
+                try
+                {
+                    plasmaChainClient = await _contractManager.GetConnectedClient();
+                }
+                catch (Exception e)
+                {
+                    SetState(IapPurchaseState.Failed, new IapException("Failed to connect to PlasmaChain", e));
+                    return;
+                }
+
+                using (plasmaChainClient)
+                {
+                    await ExecutePostPurchaseProcessingInternal(plasmaChainClient, args.purchasedProduct, true);
+                }
             }
         }
 
@@ -376,6 +442,7 @@ namespace Loom.ZombieBattleground.Iap
         {
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
             _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
+            _contractManager = GameClient.Get<ContractManager>();
 
             _iapPlatformStoreFacade = GameClient.Get<IIapPlatformStoreFacade>();
             _iapPlatformStoreFacade.ProcessingPurchase += OnProcessPurchase;

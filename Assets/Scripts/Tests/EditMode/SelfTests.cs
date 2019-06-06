@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Test
 
                 try
                 {
-                    await client.Start(contract => new DefaultContractCallProxy(contract), new DAppChainClientConfiguration(), enabledLogs: false);
+                    await client.Start(contract => new DefaultContractCallProxy<RawChainEventArgs>(contract), new DAppChainClientConfiguration(), enabledLogs: false);
 
                     foreach (Card card in client.CardLibrary)
                     {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using log4net;
 using log4net.Core;
 using Loom.Client;
+using Loom.Client.Internal;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Test;
 using NUnit.Framework;
@@ -23,7 +24,7 @@ namespace Loom.ZombieBattleground.Test
             BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
             TaggedLoggerWrapper taggedLoggerWrapper = new TaggedLoggerWrapper(Logging.GetLog(nameof(BackendFacade)).Logger, _userDataModel.UserId);
             ILog log = new LogImpl(taggedLoggerWrapper);
-            BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract), log, log);
+            BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy<RawChainEventArgs>(contract), log, log);
         }
 
         public void TestTearDown()

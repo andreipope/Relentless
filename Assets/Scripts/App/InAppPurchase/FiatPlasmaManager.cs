@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-
-using System.Numerics;
 using System.Globalization;
 using System.Threading.Tasks;
 using Loom.Client;
-using Loom.ZombieBattleground.Protobuf;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
-
-using System.Text;
 using log4net;
-using log4netUnitySupport;
-using Loom.ZombieBattleground.Iap;
+using Newtonsoft.Json;
+using OneOf;
+using OneOf.Types;
 
 namespace Loom.ZombieBattleground.Iap
 {
@@ -24,208 +15,92 @@ namespace Loom.ZombieBattleground.Iap
         private static readonly ILog Log = Logging.GetLog(nameof(FiatPlasmaManager));
         private static readonly ILog RpcLog = Logging.GetLog(nameof(FiatPlasmaManager) + "Rpc");
 
-        public event Action<ContractRequest> OnRequestPackSuccess;
-        public event Action OnRequestPackFailed;
-        public event Action OnConnectionStateNotConnect;
-
-        private ContractRequest _cachePackRequestingParams;
-
-        private const string RequestPackResponseEventName = "PurchaseSent";
-
         private ContractManager _contractManager;
-
-        private BackendDataControlMediator _backendDataControlMediator;
-
-        private ILoadObjectsManager _loadObjectsManager;
 
         public void Init()
         {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _contractManager = GameClient.Get<ContractManager>();
-            _contractManager.OnContractCreated +=
-            (
-                IapContractType contractType,
-                EvmContract oldContract,
-                EvmContract newContract
-            ) =>
+        }
+
+        public void Update() { }
+
+        public void Dispose() { }
+
+        public async Task<OneOf<Success, IapException>> ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionResponse fiatResponse)
+        {
+            try
             {
-                if (contractType == IapContractType.FiatPurchase)
-                {
-                    newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-                    newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-                    if (oldContract != null)
-                    {
-                        oldContract.EventReceived -= ContractEventReceived;
-                    }
-                    newContract.EventReceived += ContractEventReceived;
-                }
-            };
-        }
-
-        public void Update()
-        {
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public async Task ClaimPacks(AuthFiatApiFacade.TransactionResponse fiatResponse)
-        {
-            ContractRequest contractParams = ParseContractRequestFromTransactionResponse(fiatResponse);
-            await CallRequestPacksContract
-            (
-                await _contractManager.GetContract
-                (
-                    IapContractType.FiatPurchase
-                ),
-                contractParams
-            );
-        }
-
-        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
-        {
-            if
-            (
-                state != RpcConnectionState.Connected &&
-                state != RpcConnectionState.Connecting
-            )
+                EvmContract evmContract = _contractManager.GetContract(client, IapContractType.FiatPurchase);
+                RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatResponse);
+                await CallRequestPacksContract(evmContract, requestPacksRequest);
+            }
+            catch (Exception e)
             {
-                OnConnectionStateNotConnect?.Invoke();
+                return new IapException($"{nameof(ClaimPacks)} failed", e);
             }
 
-            UnitySynchronizationContext.Instance.Post(o =>
-            {
-                if (state != RpcConnectionState.Connected &&
-                    state != RpcConnectionState.Connecting)
-                {
-                    string errorMsg =
-                        "Your game client is now OFFLINE. Please check your internet connection and try again later.";
-                    _contractManager.HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null));
-                }
-            }, null);
+            return new Success();
         }
 
         private const string RequestPacksMethod = "requestPacks";
 
-        private async Task CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
+        private async Task CallRequestPacksContract(EvmContract contract, RequestPacksRequest requestPacksRequest)
         {
-            if (contract == null)
-            {
-                throw new Exception("Contract not signed in!");
-            }
-
-            Log.Info( $"Calling smart contract [{RequestPacksMethod}]");
-            _cachePackRequestingParams = contractParams;
-
-            Log.Info($"CallAsync method [{RequestPacksMethod}]");
-            await contract.CallAsync
-            (
+            Log.Info($"{nameof(CallRequestPacksContract)}, ContractRequest:\n" + JsonConvert.SerializeObject(requestPacksRequest));
+            await contract.CallAsync(
                 RequestPacksMethod,
-                contractParams.UserId,
-                contractParams.r,
-                contractParams.s,
-                contractParams.v,
-                contractParams.hash,
-                contractParams.amount,
-                contractParams.TxID
+                requestPacksRequest.UserId,
+                requestPacksRequest.r,
+                requestPacksRequest.s,
+                requestPacksRequest.v,
+                requestPacksRequest.hash,
+                requestPacksRequest.amount,
+                requestPacksRequest.TxID
             );
             Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
         }
 
-        private void ContractEventReceived(object sender, EvmChainEventArgs e)
+        private RequestPacksRequest CreateContractRequestFromTransactionResponse(AuthFiatApiFacade.TransactionResponse fiatResponse)
         {
-            Log.InfoFormat("Received smart contract event: " + e.EventName);
-            Log.InfoFormat("BlockHeight: " + e.BlockHeight);
-            if (string.Equals(e.EventName, RequestPackResponseEventName))
+            string r = fiatResponse.VerifyHash.signature.SubstringIndexed(2, 66);
+            string s = fiatResponse.VerifyHash.signature.SubstringIndexed(66, 130);
+            string v = fiatResponse.VerifyHash.signature.SubstringIndexed(130, 132);
+
+            RequestPacksRequest request = new RequestPacksRequest
             {
-                OnRequestPackSuccess?.Invoke(_cachePackRequestingParams);
-            }
-            else
-            {
-                OnRequestPackFailed?.Invoke();
-            }
-            _cachePackRequestingParams = null;
+                UserId = fiatResponse.UserId,
+                r = CryptoUtils.HexStringToBytes(r),
+                s = CryptoUtils.HexStringToBytes(s),
+                v = (byte) Int32.Parse(v, NumberStyles.AllowHexSpecifier),
+                hash = CryptoUtils.HexStringToBytes(fiatResponse.VerifyHash.hash),
+                amount = new []
+                {
+                    fiatResponse.Booster,
+                    fiatResponse.Super,
+                    fiatResponse.Air,
+                    fiatResponse.Earth,
+                    fiatResponse.Fire,
+                    fiatResponse.Life,
+                    fiatResponse.Toxic,
+                    fiatResponse.Water,
+                    fiatResponse.Small,
+                    fiatResponse.Minion,
+                    fiatResponse.Binance
+                },
+                TxID = fiatResponse.TxID
+            };
+            return request;
         }
 
-        public class ContractRequest
+        private struct RequestPacksRequest
         {
             public int UserId;
             public byte[] r;
             public byte[] s;
-            public sbyte v;
+            public byte v;
             public byte[] hash;
-            public int []amount;
+            public int[] amount;
             public int TxID;
         }
-
-#region Util
-        private ContractRequest ParseContractRequestFromTransactionResponse(AuthFiatApiFacade.TransactionResponse fiatResponse)
-        {
-            string log = "ContractRequest Params: \n";
-            int UserId = fiatResponse.UserId;
-            string hash = fiatResponse.VerifyHash.hash;
-            int TxID = fiatResponse.TxID;
-            string sig = fiatResponse.VerifyHash.signature;
-            string r = Slice(sig, 2, 66);
-            string s = "" + Slice(sig, 66, 130);
-            string vStr = Slice(sig, 130, 132);
-            BigInteger v = HexStringToBigInteger(vStr);
-
-            List<int> amountList = new List<int>();
-            amountList.Add( fiatResponse.Booster);
-            amountList.Add( fiatResponse.Super);
-            amountList.Add( fiatResponse.Air);
-            amountList.Add( fiatResponse.Earth);
-            amountList.Add( fiatResponse.Fire);
-            amountList.Add( fiatResponse.Life);
-            amountList.Add( fiatResponse.Toxic);
-            amountList.Add( fiatResponse.Water);
-            amountList.Add( fiatResponse.Small);
-            amountList.Add( fiatResponse.Minion);
-            amountList.Add( fiatResponse.Binance);
-
-            log += "UserId: " + UserId + "\n";
-            log += "r: " + r + "\n";
-            log += "s: " + s + "\n";
-            log += "v: " + v + "\n";
-            log += "hash: " + hash + "\n";
-            string amountStr = "[";
-            for (int i = 0; i < amountList.Count;++i)
-            {
-                amountStr += amountList[i] + " ";
-            }
-            amountStr += "]";
-            log += "amount: " + amountStr + "\n";
-            log += "TxID: " + TxID + "\n";
-            Log.Info(log);
-    
-            ContractRequest contractParams = new ContractRequest();
-            contractParams.UserId = UserId;
-            contractParams.r = CryptoUtils.HexStringToBytes(r);
-            contractParams.s = CryptoUtils.HexStringToBytes(s);
-            contractParams.v = (sbyte)v;
-            contractParams.hash = CryptoUtils.HexStringToBytes(hash);
-            contractParams.amount = amountList.ToArray();
-            contractParams.TxID = TxID;
-            return contractParams;
-        }
-        public string Slice(string source, int start, int end)
-        {
-            if (end < 0) 
-            {
-                end = source.Length + end;
-            }
-            int len = end - start;
-            return source.Substring(start, len);
-        }
-        
-        public BigInteger HexStringToBigInteger(string hexString)
-        {
-            BigInteger b = BigInteger.Parse(hexString,NumberStyles.AllowHexSpecifier);
-            return b;
-        }
-#endregion     
     }
 }

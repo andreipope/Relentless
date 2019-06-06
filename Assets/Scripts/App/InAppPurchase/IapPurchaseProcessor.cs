@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
@@ -21,15 +22,18 @@ namespace Loom.ZombieBattleground.Iap
 
         private readonly AuthFiatApiFacade _authFiatApiFacade;
         private readonly FiatPlasmaManager _fiatPlasmaManager;
+        private readonly DAppChainClient _plasmaChainClient;
         private readonly PurchaseStateChangedHandler _setStateAction;
 
         public IapPurchaseProcessor(
             AuthFiatApiFacade authFiatApiFacade,
             FiatPlasmaManager fiatPlasmaManager,
+            DAppChainClient plasmaChainClient,
             PurchaseStateChangedHandler stateAction)
         {
             _authFiatApiFacade = authFiatApiFacade;
             _fiatPlasmaManager = fiatPlasmaManager;
+            _plasmaChainClient = plasmaChainClient;
             _setStateAction = stateAction;
         }
 
@@ -140,7 +144,7 @@ namespace Loom.ZombieBattleground.Iap
             try
             {
                 // Claim pack on Plasmachain
-                await _fiatPlasmaManager.ClaimPacks(record);
+                await _fiatPlasmaManager.ClaimPacks(_plasmaChainClient, record);
             }
             catch (TxCommitException e)
             {

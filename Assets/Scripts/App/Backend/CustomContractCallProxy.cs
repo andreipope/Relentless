@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public const string CallMetricsFileName = "CallMetrics.json";
 
-        public Contract Contract { get; }
+        public RawChainEventContract Contract { get; }
 
         public bool EnableLogs { get; set; }
 
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private readonly Dictionary<int, double> _callNumberToExecutionTimestamp = new Dictionary<int, double>();
 
-        public CustomContractCallProxy(Contract contract, bool enableLogs, bool storeCallMetrics)
+        public CustomContractCallProxy(RawChainEventContract contract, bool enableLogs, bool storeCallMetrics)
         {
             _dataManager = GameClient.Get<IDataManager>();
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));

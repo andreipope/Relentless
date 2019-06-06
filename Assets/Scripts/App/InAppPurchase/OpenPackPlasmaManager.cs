@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using log4net;
@@ -8,17 +10,15 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.Iap
 {
     public class OpenPackPlasmaManager : IService
     {
         private static readonly ILog Log = Logging.GetLog(nameof(OpenPackPlasmaManager));
-        private static readonly ILog RpcLog = Logging.GetLog(nameof(OpenPackPlasmaManager) + "Rpc");
 
         private const int CardsPerPack = 5;
-
-        private const int MaxRequestRetryAttempt = 5;
 
         private const string BalanceOfMethod = "balanceOf";
 
@@ -26,287 +26,137 @@ namespace Loom.ZombieBattleground.Iap
 
         private const string OpenPackMethod = "openBoosterPack";
 
-
-        private BackendDataControlMediator _backendDataControlMediator;
-        private ILoadObjectsManager _loadObjectsManager;
         private IDataManager _dataManager;
         private ContractManager _contractManager;
 
-        public event Action OnConnectionStateNotConnect;
-
-        public List<Card> CardsReceived { get; private set; }
-
         public void Init()
         {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _dataManager = GameClient.Get<IDataManager>();
             _contractManager = GameClient.Get<ContractManager>();
-
-            CardsReceived = new List<Card>();
-
-            _contractManager.OnContractCreated +=
-                (
-                    contractType,
-                    oldContract,
-                    newContract) =>
-                {
-                    if (contractType != IapContractType.FiatPurchase)
-                    {
-                        newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-                        newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-                    }
-
-                    if (contractType == IapContractType.CardFaucet)
-                    {
-                        if (oldContract != null) oldContract.EventReceived -= ContractEventReceived;
-
-                        newContract.EventReceived += ContractEventReceived;
-                    }
-                };
         }
 
         public void Update() { }
 
         public void Dispose() { }
 
-        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
+        public async Task<int> GetPackTypeBalance(DAppChainClient client, Enumerators.MarketplaceCardPackType packTypeId)
         {
-            if
-            (
-                state != RpcConnectionState.Connected &&
-                state != RpcConnectionState.Connecting
-            )
-                OnConnectionStateNotConnect?.Invoke();
+            Log.Info($"{nameof(GetPackTypeBalance)}(MarketplaceCardPackType packTypeId = {packTypeId})");
 
-            UnitySynchronizationContext.Instance.Post(o =>
-                {
-                    if (state != RpcConnectionState.Connected &&
-                        state != RpcConnectionState.Connecting)
-                    {
-                        string errorMsg =
-                            "Your game client is now OFFLINE. Please check your internet connection and try again later.";
-                        _contractManager.HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null));
-                    }
-                },
-                null);
-        }
+            EvmContract packTypeContract = _contractManager.GetContract(client, GetPackContractTypeFromId(packTypeId));
+            int amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<int>(
+                BalanceOfMethod,
+                Address.FromPublicKey(_contractManager.UserPublicKey).ToString()
+            );
 
-        public async Task<int> CallPackBalanceContract(int packTypeId)
-        {
-            Log.Info($"CallPackBalanceContract {((Enumerators.MarketplaceCardPackType) packTypeId).ToString()}");
-
-            int amount;
-            int count = 0;
-            while (true)
-            {
-                try
-                {
-                    amount = await CallBalanceContract
-                    (
-                        await _contractManager.GetContract
-                        (
-                            GetPackContractTypeFromId(packTypeId)
-                        )
-                    );
-                    break;
-                }
-                catch
-                {
-                    Log.Info("smart contract [balanceOf] error or reverted");
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                }
-
-                ++count;
-                if (count > MaxRequestRetryAttempt)
-                    throw new Exception($"{nameof(CallPackBalanceContract)} with packTypeId {packTypeId}  failed after {count} attempts");
-
-                Log.Info($"Retry CallPackBalance: {count}");
-            }
-
+            Log.Info($"{nameof(GetPackTypeBalance)} returned {amount}");
             return amount;
         }
 
-        public async Task<List<Card>> CallOpenPack(int packTypeId)
+        [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
+        public async Task<IReadOnlyList<Card>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packTypeId)
         {
-            List<Card> resultList;
+            Log.Info($"{nameof(GetPackTypeBalance)}(MarketplaceCardPackType packTypeId = {packTypeId})");
 
-            int expectCardReceiveAmount = CardsPerPack;
-            int count = 0;
+            EvmContract cardFaucetContract = _contractManager.GetContract(client, IapContractType.CardFaucet);
+            EvmContract packContract = _contractManager.GetContract(client, GetPackContractTypeFromId(packTypeId));
 
-            while (true)
+            List<Card> cards = new List<Card>();
+            void ContractEventReceived(object sender, EvmChainEventArgs e)
             {
-                resultList = new List<Card>();
-                CardsReceived.Clear();
+                Log.Info($"{nameof(GetPackTypeBalance)}: received smart contract even " + e.EventName);
+                GeneratedCardEvent generatedCardEvent = e.DecodeEventDto<GeneratedCardEvent>();
+                Log.Info($"{nameof(GetPackTypeBalance)}: CardId = {generatedCardEvent.MouldId}, BoosterType ={generatedCardEvent.BoosterType}</color>");
 
-                try
+                if (generatedCardEvent.MouldId % 10 != 0)
                 {
-                    await CallApproveContract
-                    (
-                        await _contractManager.GetContract
-                        (
-                            GetPackContractTypeFromId(packTypeId)
-                        )
-                    );
-                    await CallOpenPackContract(
-                        await _contractManager.GetContract
-                        (
-                            IapContractType.CardFaucet
-                        ),
-                        packTypeId
-                    );
-
-                    double timeOut = 29.99;
-                    double interval = 1.0;
-                    while (timeOut > 0.0 && CardsReceived.Count < expectCardReceiveAmount)
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(interval));
-                        timeOut -= interval;
-                    }
-
-                    foreach (Card card in CardsReceived)
-                    {
-                        resultList.Add(card);
-                    }
-
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Log.Info($"[open{(Enumerators.MarketplaceCardPackType) packTypeId}Packs] failed. e:{e.Message}");
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with raw MouldId {generatedCardEvent.MouldId}");
+                    cards.Add(null);
+                    return;
                 }
 
-                ++count;
-                if (count >= MaxRequestRetryAttempt)
-                    throw new Exception($"{nameof(CallOpenPack)} with packTypeId {packTypeId}  failed after {count} attempts");
-
-                Log.Info($"Retry CallOpenPack: {count}");
-            }
-
-            return resultList;
-        }
-
-        public async Task<int> CallBalanceContract(EvmContract contract)
-        {
-            if (contract == null) throw new Exception("Contract not signed in!");
-
-            Log.Info($"Calling smart contract [{BalanceOfMethod}]");
-            int result;
-            try
-            {
-                result = await contract.StaticCallSimpleTypeOutputAsync<int>(
-                    BalanceOfMethod,
-                    Address.FromPublicKey(_contractManager.PublicKey).ToString()
-                );
-                Log.Info("<color=green>" + "balanceOf RESULT: " + result + "</color>");
-                Log.Info($"Smart contract method [{BalanceOfMethod}] finished executing.");
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Requesting [{BalanceOfMethod}] failed e:{e.Message}");
-            }
-
-            return result;
-        }
-
-        public async Task CallApproveContract(EvmContract contract)
-        {
-            if (contract == null) throw new Exception("Contract not signed in!");
-
-            Log.Info("Calling smart contract [approve]");
-
-            int amountToApprove = 1;
-
-            await contract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
-
-            Log.Info($"Smart contract method [{ApproveMethod}] finished executing.");
-        }
-
-        public async Task CallOpenPackContract(EvmContract contract, int packTypeId)
-        {
-            if (contract == null) throw new Exception("Contract not signed in!");
-
-            Log.Info($"Calling smart contract [{OpenPackMethod}] with packId: {packTypeId}");
-
-            await contract.CallAsync(OpenPackMethod, packTypeId);
-
-            Log.Info($"Smart contract method [{OpenPackMethod}] with packId: {packTypeId} finished executing.");
-        }
-
-        private void ContractEventReceived(object sender, EvmChainEventArgs e)
-        {
-            Log.InfoFormat("Received smart contract event: " + e.EventName);
-            OnOpenPackEvent onOpenPackEvent = e.DecodeEventDto<OnOpenPackEvent>();
-            Log.Info($"<color=red>CardId: {onOpenPackEvent.CardId}, BoosterType: {onOpenPackEvent.BoosterType}</color>");
-
-            if ((int) onOpenPackEvent.CardId % 10 == 0)
-            {
-                MouldId mouldId = new MouldId((int) onOpenPackEvent.CardId / 10);
-                Card card;
-                try
+                MouldId mouldId = new MouldId((long) (generatedCardEvent.MouldId / 10));
+                (bool found, Card card) = _dataManager.CachedCardsLibraryData.TryGetCardFromMouldId(mouldId);
+                if (found)
                 {
-                    card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
-                    Log.Info($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
+                    Log.Info($"{nameof(GetPackTypeBalance)}: Matching card {card}");
+                    cards.Add(card);
                 }
-                catch
+                else
                 {
-                    Log.Info($"Not found card with MouldId:{mouldId}");
-                    card = null;
+                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with MouldId {mouldId}");
+                    cards.Add(null);
+                }
+            }
+
+            cardFaucetContract.EventReceived += ContractEventReceived;
+
+            await client.SubscribeToEvents();
+
+            const int amountToApprove = 1;
+            await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
+            await cardFaucetContract.CallAsync(OpenPackMethod, packTypeId);
+
+            const double timeout = 15;
+            bool timedOut = false;
+            double startTime = Utilites.GetTimestamp();
+
+            await new WaitUntil(() =>
+            {
+                if (Utilites.GetTimestamp() - startTime > timeout)
+                {
+                    timedOut = true;
+                    return true;
                 }
 
-                CardsReceived.Add(card);
-            }
+                return cards.Count == CardsPerPack;
+            });
+
+            if (timedOut)
+                throw new TimeoutException();
+
+            cards = cards.Where(card => card != null).ToList();
+            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
+            return cards;
         }
 
-        private IapContractType GetPackContractTypeFromId(int packId)
+        private IapContractType GetPackContractTypeFromId(Enumerators.MarketplaceCardPackType packId)
         {
-            switch ((Enumerators.MarketplaceCardPackType) packId)
+            switch (packId)
             {
                 case Enumerators.MarketplaceCardPackType.Booster:
                     return IapContractType.BoosterPack;
-
                 case Enumerators.MarketplaceCardPackType.Super:
                     return IapContractType.SuperPack;
-
                 case Enumerators.MarketplaceCardPackType.Air:
                     return IapContractType.AirPack;
-
                 case Enumerators.MarketplaceCardPackType.Earth:
                     return IapContractType.EarthPack;
-
                 case Enumerators.MarketplaceCardPackType.Fire:
                     return IapContractType.FirePack;
-
                 case Enumerators.MarketplaceCardPackType.Life:
                     return IapContractType.LifePack;
-
                 case Enumerators.MarketplaceCardPackType.Toxic:
                     return IapContractType.ToxicPack;
-
                 case Enumerators.MarketplaceCardPackType.Water:
                     return IapContractType.WaterPack;
-
                 case Enumerators.MarketplaceCardPackType.Small:
                     return IapContractType.SmallPack;
-
                 case Enumerators.MarketplaceCardPackType.Minion:
                     return IapContractType.MinionPack;
-
                 default:
                     throw new Exception($"Not found ContractType from pack id {packId}");
             }
         }
 
         [Event("GeneratedCard")]
-        public class OnOpenPackEvent
+        private class GeneratedCardEvent
         {
             [Parameter("uint256", "cardId")]
-            public BigInteger CardId { get; set; }
+            public BigInteger MouldId { get; set; }
 
             [Parameter("uint256", "boosterType", 2)]
             public BigInteger BoosterType { get; set; }
         }
     }
-
 }

@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
-            Func<Contract, IContractCallProxy> contractCallProxyFactory =
+            Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory =
                 contract => new ThreadedContractCallProxyWrapper(new CustomContractCallProxy(contract, true, true));
 
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());

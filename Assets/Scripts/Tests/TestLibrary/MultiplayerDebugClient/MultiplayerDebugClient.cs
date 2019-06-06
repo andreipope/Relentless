@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         public async Task Start(
-            Func<Contract, IContractCallProxy> contractCallProxyFactory,
+            Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory,
             DAppChainClientConfiguration clientConfiguration,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,

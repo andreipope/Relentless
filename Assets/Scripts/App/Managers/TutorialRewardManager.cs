@@ -15,6 +15,7 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 using System.Text;
 using log4net;
 using log4netUnitySupport;
+using Loom.ZombieBattleground.Iap;
 
 namespace Loom.ZombieBattleground
 {
@@ -84,7 +85,11 @@ namespace Loom.ZombieBattleground
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _uiManager.HidePopup<LoadingOverlayPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+
+            using (DAppChainClient client = await GameClient.Get<ContractManager>().GetConnectedClient())
+            {
+                await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().UpdatePackBalanceAmount(client, Enumerators.MarketplaceCardPackType.Minion);
+            }
         }
         
         private async void WarningPopupConfirmationReceived()
