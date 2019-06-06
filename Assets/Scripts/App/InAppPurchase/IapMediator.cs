@@ -18,9 +18,7 @@ namespace Loom.ZombieBattleground.Iap
 
         private AuthFiatApiFacade _authFiatApiFacade;
 
-        private ContractManager _contractManager;
-
-        private FiatPlasmaManager _fiatPlasmaManager;
+        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
 
         private IIapPlatformStoreFacade _iapPlatformStoreFacade;
 
@@ -135,7 +133,7 @@ namespace Loom.ZombieBattleground.Iap
             DAppChainClient plasmaChainClient;
             try
             {
-                plasmaChainClient = await _contractManager.GetConnectedClient();
+                plasmaChainClient = await _plasmaChainBackendFacade.GetConnectedClient();
             }
             catch (Exception e)
             {
@@ -170,7 +168,7 @@ namespace Loom.ZombieBattleground.Iap
             DAppChainClient plasmaChainClient;
             try
             {
-                plasmaChainClient = await _contractManager.GetConnectedClient();
+                plasmaChainClient = await _plasmaChainBackendFacade.GetConnectedClient();
             }
             catch (Exception e)
             {
@@ -185,7 +183,7 @@ namespace Loom.ZombieBattleground.Iap
                 {
                     Log.Debug("Claiming transaction with TxId " + transaction.TxID);
                     IapPurchaseProcessor iapPurchaseProcessor =
-                        new IapPurchaseProcessor(_authFiatApiFacade, _fiatPlasmaManager, plasmaChainClient, SetState);
+                        new IapPurchaseProcessor(_authFiatApiFacade, _plasmaChainBackendFacade, plasmaChainClient, SetState);
                     OneOf<Success, IapPurchaseProcessingError, IapException> requestFiatTransactionResult =
                         await iapPurchaseProcessor.RequestFiatTransaction(transaction.TxID);
                     Log.Debug($"{nameof(iapPurchaseProcessor.RequestFiatTransaction)} result: " + requestFiatTransactionResult);
@@ -228,7 +226,7 @@ namespace Loom.ZombieBattleground.Iap
             DAppChainClient plasmaChainClient;
             try
             {
-                plasmaChainClient = await _contractManager.GetConnectedClient();
+                plasmaChainClient = await _plasmaChainBackendFacade.GetConnectedClient();
             }
             catch (Exception e)
             {
@@ -280,7 +278,7 @@ namespace Loom.ZombieBattleground.Iap
             throw new IapException("printing receipt and failing");
 #endif
 
-            IapPurchaseProcessor iapPurchaseProcessor = new IapPurchaseProcessor(_authFiatApiFacade, _fiatPlasmaManager, plasmaChainClient, SetState);
+            IapPurchaseProcessor iapPurchaseProcessor = new IapPurchaseProcessor(_authFiatApiFacade, _plasmaChainBackendFacade, plasmaChainClient, SetState);
             OneOf<Success, IapPurchaseProcessingError, IapException> processPurchaseResult =
                 await iapPurchaseProcessor.ProcessPurchase(receiptJson);
             Log.Debug("ProcessPurchase result: " + processPurchaseResult);
@@ -384,7 +382,7 @@ namespace Loom.ZombieBattleground.Iap
                 DAppChainClient plasmaChainClient;
                 try
                 {
-                    plasmaChainClient = await _contractManager.GetConnectedClient();
+                    plasmaChainClient = await _plasmaChainBackendFacade.GetConnectedClient();
                 }
                 catch (Exception e)
                 {
@@ -441,8 +439,8 @@ namespace Loom.ZombieBattleground.Iap
         void IService.Init()
         {
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
-            _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
-            _contractManager = GameClient.Get<ContractManager>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
 
             _iapPlatformStoreFacade = GameClient.Get<IIapPlatformStoreFacade>();
             _iapPlatformStoreFacade.ProcessingPurchase += OnProcessPurchase;

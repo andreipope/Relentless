@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<LoadingOverlayPopup>();
             _uiManager.DrawPopup<RewardPopup>();
 
-            using (DAppChainClient client = await GameClient.Get<ContractManager>().GetConnectedClient())
+            using (DAppChainClient client = await GameClient.Get<PlasmaChainBackendFacade>().GetConnectedClient())
             {
                 await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().UpdatePackBalanceAmount(client, Enumerators.MarketplaceCardPackType.Minion);
             }

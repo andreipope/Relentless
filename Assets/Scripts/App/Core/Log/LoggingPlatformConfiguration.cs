@@ -2,6 +2,7 @@ using System.Linq;
 using log4net.Core;
 using log4net.Filter;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Iap;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
 #if UNITY_EDITOR
@@ -24,6 +25,9 @@ namespace Loom.ZombieBattleground
             {
                 Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
                 backendFacadeRpc.Level = Level.Warn;
+
+                Logger plasmaChainBackendFacade = Logging.GetLogger(nameof(PlasmaChainBackendFacade) + "Rpc");
+                plasmaChainBackendFacade.Level = Level.Warn;
 
                 Logger customContractCallProxy = Logging.GetLogger(nameof(CustomContractCallProxy));
                 customContractCallProxy.Level = Level.Warn;

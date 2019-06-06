@@ -74,11 +74,9 @@ namespace Loom.ZombieBattleground
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<AuthFiatApiFacade>(new AuthFiatApiFacade());
-            AddService<FiatPlasmaManager>(new FiatPlasmaManager());
-            AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
-            AddService<ContractManager>(new ContractManager());
+            AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
         }
 

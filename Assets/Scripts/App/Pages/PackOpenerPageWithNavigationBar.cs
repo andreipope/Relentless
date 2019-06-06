@@ -36,9 +36,7 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private OpenPackPlasmaManager _openPackPlasmaManager;
-
-        private ContractManager _contractManager;
+        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -137,8 +135,7 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
-            _contractManager = GameClient.Get<ContractManager>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -490,7 +487,7 @@ namespace Loom.ZombieBattleground
         {
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[]) Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
 
-            using (DAppChainClient client = await _contractManager.GetConnectedClient())
+            using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
             {
                 for (int i = 0; i < packTypes.Length; ++i)
                 {
@@ -504,7 +501,7 @@ namespace Loom.ZombieBattleground
             _lastPackBalanceIdRequest = typeId;
             try
             {
-                _packBalanceAmounts[(int) typeId] = await _openPackPlasmaManager.GetPackTypeBalance(client, typeId);
+                _packBalanceAmounts[(int) typeId] = await _plasmaChainBackendFacade.GetPackTypeBalance(client, typeId);
                 SetPackTypeButtonsAmount(typeId);
                 _retryPackBalanceRequestCount = 0;
             }
@@ -532,7 +529,7 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
             try
             {
-                IReadOnlyList<Card> cards = await _openPackPlasmaManager.CallOpenPack(client, packTypeId);
+                IReadOnlyList<Card> cards = await _plasmaChainBackendFacade.CallOpenPack(client, packTypeId);
 
                 _cardsToDisplayQueqe.Clear();
                 _cardsToDisplayQueqe.AddRange(cards);
@@ -588,7 +585,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                using (DAppChainClient client = await _contractManager.GetConnectedClient())
+                using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
                 {
                     await UpdatePackBalanceAmount(client, _selectedPackType);
 

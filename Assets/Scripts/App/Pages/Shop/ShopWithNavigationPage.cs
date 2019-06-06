@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
 
         private FiatValidationData _fiatValidationData;
 
-        private FiatPlasmaManager _fiatPlasmaManager;
+        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
 
         private IapMediator _iapMediator;
 
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
 
             _iapMediator = GameClient.Get<IapMediator>();
         }
