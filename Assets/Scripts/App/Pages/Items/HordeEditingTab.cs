@@ -1,25 +1,18 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using log4net;
 using DG.Tweening;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using System.IO;
-using Loom.ZombieBattleground.Protobuf;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using Faction = Loom.ZombieBattleground.Data.Faction;
 using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground
@@ -53,8 +46,12 @@ namespace Loom.ZombieBattleground
         private GameObject _draggingObject;
 
         private Button _buttonAutoComplete,
-                       _buttonBack,
-                       _buttonRename;
+            _buttonBack;
+
+        private Button _buttonLeftArrowScroll;
+        private Button _buttonRightArrowScroll;
+
+        private Scrollbar _cardCollectionScrollBar;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
@@ -171,9 +168,6 @@ namespace Loom.ZombieBattleground
             //_textEditDeckName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             //_textEditDeckCardsAmount = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
 
-            //_buttonRename = _textEditDeckName.GetComponent<Button>();
-            //_buttonRename.onClick.AddListener(ButtonRenameHandler);
-
             //_buttonSaveDeck = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
             //_buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
 
@@ -185,6 +179,14 @@ namespace Loom.ZombieBattleground
 
             _uiCardCollections.Show(_selfPage.transform.Find("Tab_Editing").gameObject, PageType.DeckEditing);
             _customDeckUi.Load(_selfPage.transform.Find("Tab_Editing/Deck_Content").gameObject);
+
+            _buttonLeftArrowScroll = _selfPage.transform.Find("Tab_Editing/Panel_Content/Army/Element/LeftArrow").GetComponent<Button>();
+            _buttonLeftArrowScroll.onClick.AddListener(ButtonLeftArrowScrollHandler);
+
+            _buttonRightArrowScroll = _selfPage.transform.Find("Tab_Editing/Panel_Content/Army/Element/RightArrow").GetComponent<Button>();
+            _buttonRightArrowScroll.onClick.AddListener(ButtonRightArrowScrollHandler);
+
+            _cardCollectionScrollBar = _selfPage.transform.Find("Tab_Editing/Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
 
             /*_imageAbilityIcons = new Image[]
             {
@@ -266,16 +268,26 @@ namespace Loom.ZombieBattleground
             ScrollCardList(false, scrollDelta);
         }*/
 
-        private void ButtonRenameHandler()
+        private void ButtonLeftArrowScrollHandler()
         {
-            if (_tutorialManager.BlockAndReport(_buttonRename.name))
+            if (_cardCollectionScrollBar.value <= 0)
                 return;
 
-            PlayClickSound();
-            _myDeckPage.IsRenameWhileEditing = true;
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+            _cardCollectionScrollBar.value -= _cardCollectionScrollBar.size;
+            if (_cardCollectionScrollBar.value <= 0)
+                _cardCollectionScrollBar.value = 0;
+
         }
 
+        private void ButtonRightArrowScrollHandler()
+        {
+            if (_cardCollectionScrollBar.value >= 1)
+                return;
+
+            _cardCollectionScrollBar.value += _cardCollectionScrollBar.size;
+            if (_cardCollectionScrollBar.value >= 1)
+                _cardCollectionScrollBar.value = 1;
+        }
 
 
         /*private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)

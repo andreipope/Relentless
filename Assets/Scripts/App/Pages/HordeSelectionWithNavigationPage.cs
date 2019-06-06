@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
             Rename = 1,
             Editing = 2,
             SelectOverlord = 3,
-            SelectOverlordSkill = 4,
+            SelectOverlordSkill = 4
         }
 
         private Tab _tab;

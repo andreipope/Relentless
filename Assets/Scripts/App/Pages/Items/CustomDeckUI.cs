@@ -29,6 +29,7 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
+        private ITutorialManager _tutorialManager;
 
         private List<DeckCardUI> _deckCards = new List<DeckCardUI>();
 
@@ -42,6 +43,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _deckCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/DeckCard_UI");
         }
@@ -192,7 +194,13 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRenameHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonRename.name))
+                return;
 
+            PlayClickSound();
+            HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+            deckPage.IsRenameWhileEditing = true;
+            deckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
         }
 
         private Sprite GetOverlordThumbnailSprite(Enumerators.Faction overlordFaction)
@@ -215,6 +223,12 @@ namespace Loom.ZombieBattleground
                 default:
                     return null;
             }
+        }
+
+        private void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK,
+                Constants.SfxSoundVolume, false, false, true);
         }
     }
 }

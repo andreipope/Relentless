@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Collections.Generic;
 using log4net;
 using Loom.ZombieBattleground.Common;
@@ -7,7 +5,6 @@ using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -42,8 +39,7 @@ namespace Loom.ZombieBattleground
 
         private const float BoardCardScale = 0.8f;
 
-        private List<IReadOnlyCard> _cardList,
-                                    _filteredCardList;
+        private List<IReadOnlyCard> _cardList;
 
         private int _currentCardIndex;
 
@@ -66,7 +62,6 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _cardList = new List<IReadOnlyCard>();
-            _filteredCardList = new List<IReadOnlyCard>();
             _currentCardIndex = -1;
         }
 
@@ -74,9 +69,6 @@ namespace Loom.ZombieBattleground
         {
             if (_cardList != null)
                 _cardList.Clear();
-
-            if (_filteredCardList != null)
-                _filteredCardList.Clear();
         }
 
         public void Hide()
@@ -124,15 +116,14 @@ namespace Loom.ZombieBattleground
             _buttonBack = Self.transform.Find("Background/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
 
-            _inputFieldSearch = Self.transform.Find("InputText_SearchDeckName").GetComponent<TMP_InputField>();
-            _inputFieldSearch.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
-            _inputFieldSearch.text = "";
+            //_inputFieldSearch = Self.transform.Find("InputText_SearchDeckName").GetComponent<TMP_InputField>();
+            //_inputFieldSearch.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
+            //_inputFieldSearch.text = "";
 
             _textDescription = Self.transform.Find("Panel/Text_CardDesc").GetComponent<TextMeshProUGUI>();
 
             _groupCreatureCard = Self.transform.Find("Group_CreatureCard");
 
-            UpdateFilteredCardList();
             CreateUnitCard();
             UpdateCardDetails();
             UpdatePopupType();
@@ -151,7 +142,7 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardDetails()
         {
-            _unitCardUi.FillCardData(_filteredCardList[_currentCardIndex] as Card);
+            _unitCardUi.FillCardData(_cardList[_currentCardIndex] as Card);
             _textDescription.text = !string.IsNullOrEmpty(_cardList[_currentCardIndex].FlavorText) ? _cardList[_currentCardIndex].FlavorText : string.Empty;
         }
 
@@ -188,7 +179,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
-                _filteredCardList[_currentCardIndex],
+                _cardList[_currentCardIndex],
                 true
             );
             Hide();
@@ -208,7 +199,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.RemoveCardFromDeck
             (
-                _filteredCardList[_currentCardIndex],
+                _cardList[_currentCardIndex],
                 true
             );
             Hide();
@@ -230,13 +221,6 @@ namespace Loom.ZombieBattleground
 
             PlayClickSound();
             MoveCardIndex(1);
-        }
-
-        public void OnInputFieldSearchEndedEdit(string value)
-        {
-            UpdateFilteredCardList();
-            _currentCardIndex = 0;
-            MoveCardIndex(0);
         }
 
         #endregion
@@ -265,91 +249,27 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateFilteredCardList()
-        {
-            string keyword = _inputFieldSearch.text.Trim();
-            if (string.IsNullOrEmpty(keyword))
-            {
-                _filteredCardList = _cardList.ToList();
-            }
-            else
-            {
-                _filteredCardList.Clear();
-                keyword = keyword.ToLower();
-                foreach (IReadOnlyCard card in _cardList)
-                {
-                    if (card.Name.ToLower().Contains(keyword))
-                        _filteredCardList.Add(card);
-                }
-                if(_filteredCardList.Count <= 0)
-                {
-                    OpenAlertDialog($"No card found for keyword {_inputFieldSearch.text.Trim()}");
-                    _filteredCardList = _cardList.ToList();
-                }
-            }
-        }
-
         private void MoveCardIndex(int direction)
         {
-            if(_filteredCardList == null)
-                Log.Info($"Current _filteredCardList in {nameof(CardInfoWithSearchPopup)} is null");
+            if(_cardList == null)
+                Log.Info($"Current Card List in {nameof(CardInfoWithSearchPopup)} is null");
 
-            if (_filteredCardList.Count <= 1)
+            if (_cardList.Count <= 1)
             {
-                _currentCardIndex = _filteredCardList.Count-1;
+                _currentCardIndex = _cardList.Count-1;
             }
             else
             {
                 int newIndex = _currentCardIndex + direction;
 
                 if (newIndex < 0)
-                    newIndex = _filteredCardList.Count - 1;
-                else if (newIndex >= _filteredCardList.Count)
+                    newIndex = _cardList.Count - 1;
+                else if (newIndex >= _cardList.Count)
                     newIndex = 0;
 
                 _currentCardIndex = newIndex;
             }
             UpdateCardDetails();
-        }
-
-        private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
-        {
-            GameObject go;
-            BoardCardView boardCard;
-            CardModel cardModel = new CardModel(new WorkingCard(card, card, null));
-
-            switch (card.Kind)
-            {
-                case Enumerators.CardKind.CREATURE:
-                    go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCardView(go, cardModel);
-                    break;
-                case Enumerators.CardKind.ITEM:
-                    go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new ItemBoardCardView(go, cardModel);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
-            }
-
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.Transform.position = position;
-            boardCard.Transform.localScale = Vector3.one * scale;
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameplayInfo;
-
-            boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
-            RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
-
-            if (root != null)
-            {
-                cardRectTransform.SetParent(root);
-            }
-
-            Vector3 anchoredPos = boardCard.Transform.localPosition;
-            anchoredPos.z = 0;
-            boardCard.Transform.localPosition = anchoredPos;
-
-            return boardCard;
         }
 
         #region Util
