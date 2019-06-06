@@ -93,26 +93,56 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
-        public static OverlordModel FromProtobuf(this Protobuf.Overlord overlord)
+        public static OverlordUserInstance FromProtobuf(this Protobuf.OverlordUserInstance overlordUserInstance)
         {
-            return new OverlordModel(
-                new OverlordId(overlord.OverlordId),
-                overlord.Icon,
-                overlord.Name,
-                overlord.ShortDescription,
-                overlord.LongDescription,
-                overlord.Experience,
-                (int) overlord.Level,
-                (Enumerators.Faction) overlord.Faction,
-                overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                overlord.InitialDefense
+            OverlordPrototype prototype = overlordUserInstance.Prototype.FromProtobuf();
+            HashSet<long> unlockedSkillIds = new HashSet<long>(overlordUserInstance.UserData.UnlockedSkillIds);
+
+            List<OverlordSkillUserInstance> skillUserInstances = new List<OverlordSkillUserInstance>();
+            foreach (OverlordSkillPrototype skillPrototype in prototype.Skills)
+            {
+                OverlordSkillUserInstance skillUserInstance =
+                    new OverlordSkillUserInstance(
+                        skillPrototype,
+                        new OverlordSkillUserData(unlockedSkillIds.Contains(skillPrototype.Id.Id))
+                    );
+
+                skillUserInstances.Add(skillUserInstance);
+            }
+
+            return new OverlordUserInstance(
+                prototype,
+                overlordUserInstance.UserData.FromProtobuf(),
+                skillUserInstances
             );
         }
 
-        public static OverlordSkill FromProtobuf(this Protobuf.Skill skill)
+        public static OverlordPrototype FromProtobuf(this Protobuf.OverlordPrototype overlordPrototype)
         {
-            return new OverlordSkill(
-                (int)skill.Id,
+            return new OverlordPrototype(
+                new OverlordId(overlordPrototype.Id),
+                overlordPrototype.Icon,
+                overlordPrototype.Name,
+                overlordPrototype.ShortDescription,
+                overlordPrototype.LongDescription,
+                (Enumerators.Faction) overlordPrototype.Faction,
+                overlordPrototype.Skills.Select(skill => skill.FromProtobuf()).ToList(),
+                overlordPrototype.InitialDefense
+            );
+        }
+
+        public static OverlordUserData FromProtobuf(this Protobuf.OverlordUserData overlordUserData)
+        {
+            return new OverlordUserData(
+                (int) overlordUserData.Level,
+                overlordUserData.Experience
+            );
+        }
+
+        public static OverlordSkillPrototype FromProtobuf(this Protobuf.OverlordSkillPrototype skill)
+        {
+            return new OverlordSkillPrototype(
+                new SkillId(skill.Id),
                 skill.Title,
                 skill.IconPath,
                 skill.Description,
@@ -121,11 +151,10 @@ namespace Loom.ZombieBattleground.Data
                 skill.Value,
                 skill.Damage,
                 skill.Count,
-                (Enumerators.Skill) skill.Skill_,
+                (Enumerators.Skill) skill.Skill,
                 skill.SkillTargets.Select(t => (Enumerators.SkillTarget) t).ToList(),
                 (Enumerators.UnitSpecialStatus) skill.TargetUnitSpecialStatus,
                 skill.TargetFactions.Select(t => (Enumerators.Faction) t).ToList(),
-                skill.Unlocked,
                 skill.CanSelectTarget,
                 skill.SingleUse
             );

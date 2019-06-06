@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public BlockTakeDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            Damage = ability.Damage;
+            Damage = 999 - ability.Damage;
         }
 
         public override void Activate()
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.UntilStartOfNextPlayerTurn)
             {
-                ApplyMaximumDamageBuff(_targetedUnit, _previousMaximumDamageBuff);
+                ApplyMaximumDamageBuff(_targetedUnit, -Damage);
                 Deactivate();
             }
         }
@@ -83,7 +83,8 @@ namespace Loom.ZombieBattleground
             if (boardUnit != null)
             {
                 _previousMaximumDamageBuff = boardUnit.MaximumDamageFromAnySource;
-                boardUnit.SetMaximumDamageToUnit(value);
+                _previousMaximumDamageBuff -= value;
+                boardUnit.SetMaximumDamageToUnit(_previousMaximumDamageBuff);
 
                 ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

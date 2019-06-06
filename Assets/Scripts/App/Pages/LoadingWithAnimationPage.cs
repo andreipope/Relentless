@@ -192,6 +192,12 @@ namespace Loom.ZombieBattleground
         
         private void CheckForInternetConnection()
         {
+            if (GameClient.GetDefaultBackendPurpose() == BackendPurpose.Local)
+            {
+                _isHasInternetConnection = true;
+                return;
+            }
+
             if (SystemRequirementTool.CheckInternetConnectionReachability())
             {
                 _isHasInternetConnection = true;

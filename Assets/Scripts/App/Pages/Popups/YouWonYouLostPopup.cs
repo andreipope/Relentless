@@ -6,10 +6,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using UnityEngine.Experimental.PlayerLoop;
 using System.Collections;
-using System.Runtime.Remoting;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using DG.Tweening;
 using log4net;
 
@@ -62,7 +60,7 @@ namespace Loom.ZombieBattleground
                                 _textPlayerName,
                                 _textLevel;
 
-        private OverlordModel _currentPlayerOverlord;
+        private OverlordUserInstance _currentPlayerOverlord;
 
         private Coroutine _fillExperienceBarCoroutine;
 
@@ -163,15 +161,15 @@ namespace Loom.ZombieBattleground
                 _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
                 _imageExperienceBar.fillAmount = 0;
-                _textLevel.text = _currentPlayerOverlord.Level.ToString();
+                _textLevel.text = _currentPlayerOverlord.UserData.Level.ToString();
 
                 _endMatchResults = new EndMatchResults(
                     deck.Id,
-                    _currentPlayerOverlord.Id,
-                    _currentPlayerOverlord.Level,
-                    _currentPlayerOverlord.Experience,
-                    _currentPlayerOverlord.Level,
-                    _currentPlayerOverlord.Experience,
+                    _currentPlayerOverlord.Prototype.Id,
+                    _currentPlayerOverlord.UserData.Level,
+                    _currentPlayerOverlord.UserData.Experience,
+                    _currentPlayerOverlord.UserData.Level,
+                    _currentPlayerOverlord.UserData.Experience,
                     _isWin,
                     Array.Empty<LevelReward>()
                 );
@@ -192,15 +190,15 @@ namespace Loom.ZombieBattleground
                     if (_endMatchResults != null)
                     {
                         _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(_endMatchResults.OverlordId);
-                        _currentPlayerOverlord.Level = _endMatchResults.CurrentLevel;
-                        _currentPlayerOverlord.Experience = _endMatchResults.CurrentExperience;
-                        var levelRewards = _endMatchResults.LevelRewards;
+                        _currentPlayerOverlord.UserData.Level = _endMatchResults.CurrentLevel;
+                        _currentPlayerOverlord.UserData.Experience = _endMatchResults.CurrentExperience;
+                        IReadOnlyList<LevelReward> levelRewards = _endMatchResults.LevelRewards;
                         foreach (LevelReward levelReward in levelRewards)
                         {
                             switch (levelReward)
                             {
                                 case OverlordSkillRewardItem overlordSkillRewardItem:
-                                    _currentPlayerOverlord.Skills[overlordSkillRewardItem.SkillIndex].Unlocked = true;
+                                    _currentPlayerOverlord.Skills[overlordSkillRewardItem.SkillIndex].UserData.IsUnlocked = true;
                                     break;
                             }
                         }
@@ -238,7 +236,7 @@ namespace Loom.ZombieBattleground
 
             _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
             (
-                _currentPlayerOverlord.Faction
+                _currentPlayerOverlord.Prototype.Faction
             );
 
             _textDeckName.text = deck?.Name ?? "";
@@ -316,7 +314,7 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
                     if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
                     {
@@ -355,14 +353,14 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<YouWonYouLostPopup>();
             _soundManager.StopPlaying(Enumerators.SoundType.LOST_POPUP);
         }
-        
-        public Sprite GetOverlordPortraitSprite(Enumerators.Faction overlordFaction)
+
+        private Sprite GetOverlordPortraitSprite(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/WinLose/OverlordPortrait/results_overlord_"+overlordFaction.ToString().ToLower();
             return _loadObjectsManager.GetObjectByPath<Sprite>(path);       
         }
-        
-        public void PlayClickSound()
+
+        private void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }

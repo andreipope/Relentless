@@ -494,7 +494,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitDamagedHandler(IBoardObject from)
+        protected virtual void UnitDamagedHandler(IBoardObject from, bool fromGettingAttacked = false)
         {
         }
 

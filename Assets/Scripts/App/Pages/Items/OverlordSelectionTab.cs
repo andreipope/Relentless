@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
 
                 if (_tutorialManager.IsTutorial)
                 {
-                    index = _dataManager.CachedOverlordData.Overlords.FindIndex(overlord => overlord.Faction == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+                    index = _dataManager.CachedOverlordData.Overlords.FindIndex(overlord => overlord.Prototype.Faction == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
                 }
 
                 ChangeOverlordIndex(index);
@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
                 Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
                 (
-                    _dataManager.CachedOverlordData.Overlords[i].Faction
+                    _dataManager.CachedOverlordData.Overlords[i].Prototype.Faction
                 );
                 overlordIcon.sprite = sprite;
                 
@@ -139,12 +139,12 @@ namespace Loom.ZombieBattleground
                     PlayClickSound();
                 });
 
-                string elementName = _dataManager.CachedOverlordData.Overlords[i].Faction.ToString().ToLower();
+                string elementName = _dataManager.CachedOverlordData.Overlords[i].Prototype.Faction.ToString().ToLower();
                 Image elementImage = _selfPage.transform.Find
                 (
                     "Tab_SelectOverlord/Panel_Content/Group_Elements/Image_Element_"+elementName
                 ).GetComponent<Image>();
-                _elementImageDictionary.Add(_dataManager.CachedOverlordData.Overlords[i].Faction, elementImage);
+                _elementImageDictionary.Add(_dataManager.CachedOverlordData.Overlords[i].Prototype.Faction, elementImage);
             }
         }
         
@@ -210,18 +210,18 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSelectedOverlordDisplay(int selectedOverlordIndex)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[selectedOverlordIndex];
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.Overlords[selectedOverlordIndex];
             _imageSelectOverlordGlow.transform.position = _selectOverlordIconList[selectedOverlordIndex].position;
             _imageSelectOverlordPortrait.sprite = GetOverlordPortraitSprite
             (
-                overlord.Faction
+                overlord.Prototype.Faction
             );
-            _textSelectOverlordName.text = overlord.FullName;
-            _textSelectOverlordDescription.text = overlord.ShortDescription;
+            _textSelectOverlordName.text = overlord.Prototype.FullName;
+            _textSelectOverlordDescription.text = overlord.Prototype.ShortDescription;
             
             Enumerators.Faction againstFaction = _myDeckPage.HordeEditTab.FactionAgainstDictionary
             [
-                overlord.Faction
+                overlord.Prototype.Faction
             ];
             _imageCross.transform.position = _elementImageDictionary[againstFaction].transform.position;        
         }
