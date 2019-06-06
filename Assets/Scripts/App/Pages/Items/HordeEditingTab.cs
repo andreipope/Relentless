@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
             _buttonBack = _selfPage.transform.Find("Tab_Editing/Panel_Frame/Upper_Items/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
 
-            _uiCardCollections.Show(_selfPage.transform.Find("Tab_Editing").gameObject, LoadCard.UserCollection);
+            _uiCardCollections.Show(_selfPage.transform.Find("Tab_Editing").gameObject, PageType.DeckEditing);
             _customDeckUi.Load(_selfPage.transform.Find("Tab_Editing/Deck_Content").gameObject);
 
             /*_imageAbilityIcons = new Image[]

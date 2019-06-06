@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,9 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private Card _card;
+        private DeckId _selectedDeckId;
+
         public void Init(GameObject obj)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -36,24 +40,33 @@ namespace Loom.ZombieBattleground
 
             _cardCountIndicator = new CardCountIndicator();
             _cardCountIndicator.Init(_selfObject);
+
+            _card = null;
         }
 
-        public void FillCard(DeckCardInfo deckCardInfo)
+        public void FillCard(Card card, int cardAmount)
         {
-            _gooAmountText.text = deckCardInfo.GooAmount.ToString();
-            _creatureNameText.text = deckCardInfo.CreatureName;
+            _card = card;
 
-            string imagePath = $"{Constants.PathToCardsIllustrations}{deckCardInfo.PicturePath.ToLowerInvariant()}";
+            _gooAmountText.text = _card.Cost.ToString();
+            _creatureNameText.text = _card.Name;
+
+            string imagePath = $"{Constants.PathToCardsIllustrations}{_card.Picture.ToLowerInvariant()}";
             _creatureCardImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
 
-            _frameEffectImage.color = GetFactionColor(deckCardInfo.Faction);
+            _frameEffectImage.color = GetFactionColor(_card.Faction);
 
-            _cardCountIndicator.EnableIndicator(deckCardInfo.CardAmount);
+            _cardCountIndicator.EnableIndicator(cardAmount);
         }
 
         public GameObject GetGameObject()
         {
             return _selfObject;
+        }
+
+        public IReadOnlyCard GetCardInteface()
+        {
+            return _card;
         }
 
         private Color GetFactionColor(Enumerators.Faction faction)
@@ -121,15 +134,6 @@ namespace Loom.ZombieBattleground
                 _indicators[i].interactable = i < count;
             }
         }
-    }
-
-    public class DeckCardInfo
-    {
-        public int GooAmount;
-        public string CreatureName;
-        public string PicturePath;
-        public int CardAmount;
-        public Enumerators.Faction Faction;
     }
 }
 

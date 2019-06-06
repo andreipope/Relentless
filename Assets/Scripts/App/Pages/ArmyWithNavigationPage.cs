@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-public enum LoadCard { Army, UserCollection }
+public enum PageType { Army, DeckEditing }
 
 namespace Loom.ZombieBattleground
 {
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);
             _uiManager.DrawPopup<AreaBarPopup>();
 
-            _uiCardCollections.Show(_selfPage, LoadCard.Army);
+            _uiCardCollections.Show(_selfPage, PageType.Army);
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);

@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardCreaturePrefab;
 
+        private PageType _pageType;
+
         #region IUIElement
 
         public void Init()
@@ -57,9 +59,11 @@ namespace Loom.ZombieBattleground
             _mainCamera = Camera.main;
         }
 
-        public void Show(GameObject obj, LoadCard loadCard)
+        public void Show(GameObject obj, PageType pageType)
         {
             _selfPage = obj;
+
+            _pageType = pageType;
 
             _cardCounter = _selfPage.transform.Find("Panel_Frame/Upper_Items/Image_CardCounter/Text_CardCounter").GetComponent<TextMeshProUGUI>();
 
@@ -70,16 +74,16 @@ namespace Loom.ZombieBattleground
             _allCardsContent = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View")
                 .GetComponent<ScrollRect>().content;
 
-            switch (loadCard)
+            switch (pageType)
             {
-                case LoadCard.Army:
+                case PageType.Army:
                     LoadAllCards();
                     break;
-                case LoadCard.UserCollection:
+                case PageType.DeckEditing:
                     LoadUserOwnedCards();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(loadCard), loadCard, null);
+                    throw new ArgumentOutOfRangeException(nameof(pageType), pageType, null);
             }
 
             _allCardsCount = _cardUIList.Count;
@@ -304,11 +308,24 @@ namespace Loom.ZombieBattleground
                 return;
 
             List<IReadOnlyCard> cardList = _cardUIList.Select(card => card.GetCardInteface()).ToList();
+
+            CardInfoWithSearchPopup.PopupType popupType= CardInfoWithSearchPopup.PopupType.NONE;
+            switch (_pageType)
+            {
+                case PageType.Army:
+                    popupType = CardInfoWithSearchPopup.PopupType.NONE;
+                    break;
+                case PageType.DeckEditing:
+                    popupType = CardInfoWithSearchPopup.PopupType.ADD_CARD;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
                 selectedCard,
-                CardInfoWithSearchPopup.PopupType.NONE
+                popupType
             });
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -25,6 +26,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _deckCardPrefab;
 
+        private IUIManager _uiManager;
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -37,6 +39,7 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            _uiManager = GameClient.Get<IUIManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
@@ -104,7 +107,6 @@ namespace Loom.ZombieBattleground
 
         private void SetCards()
         {
-            Log.Info(_selectedDeck.Cards.Count);
             for (int i = 0; i < _selectedDeck.Cards.Count; i++)
             {
                 DeckCardData deckCardData = _selectedDeck.Cards[i];
@@ -120,18 +122,28 @@ namespace Loom.ZombieBattleground
                 Card card = _dataManager.CachedCardsLibraryData.Cards[cardIndex];
 
                 GameObject deckCard = Object.Instantiate(_deckCardPrefab, _allCardsContent);
+                MultiPointerClickHandler multiPointerClickHandler = deckCard.AddComponent<MultiPointerClickHandler>();
+                multiPointerClickHandler.DoubleClickReceived += () => { OnMultiClickDeckCard(card); };
+
                 DeckCardUI deckCardUi = new DeckCardUI();
                 deckCardUi.Init(deckCard);
-                deckCardUi.FillCard(new DeckCardInfo
-                {
-                    GooAmount = card.Cost,
-                    CreatureName = card.Name,
-                    PicturePath = card.Picture,
-                    CardAmount = deckCardData.Amount,
-                    Faction = card.Faction
-                });
+                deckCardUi.FillCard(card, deckCardData.Amount);
                 _deckCards.Add(deckCardUi);
             }
+        }
+
+        public void OnMultiClickDeckCard(Card selectedCard)
+        {
+            if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
+                return;
+
+            List<IReadOnlyCard> cardList = _deckCards.Select(card => card.GetCardInteface()).ToList();
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
+            {
+                cardList,
+                selectedCard,
+                CardInfoWithSearchPopup.PopupType.REMOVE_CARD
+            });
         }
 
         private void UpdateCardCount(int cardCount)
