@@ -1,13 +1,10 @@
 using System;
 using System.Collections;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using log4net;
 using log4net.Core;
 using Loom.Client;
-using Loom.Client.Internal;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Test;
 using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test

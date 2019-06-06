@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
-using Loom.ZombieBattleground.BackendCommunication;
-using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
+
+#if UNITY_ANDROID || UNITY_IOS
+using Loom.Newtonsoft.Json;
 using UnityEngine.Assertions;
 using UnityEngine.Purchasing.Security;
+#endif
 
 namespace Loom.ZombieBattleground.Iap
 {

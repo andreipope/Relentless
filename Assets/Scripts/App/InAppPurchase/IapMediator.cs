@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Iap;
 using OneOf;
 using OneOf.Types;
 using UnityEngine.Purchasing;
@@ -440,7 +438,6 @@ namespace Loom.ZombieBattleground.Iap
         {
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
 
             _iapPlatformStoreFacade = GameClient.Get<IIapPlatformStoreFacade>();
             _iapPlatformStoreFacade.ProcessingPurchase += OnProcessPurchase;
@@ -454,6 +451,5 @@ namespace Loom.ZombieBattleground.Iap
         void IService.Dispose() { }
 
         #endregion
-
     }
 }

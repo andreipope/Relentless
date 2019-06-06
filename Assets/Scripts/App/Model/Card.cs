@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(Faction)}: {Faction})";
+            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId.Id}, {nameof(Faction)}: {Faction})";
         }
     }
 

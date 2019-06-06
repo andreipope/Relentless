@@ -522,14 +522,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task RetrieveCardsFromPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packTypeId)
+        private async Task RetrieveCardsFromPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
-            _lastOpenPackIdRequest = packTypeId;
+            _lastOpenPackIdRequest = packType;
             SetButtonInteractable(false);
             _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
             try
             {
-                IReadOnlyList<Card> cards = await _plasmaChainBackendFacade.CallOpenPack(client, packTypeId);
+                IReadOnlyList<Card> cards = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
 
                 _cardsToDisplayQueqe.Clear();
                 _cardsToDisplayQueqe.AddRange(cards);
@@ -539,7 +539,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Log.Info($"{nameof(RetrieveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e.Message}");
 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
