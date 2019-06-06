@@ -1,5 +1,5 @@
-﻿
-using System;
+﻿using System.Collections.Generic;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class CustomDeckUI
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CustomDeckUI));
+
         private TextMeshProUGUI _deckNameText;
         private TextMeshProUGUI _cardsCountText;
 
@@ -22,10 +24,16 @@ namespace Loom.ZombieBattleground
         private Image _overlordSecondarySkillImage;
 
         private GameObject _deckCardPrefab;
-        private GameObject _indicatorPrefab;
 
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
+
+        private List<DeckCardUI> _deckCards = new List<DeckCardUI>();
+
+        private Deck _selectedDeck;
+        private int _cardsInDeckCount;
+
+        private RectTransform _allCardsContent;
 
         public void Init()
         {
@@ -33,7 +41,22 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _deckCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/DeckCard_UI");
-            _indicatorPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/Indicator");
+        }
+
+        private void Reset()
+        {
+            _selectedDeck = null;
+
+            if (_deckCards.Count > 0)
+            {
+                for (int i = _deckCards.Count - 1; i >= 0; i--)
+                {
+                    Object.Destroy(_deckCards[i].GetGameObject());
+                }
+            }
+
+            _deckCards = new List<DeckCardUI>();
+            _cardsInDeckCount = 0;
         }
 
         public void Load(GameObject obj)
@@ -52,6 +75,8 @@ namespace Loom.ZombieBattleground
             _buttonSave = selfObject.transform.Find("Bottom_Panel/Button_SaveDeck").GetComponent<Button>();
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
 
+            _allCardsContent = selfObject.transform.Find("Cards/Scroll View").GetComponent<ScrollRect>().content;
+
             _overlordImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Image/Image").GetComponent<Image>();
             _overlordPrimarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Primary/Image").GetComponent<Image>();
             _overlordSecondarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Secondary/Image").GetComponent<Image>();
@@ -59,14 +84,87 @@ namespace Loom.ZombieBattleground
 
         public void ShowDeck(int deckId)
         {
-            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id.Id == deckId);
-            if (selectedDeck == null)
+            Reset();
+
+            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id.Id == deckId);
+            if (_selectedDeck == null)
                 return;
 
-            _deckNameText.text = selectedDeck.Name;
+            _deckNameText.text = _selectedDeck.Name;
 
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(selectedDeck.OverlordId);
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
             _overlordImage.sprite = GetOverlordThumbnailSprite(overlord.Prototype.Faction);
+
+            SetSkills();
+
+            SetCards();
+
+            UpdateCardCount(_cardsInDeckCount);
+        }
+
+        private void SetCards()
+        {
+            Log.Info(_selectedDeck.Cards.Count);
+            for (int i = 0; i < _selectedDeck.Cards.Count; i++)
+            {
+                DeckCardData deckCardData = _selectedDeck.Cards[i];
+                _cardsInDeckCount += deckCardData.Amount;
+
+                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.MouldId == deckCardData.MouldId);
+                if (cardIndex == -1)
+                {
+                    Log.Error($"Card with MouldId {deckCardData.MouldId} not found.");
+                    return;
+                }
+
+                Card card = _dataManager.CachedCardsLibraryData.Cards[cardIndex];
+
+                GameObject deckCard = Object.Instantiate(_deckCardPrefab, _allCardsContent);
+                DeckCardUI deckCardUi = new DeckCardUI();
+                deckCardUi.Init(deckCard);
+                deckCardUi.FillCard(new DeckCardInfo
+                {
+                    GooAmount = card.Cost,
+                    CreatureName = card.Name,
+                    PicturePath = card.Picture,
+                    CardAmount = deckCardData.Amount,
+                    Faction = card.Faction
+                });
+                _deckCards.Add(deckCardUi);
+            }
+        }
+
+        private void UpdateCardCount(int cardCount)
+        {
+            _cardsCountText.text = cardCount + "/" + Constants.MaxDeckSize;
+        }
+
+        private void SetSkills()
+        {
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
+
+            // primary skill
+            if (_selectedDeck.PrimarySkill == Enumerators.Skill.NONE)
+            {
+                _overlordPrimarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+            }
+            else
+            {
+                string iconPath = overlord.GetSkill(_selectedDeck.PrimarySkill).Prototype.IconPath;
+                _overlordPrimarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+            }
+
+
+            // secondary skill
+            if (_selectedDeck.SecondarySkill == Enumerators.Skill.NONE)
+            {
+                _overlordSecondarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+            }
+            else
+            {
+                string iconPath = overlord.GetSkill(_selectedDeck.SecondarySkill).Prototype.IconPath;
+                _overlordSecondarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+            }
         }
 
 

@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 222778152023684736}
   - component: {fileID: 114253875114336052}
   m_Layer: 0
-  m_Name: TitleText
+  m_Name: CreatureName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 222566822153687944}
   - component: {fileID: 114262937985296012}
   m_Layer: 0
-  m_Name: GooText
+  m_Name: GooAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

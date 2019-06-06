@@ -790,14 +790,18 @@ namespace Loom.ZombieBattleground
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
                 MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.GetComponent<MultiPointerClickHandler>();
-                if(multiPointerClickHandler == null)
-                    multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.DoubleClickReceived += ()=>
+                if (multiPointerClickHandler == null)
                 {
-                    ChangeSelectDeckIndex(index);
-                    ButtonEditHandler();
-                    PlayClickSound();
-                };
+                    multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();
+                    multiPointerClickHandler.DoubleClickReceived += ()=>
+                    {
+                        Log.Info(" ==== listner called ===== ");
+                        ChangeSelectDeckIndex(index);
+                        ButtonEditHandler();
+                        PlayClickSound();
+                    };
+                }
+
 #endif
 
                 Deck deck = deckListToDisplay[deckDataIndex];

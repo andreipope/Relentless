@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _cardCounter;
 
-        private GameObject CardCreaturePrefab;
+        private GameObject _cardCreaturePrefab;
 
         #region IUIElement
 
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
-            CardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/CreatureCard_UI");
+            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/CreatureCard_UI");
 
             _cardFilter = new CardFilter();
             _cardFilter.Init();
@@ -185,7 +185,6 @@ namespace Loom.ZombieBattleground
         private void LoadUserOwnedCards()
         {
             _cardUIList = new List<UnitCardUI>();
-            Debug.LogError(_dataManager.CachedCollectionData.Cards.Count);
             for (int i = 0; i < _dataManager.CachedCollectionData.Cards.Count; i++)
             {
                 CollectionCardData cardData = _dataManager.CachedCollectionData.Cards[i];
@@ -201,7 +200,7 @@ namespace Loom.ZombieBattleground
 
         private void InstantiateCard(Card card)
         {
-            GameObject go = Object.Instantiate(CardCreaturePrefab);
+            GameObject go = Object.Instantiate(_cardCreaturePrefab);
             go.transform.SetParent(_allCardsContent);
             go.transform.localScale = Vector3.one * BoardCardScale;
 
@@ -244,15 +243,6 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
-        private void UpdatePageScaleToMatchResolution()
-        {
-            float screenRatio = (float)Screen.width/Screen.height;
-            if(screenRatio < 1.76f)
-            {
-                _selfPage.transform.localScale = Vector3.one * 0.93f;
-            }
-        }
 
         #region UI Handlers
         public void OnInputFieldSearchEndedEdit(string value)
@@ -363,13 +353,5 @@ namespace Loom.ZombieBattleground
         {
             return _cardFilter.FilterData.FactionDictionary[card.Faction];
         }
-
-        #region Util
-
-        private void PlayClickSound()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-        }
-        #endregion
     }
 }
