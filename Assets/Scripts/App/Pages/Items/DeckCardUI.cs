@@ -64,9 +64,14 @@ namespace Loom.ZombieBattleground
             return _selfObject;
         }
 
-        public IReadOnlyCard GetCardInteface()
+        public IReadOnlyCard GetCardInterface()
         {
             return _card;
+        }
+
+        public void UpdateCard(int cardAmount)
+        {
+            _cardCountIndicator.EnableIndicator(cardAmount);
         }
 
         private Color GetFactionColor(Enumerators.Faction faction)

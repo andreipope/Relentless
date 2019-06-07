@@ -44,9 +44,6 @@ namespace Loom.ZombieBattleground
                           //_trayButtonAuto,
                           _paginationGroup;
 
-        public Transform LocatorCollectionCards,
-                         LocatorDeckCards;
-
         private Button _buttonNewDeck,
                        _buttonBack,
                        _buttonSelectDeckFilter,
@@ -66,9 +63,6 @@ namespace Loom.ZombieBattleground
                         _imagePageDotSelected;
 
         private List<DeckInfoObject> _deckInfoObjectList;
-
-        //public SimpleScrollNotifier DragAreaDeck,
-          //                DragAreaCollections;
 
         private CardHighlightingVFXItem _highlightingVFXItem;
 
@@ -170,9 +164,6 @@ namespace Loom.ZombieBattleground
             _imagePageDotNormal = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_CircleDot_Normal");
             _imagePageDotSelected = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_CircleDot_Selected");
 
-            LocatorCollectionCards = _selfPage.transform.Find("Tab_Editing/Panel_Content/Locator_CollectionCards");
-            LocatorDeckCards = _selfPage.transform.Find("Tab_Editing/Panel_Content/Locator_DeckCards");
-
             _spriteDeckThumbnailNormal = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/deck_thumbnail_normal");
             _spriteDeckThumbnailSelected = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/deck_thumbnail_selected");
 
@@ -245,6 +236,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            _selectedDeckId = -1;
 
             PlayClickSound();
             ChangeTab(Tab.SelectOverlord);

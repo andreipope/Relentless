@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Card = Loom.ZombieBattleground.Data.Card;
+using Deck = Loom.ZombieBattleground.Data.Deck;
+using Faction = Loom.ZombieBattleground.Data.Faction;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -211,13 +216,70 @@ namespace Loom.ZombieBattleground
             UnitCardUI unitCard = new UnitCardUI();
             unitCard.Init(go);
             int index = _dataManager.CachedCollectionData.Cards.FindIndex(cardData => cardData.MouldId == card.MouldId);
-            int cardCount = index != -1 ?_dataManager.CachedCollectionData.Cards[index].Amount : 0;
-            unitCard.FillCardData(card, cardCount);
+            int cardAmount = index != -1 ?_dataManager.CachedCollectionData.Cards[index].Amount : 0;
+            unitCard.FillCardData(card, cardAmount);
+
             _cardUIList.Add(unitCard);
 
             MultiPointerClickHandler multiPointerClickHandler = go.AddComponent<MultiPointerClickHandler>();
             multiPointerClickHandler.SingleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
-            multiPointerClickHandler.DoubleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
+
+            if (_pageType == PageType.Army)
+            {
+                multiPointerClickHandler.DoubleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
+            }
+            else if (_pageType == PageType.DeckEditing)
+            {
+                multiPointerClickHandler.DoubleClickReceived += () => { BoardCardDoubleClickHandler(unitCard.GetCard()); };
+            }
+        }
+
+        public void UpdateCardsAmountDisplay(int deckId)
+        {
+            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id.Id == deckId);
+            if (selectedDeck == null)
+                return;
+
+            for (int i = 0; i < _cardUIList.Count; i++)
+            {
+                Card cardInUi = _cardUIList[i].GetCard();
+
+                // get amount of card in collection data
+                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                int totalCardAmount = cardInCollection.Amount;
+
+                DeckCardData deckCardData = selectedDeck.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                if (deckCardData == null)
+                {
+                    _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                }
+                else
+                {
+                    _cardUIList[i].UpdateCardAmount(totalCardAmount - deckCardData.Amount);
+                }
+            }
+        }
+
+        public void UpdateCardsAmountDisplay()
+        {
+            for (int i = 0; i < _cardUIList.Count; i++)
+            {
+                Card cardInUi = _cardUIList[i].GetCard();
+
+                // get amount of card in collection data
+                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                int totalCardAmount = cardInCollection.Amount;
+               _cardUIList[i].UpdateCardAmount(totalCardAmount);
+            }
+        }
+
+        public void UpdateCardAmountDisplay(IReadOnlyCard card, int amount)
+        {
+            UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().MouldId == card.MouldId);
+            if (unitCardUi == null)
+                return;
+
+            unitCardUi.UpdateCardAmount(amount);
         }
 
         public void Hide()
@@ -307,7 +369,7 @@ namespace Loom.ZombieBattleground
             if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;
 
-            List<IReadOnlyCard> cardList = _cardUIList.Select(card => card.GetCardInteface()).ToList();
+            List<IReadOnlyCard> cardList = _cardUIList.Select(card => card.GetCardInterface()).ToList();
 
             CardInfoWithSearchPopup.PopupType popupType= CardInfoWithSearchPopup.PopupType.NONE;
             switch (_pageType)
@@ -327,6 +389,15 @@ namespace Loom.ZombieBattleground
                 selectedCard,
                 popupType
             });
+        }
+
+        private void BoardCardDoubleClickHandler(Card selectedCard)
+        {
+            _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
+            (
+                selectedCard,
+                true
+            );
         }
 
         #endregion

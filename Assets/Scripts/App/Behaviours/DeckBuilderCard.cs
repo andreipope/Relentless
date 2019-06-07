@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public void OnScroll(PointerEventData eventData)
         {
-            Page?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
+            //Page?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
         }
 
         private void Awake()
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
         private void SingleClickAction()
         {
-            Page?.SelectCard(this, Card);
+            //Page?.SelectCard(this, Card);
         }
 
         private void DoubleClickAction()

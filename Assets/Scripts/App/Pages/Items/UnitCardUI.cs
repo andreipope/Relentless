@@ -80,7 +80,7 @@ public class UnitCardUI
         _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
     }
 
-    public void UpdateCardCount(int cardCount)
+    public void UpdateCardAmount(int cardCount)
     {
         _cardCountText.text = cardCount.ToString();
         _cardAmountTray.SetActive(cardCount != 0);
@@ -91,7 +91,7 @@ public class UnitCardUI
         return _card;
     }
 
-    public IReadOnlyCard GetCardInteface()
+    public IReadOnlyCard GetCardInterface()
     {
         return _card;
     }
