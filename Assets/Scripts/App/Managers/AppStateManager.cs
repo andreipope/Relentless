@@ -372,7 +372,7 @@ namespace Loom.ZombieBattleground
             UpdateConnectionStatus();
         }
 
-        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
+        private void LoomManagerOnContractCreated(RawChainEventContract oldContract, RawChainEventContract newContract)
         {
             if (oldContract != null)
             {

@@ -18,11 +18,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
-        private IRpcClient _reader;
         private IContractCallProxy _contractCallProxy;
-        private Func<Contract, IContractCallProxy> _contractCallProxyFactory;
+        private Func<RawChainEventContract, IContractCallProxy> _contractCallProxyFactory;
 
-        public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
+        public delegate void ContractCreatedEventHandler(RawChainEventContract oldContract, RawChainEventContract newContract);
 
         public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
 
@@ -30,7 +29,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public BackendEndpoint BackendEndpoint { get; set; }
 
-        public Contract Contract { get; private set; }
+        public RawChainEventContract Contract { get; private set; }
 
         public bool IsConnected => Contract != null &&
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
@@ -42,7 +41,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public ILog RpcLog { get; }
 
-        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
         {
             BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
             _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
@@ -88,7 +87,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     .WithWebSocket(BackendEndpoint.WriterHost)
                     .Create();
 
-            _reader =
+            IRpcClient reader =
                 RpcClientFactory
                     .Configure()
                     .WithLogger(logger)
@@ -97,7 +96,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             DAppChainClient client = new DAppChainClient(
                 writer,
-                _reader,
+                reader,
                 clientConfiguration,
                 chainClientCallExecutor
                 )
@@ -116,9 +115,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();
-            Address contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
-            Contract oldContract = Contract;
-            Contract = new Contract(client, contractAddr, callerAddr);
+            Address contractAddress = await client.ResolveContractAddressAsync("ZombieBattleground");
+            RawChainEventContract oldContract = Contract;
+            Contract = new RawChainEventContract(client, contractAddress, callerAddr);
 
             _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract);
             ContractCreated?.Invoke(oldContract, Contract);
@@ -671,14 +670,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task SubscribeEvent(IList<string> topics)
         {
             await UnsubscribeEvent();
-            await _reader.SubscribeAsync(EventHandler, topics);
+            Contract.EventReceived += EventHandler;
+            await Contract.Client.SubscribeToEvents(topics);
         }
 
         public async Task UnsubscribeEvent()
         {
+            Contract.EventReceived -= EventHandler;
             try
             {
-                await _reader.UnsubscribeAsync(EventHandler);
+                await Contract.Client.UnsubscribeFromEvents();
             }
             catch (RpcClientException rpcClientException) when (rpcClientException.Message.Contains("Subscription not found"))
             {
@@ -733,12 +734,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         //attempt to implement a one message action policy
-        private byte[] previousData;
-        private void EventHandler(object sender, JsonRpcEventData e)
+        private byte[] _previousEventData;
+
+        private void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
         {
-            if (previousData == null || !previousData.SequenceEqual(e.Data)) {
-                previousData = e.Data;
-                PlayerActionDataReceived?.Invoke(e.Data);
+            if (_previousEventData == null || !_previousEventData.SequenceEqual(rawChainEventArgs.Data)) {
+                _previousEventData = rawChainEventArgs.Data;
+                PlayerActionDataReceived?.Invoke(rawChainEventArgs.Data);
             }
         }
 

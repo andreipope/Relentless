@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground.Editor
 
             IapMediator iapMediator = GameClient.Get<IapMediator>();
             AuthFiatApiFacade authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
-            FiatPlasmaManager fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
+            PlasmaChainBackendFacade plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
 
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField)
             {

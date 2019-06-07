@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ShopWithNavigationPage));
 
-        private const float IapInitializationTimeout = 5;
+        private const float IapInitializationTimeout = 10;
 
         private IUIManager _uiManager;
 
@@ -39,13 +39,19 @@ namespace Loom.ZombieBattleground
 
         private State _state, _unfinishedState;
 
+        private FiatValidationData _fiatValidationData;
+
+        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
+
+        private IapMediator _iapMediator;
+
         #region IUIElement
 
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
 
             _iapMediator = GameClient.Get<IapMediator>();
         }
@@ -56,8 +62,7 @@ namespace Loom.ZombieBattleground
         {
             SubscribeIapEvents();
 
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"), _uiManager.Canvas.transform, false);
 
             UpdatePageScaleToMatchResolution();
 
@@ -138,10 +143,7 @@ namespace Loom.ZombieBattleground
 
         private void ChangeState(State newState)
         {
-            if (_selfPage == null)
-            {
-                return;
-            }
+            Assert.IsFalse(_selfPage == null);
 
             if (_state == newState)
                 return;
@@ -227,12 +229,6 @@ namespace Loom.ZombieBattleground
         }
 
         #region Purchasing Logic
-
-        private FiatValidationData _fiatValidationData;
-
-        private FiatPlasmaManager _fiatPlasmaManager;
-
-        private IapMediator _iapMediator;
 
         private async Task<bool> InitializeStore()
         {
@@ -349,42 +345,11 @@ namespace Loom.ZombieBattleground
         private void SubscribeIapEvents()
         {
             _iapMediator.PurchaseStateChanged += IapMediatorOnPurchaseStateChanged;
-            _fiatPlasmaManager.OnRequestPackSuccess += OnRequestPackSuccess;
-            _fiatPlasmaManager.OnRequestPackFailed += OnRequestPackFailed;
         }
 
         private void UnsubscribeIapEvents()
         {
             _iapMediator.PurchaseStateChanged -= IapMediatorOnPurchaseStateChanged;
-            _fiatPlasmaManager.OnRequestPackSuccess -= OnRequestPackSuccess;
-            _fiatPlasmaManager.OnRequestPackFailed -= OnRequestPackFailed;
-        }
-
-        private void OnRequestPackSuccess(FiatPlasmaManager.ContractRequest contractRequest)
-        {
-            Log.Warn($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");
-
-            // FIXME: what is this used for? everything seems to work without it.
-            /*_executeOnMainThread.Enqueue(() =>
-            {
-                ChangeState(State.RequestFiatClaim);
-                RequestFiatClaim
-                (
-                    contractRequest.UserId,
-                    contractRequest.TxID
-                );
-            });*/
-        }
-
-        private void OnRequestPackFailed()
-        {
-            Log.Info($"{nameof(_fiatPlasmaManager.OnRequestPackFailed)} failed");
-            /*_executeOnMainThread.Enqueue(() =>
-            {
-                ChangeState(State.WaitForInput);
-                _uiManager.HidePopup<LoadingOverlayPopup>();
-                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
-            });*/
         }
 
         private async void OnFinishRequestPack()

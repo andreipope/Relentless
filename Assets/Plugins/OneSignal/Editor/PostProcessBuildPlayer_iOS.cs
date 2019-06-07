@@ -37,7 +37,7 @@
          // UserNotifications.framework is required by libOneSignal.a
          project.AddFrameworkToProject(targetGUID, "UserNotifications.framework", false);
         
-         #if UNITY_2017_2_OR_NEWER && !UNITY_CLOUD_BUILD
+         #if UNITY_2017_2_OR_NEWER && !UNITY_CLOUD_BUILD && false
            
             var platformsLocation = "Assets" + separator + "OneSignal" + separator + "Platforms" + separator;
             var extensionTargetName = "OneSignalNotificationServiceExtension";

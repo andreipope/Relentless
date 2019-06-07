@@ -20,7 +20,6 @@ namespace Loom.Client
 
         private readonly WebSocket webSocket;
         private readonly Uri url;
-        private event EventHandler<JsonRpcEventData> eventReceived;
         private bool anyConnectionStateChangesReceived;
 
         public override RpcConnectionState ConnectionState
@@ -153,14 +152,11 @@ namespace Loom.Client
             return tcs.Task;
         }
 
-        public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics)
+        public override Task SubscribeToEventsAsync(ICollection<string> topics)
         {
-            var isFirstSub = this.eventReceived == null;
-            this.eventReceived += handler;
-            if (isFirstSub)
-            {
-                this.webSocket.OnMessage += WSSharpRPCClient_OnMessage;
-            }
+            this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage_EventHandler;
+            this.webSocket.OnMessage += WSSharpRPCClient_OnMessage_EventHandler;
+
             // TODO: once re-sub on reconnect is implemented this should only
             // be done on first sub
             Dictionary<string, ICollection<string>> args = null;
@@ -173,15 +169,10 @@ namespace Loom.Client
             return SendAsync<object, Dictionary<string, ICollection<string>>>("subevents", args);
         }
 
-        public override Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler)
+        public override Task UnsubscribeFromEventsAsync()
         {
-            this.eventReceived -= handler;
-            if (this.eventReceived == null)
-            {
-                this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage;
-                return SendAsync<object, object>("unsubevents", null);
-            }
-            return Task.CompletedTask;
+            this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage_EventHandler;
+            return SendAsync<object, object>("unsubevents", null);
         }
 
         public override async Task<TResult> SendAsync<TResult, TArgs>(string method, TArgs args)
@@ -292,7 +283,7 @@ namespace Loom.Client
             await tcs.Task;
         }
 
-        private void WSSharpRPCClient_OnMessage(object sender, MessageEventArgs e)
+        private void WSSharpRPCClient_OnMessage_EventHandler(object sender, MessageEventArgs e)
         {
             try
             {
@@ -309,7 +300,7 @@ namespace Loom.Client
                         else
                         {
                             var fullMsg = JsonConvert.DeserializeObject<JsonRpcEvent>(e.Data);
-                            this.eventReceived?.Invoke(this, fullMsg.Result);
+                            InvokeEventReceived(fullMsg.Result);
                         }
                     }
                 }

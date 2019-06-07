@@ -387,12 +387,17 @@ namespace Loom.ZombieBattleground
             if (_myDeckPage.CurrentEditDeck.Id.Id < 0)
                 return;
 
-            List<Deck> cacheDeckList = _myDeckPage.GetDeckList();
-            _myDeckPage.SelectDeckIndex = cacheDeckList.IndexOf(_myDeckPage.CurrentEditDeck);
-            _myDeckPage.SelectDeckIndex = Mathf.Min(_myDeckPage.SelectDeckIndex, cacheDeckList.Count-1);
-
-            _myDeckPage.AssignCurrentDeck(_myDeckPage.SelectDeckIndex);
-            _myDeckPage.ChangeTab(_nextTab);
+            _myDeckPage.RefreshPageListData();
+            if(success)
+            {
+                _myDeckPage.AssignSelectedDeck(deck);
+                _myDeckPage.AssignCurrentEditDeck(deck);                
+            }
+            else
+            {
+                _myDeckPage.OpenAlertDialog("Something went wrong.\nPlease try again.");                
+            }
+            _myDeckPage.ChangeTab(_nextTab);           
         }
 
         private void FinishEditDeck(bool success, Deck deck)

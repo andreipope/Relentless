@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
+                        finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackingUnitModel.MaximumDamageFromAnySource, 0));
                         attackingUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacked,
                     Enumerators.ReasonForValueChange.Attack);
 

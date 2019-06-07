@@ -98,17 +98,7 @@ namespace Loom.ZombieBattleground
 
             _buttonElementsDictionary.Clear();
 
-            if (_tempSelectedFactionList.Count == 0)
-            {
-                foreach(Enumerators.Faction faction in AvailableFactionList)
-                {
-                    _tempSelectedFactionList.Add(faction);
-                }
-            }
-            else
-            {
-                _tempSelectedFactionList = SelectedFactionList.ToList();
-            }
+            _tempSelectedFactionList = SelectedFactionList.ToList();
 
             foreach(Enumerators.Faction faction in AvailableFactionList)
             {
@@ -122,7 +112,7 @@ namespace Loom.ZombieBattleground
                 );
 
                 _buttonElementsDictionary.Add(faction, buttonElementIcon);
-                _buttonElementsDictionary[faction].GetComponent<Image>().color = SelectedFactionList.Contains(faction) ? Color.white : Color.gray;
+                UpdateFactionButtonDisplay(faction);
             }
         }
 
@@ -136,6 +126,15 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+
+        public void ResetSelectedFactionList()
+        {
+            SelectedFactionList.Clear();
+            foreach(Enumerators.Faction faction in AvailableFactionList)
+            {
+                SelectedFactionList.Add(faction);
+            }
+        }
 
         #region Buttons Handlers
 

@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.IsTutorial)
             {
                 // For tutorial, the popup is deactivated, so no point in fetching data from server
-                deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+                deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
                 _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
                 _imageExperienceBar.fillAmount = 0;

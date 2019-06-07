@@ -1,20 +1,10 @@
 ﻿using System;
-using System.CodeDom;
 using System.Text;
-using System.Net;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Globalization;
 using System.Linq;
 using log4net;
-using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Iap;
-using UnityEngine;
-using UnityEngine.Networking;
-using Object = UnityEngine.Object;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 
