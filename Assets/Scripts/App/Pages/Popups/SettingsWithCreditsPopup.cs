@@ -64,11 +64,7 @@ namespace Loom.ZombieBattleground
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-#if !UNITY_ANDROID && !UNITY_IOS
-            ApplicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
-#endif
             _cachePreviousFrameResolution = Screen.currentResolution;
-            ApplicationSettingsManager.OnResolutionChanged += FixSliderAndDropdownZPosition;
         }
 
         public void Dispose()
@@ -311,12 +307,13 @@ namespace Loom.ZombieBattleground
         {
             if (_infoDataFilled)
             {
-                PlayClickSound();
-
-                await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                PlayClickSound();                
                 
                 Hide();
                 GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Apply settings ...");
+                
+                await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                
                 await Task.Delay(TimeSpan.FromSeconds
                 (
                     ApplicationSettingsManager.WaitForResolutionChangeFinishAnimating
