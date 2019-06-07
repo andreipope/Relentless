@@ -541,7 +541,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Skill.PUSH:
                     int ownerGoo = skill.OwnerPlayer.CurrentGoo;
                     int cardCost = skill.FightTargetingArrow.SelectedCard.Model.Prototype.Cost;
-                    state = ownerGoo > 0 && cardCost <= ownerGoo;
+                    state = cardCost <= ownerGoo;
                     break;
                 default:
                     break;
