@@ -179,8 +179,7 @@ namespace Loom.ZombieBattleground
             _cacheDeckPageIndexDictionary = new Dictionary<string, int>();
             _cacheCollectionPageIndexDictionary = new Dictionary<string, int>();
 
-            ApplicationSettingsManager.OnResolutionChanged += UpdateDeckCardPage;
-            ApplicationSettingsManager.OnResolutionChanged += LoadCollectionsCards;
+            ApplicationSettingsManager.OnResolutionChanged += ResolutionChangedUpdate;
         }
 
         public void Show(GameObject selfPage)
@@ -277,6 +276,18 @@ namespace Loom.ZombieBattleground
 
             _collectionData = new CollectionData();
             _collectionData.Cards = new List<CollectionCardData>();
+        }
+        
+        private void ResolutionChangedUpdate()
+        {
+            if (_selfPage == null)
+                return;
+
+            if (_myDeckPage.GetTab() != HordeSelectionWithNavigationPage.Tab.Editing)
+                return;
+                
+            UpdateDeckCardPage();
+            LoadCollectionsCards();
         }
 
         #region Button Handlers

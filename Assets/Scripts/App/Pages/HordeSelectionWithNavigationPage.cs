@@ -563,6 +563,11 @@ namespace Loom.ZombieBattleground
             );
             return deck;
         }
+        
+        public Tab GetTab()
+        {
+            return _tab;
+        }
 
         public void ChangeTab(Tab newTab)
         {

@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
             _cacheFilteredSetTypeCardsList = new List<Card>();
 
             _isAllCardsCounted = false;
-            ApplicationSettingsManager.OnResolutionChanged += LoadCards;
+            ApplicationSettingsManager.OnResolutionChanged += ResolutionChangedUpdate;
         }
 
         public void Update()
@@ -151,6 +151,14 @@ namespace Loom.ZombieBattleground
             {
                 _selfPage.transform.localScale = Vector3.one * 0.93f;
             }
+        }
+        
+        private void ResolutionChangedUpdate()
+        {
+            if (_selfPage == null)
+                return;
+
+            LoadCards();
         }
 
         #region UI Handlers
