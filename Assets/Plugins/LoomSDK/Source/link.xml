@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <linker>
-  <assembly fullname="System">
-    <type fullname="System.ComponentModel.TypeConverter" preserve="all" />
-    <!-- <namespace fullname="System.ComponentModel" preserve="all" /> -->
-  </assembly>
+    <assembly fullname="Loom.Google.Protobuf" preserve="all"/>
+    <assembly fullname="LoomSDK" preserve="all"/>
+    <assembly fullname="System">
+        <type fullname="System.ComponentModel.TypeConverter" preserve="all"/>
+        <!-- <namespace fullname="System.ComponentModel" preserve="all" /> -->
+    </assembly>
 </linker>

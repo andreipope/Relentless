@@ -6,6 +6,7 @@ using log4net;
 using Loom.Client;
 using OneOf;
 using OneOf.Types;
+using UnityEngine.Purchasing;
 
 #if UNITY_ANDROID || UNITY_IOS
 using Loom.Newtonsoft.Json;
@@ -16,7 +17,7 @@ using UnityEngine.Purchasing.Security;
 namespace Loom.ZombieBattleground.Iap
 {
     /// <summary>
-    /// Implements the part of purchase flow responsible for communication with Marketplace and Plasmachain.
+    /// Implements the part of purchase flow responsible for communication with Marketplace and PlasmaChain.
     /// </summary>
     public class IapPurchaseProcessor
     {
@@ -39,7 +40,7 @@ namespace Loom.ZombieBattleground.Iap
             _setStateAction = stateAction;
         }
 
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receipt)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receipt, Product product)
         {
 #if UNITY_ANDROID || UNITY_IOS
             FiatValidationData fiatValidationData;
@@ -58,12 +59,18 @@ namespace Loom.ZombieBattleground.Iap
 #elif UNITY_IOS
                 AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receipt);
                 Log.Debug($"{nameof(ProcessPurchase)}: AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
-                Assert.AreEqual(1, appleReceipt.inAppPurchaseReceipts.Length);
+                AppleInAppPurchaseReceipt matchingReceipt =
+                    product == null ?
+                        appleReceipt.inAppPurchaseReceipts[0] :
+                        appleReceipt.inAppPurchaseReceipts.SingleOrDefault(r => r.transactionID == product.transactionID);
+
+                if (matchingReceipt == null)
+                    throw new KeyNotFoundException($"Receipt for transactionID {product?.transactionID ?? "null"} not found");
 
                 fiatValidationData =
                     new FiatValidationDataAppStore(
-                        appleReceipt.inAppPurchaseReceipts[0].productID,
-                        appleReceipt.inAppPurchaseReceipts[0].transactionID,
+                        matchingReceipt.productID,
+                        matchingReceipt.transactionID,
                         IapReceiptParser.ParseRawReceipt(receipt, "AppleAppStore").Payload
                     );
 #endif
@@ -134,7 +141,7 @@ namespace Loom.ZombieBattleground.Iap
         }
 
         /// <summary>
-        /// Checks the pack on Plasmachain, proceeds to the next step on success.
+        /// Checks the pack on PlasmaChain, proceeds to the next step on success.
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
@@ -145,7 +152,7 @@ namespace Loom.ZombieBattleground.Iap
 
             try
             {
-                // Claim pack on Plasmachain
+                // Claim pack on PlasmaChain
                 await _plasmaChainBackendFacade.ClaimPacks(_plasmaChainClient, record);
             }
             catch (TxCommitException e)
@@ -163,7 +170,7 @@ namespace Loom.ZombieBattleground.Iap
                 return new IapException("Failed to request pack", e);
             }
 
-            // Once pack is claimed on Plasmachain, its record can be removed from Marketplace
+            // Once pack is claimed on PlasmaChain, its record can be removed from Marketplace
             return await AuthClaim(record.UserId, record.TxID);
         }
 
@@ -179,7 +186,7 @@ namespace Loom.ZombieBattleground.Iap
 
             try
             {
-                await _authFiatApiFacade.Claim(userId, new [] { txId });
+                await _authFiatApiFacade.Claim(userId, new[] { txId });
             }
             catch (Exception e)
             {

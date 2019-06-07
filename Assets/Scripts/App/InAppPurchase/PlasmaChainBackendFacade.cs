@@ -215,8 +215,8 @@ namespace Loom.ZombieBattleground.Iap
             DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
             {
                 AutoReconnect = false,
-                CallTimeout = Constants.PlasmachainCallTimeout,
-                StaticCallTimeout = Constants.PlasmachainCallTimeout
+                CallTimeout = Constants.PlasmaChainCallTimeout,
+                StaticCallTimeout = Constants.PlasmaChainCallTimeout
             };
 
             return new LoggingDAppChainClient(writer, reader, clientConfiguration)

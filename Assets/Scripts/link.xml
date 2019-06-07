@@ -1,18 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <linker>
-    <assembly fullname="ZombieBattleground.Main" preserve="all" />
-    <assembly fullname="ZombieBattleground.Generated" preserve="all" />
-    <assembly fullname="Loom.Google.Protobuf" preserve="all" />
-    <assembly fullname="LoomSDK" preserve="all" />
-    <assembly fullname="Opencoding.Shared" preserve="all" />
-    <assembly fullname="Opencoding.LogHistory" preserve="all" />
-    <assembly fullname="Opencoding.Console" preserve="all" />
-    <assembly fullname="Opencoding.Console.Misc" preserve="all" />
-    <assembly fullname="Opencoding.CommandHandlers" preserve="all" />
+    <assembly fullname="ZombieBattleground.Main" preserve="all"/>
+    <assembly fullname="ZombieBattleground.Generated" preserve="all"/>
+    <assembly fullname="Opencoding.Shared" preserve="all"/>
+    <assembly fullname="Opencoding.LogHistory" preserve="all"/>
+    <assembly fullname="Opencoding.Console" preserve="all"/>
+    <assembly fullname="Opencoding.Console.Misc" preserve="all"/>
+    <assembly fullname="Opencoding.CommandHandlers" preserve="all"/>
 
     <assembly fullname="System">
-        <type fullname="Mono.Unity.UnityTlsProvider" preserve="all" />
-        <type fullname="Mono.AppleTls.AppleTlsProvider" preserve="all" />
-        <type fullname="Mono.Net.Security.LegacyTlsProvider" preserve="all" />
+        <type fullname="Mono.Unity.*" preserve="all"/>
+        <type fullname="Mono.AppleTls.*" preserve="all"/>
+        <type fullname="Mono.Net.Security.*" preserve="all"/>
     </assembly>
 </linker>
