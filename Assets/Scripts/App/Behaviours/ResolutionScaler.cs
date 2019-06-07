@@ -28,12 +28,12 @@ namespace Loom.ZombieBattleground
         {
             UpdateScale();
 
-            ApplicationSettingsManager.OnResolutionChanged += UpdateScale;
+            ApplicationSettingsManager.OnResolutionChangedBegin += UpdateScale;
         }
 
         private void OnDestroy()
         {
-            ApplicationSettingsManager.OnResolutionChanged -= UpdateScale;
+            ApplicationSettingsManager.OnResolutionChangedBegin -= UpdateScale;
         }
 
         private void UpdateScale()

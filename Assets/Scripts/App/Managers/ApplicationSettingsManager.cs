@@ -18,7 +18,8 @@ namespace Loom.ZombieBattleground
         public ResolutionInfo CurrentResolution { get; private set; }
 
 #pragma warning disable 67
-        public static event Action OnResolutionChanged;
+        public static event Action OnResolutionChangedBegin;
+        public static event Action OnResolutionChangedFinal;
 #pragma warning restore 67
 
         public const float WaitForResolutionChangeFinishAnimating = 1.5f;
@@ -84,7 +85,9 @@ namespace Loom.ZombieBattleground
 
             //Wait until game screen has finish animating for it's resolution changes
             await Task.Delay(TimeSpan.FromSeconds(WaitForResolutionChangeFinishAnimating));
-            OnResolutionChanged?.Invoke();
+            OnResolutionChangedBegin?.Invoke();
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            OnResolutionChangedFinal?.Invoke();
         }
 #endif
 

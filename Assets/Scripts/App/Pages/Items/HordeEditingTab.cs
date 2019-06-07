@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground
             _cacheDeckPageIndexDictionary = new Dictionary<string, int>();
             _cacheCollectionPageIndexDictionary = new Dictionary<string, int>();
 
-            ApplicationSettingsManager.OnResolutionChanged += ResolutionChangedUpdate;
+            ApplicationSettingsManager.OnResolutionChangedFinal += ResolutionChangedUpdate;
         }
 
         public void Show(GameObject selfPage)
