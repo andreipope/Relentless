@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground
 
         private HordeSelectionWithNavigationPage.Tab _nextTab;
 
-        private const float BoardCardScale = 0.2756f;
+        private const float BoardCardScale = 0.26f;
 
         private Dictionary<string, int> _cacheDeckPageIndexDictionary;
         private Dictionary<string, int> _cacheCollectionPageIndexDictionary;
@@ -178,6 +178,9 @@ namespace Loom.ZombieBattleground
             _cacheCollectionCardsList = new List<Card>();
             _cacheDeckPageIndexDictionary = new Dictionary<string, int>();
             _cacheCollectionPageIndexDictionary = new Dictionary<string, int>();
+
+            ApplicationSettingsManager.OnResolutionChanged += UpdateDeckCardPage;
+            ApplicationSettingsManager.OnResolutionChanged += LoadCollectionsCards;
         }
 
         public void Show(GameObject selfPage)
