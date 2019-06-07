@@ -598,11 +598,11 @@ namespace Loom.ZombieBattleground
                     if (_tutorialManager.IsTutorial)
                     {
                         RefreshPageListData();
-                        if (_dataManager.CachedDecksData.Decks.Count > 1)
+                        if (GetDeckListFromUserCache().Count >= 1)
                         {
                             AssignSelectedDeck
                             (
-                                _dataManager.CachedDecksData.Decks[1]
+                                GetDeckListFromUserCache()[0]
                             );
                         }
                         else
