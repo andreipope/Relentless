@@ -1,7 +1,5 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf;
 using Loom.Newtonsoft.Json;
@@ -13,7 +11,8 @@ namespace Loom.Client
     /// Each instance of this class is bound to a specific smart contract, and provides a simple way of calling
     /// into and querying that contract.
     /// </summary>
-    public class Contract : ContractBase<ChainEventArgs> {
+    public abstract class Contract<TChainEvent> : ContractBase<TChainEvent>
+    {
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -76,20 +75,6 @@ namespace Loom.Client
             return msg;
         }
 
-        protected override ChainEventArgs TransformChainEvent(RawChainEventArgs e) {
-            string jsonRpcEventString = Encoding.UTF8.GetString(e.Data);
-            JsonRpcEvent jsonRpcEvent = JsonConvert.DeserializeObject<JsonRpcEvent>(jsonRpcEventString);
-            byte[] eventData = Encoding.UTF8.GetBytes(jsonRpcEvent.Data);
-
-            return new ChainEventArgs(
-                e.ContractAddress,
-                e.CallerAddress,
-                e.BlockHeight,
-                eventData,
-                jsonRpcEvent.Method
-            );
-        }
-
         /// <summary>
         /// Calls a smart contract method that mutates state.
         /// The call into the smart contract is accomplished by committing a transaction to the DAppChain.
@@ -132,6 +117,33 @@ namespace Loom.Client
             }.ToByteString();
 
             return CreateContractMethodCallTx(requestBytes, VMType.Plugin);
+        }
+    }
+
+    /// <summary>
+    /// The Contract class streamlines interaction with a smart contract that was deployed on a Loom DAppChain.
+    /// Each instance of this class is bound to a specific smart contract, and provides a simple way of calling
+    /// into and querying that contract.
+    /// </summary>
+    /// <remarks>Expects the event data to be a UTF8 string containing a <see cref="JsonRpcEvent"/></remarks>
+    public class Contract : Contract<ChainEventArgs> {
+        public Contract(DAppChainClient client, Address contractAddress, Address callerAddress)
+            : base(client, contractAddress, callerAddress)
+        {
+        }
+
+        protected override ChainEventArgs TransformChainEvent(RawChainEventArgs e) {
+            string jsonRpcEventString = Encoding.UTF8.GetString(e.Data);
+            JsonRpcEvent jsonRpcEvent = JsonConvert.DeserializeObject<JsonRpcEvent>(jsonRpcEventString);
+            byte[] eventData = Encoding.UTF8.GetBytes(jsonRpcEvent.Data);
+
+            return new ChainEventArgs(
+                e.ContractAddress,
+                e.CallerAddress,
+                e.BlockHeight,
+                eventData,
+                jsonRpcEvent.Method
+            );
         }
 
         private struct JsonRpcEvent

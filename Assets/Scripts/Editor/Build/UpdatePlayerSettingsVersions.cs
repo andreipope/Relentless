@@ -42,6 +42,12 @@ namespace Loom.ZombieBattleground.Editor
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
             EditorUserBuildSettings.androidDebugMinification = AndroidMinification.None;
             EditorUserBuildSettings.androidReleaseMinification = AndroidMinification.Proguard;
+
+#if UNITY_CLOUD_BUILD && ENABLE_DEBUG
+            EditorUserBuildSettings.allowDebugging = true;
+            EditorUserBuildSettings.iOSBuildConfigType = iOSBuildType.Debug;
+            EditorUserBuildSettings.androidBuildType = AndroidBuildType.Debug;
+#endif
         }
     }
 }

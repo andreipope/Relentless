@@ -17,7 +17,9 @@ namespace Loom.ZombieBattleground
 
         public ResolutionInfo CurrentResolution { get; private set; }
 
+#pragma warning disable 67
         public static event Action OnResolutionChanged;
+#pragma warning restore 67
 
         public const float WaitForResolutionChangeFinishAnimating = 1.5f;
 
@@ -38,6 +40,8 @@ namespace Loom.ZombieBattleground
         {
 #if !UNITY_ANDROID && !UNITY_IOS
             await HandleSpecificUserActions();
+#else
+            await Task.CompletedTask;
 #endif
         }
 
@@ -49,6 +53,8 @@ namespace Loom.ZombieBattleground
                 x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
 
             await SetScreenMode(CurrentScreenMode);
+#else
+            await Task.CompletedTask;
 #endif
         }
 
@@ -61,6 +67,8 @@ namespace Loom.ZombieBattleground
             }
 
             await SetScreenMode(Enumerators.ScreenMode.Window);
+#else
+            await Task.CompletedTask;
 #endif
         }
 

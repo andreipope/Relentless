@@ -1,13 +1,14 @@
 // NOTE: this class is compiled into a separate log4netUnitySupport assembly,
 // so that Unity still opens the original line when double-clicking in Console
 
-/*
+#if LOG4NET_UNITY
+
 using System;
 using log4net;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Loom.ZombieBattleground
+namespace log4netUnitySupport
 {
     public class UnityLoggerWrapper : UnityEngine.ILogger
     {
@@ -44,7 +45,7 @@ namespace Loom.ZombieBattleground
 
         public void LogException(Exception exception, Object context)
         {
-            _log.Error("", exception);
+            Log(LogType.Exception, null, exception, context);
         }
 
         public void Log(LogType logType, object message)
@@ -62,20 +63,47 @@ namespace Loom.ZombieBattleground
             Log(logType, tag, message, null);
         }
 
+        protected virtual bool FilterLog(LogType logType, string tag, object message, Object context)
+        {
+            return true;
+        }
+
         public void Log(LogType logType, string tag, object message, Object context)
         {
+            if (!FilterLog(logType, tag, message, context))
+                return;
+
+            string format = IsEditorProvider.IsEditor ?
+                "<i>[{0}]</i> {1}" :
+                "[{0}] {1}";
+
             switch (logType)
             {
                 case LogType.Error:
                 case LogType.Assert:
                 case LogType.Exception:
-                    if (String.IsNullOrEmpty(tag))
+                    if (message is Exception exception)
                     {
-                        _log.Error(message);
+                        if (String.IsNullOrEmpty(tag))
+                        {
+                            _log.Error("", exception);
+                        }
+                        else
+                        {
+
+                            _log.Error(String.Format(format, tag, ""), exception);
+                        }
                     }
                     else
                     {
-                        _log.ErrorFormat("[{0}] {1}", tag, message);
+                        if (String.IsNullOrEmpty(tag))
+                        {
+                            _log.Error(message);
+                        }
+                        else
+                        {
+                            _log.ErrorFormat(format, tag, message);
+                        }
                     }
 
                     break;
@@ -86,7 +114,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        _log.WarnFormat("[{0}] {1}", tag, message);
+                        _log.WarnFormat(format, tag, message);
                     }
                     break;
                 case LogType.Log:
@@ -96,7 +124,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        _log.InfoFormat("[{0}] {1}", tag, message);
+                        _log.InfoFormat(format, tag, message);
                     }
                     break;
                 default:
@@ -163,4 +191,6 @@ namespace Loom.ZombieBattleground
             set {}
         }
     }
-}*/
+}
+
+#endif
