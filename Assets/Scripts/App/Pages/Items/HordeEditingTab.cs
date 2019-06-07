@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground
 
         private HordeSelectionWithNavigationPage.Tab _nextTab;
 
-        private const float BoardCardScale = 0.2756f;
+        private const float BoardCardScale = 0.26f;
 
         private Dictionary<string, int> _cacheDeckPageIndexDictionary;
         private Dictionary<string, int> _cacheCollectionPageIndexDictionary;
