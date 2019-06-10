@@ -136,14 +136,9 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();            
             
             _deckInfoObjectList = new List<DeckInfoObject>();
-<<<<<<< HEAD
             _pageList = new List<Page>();
-=======
-            _cacheDeckListToDisplay = new List<Deck>();
-            SelectDeckIndex = 0;
 
             InitializeLocalization();            
->>>>>>> 997526b3f22c493142d7195a8556dbc32c643785
 
             HordeEditTab = new HordeEditingTab();
             HordeEditTab.Init();
@@ -240,6 +235,10 @@ namespace Loom.ZombieBattleground
                 (
                     "Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Text_SelectDeck"
                 ).GetComponentInChildren<TextMeshProUGUI>()
+            );
+            LocalizedTextList.Add
+            (
+                _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>()
             );
             base.RegisterLocalizedTextList();
         }
