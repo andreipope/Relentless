@@ -18,10 +18,23 @@ namespace Loom.ZombieBattleground
         {
             None = -1,
             English = 0,
-            Thai = 1,
-            Japanese = 2,
+            Chinese = 1,
+            Korean = 2,            
+            Japanese = 3,
+            Spanish = 4,
+            Thai = 5,
         }
         
+        private readonly float[] LineSpacing = new float[]
+        {
+            -26.7f,
+            0f,
+            0f,
+            0f,
+            0f,
+            0f,
+        };
+
         public event Action<Language> LanguageWasChangedEvent;
         
         public Language CurrentLanguage { get; private set; } = Language.None;
@@ -29,6 +42,8 @@ namespace Loom.ZombieBattleground
         private TMP_FontAsset[] _fontAssets;
 
         private TMP_FontAsset _currentFont;
+
+        private float _currentLineSpacing;
         
         private List<TextMeshProUGUI> _registeredLabelList;
 
@@ -39,10 +54,13 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             
             _registeredLabelList = new List<TextMeshProUGUI>();
-            _fontAssets = new TMP_FontAsset[3];
-            _fontAssets[0] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/BevanSDF");
-            _fontAssets[1] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/THSarabunNewSDF");
-            _fontAssets[2] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/JapaneseFontSDF");
+            _fontAssets = new TMP_FontAsset[6];
+            _fontAssets[0] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/EN_Bevan");
+            _fontAssets[1] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/CH_NotoSansRegular_Common1");
+            _fontAssets[2] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/KR_NotosansRegular_1");
+            _fontAssets[3] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/JP_TogaliteRegular_KanaPunctuation");
+            _fontAssets[4] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/EN_Bevan");
+            _fontAssets[5] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/TH_Krungthep");
         }
 
         public void Update()
@@ -82,7 +100,8 @@ namespace Loom.ZombieBattleground
                 {
                     WipeAllText();
                 }
-                UpdateFont();
+                UpdateStyleData();
+                UpdateStyle();
                 I2.Loc.LocalizationManager.CurrentLanguage = language.ToString();  
                 
                 LanguageWasChangedEvent?.Invoke(CurrentLanguage);
@@ -105,14 +124,14 @@ namespace Loom.ZombieBattleground
                 Log.Info($"Label list is null");
                 return;
             }
-            
-            _currentFont = _fontAssets[(int)CurrentLanguage];            
+
+            UpdateStyleData();          
             
             foreach(TextMeshProUGUI label in localizableUI.LocalizedTextList)
             {
                 if(!_registeredLabelList.Contains(label))
-                {
-                    label.font = _currentFont;
+                {                    
+                    UpdateStyle(label);
                     _registeredLabelList.Add(label);
                 }
             }
@@ -157,13 +176,27 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateFont()
+        private void UpdateStyleData()
         {
             _currentFont = _fontAssets[(int)CurrentLanguage];
+            _currentLineSpacing = LineSpacing[(int)CurrentLanguage];
+        }
+
+        private void UpdateStyle()
+        {
             foreach(TextMeshProUGUI item in _registeredLabelList)
             {
-                item.font = _currentFont;
+                UpdateStyle(item);
             }
+        }
+        
+        private void UpdateStyle(TextMeshProUGUI item)
+        {
+            if (item == null)
+                return;
+                
+            item.font = _currentFont;
+            item.lineSpacing = _currentLineSpacing;
         }
         
         private void WipeAllText()
