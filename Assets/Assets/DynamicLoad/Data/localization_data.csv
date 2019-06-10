@@ -1,16 +1,13 @@
-Keys,English,Thai,Japanese
-Menu,<size=28>Menu</size>,<size=36>เมนู</size>,<size=36>メニュー</size>
-Start,<size=28>Start</size>,<size=36>เริ่ม</size>,<size=36>スタート</size>
-Settings,<size=28>Settings</size>,<size=36>ตั้งค่า</size>,<size=36>セティングズ</size>
-Save,<size=28>Save</size>,<size=36>เซฟ</size>,<size=36>セーブ</size>
-Load,<size=28>Load</size>,<size=36>โหลด</size>,<size=36>ロード</size>
-GotIt,GOT IT,ตกลง,わかります
-,,,
-Common.Button.Auto,AUTO,ออโต้,オートー
-Common.Button.Filter,FILTER,ฟิลเตอร์,フィルター
-,,,
-HordeSelection.Header,SELECT DECK,เด็คของฉัน,セレクト・デック
-HordeSelection.Edit,EDIT,แก้ไข,エディット
-HordeSelection.Delete,DELETE,ลบ,デリート
-HordeSelection.Rename,RENAME,เปลื่ยนชื่อ,リーネーム
-HordeSelection.Build,BUILD A NEW DECK,สร้างเด็คใหม่,ビルド・デック
+Keys,English,Chinese,Korean,Japanese,Spanish,Thai
+This_Is_A_Sample_Keyword,THIS IS A SAMPLE ENGLISH PHASE,這是一個中國階段的樣本,이것이 바로 한국의 위상,これはサンプルのにっぽん ご-しょう です,Esta es una muestra de la fase española.,ตัวอย่างภาษาไทย 
+This_Is_A_Random_Keyword,The Maps & Geospatial Digest is a regular roundup and commentary on all things geo. Each issue I'll focus on the most interesting & inspiring content so you don't have to.,某天，一辆快递卡车出现在她家门外，运来一个地埋式篮球场套装，包括球筐、支架和篮板。这个套装购于易趣网，售价100英镑，而她压根不知道自己买了这些,"이모삼쭌들 오랜만이에오?저 보고싶었죠? 지금은 넥카라 안하지만, 넥카라 하고있을 때 찍은 귀여운 사진들이 백아흔아홉장이라 마구 올려보아요! 넥카라 불편할 줄 알았는데 엄청 푹신해서 꽤 자주 베개로 썼어요. 어디든 누워도 푹신해서 잠이 솔솔 오더라구요!",あのすいませんなんか多方面に(相方含め)誤解を与えてしまったようなので、早めに情報解禁します。夏リリース予定のbassy名義のアルバムはFeat.某Voさんとの過去全曲集です。今となっては入手困難な楽曲となってしまったので、この機会に是非!! ,El castellano es la lengua española oficial del Estado. ... Las demás lenguas españolas serán también oficiales en las respectivas Comunidades Autónomas...,ภาษาไทย หรือ ภาษาไทยกลาง เป็นภาษาราชการและภาษาประจำชาติของประเทศไทย ภาษาไทยเป็นภาษาในกลุ่มภาษาไทซึ่งเป็นกลุ่มย่อยของตระกูลภาษาขร้า-ไท สันนิษฐานว่า ภาษาในตระกูลนี้มีถิ่นกำเนิดจากทางตอนใต้ของประเทศจีน และนักภาษาศาสตร์บางส่วนเสนอว่า ภาษาไทยน่าจะมีความเชื่อมโยงกับตระกูลภาษาออสโตร-เอเชียติก ตระกูลภาษาออสโตรนีเซียน และตระกูลภาษาจีน-ทิเบต
+,,,,,,
+Common_Button_Auto,AUTO,汽車,자동,オートー,auto,ออโต้
+Common_Button_Filter,FILTER,過濾,필터,フィルター,filtrar,ฟิลเตอร์
+Common_Button_GotIt,GOT IT,得到它了,알았다,わかります,lo tengo,ตกลง
+,,,,,,
+HordeSelection_Header,SELECT DECK,選擇甲板,데크 선택,セレクト・デック,seleccionar mazo,เด็คของฉัน
+HordeSelection_Edit,EDIT,編輯,편집하다,エディット,editar,แก้ไข
+HordeSelection_Delete,DELETE,刪除,지우다,デリート,borrar,ลบ
+HordeSelection_Rename,RENAME,改名,이름 바꾸기,リーネーム,rebautizar,เปลื่ยนชื่อ
+HordeSelection_Build,BUILD A NEW DECK,建立,새 데크 만들기,ビルド・デック,construir,สร้างเด็คใหม่
