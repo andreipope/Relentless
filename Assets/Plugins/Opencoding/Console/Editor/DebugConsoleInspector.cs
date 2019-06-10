@@ -10,7 +10,7 @@ namespace Opencoding.Console.Editor
 		public override void OnInspectorGUI()
 		{
 			DebugConsole myTarget = (DebugConsole)target;
-			if (PrefabUtility.GetPrefabType(myTarget.gameObject) == PrefabType.Prefab)
+			if (PrefabUtility.GetPrefabAssetType(myTarget.gameObject) == PrefabAssetType.Regular)
 				GUILayout.Label("This prefab should be placed in the first scene of your game", "helpbox");
 
 			GUILayout.BeginHorizontal();

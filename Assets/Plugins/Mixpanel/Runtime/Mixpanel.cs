@@ -17,6 +17,7 @@ using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
+#pragma warning disable 618
 
 namespace mixpanel
 {
@@ -60,9 +61,9 @@ namespace mixpanel
         // [Tooltip("Data will be discarded if the outgoing queue grows above this size (in megabytes).")]
         private int maxQueueSizeInMB = 5;
         // [Tooltip("Set the automatic $ios_ifa property. For this to work, you also have to define the MIXPANEL_USE_IOS_IFA script symbol in the player settings. Make sure to only enable this if your app actually shows ads, otherwise your app will be rejected by Apple. If you don't enable it, you may delete Plugins/iOS/iOSIdentifiers.mm (to be on the safe side).")]
-#pragma warning disable 414
+#if UNITY_IOS && MIXPANEL_USE_IOS_IFA
         private bool useIosIfa = false;
-#pragma warning restore 414
+#endif
         #endregion
         /*! \endcond */
 
