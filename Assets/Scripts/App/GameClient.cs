@@ -78,6 +78,7 @@ namespace Loom.ZombieBattleground
             AddService<IapMediator>(new IapMediator());
             AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
+            AddService<LocalizationControlManager>(new LocalizationControlManager());
         }
 
         public override void InitServices() {

@@ -42,26 +42,10 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 64f3cafd5788e402b84625f6b8bde135, type: 3}
-    totalSpriteSurfaceArea: 3881874
+    totalSpriteSurfaceArea: 0
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
-  m_PackedSprites:
-  - {fileID: 21300000, guid: 4441c0d28e3d1435d8fc233de3ba6f92, type: 3}
-  - {fileID: 21300000, guid: cd354b53df8624850ae41c3ffd8fcd31, type: 3}
-  - {fileID: 21300000, guid: 66c659e5df1704b7f9832e32e5f6d98d, type: 3}
-  - {fileID: 21300000, guid: abcf5f0838576467cab6b796d8d1362d, type: 3}
-  - {fileID: 21300000, guid: e59235186159f4136b04b7445ce949a9, type: 3}
-  - {fileID: 21300000, guid: eefbab192a874422fa95c5df5c9b4df6, type: 3}
-  - {fileID: 21300000, guid: 7f1cd6eccdf4f43ed915c3cb29f8dec7, type: 3}
-  - {fileID: 21300000, guid: ac7edfffb685644e08919337b73a87bf, type: 3}
-  m_PackedSpriteNamesToIndex:
-  - results_header_lose
-  - results_panel_main
-  - results_info_tray
-  - results_panel_lose
-  - results_level_circle
-  - results_pvp_gradient
-  - results_header_win
-  - results_panel_pvpextension
+  m_PackedSprites: []
+  m_PackedSpriteNamesToIndex: []
   m_Tag: WonLostPopup_Atlas
   m_IsVariant: 0

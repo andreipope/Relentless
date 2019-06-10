@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0b0c553be8edd4682e9180fdd13e37, type: 3}
+  m_Name: I2Languages
+  m_EditorClassIdentifier: 
+  mSource:
+    UserAgreesToHaveItOnTheScene: 0
+    UserAgreesToHaveItInsideThePluginsFolder: 0
+    GoogleLiveSyncIsUptoDate: 1
+    mTerms:
+    - Term: This_Is_A_Sample_Keyword
+      TermType: 0
+      Description: 
+      Languages:
+      - THIS IS A SAMPLE ENGLISH PHASE
+      - "\u9019\u662F\u4E00\u500B\u4E2D\u570B\u968E\u6BB5\u7684\u6A23\u672C"
+      - "\uC774\uAC83\uC774 \uBC14\uB85C \uD55C\uAD6D\uC758 \uC704\uC0C1"
+      - "\u3053\u308C\u306F\u30B5\u30F3\u30D7\u30EB\u306E\u306B\u3063\u307D\u3093
+        \u3054-\u3057\u3087\u3046 \u3067\u3059"
+      - "Esta es una muestra de la fase espa\xF1ola."
+      - "\u0E15\u0E31\u0E27\u0E2D\u0E22\u0E48\u0E32\u0E07\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22 "
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: This_Is_A_Random_Keyword
+      TermType: 0
+      Description: 
+      Languages:
+      - The Maps & Geospatial Digest is a regular roundup and commentary on all things
+        geo. Each issue I'll focus on the most interesting & inspiring content so
+        you don't have to.
+      - "\u67D0\u5929\uFF0C\u4E00\u8F86\u5FEB\u9012\u5361\u8F66\u51FA\u73B0\u5728\u5979\u5BB6\u95E8\u5916\uFF0C\u8FD0\u6765\u4E00\u4E2A\u5730\u57CB\u5F0F\u7BEE\u7403\u573A\u5957\u88C5\uFF0C\u5305\u62EC\u7403\u7B50\u3001\u652F\u67B6\u548C\u7BEE\u677F\u3002\u8FD9\u4E2A\u5957\u88C5\u8D2D\u4E8E\u6613\u8DA3\u7F51\uFF0C\u552E\u4EF7100\u82F1\u9551\uFF0C\u800C\u5979\u538B\u6839\u4E0D\u77E5\u9053\u81EA\u5DF1\u4E70\u4E86\u8FD9\u4E9B"
+      - "\uC774\uBAA8\uC0BC\uCB4C\uB4E4 \uC624\uB79C\uB9CC\uC774\uC5D0\uC624?\uC800
+        \uBCF4\uACE0\uC2F6\uC5C8\uC8E0? \uC9C0\uAE08\uC740 \uB125\uCE74\uB77C \uC548\uD558\uC9C0\uB9CC,
+        \uB125\uCE74\uB77C \uD558\uACE0\uC788\uC744 \uB54C \uCC0D\uC740 \uADC0\uC5EC\uC6B4
+        \uC0AC\uC9C4\uB4E4\uC774 \uBC31\uC544\uD754\uC544\uD649\uC7A5\uC774\uB77C
+        \uB9C8\uAD6C \uC62C\uB824\uBCF4\uC544\uC694! \uB125\uCE74\uB77C \uBD88\uD3B8\uD560
+        \uC904 \uC54C\uC558\uB294\uB370 \uC5C4\uCCAD \uD479\uC2E0\uD574\uC11C \uAF64
+        \uC790\uC8FC \uBCA0\uAC1C\uB85C \uC37C\uC5B4\uC694. \uC5B4\uB514\uB4E0 \uB204\uC6CC\uB3C4
+        \uD479\uC2E0\uD574\uC11C \uC7A0\uC774 \uC194\uC194 \uC624\uB354\uB77C\uAD6C\uC694!"
+      - "\u3042\u306E\u3059\u3044\u307E\u305B\u3093\u306A\u3093\u304B\u591A\u65B9\u9762\u306B(\u76F8\u65B9\u542B\u3081)\u8AA4\u89E3\u3092\u4E0E\u3048\u3066\u3057\u307E\u3063\u305F\u3088\u3046\u306A\u306E\u3067\u3001\u65E9\u3081\u306B\u60C5\u5831\u89E3\u7981\u3057\u307E\u3059\u3002\u590F\u30EA\u30EA\u30FC\u30B9\u4E88\u5B9A\u306Ebassy\u540D\u7FA9\u306E\u30A2\u30EB\u30D0\u30E0\u306FFeat.\u67D0Vo\u3055\u3093\u3068\u306E\u904E\u53BB\u5168\u66F2\u96C6\u3067\u3059\u3002\u4ECA\u3068\u306A\u3063\u3066\u306F\u5165\u624B\u56F0\u96E3\u306A\u697D\u66F2\u3068\u306A\u3063\u3066\u3057\u307E\u3063\u305F\u306E\u3067\u3001\u3053\u306E\u6A5F\u4F1A\u306B\u662F\u975E!! "
+      - "El castellano es la lengua espa\xF1ola oficial del Estado. ... Las dem\xE1s
+        lenguas espa\xF1olas ser\xE1n tambi\xE9n oficiales en las respectivas Comunidades
+        Aut\xF3nomas..."
+      - "\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22 \u0E2B\u0E23\u0E37\u0E2D \u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22\u0E01\u0E25\u0E32\u0E07
+        \u0E40\u0E1B\u0E47\u0E19\u0E20\u0E32\u0E29\u0E32\u0E23\u0E32\u0E0A\u0E01\u0E32\u0E23\u0E41\u0E25\u0E30\u0E20\u0E32\u0E29\u0E32\u0E1B\u0E23\u0E30\u0E08\u0E33\u0E0A\u0E32\u0E15\u0E34\u0E02\u0E2D\u0E07\u0E1B\u0E23\u0E30\u0E40\u0E17\u0E28\u0E44\u0E17\u0E22
+        \u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22\u0E40\u0E1B\u0E47\u0E19\u0E20\u0E32\u0E29\u0E32\u0E43\u0E19\u0E01\u0E25\u0E38\u0E48\u0E21\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E0B\u0E36\u0E48\u0E07\u0E40\u0E1B\u0E47\u0E19\u0E01\u0E25\u0E38\u0E48\u0E21\u0E22\u0E48\u0E2D\u0E22\u0E02\u0E2D\u0E07\u0E15\u0E23\u0E30\u0E01\u0E39\u0E25\u0E20\u0E32\u0E29\u0E32\u0E02\u0E23\u0E49\u0E32-\u0E44\u0E17
+        \u0E2A\u0E31\u0E19\u0E19\u0E34\u0E29\u0E10\u0E32\u0E19\u0E27\u0E48\u0E32 \u0E20\u0E32\u0E29\u0E32\u0E43\u0E19\u0E15\u0E23\u0E30\u0E01\u0E39\u0E25\u0E19\u0E35\u0E49\u0E21\u0E35\u0E16\u0E34\u0E48\u0E19\u0E01\u0E33\u0E40\u0E19\u0E34\u0E14\u0E08\u0E32\u0E01\u0E17\u0E32\u0E07\u0E15\u0E2D\u0E19\u0E43\u0E15\u0E49\u0E02\u0E2D\u0E07\u0E1B\u0E23\u0E30\u0E40\u0E17\u0E28\u0E08\u0E35\u0E19
+        \u0E41\u0E25\u0E30\u0E19\u0E31\u0E01\u0E20\u0E32\u0E29\u0E32\u0E28\u0E32\u0E2A\u0E15\u0E23\u0E4C\u0E1A\u0E32\u0E07\u0E2A\u0E48\u0E27\u0E19\u0E40\u0E2A\u0E19\u0E2D\u0E27\u0E48\u0E32
+        \u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22\u0E19\u0E48\u0E32\u0E08\u0E30\u0E21\u0E35\u0E04\u0E27\u0E32\u0E21\u0E40\u0E0A\u0E37\u0E48\u0E2D\u0E21\u0E42\u0E22\u0E07\u0E01\u0E31\u0E1A\u0E15\u0E23\u0E30\u0E01\u0E39\u0E25\u0E20\u0E32\u0E29\u0E32\u0E2D\u0E2D\u0E2A\u0E42\u0E15\u0E23-\u0E40\u0E2D\u0E40\u0E0A\u0E35\u0E22\u0E15\u0E34\u0E01
+        \u0E15\u0E23\u0E30\u0E01\u0E39\u0E25\u0E20\u0E32\u0E29\u0E32\u0E2D\u0E2D\u0E2A\u0E42\u0E15\u0E23\u0E19\u0E35\u0E40\u0E0B\u0E35\u0E22\u0E19
+        \u0E41\u0E25\u0E30\u0E15\u0E23\u0E30\u0E01\u0E39\u0E25\u0E20\u0E32\u0E29\u0E32\u0E08\u0E35\u0E19-\u0E17\u0E34\u0E40\u0E1A\u0E15"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Common_Button_Auto
+      TermType: 0
+      Description: 
+      Languages:
+      - AUTO
+      - "\u6C7D\u8ECA"
+      - "\uC790\uB3D9"
+      - "\u30AA\u30FC\u30C8\u30FC"
+      - auto
+      - "\u0E2D\u0E2D\u0E42\u0E15\u0E49"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Common_Button_Filter
+      TermType: 0
+      Description: 
+      Languages:
+      - FILTER
+      - "\u904E\u6FFE"
+      - "\uD544\uD130"
+      - "\u30D5\u30A3\u30EB\u30BF\u30FC"
+      - filtrar
+      - "\u0E1F\u0E34\u0E25\u0E40\u0E15\u0E2D\u0E23\u0E4C"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Common_Button_GotIt
+      TermType: 0
+      Description: 
+      Languages:
+      - GOT IT
+      - "\u5F97\u5230\u5B83\u4E86"
+      - "\uC54C\uC558\uB2E4"
+      - "\u308F\u304B\u308A\u307E\u3059"
+      - lo tengo
+      - "\u0E15\u0E01\u0E25\u0E07"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: HordeSelection_Header
+      TermType: 0
+      Description: 
+      Languages:
+      - SELECT DECK
+      - "\u9078\u64C7\u7532\u677F"
+      - "\uB370\uD06C \uC120\uD0DD"
+      - "\u30BB\u30EC\u30AF\u30C8\u30FB\u30C7\u30C3\u30AF"
+      - seleccionar mazo
+      - "\u0E40\u0E14\u0E47\u0E04\u0E02\u0E2D\u0E07\u0E09\u0E31\u0E19"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: HordeSelection_Edit
+      TermType: 0
+      Description: 
+      Languages:
+      - EDIT
+      - "\u7DE8\u8F2F"
+      - "\uD3B8\uC9D1\uD558\uB2E4"
+      - "\u30A8\u30C7\u30A3\u30C3\u30C8"
+      - editar
+      - "\u0E41\u0E01\u0E49\u0E44\u0E02"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: HordeSelection_Delete
+      TermType: 0
+      Description: 
+      Languages:
+      - DELETE
+      - "\u522A\u9664"
+      - "\uC9C0\uC6B0\uB2E4"
+      - "\u30C7\u30EA\u30FC\u30C8"
+      - borrar
+      - "\u0E25\u0E1A"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: HordeSelection_Rename
+      TermType: 0
+      Description: 
+      Languages:
+      - RENAME
+      - "\u6539\u540D"
+      - "\uC774\uB984 \uBC14\uAFB8\uAE30"
+      - "\u30EA\u30FC\u30CD\u30FC\u30E0"
+      - rebautizar
+      - "\u0E40\u0E1B\u0E25\u0E37\u0E48\u0E22\u0E19\u0E0A\u0E37\u0E48\u0E2D"
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: HordeSelection_Build
+      TermType: 0
+      Description: 
+      Languages:
+      - BUILD A NEW DECK
+      - "\u5EFA\u7ACB"
+      - "\uC0C8 \uB370\uD06C \uB9CC\uB4E4\uAE30"
+      - "\u30D3\u30EB\u30C9\u30FB\u30C7\u30C3\u30AF"
+      - construir
+      - "\u0E2A\u0E23\u0E49\u0E32\u0E07\u0E40\u0E14\u0E47\u0E04\u0E43\u0E2B\u0E21\u0E48"
+      Flags: 000000000000
+      Languages_Touch: []
+    CaseInsensitiveTerms: 0
+    OnMissingTranslation: 1
+    mTerm_AppName: 
+    mLanguages:
+    - Name: English
+      Code: en
+      Flags: 0
+    - Name: Chinese
+      Code: zh
+      Flags: 0
+    - Name: Korean
+      Code: ko
+      Flags: 0
+    - Name: Japanese
+      Code: ja
+      Flags: 0
+    - Name: Spanish
+      Code: es
+      Flags: 0
+    - Name: Thai
+      Code: th
+      Flags: 0
+    IgnoreDeviceLanguage: 1
+    _AllowUnloadingLanguages: 0
+    Google_WebServiceURL: 
+    Google_SpreadsheetKey: 
+    Google_SpreadsheetName: 
+    Google_LastUpdatedVersion: 1559031159989
+    Google_Password: 
+    GoogleUpdateFrequency: 3
+    GoogleInEditorCheckFrequency: 2
+    GoogleUpdateSynchronization: 1
+    GoogleUpdateDelay: 0
+    Assets: []
+    Spreadsheet_LocalFileName: Assets/DynamicLoad/Data/localization_data.csv
+    Spreadsheet_LocalCSVSeparator: ','
+    Spreadsheet_LocalCSVEncoding: utf-8
+    Spreadsheet_SpecializationAsRows: 1

@@ -18,7 +18,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class HordeSelectionWithNavigationPage : IUIElement
+    public class HordeSelectionWithNavigationPage : LocalizableUIBase, IUIElement
     {
         private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionWithNavigationPage));
         
@@ -133,10 +133,17 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();            
             
             _deckInfoObjectList = new List<DeckInfoObject>();
+<<<<<<< HEAD
             _pageList = new List<Page>();
+=======
+            _cacheDeckListToDisplay = new List<Deck>();
+            SelectDeckIndex = 0;
+
+            InitializeLocalization();            
+>>>>>>> 997526b3f22c493142d7195a8556dbc32c643785
 
             HordeEditTab = new HordeEditingTab();
             HordeEditTab.Init();
@@ -156,7 +163,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyDecksPage"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyDecksPageLocalized"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_DECKS);
@@ -205,12 +212,44 @@ namespace Loom.ZombieBattleground
             LoadButtons();
             LoadObjects();            
             LoadTabs();
+
+            RegisterLocalizedTextList();
         }
         
+        public override void RegisterLocalizedTextList()
+        {
+            LocalizedTextList.Add
+            (
+                _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>()
+            );
+            LocalizedTextList.Add
+            (
+                _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>()
+            );
+            LocalizedTextList.Add
+            (
+                _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>()
+            );
+            LocalizedTextList.Add
+            (
+                _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>()
+            );
+            LocalizedTextList.Add
+            (
+                _selfPage.transform.Find
+                (
+                    "Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Text_SelectDeck"
+                ).GetComponentInChildren<TextMeshProUGUI>()
+            );
+            base.RegisterLocalizedTextList();
+        }
+
         public void Hide()
         {
             Dispose();
-        
+
+            UnRegisterLocalizedTextList();
+            
             if (_selfPage == null)
                 return;
         
