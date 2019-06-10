@@ -21,25 +21,13 @@ namespace Loom.ZombieBattleground
     public class OverlordSkillSelectionTab
     {
         private static readonly ILog Log = Logging.GetLog(nameof(OverlordSkillSelectionTab));
-        
-        private ILoadObjectsManager _loadObjectsManager;
-        
-        private IUIManager _uiManager;
-        
-        private IDataManager _dataManager;
-        
-        private ITutorialManager _tutorialManager;
-        
-        private IAnalyticsManager _analyticsManager;
-        
-        private BackendFacade _backendFacade;
 
-        private BackendDataControlMediator _backendDataControlMediator;
-        
+        private ILoadObjectsManager _loadObjectsManager;
+
+        private IUIManager _uiManager;
+
         private HordeSelectionWithNavigationPage _myDeckPage;
-        
-        private GameObject _selfPage;
-        
+
         private Image _imageSelectOverlordSkillPortrait;
 
         private Image[] _imageSkillIcons;
@@ -48,9 +36,8 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _textSelectedAmount;
 
-        private ISoundManager _soundManager;
-
         private Button _continueButton;
+        private Button _buttonBack;
 
         private GameObject _abilitiesGroup;
 
@@ -65,24 +52,18 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _dataManager = GameClient.Get<IDataManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _analyticsManager = GameClient.Get<IAnalyticsManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();            
             _uiManager = GameClient.Get<IUIManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
 
             _imageSkillIcons = new Image[2];
             _textSkillDescriptions = new TextMeshProUGUI[2];
             _overlordSkillItems = new List<OverlordSkillItem>();
-            
+
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
             _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
                 if (tab == HordeSelectionWithNavigationPage.Tab.SelectOverlordSkill)
                 {
-                    UpdateTabShow();                    
+                    UpdateTabShow();
                     UpdateSkillIconAndDescriptionDisplay();
                     UpdateOverlordPortrait();
                 }
@@ -92,39 +73,40 @@ namespace Loom.ZombieBattleground
                 }
             };
         }
-        
-        public void Show(GameObject selfPage)
+
+        public void Show(GameObject skillTabObj)
         {
-            _selfPage = selfPage;
-            
-            _imageSelectOverlordSkillPortrait = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();                        
-            
-            _imageSkillIcons[0] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_1").GetComponent<Image>();  
-            _imageSkillIcons[1] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_2").GetComponent<Image>();  
-            
-            _textSkillDescriptions[0] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_1").GetComponent<TextMeshProUGUI>();  
-            _textSkillDescriptions[1] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_2").GetComponent<TextMeshProUGUI>();         
-            
-            _textSelectedAmount = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SelectAmount/Text_SelectedAmount").GetComponent<TextMeshProUGUI>();
-            
-            _backLayerCanvas = _selfPage.transform.Find("Tab_SelectOverlordSkill/Canvas_BackLayer").GetComponent<Canvas>();
+           _imageSelectOverlordSkillPortrait = skillTabObj.transform.Find("Panel_Content/Image_OverlordPortrait").GetComponent<Image>();
+
+            _imageSkillIcons[0] = skillTabObj.transform.Find("Panel_Content/Image_SkillSlots/Image_SkillIcon_1").GetComponent<Image>();
+            _imageSkillIcons[1] = skillTabObj.transform.Find("Panel_Content/Image_SkillSlots/Image_SkillIcon_2").GetComponent<Image>();
+
+            _textSkillDescriptions[0] = skillTabObj.transform.Find("Panel_Content/Image_SkillSlots/Text_Desc_1").GetComponent<TextMeshProUGUI>();
+            _textSkillDescriptions[1] = skillTabObj.transform.Find("Panel_Content/Image_SkillSlots/Text_Desc_2").GetComponent<TextMeshProUGUI>();
+
+            _textSelectedAmount = skillTabObj.transform.Find("Panel_Content/Image_SelectAmount/Text_SelectedAmount").GetComponent<TextMeshProUGUI>();
+
+            _backLayerCanvas = skillTabObj.transform.Find("Canvas_BackLayer").GetComponent<Canvas>();
 
             _continueButton = _backLayerCanvas.transform.Find("Button_Continue").GetComponent<Button>();
             _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
-            
+
+            _buttonBack = skillTabObj.transform.Find("Image_ButtonBackTray/Button_Back").GetComponent<Button>();
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
+
             _abilitiesGroup = _backLayerCanvas.transform.Find("Abilities").gameObject;
         }
-        
+
         public void Update()
         {
 
         }
-        
+
         public void Dispose()
         {
             ResetItems();
         }
-        
+
         private void UpdateSkillIconAndDescriptionDisplay()
         {
             List<OverlordSkillItem> items = _overlordSkillItems.FindAll(x => x.IsSelected);
@@ -143,7 +125,7 @@ namespace Loom.ZombieBattleground
             }
             _textSelectedAmount.text = "" + items.Count + "/2";
         }
-        
+
         private void UpdateOverlordPortrait()
         {
             _imageSelectOverlordSkillPortrait.sprite = _myDeckPage.SelectOverlordTab.GetOverlordPortraitSprite
@@ -155,9 +137,9 @@ namespace Loom.ZombieBattleground
         private void UpdateTabShow()
         {
             FillAvailableAbilities();
-            UpdateSelectedSkills();         
+            UpdateSelectedSkills();
         }
-        
+
         private void UpdateSelectedSkills()
         {
             List<OverlordSkillUserInstance> selectedSkills = new List<OverlordSkillUserInstance>();
@@ -172,7 +154,7 @@ namespace Loom.ZombieBattleground
                 OverlordSkillUserInstance overlordSkill = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
                 selectedSkills.Add(overlordSkill);
             }
-            
+
             foreach (OverlordSkillUserInstance skill in selectedSkills)
             {
                 OverlordSkillItem item = _overlordSkillItems.Find(x => x.Skill.Prototype.Skill == skill.Prototype.Skill);
@@ -182,7 +164,12 @@ namespace Loom.ZombieBattleground
 
         #region button handlers
 
-        public void ContinueButtonOnClickHandler()
+        private void ButtonBackHandler()
+        {
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectDeck);
+        }
+
+        private void ContinueButtonOnClickHandler()
         {
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;
@@ -232,16 +219,16 @@ namespace Loom.ZombieBattleground
                 deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
             }
         }
-        
+
         private void FinishEditDeck(bool success, Deck deck)
         {
-            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck;
 
             if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
                 return;
 
             _continueButton.enabled = true;
-            
+
             if(success)
             {
                 _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
@@ -256,7 +243,7 @@ namespace Loom.ZombieBattleground
                 false, false, true);
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
-        
+
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -299,7 +286,7 @@ namespace Loom.ZombieBattleground
         {
             if (item == null)
                 return;
-           
+
             if (item.IsSelected)
             {
                 item.Deselect();
@@ -310,7 +297,7 @@ namespace Loom.ZombieBattleground
                 {
                     item.Select();
                 }
-            }            
+            }
 
             UpdateSkillIconAndDescriptionDisplay();
         }

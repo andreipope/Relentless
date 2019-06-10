@@ -260,6 +260,33 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void UpdateCardsAmountDisplay(Deck deck)
+        {
+            if (deck == null)
+                return;
+
+            for (int i = 0; i < _cardUIList.Count; i++)
+            {
+                Card cardInUi = _cardUIList[i].GetCard();
+
+                // get amount of card in collection data
+                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                int totalCardAmount = cardInCollection.Amount;
+
+                DeckCardData deckCardData = deck.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                if (deckCardData == null)
+                {
+                    _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                }
+                else
+                {
+                    _cardUIList[i].UpdateCardAmount(totalCardAmount - deckCardData.Amount);
+                }
+            }
+        }
+
+
+
         public void UpdateCardsAmountDisplay()
         {
             for (int i = 0; i < _cardUIList.Count; i++)

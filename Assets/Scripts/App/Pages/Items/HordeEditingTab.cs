@@ -31,8 +31,6 @@ namespace Loom.ZombieBattleground
 
         private GameObject CardCreaturePrefab;
 
-        private GameObject _selfPage;
-
         private CollectionData _collectionData;
 
         private GameObject _draggingObject;
@@ -78,8 +76,6 @@ namespace Loom.ZombieBattleground
         private List<Enumerators.Faction> _availableFaction;
 
         private HordeSelectionWithNavigationPage.Tab _nextTab;
-
-        private const float BoardCardScale = 0.20f;
 
         private Enumerators.Faction _againstFaction;
 
@@ -136,26 +132,24 @@ namespace Loom.ZombieBattleground
             Log.Info("Editing init called");
         }
 
-        public void Load(GameObject selfPage)
+        public void Load(GameObject editingTabObj)
         {
-            _selfPage = selfPage;
-
-            _buttonAutoComplete = _selfPage.transform.Find("Tab_Editing/Panel_Frame/Upper_Items/Button_AutoComplete").GetComponent<Button>();
+            _buttonAutoComplete = editingTabObj.transform.Find("Panel_Frame/Upper_Items/Button_AutoComplete").GetComponent<Button>();
             _buttonAutoComplete.onClick.AddListener(ButtonAutoCompleteHandler);
 
-            _buttonBack = _selfPage.transform.Find("Tab_Editing/Panel_Frame/Upper_Items/Button_Back").GetComponent<Button>();
+            _buttonBack = editingTabObj.transform.Find("Panel_Frame/Upper_Items/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
 
-            _uiCardCollections.Show(_selfPage.transform.Find("Tab_Editing").gameObject, PageType.DeckEditing);
-            _customDeckUi.Load(_selfPage.transform.Find("Tab_Editing/Deck_Content").gameObject);
+            _uiCardCollections.Show(editingTabObj, PageType.DeckEditing);
+            _customDeckUi.Load(editingTabObj.transform.Find("Deck_Content").gameObject);
 
-            _buttonLeftArrowScroll = _selfPage.transform.Find("Tab_Editing/Panel_Content/Army/Element/LeftArrow").GetComponent<Button>();
+            _buttonLeftArrowScroll = editingTabObj.transform.Find("Panel_Content/Army/Element/LeftArrow").GetComponent<Button>();
             _buttonLeftArrowScroll.onClick.AddListener(ButtonLeftArrowScrollHandler);
 
-            _buttonRightArrowScroll = _selfPage.transform.Find("Tab_Editing/Panel_Content/Army/Element/RightArrow").GetComponent<Button>();
+            _buttonRightArrowScroll = editingTabObj.transform.Find("Panel_Content/Army/Element/RightArrow").GetComponent<Button>();
             _buttonRightArrowScroll.onClick.AddListener(ButtonRightArrowScrollHandler);
 
-            _cardCollectionScrollBar = _selfPage.transform.Find("Tab_Editing/Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
+            _cardCollectionScrollBar = editingTabObj.transform.Find("Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
         }
 
         public void Show(int deckId)
@@ -170,7 +164,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _customDeckUi.ShowDeck(deckId);
+                _customDeckUi.ShowDeck(_myDeckPage.CurrentEditDeck);
                 _uiCardCollections.UpdateCardsAmountDisplay(deckId);
                 UpdateCollectionCards(deckId);
             }
@@ -372,10 +366,16 @@ namespace Loom.ZombieBattleground
                 _collectionData
             );
             SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
+
+            _customDeckUi.ShowDeck(_myDeckPage.CurrentEditDeck);
+            _uiCardCollections.UpdateCardsAmountDisplay(_myDeckPage.CurrentEditDeck);
+
+            //_customDeckUi.ShowDeck((int)_myDeckPage.CurrentEditDeck.Id.Id);
+
             //UpdateDeckPageIndexDictionary();
 
-            ResetCollectionPageState();
-            UpdateEditDeckCardsAmount();
+            //ResetCollectionPageState();
+            //UpdateEditDeckCardsAmount();
         }
 
         private void ButtonBackHandler()
@@ -648,7 +648,7 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlordData = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
             if (FactionAgainstDictionary[overlordData.Prototype.Faction] == card.Faction)
             {
-                _myDeckPage.OpenAlertDialog(
+                OpenAlertDialog(
                     "Cannot add from the faction your Overlord is weak against.");
                 return;
             }
@@ -656,7 +656,7 @@ namespace Loom.ZombieBattleground
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.MouldId);
             if (collectionCardData.Amount <= 0)
             {
-                _myDeckPage.OpenAlertDialog(
+                OpenAlertDialog(
                     "You don't have enough of this card.\nBuy or earn packs to get more cards.");
                 return;
             }
@@ -668,20 +668,19 @@ namespace Loom.ZombieBattleground
             uint maxCopies = GetMaxCopiesValue(card);
             if (existingCard != null && existingCard.Amount == maxCopies)
             {
-                _myDeckPage.OpenAlertDialog("Cannot have more than " + maxCopies + " copies of an " +
+                OpenAlertDialog("Cannot have more than " + maxCopies + " copies of an " +
                     card.Rank.ToString().ToLowerInvariant() + " card in one deck.");
                 return;
             }
 
             if (_myDeckPage.CurrentEditDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                _myDeckPage.OpenAlertDialog("Cannot have more than " + Constants.DeckMaxSize + " cards in one deck.");
+                OpenAlertDialog("Cannot have more than " + Constants.DeckMaxSize + " cards in one deck.");
                 return;
             }
 
             bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.MouldId == card.MouldId);
             _myDeckPage.CurrentEditDeck.AddCard(card.MouldId);
-            _customDeckUi.SelectedDeck.AddCard(card.MouldId);
             existingCardAmount++;
 
             // update count in card collection list left panel
@@ -698,7 +697,7 @@ namespace Loom.ZombieBattleground
                 _customDeckUi.AddCard((Card)card, existingCardAmount);
             }
 
-            _customDeckUi.UpdateCardCountDisplay();
+            _customDeckUi.UpdateCardsInDeckCountDisplay();
 
             if (_tutorialManager.IsTutorial && _myDeckPage.CurrentEditDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
@@ -715,7 +714,6 @@ namespace Loom.ZombieBattleground
             int existingCardAmount = existingCard?.Amount ?? 0;
 
             _myDeckPage.CurrentEditDeck.RemoveCard(card.MouldId);
-            _customDeckUi.SelectedDeck.RemoveCard(card.MouldId);
 
             // update right panel
                 // if more than one card, only indicator changes
@@ -734,7 +732,7 @@ namespace Loom.ZombieBattleground
             _uiCardCollections.UpdateCardAmountDisplay(card, collectionCardData.Amount);
 
             // update card count
-            _customDeckUi.UpdateCardCountDisplay();
+            _customDeckUi.UpdateCardsInDeckCountDisplay();
         }
 
 
@@ -973,7 +971,7 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-        private void UpdateEditDeckCardsAmount()
+        /*private void UpdateEditDeckCardsAmount()
         {
             Deck currentDeck = _myDeckPage.CurrentEditDeck;
             if (currentDeck != null)
@@ -987,7 +985,7 @@ namespace Loom.ZombieBattleground
                     _textEditDeckCardsAmount.text = currentDeck.GetNumCards() + " / " + Constants.DeckMaxSize;
                 }
             }
-        }
+        }*/
 
         private void ResetCollectionPageState()
         {
@@ -1136,6 +1134,13 @@ namespace Loom.ZombieBattleground
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+
+        private void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            _uiManager.DrawPopup<WarningPopup>(msg);
         }
     }
 }

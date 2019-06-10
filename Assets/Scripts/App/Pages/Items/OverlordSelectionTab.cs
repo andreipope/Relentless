@@ -20,15 +20,14 @@ namespace Loom.ZombieBattleground
 
         private HordeSelectionWithNavigationPage _myDeckPage;
 
-        private GameObject _selfPage;
-
         private TextMeshProUGUI _textSelectOverlordDeckName,
                                 _textSelectOverlordName,
                                 _textSelectOverlordDescription;
 
         private Button _buttonSelectOverlordLeftArrow,
                        _buttonSelectOverlordRightArrow,
-                       _buttonSelectOverlordContinue;
+                       _buttonSelectOverlordContinue,
+                       _buttonBack;
 
         private Image _imageSelectOverlordGlow,
                       _imageSelectOverlordPortrait,
@@ -71,32 +70,33 @@ namespace Loom.ZombieBattleground
             _elementImageDictionary = new Dictionary<Enumerators.Faction, Image>();
         }
 
-        public void Show(GameObject selfPage)
+        public void Show(GameObject overlordTabObj)
         {
-            _selfPage = selfPage;
+            _textSelectOverlordDeckName = overlordTabObj.transform.Find("Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
 
-            _textSelectOverlordDeckName = _selfPage.transform.Find("Tab_SelectOverlord/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
-
-            _buttonSelectOverlordLeftArrow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Button_LeftArrow").GetComponent<Button>();
+            _buttonSelectOverlordLeftArrow = overlordTabObj.transform.Find("Panel_Content/Button_LeftArrow").GetComponent<Button>();
             _buttonSelectOverlordLeftArrow.onClick.AddListener(ButtonSelectOverlordLeftArrowHandler);
 
-            _buttonSelectOverlordRightArrow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Button_RightArrow").GetComponent<Button>();
+            _buttonSelectOverlordRightArrow = overlordTabObj.transform.Find("Panel_Content/Button_RightArrow").GetComponent<Button>();
             _buttonSelectOverlordRightArrow.onClick.AddListener(ButtonSelectOverlordRightArrowHandler);
 
-            _buttonSelectOverlordContinue = _selfPage.transform.Find("Tab_SelectOverlord/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
+            _buttonSelectOverlordContinue = overlordTabObj.transform.Find("Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
             _buttonSelectOverlordContinue.onClick.AddListener(ButtonSelectOverlordContinueHandler);
 
-            _textSelectOverlordName = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Text_SelectOverlord").GetComponent<TextMeshProUGUI>();
-            _textSelectOverlordDescription = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Text_Desc").GetComponent<TextMeshProUGUI>();
+            _buttonBack = overlordTabObj.transform.Find("Image_ButtonBackTray/Button_Back").GetComponent<Button>();
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
 
-            _imageSelectOverlordGlow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_Glow").GetComponent<Image>();
-            _imageSelectOverlordPortrait = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();
-            _imageCross = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_cross").GetComponent<Image>();
+            _textSelectOverlordName = overlordTabObj.transform.Find("Panel_Content/Text_SelectOverlord").GetComponent<TextMeshProUGUI>();
+            _textSelectOverlordDescription = overlordTabObj.transform.Find("Panel_Content/Text_Desc").GetComponent<TextMeshProUGUI>();
+
+            _imageSelectOverlordGlow = overlordTabObj.transform.Find("Panel_Content/Image_Glow").GetComponent<Image>();
+            _imageSelectOverlordPortrait = overlordTabObj.transform.Find("Panel_Content/Image_OverlordPortrait").GetComponent<Image>();
+            _imageCross = overlordTabObj.transform.Find("Panel_Content/Image_cross").GetComponent<Image>();
 
             _elementImageDictionary.Clear();
             for (int i = 0; i < NumberOfOverlord;++i)
             {
-                Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
+                Image overlordIcon = overlordTabObj.transform.Find("Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
                 (
                     _dataManager.CachedOverlordData.Overlords[i].Prototype.Faction
@@ -121,9 +121,9 @@ namespace Loom.ZombieBattleground
                 });
 
                 string elementName = _dataManager.CachedOverlordData.Overlords[i].Prototype.Faction.ToString().ToLower();
-                Image elementImage = _selfPage.transform.Find
+                Image elementImage = overlordTabObj.transform.Find
                 (
-                    "Tab_SelectOverlord/Panel_Content/Group_Elements/Image_Element_"+elementName
+                    "Panel_Content/Group_Elements/Image_Element_"+elementName
                 ).GetComponent<Image>();
                 _elementImageDictionary.Add(_dataManager.CachedOverlordData.Overlords[i].Prototype.Faction, elementImage);
             }
@@ -140,6 +140,11 @@ namespace Loom.ZombieBattleground
         }
 
         #region Button Handlers
+
+        private void ButtonBackHandler()
+        {
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectDeck);
+        }
 
         private void ButtonSelectOverlordLeftArrowHandler()
         {

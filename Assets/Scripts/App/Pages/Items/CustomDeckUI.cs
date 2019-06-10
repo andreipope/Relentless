@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
         private RectTransform _allCardsContent;
 
-        public Deck SelectedDeck { get; set; }
+        private Deck _selectedDeck;
 
         public void Init()
         {
@@ -50,9 +50,9 @@ namespace Loom.ZombieBattleground
             _deckCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/DeckCard_UI");
         }
 
-        private void Reset()
+        public void Reset()
         {
-            SelectedDeck = null;
+            _selectedDeck = null;
 
             if (_deckCards.Count > 0)
             {
@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
             }
 
             _deckCards = new List<DeckCardUI>();
+
+            UpdateCardsInDeckCountDisplay();
         }
 
         public void Load(GameObject obj)
@@ -88,31 +90,32 @@ namespace Loom.ZombieBattleground
             _overlordSecondarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Secondary/Image").GetComponent<Image>();
         }
 
-        public void ShowDeck(int deckId)
+        public void ShowDeck(Deck deck)
         {
-            Reset();
-
-            SelectedDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id.Id == deckId).Clone();
-            if (SelectedDeck == null)
+            if (deck == null)
                 return;
 
-            _deckNameText.text = SelectedDeck.Name;
+            Reset();
 
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(SelectedDeck.OverlordId);
+            _selectedDeck = deck;
+
+            _deckNameText.text = _selectedDeck.Name;
+
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
             _overlordImage.sprite = GetOverlordThumbnailSprite(overlord.Prototype.Faction);
 
             SetSkills();
 
             SetCards();
 
-            UpdateCardCountDisplay();
+            UpdateCardsInDeckCountDisplay();
         }
 
         public void ShowNewDeck(OverlordUserInstance currentEditOverlord)
         {
             Reset();
 
-            SelectedDeck = new Deck(
+            _selectedDeck = new Deck(
                 new DeckId(-1),
                 currentEditOverlord.Prototype.Id,
                 GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),
@@ -120,23 +123,24 @@ namespace Loom.ZombieBattleground
                 0,
                 0);
 
-            _deckNameText.text = SelectedDeck.Name;
+            // TODO : set name of deck entered by user... if not , use same
+            _deckNameText.text = _selectedDeck.Name;
 
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(SelectedDeck.OverlordId);
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
             _overlordImage.sprite = GetOverlordThumbnailSprite(overlord.Prototype.Faction);
 
             SetSkills();
 
             SetCards();
 
-            UpdateCardCountDisplay();
+            UpdateCardsInDeckCountDisplay();
         }
 
         private void SetCards()
         {
-            for (int i = 0; i < SelectedDeck.Cards.Count; i++)
+            for (int i = 0; i < _selectedDeck.Cards.Count; i++)
             {
-                DeckCardData deckCardData = SelectedDeck.Cards[i];
+                DeckCardData deckCardData = _selectedDeck.Cards[i];
 
                 int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.MouldId == deckCardData.MouldId);
                 if (cardIndex == -1)
@@ -214,13 +218,16 @@ namespace Loom.ZombieBattleground
             );
         }
 
-        public void UpdateCardCountDisplay()
+        public void UpdateCardsInDeckCountDisplay()
         {
             int cardsInDeckCount = 0;
-            for (int i = 0; i < SelectedDeck.Cards.Count; i++)
+            if (_selectedDeck != null)
             {
-                DeckCardData deckCardData = SelectedDeck.Cards[i];
-                cardsInDeckCount += deckCardData.Amount;
+                for (int i = 0; i < _selectedDeck.Cards.Count; i++)
+                {
+                    DeckCardData deckCardData = _selectedDeck.Cards[i];
+                    cardsInDeckCount += deckCardData.Amount;
+                }
             }
 
             _cardsCountText.text = cardsInDeckCount + "/" + Constants.MaxDeckSize;
@@ -228,28 +235,28 @@ namespace Loom.ZombieBattleground
 
         private void SetSkills()
         {
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(SelectedDeck.OverlordId);
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
 
             // primary skill
-            if (SelectedDeck.PrimarySkill == Enumerators.Skill.NONE)
+            if (_selectedDeck.PrimarySkill == Enumerators.Skill.NONE)
             {
                 _overlordPrimarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = overlord.GetSkill(SelectedDeck.PrimarySkill).Prototype.IconPath;
+                string iconPath = overlord.GetSkill(_selectedDeck.PrimarySkill).Prototype.IconPath;
                 _overlordPrimarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
 
 
             // secondary skill
-            if (SelectedDeck.SecondarySkill == Enumerators.Skill.NONE)
+            if (_selectedDeck.SecondarySkill == Enumerators.Skill.NONE)
             {
                 _overlordSecondarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = overlord.GetSkill(SelectedDeck.SecondarySkill).Prototype.IconPath;
+                string iconPath = overlord.GetSkill(_selectedDeck.SecondarySkill).Prototype.IconPath;
                 _overlordSecondarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
         }

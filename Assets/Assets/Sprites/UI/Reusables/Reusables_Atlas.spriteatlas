@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 705c195fa8d1c42c1b042cf1708d1f8c, type: 3}
-    totalSpriteSurfaceArea: 14004946
+    totalSpriteSurfaceArea: 16575978
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -50,6 +50,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c009d170f3b7c42acaa5fe81a13dbd44, type: 3}
   - {fileID: 21300000, guid: 068d58a0d526e4cc9977c0ec70e81fe2, type: 3}
   - {fileID: 21300000, guid: a2998a310217e59468b557bf0df41e76, type: 3}
+  - {fileID: 21300000, guid: ca664403769b64a8cbdd2ae2c440b2cc, type: 3}
   - {fileID: 21300000, guid: dec925b37c59f48728cae13dc07e3012, type: 3}
   - {fileID: 21300000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
   - {fileID: 21300000, guid: 953e68d32a88c4a7089b6d9b9d67944d, type: 3}
@@ -71,6 +72,7 @@ SpriteAtlas:
   - button_tray
   - card_counter
   - button_back_pressed
+  - main_mini_panel
   - button_green_normal
   - arrow_normal
   - button_brown_pressed
