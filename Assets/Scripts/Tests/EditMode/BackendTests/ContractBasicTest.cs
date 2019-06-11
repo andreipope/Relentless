@@ -4,8 +4,10 @@ using System.Linq;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.TestTools;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -31,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_ListDecks");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
@@ -61,7 +63,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_NoDecks");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
@@ -81,7 +83,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
@@ -95,7 +97,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck_wrong_user");
+                string user = TestHelper.Instance.CreateTestUserName();
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
@@ -111,7 +113,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 List<DeckCardData> cards =
@@ -133,7 +135,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck(new DeckId(1), new OverlordId(0), "Default", null, 0, 0);
@@ -146,7 +148,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck_wrong_user");
+                string user = TestHelper.Instance.CreateTestUserName();
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
@@ -161,7 +163,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck(new DeckId(123), new OverlordId(0), "GauravRandomDeck", null, 0, 0);
@@ -177,7 +179,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 await LoomTestContext.BackendFacade.DeleteDeck(user, new DeckId(1));
@@ -189,7 +191,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck_wrong_User");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
@@ -203,7 +205,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck_wrong_Deck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 await LoomTestContext.AssertThrowsAsync(
@@ -219,7 +221,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetAiDeck");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 GetAIDecksResponse getAIDecksResponse = await LoomTestContext.BackendFacade.GetAiDecks();
@@ -239,13 +241,54 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest");
+                string user = TestHelper.Instance.CreateTestUserName();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 GetCollectionResponse getCollectionResponse = await LoomTestContext.BackendFacade.GetCardCollection(user);
                 Assert.IsNotNull(getCollectionResponse);
                 Assert.IsNotNull(getCollectionResponse.Cards);
                 Assert.GreaterOrEqual(getCollectionResponse.Cards.Count, 0);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator ListOverlordUserInstances()
+        {
+            return LoomTestContext.ContractAsyncTest(async () =>
+            {
+                string user = TestHelper.Instance.CreateTestUserName();
+                await LoomTestContext.BackendFacade.SignUp(user);
+
+                ListOverlordUserInstancesResponse listOverlordUserInstancesResponse = await LoomTestContext.BackendFacade.ListOverlordUserInstances(user);
+                Assert.IsNotNull(listOverlordUserInstancesResponse);
+                Assert.IsNotNull(listOverlordUserInstancesResponse.Overlords);
+
+                Assert.DoesNotThrow(() =>
+                {
+                    listOverlordUserInstancesResponse.Overlords[0].FromProtobuf();
+                });
+
+                Debug.Log(JsonUtility.PrettyPrint(listOverlordUserInstancesResponse.Overlords.ToString()));
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator GetOverlordUserInstance()
+        {
+            return LoomTestContext.ContractAsyncTest(async () =>
+            {
+                string user = TestHelper.Instance.CreateTestUserName();
+                await LoomTestContext.BackendFacade.SignUp(user);
+
+                GetOverlordUserInstanceResponse getOverlordUserInstanceResponse =
+                    await LoomTestContext.BackendFacade.GetOverlordUserInstance(user, new OverlordId(0));
+                Assert.IsNotNull(getOverlordUserInstanceResponse);
+                Assert.IsNotNull(getOverlordUserInstanceResponse.Overlord);
+
+                Assert.DoesNotThrow(() =>
+                {
+                    getOverlordUserInstanceResponse.Overlord.FromProtobuf();
+                });
             });
         }
     }

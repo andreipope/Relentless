@@ -15,6 +15,7 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 using System.Text;
 using log4net;
 using log4netUnitySupport;
+using Loom.ZombieBattleground.Iap;
 
 namespace Loom.ZombieBattleground
 {
@@ -29,21 +30,10 @@ namespace Loom.ZombieBattleground
         #endregion
         
         #region Key
-        private byte[] PrivateKey
-        {
-            get
-            {
-                return _backendDataControlMediator.UserDataModel.PrivateKey;
-            }
-        }
-        
-        private byte[] PublicKey
-        {
-            get 
-            { 
-                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
-            }
-        }
+        private byte[] PrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
+
+        private byte[] PublicKey => CryptoUtils.PublicKeyFromPrivateKey(PrivateKey);
+
         #endregion
         
         private BackendDataControlMediator _backendDataControlMediator;
@@ -73,14 +63,14 @@ namespace Loom.ZombieBattleground
         
         public async Task CallRewardTutorialFlow()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallRewardTutorialComplete)}");
+            _uiManager.DrawPopup<LoadingOverlayPopup>($"{nameof(CallRewardTutorialComplete)}");
             
             RewardTutorialCompletedResponse response = null;
             try
             {
                 response = await CallRewardTutorialComplete();
-                _uiManager.HidePopup<LoadingFiatPopup>();
-                _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallTutorialRewardContract)}");
+                _uiManager.HidePopup<LoadingOverlayPopup>();
+                _uiManager.DrawPopup<LoadingOverlayPopup>($"{nameof(CallTutorialRewardContract)}");
                 await CallTutorialRewardContract(response);
             }catch(Exception e)
             {
@@ -93,9 +83,13 @@ namespace Loom.ZombieBattleground
                
             _dataManager.CachedUserLocalData.TutorialRewardClaimed = true;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            _uiManager.HidePopup<LoadingFiatPopup>();
+            _uiManager.HidePopup<LoadingOverlayPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+
+            using (DAppChainClient client = await GameClient.Get<PlasmaChainBackendFacade>().GetConnectedClient())
+            {
+                await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().UpdatePackBalanceAmount(client, Enumerators.MarketplaceCardPackType.Minion);
+            }
         }
         
         private async void WarningPopupConfirmationReceived()

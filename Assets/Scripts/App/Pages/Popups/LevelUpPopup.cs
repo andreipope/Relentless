@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         private Animator _backgroundAnimator, _containerAnimator;
 
-        private OverlordModel _selectedOverlord;
+        private OverlordUserInstance _selectedOverlord;
 
         public GameObject Self { get; private set; }
 
@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
             IDataManager dataManager = GameClient.Get<IDataManager>();
 
             _selectedOverlord = dataManager.CachedOverlordData.GetOverlordById(endMatchResults.OverlordId);
-            _currentLevel.text = _selectedOverlord.Level.ToString();
+            _currentLevel.text = _selectedOverlord.UserData.Level.ToString();
 
             _newOpenAbility = null;
 
@@ -159,9 +159,9 @@ namespace Loom.ZombieBattleground
             {
                 AbilityViewItem abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
 
-                if (i < _selectedOverlord.Skills.Count && _selectedOverlord.Skills[i].Unlocked)
+                if (i < _selectedOverlord.Skills.Count && _selectedOverlord.Skills[i].UserData.IsUnlocked)
                 {
-                    abilityInstance.Skill = _selectedOverlord.Skills[i];
+                    abilityInstance.Skill = _selectedOverlord.Skills[i].Prototype;
                 }
                 bool isDefault = skillIndex == i;
                 abilityInstance.UpdateUIState(isDefault);
@@ -241,7 +241,7 @@ namespace Loom.ZombieBattleground
 
             private readonly Transform _parentGameObject;
 
-            private OverlordSkill _skill;
+            private OverlordSkillPrototype _skill;
 
             private bool _isSelected;
 
@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            public OverlordSkill Skill
+            public OverlordSkillPrototype Skill
             {
                 get => _skill;
                 set

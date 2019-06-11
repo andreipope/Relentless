@@ -18,11 +18,11 @@ namespace Loom.ZombieBattleground
         
         private const float NonSquareFactorCameraSize = 7.6f;
 
+        private const float ScaleFactor = 1.5f;
+
         private Vector2 _screenSize;
 
         private bool _squareFactorScreen;
-
-        private const float Scale_Factor = 1.5f;
 
         void Start()
         {
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _squareFactorScreen = _screenSize.x / _screenSize.y < Scale_Factor;
+            _squareFactorScreen = _screenSize.x / _screenSize.y < ScaleFactor;
         }
 
         private void SettingCanvases()

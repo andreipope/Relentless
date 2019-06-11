@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public static bool CheckIfMeetMinimumSystemRequirement()
         {  
-#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS) && !(UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD)
             //Many devices won't report the memory size exactly, so we lower memory size threshold a bit
             return SystemInfo.systemMemorySize >= Mathf.CeilToInt
             (

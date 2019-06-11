@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using Loom.Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using Loom.Client.Internal;
@@ -23,13 +24,13 @@ namespace Loom.Client
     {
         private const string LogTag = "Loom.DAppChainClient";
 
-        private readonly Dictionary<EventHandler<RawChainEventArgs>, EventHandler<JsonRpcEventData>> eventSubs =
-            new Dictionary<EventHandler<RawChainEventArgs>, EventHandler<JsonRpcEventData>>();
-
         private readonly IRpcClient writeClient;
         private readonly IRpcClient readClient;
 
         private ILogger logger = NullLogger.Instance;
+
+        // null if not subscribed to anything
+        private ICollection<string> subscribedTopics;
 
         /// <summary>
         /// RPC client to use for submitting transactions.
@@ -76,20 +77,12 @@ namespace Loom.Client
             }
         }
 
+        public bool IsDisposed { get; private set; }
+
         /// <summary>
         /// Events emitted by the DAppChain.
         /// </summary>
-        public event EventHandler<RawChainEventArgs> ChainEventReceived
-        {
-            add
-            {
-                this.SubReadClient(value);
-            }
-            remove
-            {
-                this.UnsubReadClient(value);
-            }
-        }
+        public event EventHandler<RawChainEventArgs> ChainEventReceived;
 
         /// <summary>
         /// Constructs a client to read & write data from/to a Loom DAppChain.
@@ -112,12 +105,23 @@ namespace Loom.Client
 
             this.Configuration = configuration ?? new DAppChainClientConfiguration();
             this.CallExecutor = callExecutor ?? new DefaultDAppChainClientCallExecutor(this.Configuration);
+
+            if (this.readClient != null)
+            {
+                this.readClient.EventReceived += ReadClientOnEventReceived;
+                this.readClient.ConnectionStateChanged += ReadClientOnConnectionStateChanged;
+            }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
+            if (this.IsDisposed)
+                throw new ObjectDisposedException(nameof(DAppChainClient));
+
             this.writeClient?.Dispose();
             this.readClient?.Dispose();
+
+            this.IsDisposed = true;
         }
 
         /// <summary>
@@ -130,6 +134,11 @@ namespace Loom.Client
             return await this.CallExecutor.StaticCall(async () => await GetNonceAsyncRaw(key), new CallDescription("nonce", true));
         }
 
+        /// <summary>
+        /// Gets a nonce for the given public key, ignoring the call queue, if one is present.
+        /// </summary>
+        /// <param name="key">A hex encoded public key, e.g. 441B9DCC47A734695A508EDF174F7AAF76DD7209DEA2D51D3582DA77CE2756BE</param>
+        /// <returns>The nonce.</returns>
         public async Task<ulong> GetNonceAsyncNonBlocking(string key)
         {
             return await this.CallExecutor.NonBlockingStaticCall(async () => await GetNonceAsyncRaw(key), new CallDescription("nonce", true));
@@ -163,6 +172,73 @@ namespace Loom.Client
                     return Address.FromString(addressStr);
                 },
                 new CallDescription("resolve", true)
+            );
+        }
+
+        /// <summary>
+        /// Subscribes to chain events. Use <see cref="ChainEventReceived"/> to listen for events.
+        /// </summary>
+        /// <param name="topics">Topics to subscribe to. If empty, will subscribe to all topics.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task SubscribeToEvents(ICollection<string> topics)
+        {
+            if (topics == null)
+                throw new ArgumentNullException(nameof(topics));
+
+            if (this.readClient == null)
+                throw new InvalidOperationException("Read client is not set");
+
+            if (this.readClient.ConnectionState != RpcConnectionState.Connected)
+                throw new InvalidOperationException("Read client must be connected");
+
+            if (this.subscribedTopics != null && this.subscribedTopics.SequenceEqual(topics))
+                return;
+
+            await this.CallExecutor.Call(
+                async () =>
+                {
+                    await EnsureConnected();
+                    await this.readClient.SubscribeToEventsAsync(topics);
+                },
+                new CallDescription("_subscribe", false)
+            );
+        }
+
+        /// <summary>
+        /// Subscribes to chain events.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public Task SubscribeToEvents()
+        {
+            return SubscribeToEvents(Array.Empty<string>());
+        }
+
+        /// <summary>
+        /// Unsubscribes from chain events.
+        /// </summary>
+        public async Task UnsubscribeFromEvents()
+        {
+            if (this.readClient == null)
+                throw new InvalidOperationException("Read client is not set");
+
+            // Not subscribed, exit early
+            if (this.subscribedTopics == null)
+                return;
+
+            if (this.readClient.ConnectionState != RpcConnectionState.Connected)
+                throw new InvalidOperationException("Read client must be connected");
+
+            await this.CallExecutor.Call(
+                async () =>
+                {
+                    await EnsureConnected();
+                    await this.readClient.UnsubscribeFromEventsAsync();
+                    this.subscribedTopics = null;
+                },
+                new CallDescription("_unsubscribe", false)
             );
         }
 
@@ -284,48 +360,23 @@ namespace Loom.Client
             return UInt64.Parse(nonce);
         }
 
-        private async void SubReadClient(EventHandler<RawChainEventArgs> handler)
+        private void ReadClientOnEventReceived(object sender, JsonRpcEventData e)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
+            RawChainEventArgs rawChainEventArgs =
+                new RawChainEventArgs(
+                    e.ContractAddress,
+                    e.CallerAddress,
+                    UInt64.Parse(e.BlockHeight),
+                    e.Data,
+                    e.Topics
+                );
 
-            await this.CallExecutor.Call(
-                async () =>
-                {
-                    await EnsureConnected();
-                    EventHandler<JsonRpcEventData> wrapper = (sender, e) =>
-                    {
-                        handler(this,
-                            new RawChainEventArgs(
-                                e.ContractAddress,
-                                e.CallerAddress,
-                                UInt64.Parse(e.BlockHeight),
-                                e.Data,
-                                e.Topics
-                            ));
-                    };
-                    this.eventSubs.Add(handler, wrapper);
-
-                    // FIXME: supports topics
-                    await this.readClient.SubscribeAsync(wrapper, null);
-                },
-                new CallDescription("_subscribe", false)
-            );
+            this.ChainEventReceived?.Invoke(this, rawChainEventArgs);
         }
 
-        private async void UnsubReadClient(EventHandler<RawChainEventArgs> handler)
+        private void ReadClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
-            await this.CallExecutor.Call(
-                async () =>
-                {
-                    EventHandler<JsonRpcEventData> wrapper = this.eventSubs[handler];
-                    await this.readClient.UnsubscribeAsync(wrapper);
-                },
-                new CallDescription("_unsubscribe", false)
-            );
+            this.subscribedTopics = null;
         }
 
         private async Task EnsureConnected()

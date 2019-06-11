@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: OverlordAbilityTooltipUI_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -45,6 +46,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: dea0893d38daa5044aeec78219045936, type: 3}
     - {fileID: 2800000, guid: 3f1836a2d73790546b5a20944365414e, type: 3}
     - {fileID: 2800000, guid: 94315d25340e24f4b858229193a4beb9, type: 3}
+    totalSpriteSurfaceArea: 1536796
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

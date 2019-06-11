@@ -25,25 +25,34 @@ namespace Loom.ZombieBattleground.Data
         {
             Card card = Cards.FirstOrDefault(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
             if (card == null)
-                throw new Exception($"Card '{name}' not found");
+                throw new KeyNotFoundException();
 
             return card;
         }
         
         public Card GetCardFromMouldId(MouldId mouldId)
         {
-            Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
-            if (card == null)
-                throw new Exception($"Card '{mouldId}' not found");
+            (bool found, Card card) = TryGetCardFromMouldId(mouldId);
+            if (!found)
+                throw new KeyNotFoundException();
 
             return card;
+        }
+
+        public (bool found, Card card) TryGetCardFromMouldId(MouldId mouldId)
+        {
+            Card card = Cards.FirstOrDefault(x => x.MouldId == mouldId);
+            if (card == null)
+                return (false, null);
+
+            return (true, card);
         }
 
         public string GetCardNameFromMouldId(MouldId mouldId)
         {
             Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
             if (card == null)
-                throw new Exception($"Card '{mouldId}' not found");
+                throw new KeyNotFoundException();
 
             return card.Name;
         }

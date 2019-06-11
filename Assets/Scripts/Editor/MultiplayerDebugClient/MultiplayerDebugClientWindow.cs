@@ -599,7 +599,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private async Task StartClient()
         {
             await DebugClient.Start(
-                contract => new DefaultContractCallProxy(contract),
+                contract => new DefaultContractCallProxy<RawChainEventArgs>(contract),
                 new DAppChainClientConfiguration(),
                 matchMakingFlowController =>
                 {
@@ -754,8 +754,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
         [Serializable]
         private class DebugCheatsConfigurationWrapper : JsonUnityNewtonsoftSerializationWrapper<DebugCheatsConfiguration>
         {
-            public bool IsExpanded;
-
             public DebugCheatsConfigurationWrapper(DebugCheatsConfiguration instance) : base(instance)
             {
             }

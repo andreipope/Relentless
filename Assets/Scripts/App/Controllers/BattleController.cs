@@ -103,6 +103,16 @@ namespace Loom.ZombieBattleground
                 int finalDamageAttacked = 0;
                 int finalDamageAttacking = 0;
 
+                damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
+
+                if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
+                {
+                    damageAttacked = 0;
+                    attackingUnitModel.HasUsedBuffShield = true;
+                }
+
+                finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackingUnitModel.MaximumDamageFromAnySource, 0));
+
                 damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
@@ -132,16 +142,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (attackedUnitModel.CurrentDefense > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
                     {
-                        damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
-
-                        if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
-                        {
-                            damageAttacked = 0;
-                            attackingUnitModel.HasUsedBuffShield = true;
-                        }
-
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
                         attackingUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacked,
                     Enumerators.ReasonForValueChange.Attack);
 
@@ -198,7 +199,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                     attackedUnitModel.ResolveBuffShield();
                 }
-                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Prototype.Faction;
                 attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.Attack);
 

@@ -163,9 +163,12 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
                     }
                     else
                     {
-                        writer.Write(@"<div class=""log-message-stacktrace text-monospace small"">");
-                        htmlWriter.Write(GetStackTrace(loggingEvent.LocationInformation.StackFrames));
-                        writer.Write(@"</div>");
+                        string stackTrace = GetStackTrace(loggingEvent.LocationInformation.StackFrames);
+                        if (!String.IsNullOrWhiteSpace(stackTrace)) { 
+                            writer.Write(@"<div class=""log-message-stacktrace text-monospace small"">");
+                            htmlWriter.Write(stackTrace);
+                            writer.Write(@"</div>");
+                        }
                     }
                     break;
                 default:
@@ -180,6 +183,9 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
 
         private static string GetStackTrace(StackFrameItem[] stackFrames)
         {
+            if (stackFrames == null || stackFrames.Length == 0)
+                return "";
+
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < stackFrames.Length; i++)
             {

@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
             "RpcClientException",
             "WebSocketException",
             "The game session was dropped",
-            "invalid player"
+            "Please check your internet connection and try"
         };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();

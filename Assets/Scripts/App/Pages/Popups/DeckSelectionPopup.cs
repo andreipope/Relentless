@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         private List<Deck> _deckList;
         
-        private int _selectDeckIndex;
+        private DeckId _selectedDeckId;
 
         private List<Vector3> _deckIconPositionList;
 
@@ -141,10 +141,7 @@ namespace Loom.ZombieBattleground
         {
             LoadDefaultDeckData();
             LoadDeckObjects();
-            UpdateSelectedDeckDisplay
-            (
-                GetSelectedDeck()
-            );
+            UpdateSelectedDeckDisplay();
         }
 
         #region Deck Data
@@ -155,51 +152,50 @@ namespace Loom.ZombieBattleground
             
             if(selectedDeck == null && _dataManager.CachedDecksData.Decks.Count > 0)
             {
-                selectedDeck = _dataManager.CachedDecksData.Decks[0];
+                selectedDeck = _dataManager.CachedDecksData.Decks[0];                
             }
 
             _deckList = new List<Deck>();
             HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-            _deckList.AddRange(hordeSelection.GetDeckList());
+            _deckList.AddRange(hordeSelection.GetDeckListFromUserCache());
 
             if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 && _deckList.Count > 0)
             {
                 selectedDeck = _deckList[_deckList.Count - 1];
             }
 
-            UpdateSelectedDeckData(selectedDeck);
-        }       
+            SaveLastSelectedDeckId(selectedDeck);
+        }
 
-        private void UpdateSelectedDeckData(Deck deck)
+        private void SaveLastSelectedDeckId(Deck deck)
         {
-            if (deck == null || _dataManager.CachedDecksData.Decks == null)
+            _selectedDeckId = deck.Id;
+            SaveLastSelectedDeckId();
+        }
+
+        private void SaveLastSelectedDeckId()
+        {
+            if (_dataManager.CachedDecksData.Decks == null)
             {
-                Log.Warn($"deck: {deck} or CachedDecksData.Decks: {_dataManager.CachedDecksData.Decks} is null! Data was loaded incorrectly!");
+                Log.Warn($"CachedDecksData.Decks: {_dataManager.CachedDecksData.Decks} is null! Data was loaded incorrectly!");
                 return;
             }
 
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = deck.Id;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
-            if ((_tutorialManager.IsTutorial || _tutorialManager.BattleShouldBeWonBlocker) && _deckList.Count > 0)
-            {
-                _selectDeckIndex = _deckList.IndexOf(deck);
-            }
-            else
-            {
-                _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
-            }
         }
 
-        private void UpdateSelectedDeckData(DeckId deckId)
+        private Deck GetSelectedDeck()
         {
-            UpdateSelectedDeckData
-            (
-                _deckList.Find(x => x.Id == deckId)
-            );
-        }
+            if (_deckList != null && _deckList.Count > 0)
+            {
+                return _deckList.Find(x => x.Id.Equals(_selectedDeckId));
+            }
 
-        public Deck GetSelectedDeck()
+            return _dataManager.CachedDecksData.Decks.Find(x => x.Id.Equals(_selectedDeckId));
+        }
+        
+        public Deck GetLastSelectedDeckFromCache()
         {
             if (_deckList != null && _deckList.Count > 0)
             {
@@ -207,6 +203,11 @@ namespace Loom.ZombieBattleground
             }
 
             return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+        }
+
+        private int GetSelectedDeckIndex()
+        {
+            return _deckList.FindIndex(x => x.Id.Equals(_selectedDeckId));
         }
 
         public Deck GetDefaultDeck()
@@ -219,20 +220,21 @@ namespace Loom.ZombieBattleground
             return _deckList;
         }
 
-        private OverlordModel GetOverlordDataFromDeck(Deck deck)
+        private OverlordUserInstance GetOverlordDataFromDeck(Deck deck)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
         
-        private void SetSelectedDeckIndex(int newIndex)
+        private void SetSelectedDeckIdByIndex(int newIndex)
         {
-            Deck selectedDeck = _deckList[newIndex];
+            SaveLastSelectedDeckId
+            (
+                _deckList[newIndex]
+            );
+            UpdateSelectedDeckDisplay();
 
-            UpdateSelectedDeckData(selectedDeck);
-            UpdateSelectedDeckDisplay(selectedDeck);
-
-            SelectDeckEvent?.Invoke(selectedDeck);
+            SelectDeckEvent?.Invoke(GetSelectedDeck());
         }
 
         private void SwitchSelectedDeckIndex(int direction)
@@ -246,7 +248,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
             
-            int nextIndex = _selectDeckIndex + direction;
+            int nextIndex = GetSelectedDeckIndex() + direction;
             if(nextIndex >= _deckList.Count)
             {
                 nextIndex = 0;
@@ -255,7 +257,7 @@ namespace Loom.ZombieBattleground
                 nextIndex = _deckList.Count - 1;
             }
 
-            SetSelectedDeckIndex(nextIndex);
+            SetSelectedDeckIdByIndex(nextIndex);
         }
 
         #endregion
@@ -276,7 +278,7 @@ namespace Loom.ZombieBattleground
                 Deck deck = _deckList[i];
                 deckIcon.GetComponent<Image>().sprite = GetDeckIconSprite
                 ( 
-                    GetOverlordDataFromDeck(deck).Faction
+                    GetOverlordDataFromDeck(deck).Prototype.Faction
                 );
                 
                 _createdDeckIconList.Add(deckIcon);
@@ -288,7 +290,7 @@ namespace Loom.ZombieBattleground
                     if (_tutorialManager.IsTutorial)
                         return;
 
-                    SetSelectedDeckIndex(index);
+                    SetSelectedDeckIdByIndex(index);
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
@@ -297,7 +299,8 @@ namespace Loom.ZombieBattleground
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    hordeSelection.OpenDeckPage((int) deck.Id.Id);
+                    hordeSelection.AssignSelectedDeck(deck);
+                    hordeSelection.AssignCurrentEditDeck(deck);
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                 };
             }
@@ -337,14 +340,16 @@ namespace Loom.ZombieBattleground
             };
         }
 
-        private void UpdateSelectedDeckDisplay(Deck selectedDeck)
+        private void UpdateSelectedDeckDisplay()
         {
+            Deck selectedDeck = GetSelectedDeck();
+            int deckIndex = GetSelectedDeckIndex();
             _textDeckName.text = selectedDeck.Name;
-            OverlordModel selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
-            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Faction);
+            OverlordUserInstance selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
+            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Prototype.Faction);
 
             int middleFrameIndex = _deckIconPositionList.Count / 2;
-            int shiftIndex = _selectDeckIndex - middleFrameIndex;
+            int shiftIndex = deckIndex - middleFrameIndex;
             
             int frameIndex;
             GameObject deckIcon;
@@ -361,7 +366,7 @@ namespace Loom.ZombieBattleground
                 {
                     deckIcon.SetActive(true);
                     deckIcon.transform.position = _deckIconPositionList[frameIndex];
-                    scale = (i == _selectDeckIndex) ? _deckIconScaleSelected : _deckIconScaleNormal;
+                    scale = (i == deckIndex) ? _deckIconScaleSelected : _deckIconScaleNormal;
                     deckIcon.transform.localScale = Vector3.one * scale;
                 }
             }            

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -14,6 +12,8 @@ namespace Loom.ZombieBattleground
     public class ActionQueue
     {
         private readonly Queue<ActionQueue> _innerQueues = new Queue<ActionQueue>();
+
+        private float currentStartupCounter;
 
         public ActionQueueAction Action { get; }
 
@@ -32,6 +32,7 @@ namespace Loom.ZombieBattleground
         {
             Action = action ?? throw new ArgumentNullException(nameof(action));
             Parent = parent;
+            currentStartupCounter = 0;
         }
 
         public ActionQueue Enqueue(ActionQueueAction action)
@@ -62,12 +63,18 @@ namespace Loom.ZombieBattleground
                         break;
 
                     currentQueue = _innerQueues.Peek();
+                    currentStartupCounter = 0;
                 }
 
                 if (!currentQueue.Action.IsStarted)
                 {
-                    currentQueue.Action.Execute(currentQueue);
-                    InvokeStateChanged();
+                    currentStartupCounter += Time.deltaTime;
+                    if (currentStartupCounter >= currentQueue.Action.StartupTime) 
+                    {
+                        currentStartupCounter = 0;
+                        currentQueue.Action.Execute(currentQueue);
+                        InvokeStateChanged();
+                    }
                 }
 
                 if (currentQueue.Action.IsCompleted)

@@ -9,11 +9,8 @@ public class GeneralColor : MonoBehaviour
     private Color _color = Color.white;
     public Color Color
     {
-        get { return _color; }
-        set
-        {
-            _color = value;
-        }
+        get => _color;
+        set => _color = value;
     }
 
     public bool isUpdated = false;

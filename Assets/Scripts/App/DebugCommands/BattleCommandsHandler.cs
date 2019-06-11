@@ -211,7 +211,7 @@ static class BattleCommandsHandler
         string[] overlordNames = new string[_dataManager.CachedOverlordData.Overlords.Count];
         for (var i = 0; i < _dataManager.CachedOverlordData.Overlords.Count; i++)
         {
-            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Name;
+            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Prototype.Name;
         }
         return overlordNames;
     }
@@ -374,7 +374,8 @@ static class BattleCommandsHandler
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
         Card prototype = new Card(unit.Model.Card.Prototype);
-        WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
+        InstanceId updatedId = new InstanceId(unit.Model.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.BackFromGraveyard);
+        WorkingCard workingCard = new WorkingCard(prototype, prototype, player, id:updatedId);
         CardModel cardModel = new CardModel(workingCard);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, cardModel);
 
@@ -665,7 +666,7 @@ static class BattleCommandsHandler
     {
         foreach (var skill in _gameplayManager.CurrentPlayer.SelfOverlord.Skills)
         {
-            skill.Unlocked = true;
+            skill.UserData.IsUnlocked = true;
         }
     }
 

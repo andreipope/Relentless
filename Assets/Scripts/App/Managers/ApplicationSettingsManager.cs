@@ -17,7 +17,9 @@ namespace Loom.ZombieBattleground
 
         public ResolutionInfo CurrentResolution { get; private set; }
 
+#pragma warning disable 67
         public static event Action OnResolutionChanged;
+#pragma warning restore 67
 
         public const float WaitForResolutionChangeFinishAnimating = 1.5f;
 
@@ -34,29 +36,39 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public void Update()
+        public async void Update()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            HandleSpecificUserActions();
+            await HandleSpecificUserActions();
+#else
+            await Task.CompletedTask;
 #endif
         }
 
-        public void ApplySettings()
+        public async Task ApplySettings()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
             CurrentScreenMode = _dataManager.CachedUserLocalData.AppScreenMode;
             CurrentResolution = Resolutions.Find(x => x.Resolution.x == _dataManager.CachedUserLocalData.AppResolution.x &&
                 x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
 
-            SetScreenMode(CurrentScreenMode);
+            await SetScreenMode(CurrentScreenMode);
+#else
+            await Task.CompletedTask;
 #endif
         }
 
-        public void SetDefaults()
+        public async Task SetDefaults()
         {
 #if !UNITY_ANDROID && !UNITY_IOS
-            SetResolution(Resolutions[Resolutions.Count - 1]);
-            SetScreenMode(Enumerators.ScreenMode.Window);
+            if (Resolutions.Count > 0)
+            {
+                await SetResolution(Resolutions[Resolutions.Count - 1]);
+            }
+
+            await SetScreenMode(Enumerators.ScreenMode.Window);
+#else
+            await Task.CompletedTask;
 #endif
         }
 
@@ -107,13 +119,16 @@ namespace Loom.ZombieBattleground
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 #if !UNITY_ANDROID && !UNITY_IOS 
-            MakeResolutionHighestInFullScreenMode();
+            await MakeResolutionHighestInFullScreenMode();
 #endif
         }
   
 #if !UNITY_ANDROID && !UNITY_IOS      
         private async Task MakeResolutionHighestInFullScreenMode()
         {
+            if (Resolutions.Count == 0)
+                return;
+
             if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
             {
                 await SetResolution(Resolutions[Resolutions.Count - 1]);
@@ -162,20 +177,20 @@ namespace Loom.ZombieBattleground
             return resolutionInfo;
         }
 
-        private void HandleSpecificUserActions()
+        private async Task HandleSpecificUserActions()
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKeyUp(KeyCode.Return))
             {
                 switch (Screen.fullScreenMode)
                 {
                     case FullScreenMode.FullScreenWindow:
-                        SetScreenMode(Enumerators.ScreenMode.FullScreen);
+                        await SetScreenMode(Enumerators.ScreenMode.FullScreen);
                         break;
                     case FullScreenMode.MaximizedWindow:
-                        SetScreenMode(Enumerators.ScreenMode.Window);
+                        await SetScreenMode(Enumerators.ScreenMode.Window);
                         break;
                     case FullScreenMode.Windowed:
-                        SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
+                        await SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(Screen.fullScreenMode), Screen.fullScreenMode, null);

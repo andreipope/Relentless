@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.22";
+        internal const string CurrentVersionBase = "0.1.23";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
-        internal const int DefaultPlayerHp = 50;
+        internal const int TutorialDefaultOverlordDefense = 50;
 
         internal const int DefaultPlayerGoo = 0;
 
@@ -139,7 +139,9 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float TurnTime = 120;
+        internal const float TurnTime = 70;
+
+        internal const float ShortTurnTime = 15;
 
         internal const int MaxDecksCount = 10;
 
@@ -164,6 +166,8 @@ namespace Loom.ZombieBattleground.Common
         internal const float DurationEndUnitAttacking = 0.1f;
 
         internal const int BackendCallTimeout = 10000;
+
+        internal const int PlasmachainCallTimeout = 20000;
 
         internal const float QueueActionTimeout = 60f;    
 
@@ -219,14 +223,9 @@ namespace Loom.ZombieBattleground.Common
             false;
 #endif
 
-        internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
-        internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
-        internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
-        internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
-        
         internal const int LastTutorialId = 8;
 
-        internal const string MarketPlaceLink = "https://loom.games/en/browse";
+        internal const string MarketPlaceLink = "https://loom.games/en/purchase";
         
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 

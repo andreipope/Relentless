@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Loom.ZombieBattleground {
     /// <summary>
@@ -18,6 +17,8 @@ namespace Loom.ZombieBattleground {
         /// Executing any logic after this is set to true is considered undefined behavior.
         /// </summary>
         public bool IsCompleted { get; private set; }
+
+        public float StartupTime;
 
         public void Execute(ActionQueue queue)
         {

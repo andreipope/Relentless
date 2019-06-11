@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: PlayerOrderUI_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -51,6 +52,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 0cd8cb819162ddc41af5dc9cdf67cfb0, type: 3}
     - {fileID: 2800000, guid: e2c850d07af54e347877679cce669ae8, type: 3}
     - {fileID: 2800000, guid: 7ede73ff61c895c4780bc4f471742b47, type: 3}
+    totalSpriteSurfaceArea: 1434688
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

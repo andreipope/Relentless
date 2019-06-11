@@ -4,12 +4,12 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+
 #if UNITY_EDITOR
 using ZombieBattleground.Editor.Runtime;
 #endif
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         public uint TurnTime { get; }
 
-        public PlayerState InitialPvPPlayerState { get; }
+        public Protobuf.PlayerState InitialPvPPlayerState { get; }
 
         public Data.InstanceId InstanceId { get; }
 
@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
                     Log.Debug($"UserDataModel.UserId: {_backendDataControlMediator.UserDataModel.UserId}");
                     Log.Debug($"isOpponent: {isOpponent}");
 
-                    foreach(PlayerState state in _pvpManager.InitialGameState.PlayerStates)
+                    foreach(Protobuf.PlayerState state in _pvpManager.InitialGameState.PlayerStates)
                     {
                         Log.Debug($"state.id: {state.Id}");
                     }
@@ -182,8 +182,9 @@ namespace Loom.ZombieBattleground
                     {
                         GooVials = 0;
                     }
-
-                    TurnTime = (uint) InitialPvPPlayerState.TurnTime;
+                    //We're going to need to change the backend param later
+                    //TurnTime = (uint) InitialPvPPlayerState.TurnTime;
+                    TurnTime = (uint) Constants.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -191,7 +192,6 @@ namespace Loom.ZombieBattleground
                     MaxCardsInPlay = Constants.MaxBoardUnits;
                     MaxGooVials = Constants.MaximumPlayerGoo;
 
-                    Defense = Constants.DefaultPlayerHp;
                     CurrentGoo = Constants.DefaultPlayerGoo;
                     GooVials = _currentGoo;
                     TurnTime = (uint) Constants.TurnTime;
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
                 {
                     if(_matchManager.MatchType == Enumerators.MatchType.PVP)
                     {
-                        foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
+                        foreach (Protobuf.PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
                         {
                             if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                             {
@@ -254,6 +254,15 @@ namespace Loom.ZombieBattleground
 
             SelfOverlord = _dataManager.CachedOverlordData.GetOverlordById(overlordId.Value);
 
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.PVP:
+                    break;
+                default:
+                    Defense = SelfOverlord.Prototype.InitialDefense;
+                    break;
+            }
+
             // TODO: REMOVE logs when issue will be fixed
             Log.Debug($"SelfOverlord: {SelfOverlord}");
 
@@ -267,7 +276,7 @@ namespace Loom.ZombieBattleground
             _freezedHighlightObject = _overlordRegularObject.transform.Find("RegularPosition/Avatar/FreezedHighlight").gameObject;
             _drawCradParticle = playerObject.transform.Find("Deck_Illustration/DrawCardVFX").GetComponent<ParticleSystem>();
 
-            string name = SelfOverlord.Faction + "HeroFrame";
+            string name = SelfOverlord.Prototype.Faction + "HeroFrame";
             GameObject prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
             Transform frameObjectTransform = MonoBehaviour.Instantiate(prefab,
                         _overlordRegularObject.transform.Find("RegularPosition/Avatar/FactionFrame"),
@@ -323,7 +332,7 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform => PlayerObject.transform;
 
-        public OverlordModel SelfOverlord { get; }
+        public OverlordUserInstance SelfOverlord { get; }
 
         public int GooVials
         {
@@ -486,7 +495,7 @@ namespace Loom.ZombieBattleground
             _skillsController.DisableSkillsContent(this);
             _boardArrowController.ResetCurrentBoardArrow();
 
-            switch (SelfOverlord.Faction)
+            switch (SelfOverlord.Prototype.Faction)
             {
                 case Enumerators.Faction.FIRE:
                 case Enumerators.Faction.WATER:
@@ -494,7 +503,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Faction.AIR:
                 case Enumerators.Faction.LIFE:
                 case Enumerators.Faction.TOXIC:
-                    Enumerators.SoundType soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfOverlord.Faction);
+                    Enumerators.SoundType soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfOverlord.Prototype.Faction);
                     _soundManager.PlaySound(soundType, Constants.OverlordDeathSoundVolume);
                     break;
                 default:
@@ -535,7 +544,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     await _backendFacade.AddSoloExperience(
                                         _backendDataControlMediator.UserDataModel.UserId,
-                                        _gameplayManager.CurrentPlayer.SelfOverlord.Id,
+                                        _gameplayManager.CurrentPlayer.SelfOverlord.Prototype.Id,
                                         _dataManager.CachedUserLocalData.LastSelectedDeckId,
                                         _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived,
                                         true
@@ -627,7 +636,7 @@ namespace Loom.ZombieBattleground
                 LeaveMatch?.Invoke();
 
                 completeCallback?.Invoke();
-            }, Enumerators.QueueActionType.LeaveMatch);
+            }, Enumerators.QueueActionType.LeaveMatch, startupTime:0f);
         }
 
         private CardModel GetCardThatNotInDistribution()
@@ -646,7 +655,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfOverlord.Name);
+            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfOverlord.Prototype.Name);
         }
 #endif
 

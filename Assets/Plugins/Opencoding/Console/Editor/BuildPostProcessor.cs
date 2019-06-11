@@ -63,7 +63,7 @@ namespace Opencoding.Console.Editor
 			}
 
 #if UNITY_ANDROID
-		    ConformAndroidManifest();
+		    //ConformAndroidManifest();
 #endif
 		}
 
