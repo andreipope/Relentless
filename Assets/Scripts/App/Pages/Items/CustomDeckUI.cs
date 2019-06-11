@@ -40,6 +40,8 @@ namespace Loom.ZombieBattleground
 
         private Deck _selectedDeck;
 
+        private ViewDeckPage _viewDeckPage;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -48,6 +50,9 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _deckCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/DeckCard_UI");
+
+            _viewDeckPage = new ViewDeckPage();
+            _viewDeckPage.Init();
         }
 
         public void Reset()
@@ -277,7 +282,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonViewDeckHandler()
         {
-
+            _viewDeckPage.Show();
         }
 
         private void ButtonRenameHandler()
