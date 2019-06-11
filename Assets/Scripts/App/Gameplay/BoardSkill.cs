@@ -261,6 +261,7 @@ namespace Loom.ZombieBattleground
                 .EnqueueAction(
                     completeCallback =>
                     {
+                        _battlegroundController.IsOnShorterTime = false;
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
                         CancelTargetingArrows();

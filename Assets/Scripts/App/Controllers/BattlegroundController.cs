@@ -97,6 +97,8 @@ namespace Loom.ZombieBattleground
 
         public float TurnTimer { get; private set; }
 
+        public bool IsOnShorterTime = false;
+
         public bool TurnWaitingForEnd { get; private set; }
 
         public IReadOnlyList<ICardView> CardViews => _cardViews;
@@ -223,7 +225,7 @@ namespace Loom.ZombieBattleground
 
                         if (TurnTimer <= 0)
                         {
-                            StopTurn();
+                            StopTurn(turnEndTimeout:true);
                         }
                         else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnRingsAnimationGameObject.activeInHierarchy)
                         {
@@ -382,6 +384,7 @@ namespace Loom.ZombieBattleground
 
             TurnTimer = 0f;
             _turnTimerCounting = false;
+            IsOnShorterTime = false;
 
             _endTurnButtonAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
             _endTurnRingsAnimationGameObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
@@ -417,7 +420,14 @@ namespace Loom.ZombieBattleground
                 !_turnTimerCounting &&
                 _gameplayManager.CurrentTurnPlayer.IsLocalPlayer)
             {
-                TurnTimer = _gameplayManager.CurrentTurnPlayer.TurnTime;
+                if (IsOnShorterTime)
+                {
+                    TurnTimer = Constants.ShortTurnTime;
+                }
+                else
+                {
+                    TurnTimer = _gameplayManager.CurrentTurnPlayer.TurnTime;
+                }
                 _turnTimerCounting = true;
             }
 
@@ -563,10 +573,15 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer;
         }
 
-        public void StopTurn(GameState pvpControlGameState = null)
+        public void StopTurn(GameState pvpControlGameState = null, bool turnEndTimeout = false)
         {
             if (TurnWaitingForEnd)
                 return;
+            
+            if (turnEndTimeout)
+            {
+                IsOnShorterTime = true;
+            }
 
             TurnWaitingForEnd = true;
 
@@ -580,7 +595,7 @@ namespace Loom.ZombieBattleground
                         EndTurnPart1Prepare();
                         completeCallback.Invoke();
                     }, delay);
-                }, Enumerators.QueueActionType.StopTurnPart1Prepare, startupTime:1.5f);
+                }, Enumerators.QueueActionType.StopTurnPart1Prepare, startupTime:1f);
 
             _actionsQueueController.EnqueueAction(
                 completeCallback =>
@@ -620,7 +635,7 @@ namespace Loom.ZombieBattleground
                         StartTurn();
                         completeCallback?.Invoke();
                     }
-                }, Enumerators.QueueActionType.StopTurnPart3Finish);
+                }, Enumerators.QueueActionType.StopTurnPart3Finish, startupTime:1f);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(CardModel cardModel)

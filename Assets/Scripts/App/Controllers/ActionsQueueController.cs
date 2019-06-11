@@ -49,7 +49,6 @@ namespace Loom.ZombieBattleground
             GameplayActionQueueAction action = CreateAction(actionToDo, actionType, IsOnlyManualCompleteAction(actionType), startupTime);
             if (IsUserInputAction(actionType))
             {
-                action.StartupTime = 0;
                 RootQueue.Enqueue(action);
             }
             else

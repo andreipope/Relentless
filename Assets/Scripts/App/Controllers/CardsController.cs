@@ -462,6 +462,8 @@ namespace Loom.ZombieBattleground
                     return;
                 }
 
+                _battlegroundController.IsOnShorterTime = false;
+
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
 
