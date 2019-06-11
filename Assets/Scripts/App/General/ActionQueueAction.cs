@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground {
         /// </summary>
         public bool IsCompleted { get; private set; }
 
+        public float StartupTime;
+
         public void Execute(ActionQueue queue)
         {
             IsStarted = true;

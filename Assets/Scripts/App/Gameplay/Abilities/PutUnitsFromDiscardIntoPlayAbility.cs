@@ -116,7 +116,8 @@ namespace Loom.ZombieBattleground
             cardModel.ResetToInitial();
 
             Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(cardModel.Card.Prototype.Name));
-            WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer);
+            InstanceId updatedId = new InstanceId(cardModel.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.BackFromGraveyard);
+            WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer, updatedId);
             CardModel resurrectedUnitModel = new CardModel(card);
 
             owner.PlayerCardsController.SpawnUnitOnBoard(resurrectedUnitModel, ItemPosition.End, IsPVPAbility);

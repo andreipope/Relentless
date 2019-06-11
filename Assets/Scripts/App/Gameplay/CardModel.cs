@@ -787,6 +787,8 @@ namespace Loom.ZombieBattleground
 
             IsAttacking = true;
 
+            _battlegroundController.IsOnShorterTime = false;
+
             switch (target)
             {
                 case Player targetPlayer:

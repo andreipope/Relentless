@@ -536,6 +536,15 @@ namespace Loom.ZombieBattleground
             AbilitiesController.DeactivateAbility(ActivityId);
         }
 
+        public void CardReturnedToHand()
+        {
+            if (LastAuraState)
+            {
+                LastAuraState = false;
+                ChangeAuraStatusAction(false);
+            }
+        }
+
         private void CheckRageStatus()
         {
             if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
