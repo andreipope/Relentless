@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 4ef2958c8e5db47529b57a8c378b2e1a, type: 3}
-    totalSpriteSurfaceArea: 10854475
+    totalSpriteSurfaceArea: 10915388
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -55,6 +55,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 681af953f37d24a8094dcdffa54c9961, type: 3}
   - {fileID: 21300000, guid: e19ac393652234532aa8724a0a879232, type: 3}
   - {fileID: 21300000, guid: fdc8db749468241f49b6703e216fe68c, type: 3}
+  - {fileID: 21300000, guid: 1d9181d4c315c4129a11917c1081272a, type: 3}
+  - {fileID: 21300000, guid: c79a8615c94d74150a6ee7ca62f4e99c, type: 3}
   - {fileID: 21300000, guid: 14c0ce655e5e048fd92b4e0d7a77aeb6, type: 3}
   - {fileID: 21300000, guid: d2644df529d7445f7ac8656140cb3454, type: 3}
   - {fileID: 21300000, guid: 973d5c2611c6543859309bf7530fbed6, type: 3}
@@ -84,6 +86,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5a3d1ded3a3f14a048ca378d447ffbf4, type: 3}
   - {fileID: 21300000, guid: dbe13c2e15ded48fc963b997f70358ce, type: 3}
   - {fileID: 21300000, guid: c317710fe49924fc7b1dea43de4eb2e3, type: 3}
+  - {fileID: 21300000, guid: 76d3b42fc12dc4062a5329f862ea5a4a, type: 3}
   - {fileID: 21300000, guid: 15265a6fb19944d30bfa9e991940a343, type: 3}
   - {fileID: 21300000, guid: 2d21657f1f3bb4dffa6f228958a14d11, type: 3}
   - {fileID: 21300000, guid: ce8fa5cf05ea7413ba2aa40e6e240716, type: 3}
@@ -97,6 +100,8 @@ SpriteAtlas:
   - abilities_button_toxic
   - mydeck_card_illustration_mask
   - skill_empty
+  - deck_info_scrollbar_bg
+  - goograph_bg
   - deck_thumbnail_earth
   - deck_thumbnail_life
   - deck_thumbnail_normal
@@ -126,6 +131,7 @@ SpriteAtlas:
   - deck_thumbnail_fire
   - deck_rename_pressed
   - mydeck_cardindicator_off
+  - goograph
   - overlord_portrait_toxic
   - skill_unselected
   - select_overlord_scrollbar
