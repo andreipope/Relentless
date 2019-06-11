@@ -215,43 +215,31 @@ namespace Loom.ZombieBattleground
         {
             TextMeshProUGUI label;
 
-            label = AddLabelToTextList
+            label = _selfPage.transform.Find
             (
-                _selfPage.transform.Find
-                (
-                    "Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Text_SelectDeck"
-                ).GetComponentInChildren<TextMeshProUGUI>()
-            );
+                "Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Text_SelectDeck"
+            ).GetComponentInChildren<TextMeshProUGUI>();
+            AddLabelToTextList(label);            
             AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Header);
             
-            label = AddLabelToTextList
-            (
-                _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>()
-            ); 
+            label = _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>(); 
+            AddLabelToTextList(label);
             AddLocalizedComponent(label, Enumerators.LocalizationTerm.Common_Button_Filter);
-            
-            label = AddLabelToTextList
-            (
-                _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
+
+            label = _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>();
+            AddLabelToTextList(label);
             AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Edit);
             
-            label = AddLabelToTextList
-            (
-                _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
+            label = _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>();
+            AddLabelToTextList(label);
             AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Delete);
             
-            label = AddLabelToTextList
-            (
-                _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
+            label = _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>();
+            AddLabelToTextList(label);
             AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Rename);
-            
-            label = AddLabelToTextList
-            (
-                _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
+
+            label = _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>();
+            AddLabelToTextList(label);
             AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Build);
             
             base.RegisterLocalizedTextList();

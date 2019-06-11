@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class WarningPopup : IUIPopup
+    public class WarningPopup : LocalizableUIBase, IUIPopup
     {
         public event Action PopupHiding;
 
@@ -26,6 +26,7 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            InitializeLocalization();
         }
 
         public void Dispose()
@@ -35,6 +36,8 @@ namespace Loom.ZombieBattleground
         public void Hide()
         {
             PopupHiding?.Invoke();
+
+            UnRegisterLocalizedTextList();
 
             if (Self == null)
                 return;
@@ -62,6 +65,8 @@ namespace Loom.ZombieBattleground
             SetCloseButtonVisible(true);
 
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
+            
+            RegisterLocalizedTextList();
         }
 
         public void Show(object data)
@@ -73,6 +78,17 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+        }
+
+        public override void RegisterLocalizedTextList()
+        {
+            TextMeshProUGUI label = _gotItButton.transform.GetComponentInChildren<TextMeshProUGUI>();
+            AddLabelToTextList(label);
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.Common_Button_GotIt);
+            
+            AddLabelToTextList(_text); 
+            
+            base.RegisterLocalizedTextList();
         }
 
         public void SetCloseButtonVisible(bool visible)

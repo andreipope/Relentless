@@ -13,13 +13,14 @@ namespace Loom.ZombieBattleground
         
         public List<TextMeshProUGUI> LocalizedTextList { get; private set; }
         
+        //Calling this method at Init
         public void InitializeLocalization()
         {
             _localizationControlManager = GameClient.Get<LocalizationControlManager>();
             LocalizedTextList = new List<TextMeshProUGUI>();
         }
         
-        public TextMeshProUGUI AddLocalizedComponent(TextMeshProUGUI label, Enumerators.LocalizationTerm term)
+        public void AddLocalizedComponent(TextMeshProUGUI label, Enumerators.LocalizationTerm term)
         {
             Localize localize = label.gameObject.GetComponent<Localize>();
             if(localize == null)
@@ -27,20 +28,20 @@ namespace Loom.ZombieBattleground
                 localize = label.gameObject.AddComponent<Localize>();
             }
             localize.Term = term.ToString();
-            return label;
         }
         
-        public TextMeshProUGUI AddLabelToTextList(TextMeshProUGUI label)
+        public void AddLabelToTextList(TextMeshProUGUI label)
         {
             LocalizedTextList.Add(label);
-            return label;
         }
 
+        //Override this method to add text label to list then calling this method when showing UI
         public virtual void RegisterLocalizedTextList()
         {
             _localizationControlManager.RegisterTextLabels(this);
         }
         
+        //Calling this method when hiding an UI
         public void UnRegisterLocalizedTextList()
         {
             _localizationControlManager.UnRegisterTextLabels(this);
