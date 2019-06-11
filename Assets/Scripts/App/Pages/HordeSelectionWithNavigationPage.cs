@@ -15,7 +15,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using I2.Loc;
 
 namespace Loom.ZombieBattleground
 {
