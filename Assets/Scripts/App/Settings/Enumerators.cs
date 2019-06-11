@@ -439,7 +439,9 @@ namespace Loom.ZombieBattleground.Common
             HordeSelection_Edit,
             HordeSelection_Delete,
             HordeSelection_Rename,
-            HordeSelection_Build
+            HordeSelection_Build,
+            HordeSelection_ConfirmSaveProgress,
+            HordeSelection_InfoDeleteLastDeck
         }
 
         public enum MatchType

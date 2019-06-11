@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using TMPro;
 using I2.Loc;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
     public class LocalizationControlManager : IService
     {
         private static readonly ILog Log = Logging.GetLog(nameof(LocalizationControlManager));
+
+        private readonly Dictionary<Enumerators.LocalizationTerm, LocalizedString> LocalizedStringDictionary = new Dictionary<Enumerators.LocalizationTerm, LocalizedString>();
         
         public enum Language
         {
@@ -24,8 +27,15 @@ namespace Loom.ZombieBattleground
             Spanish = 4,
             Thai = 5,
         }
-        
-        private readonly float[] LineSpacing = new float[]
+
+        private readonly Enumerators.LocalizationTerm[] LocalizationStringTermsList = 
+        {
+            Enumerators.LocalizationTerm.HordeSelection_ConfirmSaveProgress,
+            Enumerators.LocalizationTerm.HordeSelection_InfoDeleteLastDeck
+        };
+
+
+        private readonly float[] LineSpacing = 
         {
             -26.7f,
             0f,
@@ -35,7 +45,7 @@ namespace Loom.ZombieBattleground
             0f,
         };
         
-        private readonly float[] CharSpacing = new float[]
+        private readonly float[] CharSpacing = 
         {
             -0.71f,
             -0.87f,
@@ -45,7 +55,7 @@ namespace Loom.ZombieBattleground
             -4.21f,
         };
         
-        private readonly FontStyles[] FontStyle = new FontStyles[]
+        private readonly FontStyles[] FontStyle = 
         {
             FontStyles.Bold,
             FontStyles.Bold,
@@ -89,6 +99,15 @@ namespace Loom.ZombieBattleground
             _fontAssets[5] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/TH_Krungthep");
 
             _fontDecorationData = new FontDecorationData();
+
+            foreach(Enumerators.LocalizationTerm term in LocalizationStringTermsList)
+            {
+                LocalizedStringDictionary.Add
+                (
+                    term,
+                    new LocalizedString(term.ToString())
+                );
+            }
         }
 
         public void Update()
@@ -102,8 +121,17 @@ namespace Loom.ZombieBattleground
                 _registeredLabelList.Clear();
                 _registeredLabelList = null;
             }           
+            if (LocalizedStringDictionary != null)
+            {
+                LocalizedStringDictionary.Clear();
+            }     
         }
         
+        public string GetLocalizedString(Enumerators.LocalizationTerm term)
+        {
+            return LocalizedStringDictionary[term].ToString();
+        }
+
         public void ApplyLocalization()
         {
             LoadCacheLanguage();

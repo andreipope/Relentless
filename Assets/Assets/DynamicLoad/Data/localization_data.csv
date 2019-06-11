@@ -11,3 +11,5 @@ HordeSelection_Edit,EDIT,編輯,편집하다,エディット,editar,แก้ไ
 HordeSelection_Delete,DELETE,刪除,지우다,デリート,borrar,ลบ
 HordeSelection_Rename,RENAME,改名,이름 바꾸기,リーネーム,rebautizar,เปลื่ยนชื่อ
 HordeSelection_Build,BUILD A NEW DECK,建立,새 데크 만들기,ビルド・デック,construir,สร้างเด็คใหม่
+HordeSelection_ConfirmSaveProgress,Would you like to save your progress?,你想保存你的進度嗎?,진행 상황을 저장 하시겠습니까?,進捗を保存しますか?,¿Te gustaría guardar tu progreso?,ต้องการบันทึกข้อมูลหรือไม่
+HordeSelection_InfoDeleteLastDeck,Cannot delete. You must have at least one deck.,無法刪除。你必須至少有一個套牌。,삭제할 수 없습니다. 적어도 하나의 덱이 있어야합니다.,削除できません。あなたは少なくとも1つのデッキを持っていなければなりません。,No se puede borrar. Debes tener al menos una cubierta.,ไม่สามารถลบได้ คุณต้องมีอย่างน้อยหนึ่งสำรับ

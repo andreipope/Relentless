@@ -19,10 +19,21 @@ namespace Loom.ZombieBattleground
             LocalizedTextList = new List<TextMeshProUGUI>();
         }
         
-        public void AddLocalizedText(TextMeshProUGUI label, Enumerators.LocalizationTerm term)
+        public TextMeshProUGUI AddLocalizedComponent(TextMeshProUGUI label, Enumerators.LocalizationTerm term)
         {
-            label.gameObject.AddComponent<Localize>().Term = term.ToString();
+            Localize localize = label.gameObject.GetComponent<Localize>();
+            if(localize == null)
+            {
+                localize = label.gameObject.AddComponent<Localize>();
+            }
+            localize.Term = term.ToString();
+            return label;
+        }
+        
+        public TextMeshProUGUI AddLabelToTextList(TextMeshProUGUI label)
+        {
             LocalizedTextList.Add(label);
+            return label;
         }
 
         public virtual void RegisterLocalizedTextList()

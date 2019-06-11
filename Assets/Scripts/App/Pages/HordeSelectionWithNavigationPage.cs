@@ -213,44 +213,46 @@ namespace Loom.ZombieBattleground
         
         public override void RegisterLocalizedTextList()
         {
-            AddLocalizedText
+            TextMeshProUGUI label;
+
+            label = AddLabelToTextList
             (
                 _selfPage.transform.Find
                 (
                     "Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Text_SelectDeck"
-                ).GetComponent<TextMeshProUGUI>(),
-                Enumerators.LocalizationTerm.HordeSelection_Header
+                ).GetComponentInChildren<TextMeshProUGUI>()
             );
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Header);
             
-            AddLocalizedText
+            label = AddLabelToTextList
             (
-                _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>(),
-                Enumerators.LocalizationTerm.Common_Button_Filter
+                _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>()
             ); 
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.Common_Button_Filter);
             
-            AddLocalizedText
+            label = AddLabelToTextList
             (
-                _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>(),
-                Enumerators.LocalizationTerm.HordeSelection_Edit
+                _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>()
             );
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Edit);
             
-            AddLocalizedText
+            label = AddLabelToTextList
             (
-                _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>(),
-                Enumerators.LocalizationTerm.HordeSelection_Delete
+                _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>()
             );
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Delete);
             
-            AddLocalizedText
+            label = AddLabelToTextList
             (
-                _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>(),
-                Enumerators.LocalizationTerm.HordeSelection_Rename
+                _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>()
             );
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Rename);
             
-            AddLocalizedText
+            label = AddLabelToTextList
             (
-                _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>(),
-                Enumerators.LocalizationTerm.HordeSelection_Build
+                _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>()
             );
+            AddLocalizedComponent(label, Enumerators.LocalizationTerm.HordeSelection_Build);
             
             base.RegisterLocalizedTextList();
         }
@@ -426,7 +428,13 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             if (GetDeckListFromUserCache().Count <= 1)
             {
-                OpenAlertDialog("Cannot delete. You must have at least one deck.");
+                OpenAlertDialog
+                (
+                    _localizationControlManager.GetLocalizedString
+                    (
+                        Enumerators.LocalizationTerm.HordeSelection_InfoDeleteLastDeck
+                    )
+                );
                 return;
             }
 
