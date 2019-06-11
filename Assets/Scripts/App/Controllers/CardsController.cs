@@ -470,6 +470,8 @@ namespace Loom.ZombieBattleground
                 GameplayActionQueueAction callAbilityAction;
                 GameplayActionQueueAction rankBuffAction = null;
 
+                int cardCost = card.Model.CurrentCost;
+
                 switch (card.Model.Card.Prototype.Kind)
                 {
                     case Enumerators.CardKind.CREATURE:
@@ -565,10 +567,10 @@ namespace Loom.ZombieBattleground
 #if !USE_PRODUCTION_BACKEND
                                         if (!_gameplayManager.AvoidGooCost)
                                         {
-                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                            card.Model.Card.Owner.CurrentGoo -= cardCost;
                                         }
 #else
-                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        card.Model.Card.Owner.CurrentGoo -= cardCost;
 #endif
                                     },
                                     target,
@@ -610,13 +612,13 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
-                                        #if !USE_PRODUCTION_BACKEND
+#if !USE_PRODUCTION_BACKEND
                                         if (!_gameplayManager.AvoidGooCost)
                                         {
-                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                            card.Model.Card.Owner.CurrentGoo -= cardCost;
                                         }
 #else
-                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        card.Model.Card.Owner.CurrentGoo -= cardCost;
 #endif
 
                                         rankBuffAction?.TriggerActionExternally();
@@ -637,7 +639,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            _actionsQueueController.EnqueueAction(playCardAction, Enumerators.QueueActionType.CardPlay);
+            _actionsQueueController.EnqueueAction(playCardAction, Enumerators.QueueActionType.CardPlay, startupTime:0f);
         }
 
         public void PlayOpponentCard(

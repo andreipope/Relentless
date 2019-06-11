@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -77,6 +78,7 @@ namespace Loom.ZombieBattleground
         {
             int oldAddedDefense = _addedDefense;
             int oldAddedDamage = _addedDamage;
+            _adjacentUnits.Clear();
             GainStats(AbilityUnitOwner, GetAdjacentUnits());
             RestoreGainedStats(AbilityUnitOwner, oldAddedDamage, oldAddedDefense);
         }
@@ -88,6 +90,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardModel cardModel in boardUnits)
             {
+                _adjacentUnits.Add(cardModel);
                 _addedDefense += cardModel.CurrentDefense;
                 _addedDamage += cardModel.CurrentDamage;
             }
@@ -119,7 +122,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetStoredStats ()
         {
-            _adjacentUnits = new List<CardModel>();
+            _adjacentUnits.Clear();
             _addedDamage = 0;
             _addedDefense = 0;
         }

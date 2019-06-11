@@ -45,12 +45,13 @@ namespace Loom.ZombieBattleground {
             ExecutedActionDelegate executedAction,
             long id,
             Enumerators.QueueActionType actionType,
-            bool onlyExternalComplete)
+            bool onlyExternalComplete, float startupTime)
         {
             ExecutedAction = executedAction;
             Id = id;
             ActionType = actionType;
             OnlyExternalComplete = onlyExternalComplete;
+            StartupTime = startupTime;
         }
 
         /// <summary>

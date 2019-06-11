@@ -265,7 +265,7 @@ namespace Loom.ZombieBattleground
                         IsUsing = false;
                         CancelTargetingArrows();
                     },
-                    Enumerators.QueueActionType.OverlordSkillUsage);
+                    Enumerators.QueueActionType.OverlordSkillUsage, startupTime:0f);
         }
 
         public void UseSkill()

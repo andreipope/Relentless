@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
                 LeaveMatch?.Invoke();
 
                 completeCallback?.Invoke();
-            }, Enumerators.QueueActionType.LeaveMatch);
+            }, Enumerators.QueueActionType.LeaveMatch, startupTime:0f);
         }
 
         private CardModel GetCardThatNotInDistribution()

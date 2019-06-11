@@ -580,7 +580,7 @@ namespace Loom.ZombieBattleground
                         EndTurnPart1Prepare();
                         completeCallback.Invoke();
                     }, delay);
-                }, Enumerators.QueueActionType.StopTurnPart1Prepare);
+                }, Enumerators.QueueActionType.StopTurnPart1Prepare, startupTime:1.5f);
 
             _actionsQueueController.EnqueueAction(
                 completeCallback =>

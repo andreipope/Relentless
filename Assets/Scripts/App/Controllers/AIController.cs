@@ -934,7 +934,7 @@ namespace Loom.ZombieBattleground
                         completeCallback?.Invoke();
                         break;
                 }
-            }, Enumerators.QueueActionType.CardPlay);
+            }, Enumerators.QueueActionType.CardPlay, startupTime:0f);
         }
 
         private void PlayCardCompleteHandler(CardModel cardModel, IBoardObject target, Action completeCallback)
