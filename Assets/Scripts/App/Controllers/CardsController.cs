@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 unitPosition = boardUnitView.Transform.position;
 
-            _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel);
+            _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel, true);
 
             cardModel.InvokeUnitPrepairingToDie();
             cardModel.SetUnitActiveStatus(false);
