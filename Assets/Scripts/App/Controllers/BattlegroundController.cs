@@ -1022,13 +1022,21 @@ namespace Loom.ZombieBattleground
             card.Distract();
         }
 
-        public void DeactivateAllAbilitiesOnUnit(CardModel card)
+        public void DeactivateAllAbilitiesOnUnit(CardModel card, bool cardReturnedToHand = false)
         {
+            List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(card);
+
+            if (cardReturnedToHand)
+            {
+                foreach (AbilityBase ability in abilities)
+                {
+                    ability.CardReturnedToHand();
+                }
+            }
+
             card.BuffsOnUnit.Clear();
 
             card.ClearEffectsOnUnit();
-
-            List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(card);
 
             foreach (AbilityBase ability in abilities)
             {
