@@ -34,6 +34,26 @@ namespace Loom.ZombieBattleground
             0f,
             0f,
         };
+        
+        private readonly float[] CharSpacing = new float[]
+        {
+            -0.71f,
+            -0.87f,
+            -1.5f,
+            -3.25f,
+            -0.71f,
+            -4.21f,
+        };
+        
+        private readonly FontStyles[] FontStyle = new FontStyles[]
+        {
+            FontStyles.Bold,
+            FontStyles.Bold,
+            FontStyles.Bold,
+            FontStyles.Bold,
+            FontStyles.Bold,
+            FontStyles.Bold,
+        };
 
         public event Action<Language> LanguageWasChangedEvent;
         
@@ -41,14 +61,20 @@ namespace Loom.ZombieBattleground
 
         private TMP_FontAsset[] _fontAssets;
 
-        private TMP_FontAsset _currentFont;
-
-        private float _currentLineSpacing;
+        private FontDecorationData _fontDecorationData;
         
         private List<TextMeshProUGUI> _registeredLabelList;
 
         private ILoadObjectsManager _loadObjectsManager;        
         
+        public class FontDecorationData
+        {
+            public TMP_FontAsset FontAsset;
+            public float LineSpacing;
+            public float CharacterSpacing;
+            public FontStyles FontStyles;
+        }
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -61,6 +87,8 @@ namespace Loom.ZombieBattleground
             _fontAssets[3] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/JP_TogaliteRegular_KanaPunctuation");
             _fontAssets[4] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/EN_Bevan");
             _fontAssets[5] = _loadObjectsManager.GetObjectByPath<TMP_FontAsset>("FontAssets/TH_Krungthep");
+
+            _fontDecorationData = new FontDecorationData();
         }
 
         public void Update()
@@ -178,8 +206,10 @@ namespace Loom.ZombieBattleground
 
         private void UpdateStyleData()
         {
-            _currentFont = _fontAssets[(int)CurrentLanguage];
-            _currentLineSpacing = LineSpacing[(int)CurrentLanguage];
+            _fontDecorationData.FontAsset = _fontAssets[(int)CurrentLanguage];
+            _fontDecorationData.LineSpacing = LineSpacing[(int)CurrentLanguage];
+            _fontDecorationData.CharacterSpacing = CharSpacing[(int)CurrentLanguage];
+            _fontDecorationData.FontStyles = FontStyle[(int)CurrentLanguage];
         }
 
         private void UpdateStyle()
@@ -195,8 +225,10 @@ namespace Loom.ZombieBattleground
             if (item == null)
                 return;
                 
-            item.font = _currentFont;
-            item.lineSpacing = _currentLineSpacing;
+            item.font = _fontDecorationData.FontAsset;
+            item.lineSpacing = _fontDecorationData.LineSpacing;
+            item.characterSpacing = _fontDecorationData.CharacterSpacing;
+            item.fontStyle = _fontDecorationData.FontStyles;
         }
         
         private void WipeAllText()

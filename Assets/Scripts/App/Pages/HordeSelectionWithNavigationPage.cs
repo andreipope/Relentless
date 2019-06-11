@@ -15,6 +15,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using I2.Loc;
 
 namespace Loom.ZombieBattleground
 {
@@ -158,7 +159,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyDecksPageLocalized"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyDecksPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_DECKS);
@@ -213,33 +214,45 @@ namespace Loom.ZombieBattleground
         
         public override void RegisterLocalizedTextList()
         {
-            LocalizedTextList.Add
-            (
-                _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
-            LocalizedTextList.Add
-            (
-                _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
-            LocalizedTextList.Add
-            (
-                _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
-            LocalizedTextList.Add
-            (
-                _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>()
-            );
-            LocalizedTextList.Add
+            AddLocalizedText
             (
                 _selfPage.transform.Find
                 (
                     "Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Text_SelectDeck"
-                ).GetComponentInChildren<TextMeshProUGUI>()
+                ).GetComponent<TextMeshProUGUI>(),
+                Enumerators.LocalizationTerm.HordeSelection_Header
             );
-            LocalizedTextList.Add
+            
+            AddLocalizedText
             (
-                _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>()
+                _buttonSelectDeckFilter.transform.GetComponentInChildren<TextMeshProUGUI>(),
+                Enumerators.LocalizationTerm.Common_Button_Filter
+            ); 
+            
+            AddLocalizedText
+            (
+                _buttonEdit.transform.GetComponentInChildren<TextMeshProUGUI>(),
+                Enumerators.LocalizationTerm.HordeSelection_Edit
             );
+            
+            AddLocalizedText
+            (
+                _buttonDelete.transform.GetComponentInChildren<TextMeshProUGUI>(),
+                Enumerators.LocalizationTerm.HordeSelection_Delete
+            );
+            
+            AddLocalizedText
+            (
+                _buttonRename.transform.GetComponentInChildren<TextMeshProUGUI>(),
+                Enumerators.LocalizationTerm.HordeSelection_Rename
+            );
+            
+            AddLocalizedText
+            (
+                _buttonNewDeck.transform.GetComponentInChildren<TextMeshProUGUI>(),
+                Enumerators.LocalizationTerm.HordeSelection_Build
+            );
+            
             base.RegisterLocalizedTextList();
         }
 

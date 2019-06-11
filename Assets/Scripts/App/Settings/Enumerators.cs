@@ -430,6 +430,18 @@ namespace Loom.ZombieBattleground.Common
             RU
         }
 
+        public enum LocalizationTerm
+        {
+            Common_Button_Auto,
+            Common_Button_Filter,
+            Common_Button_GotIt,            
+            HordeSelection_Header,
+            HordeSelection_Edit,
+            HordeSelection_Delete,
+            HordeSelection_Rename,
+            HordeSelection_Build
+        }
+
         public enum MatchType
         {
             LOCAL,
