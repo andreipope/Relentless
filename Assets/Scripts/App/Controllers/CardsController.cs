@@ -812,13 +812,13 @@ namespace Loom.ZombieBattleground
 
         public WorkingCard CreateWorkingCardFromCardName(string cardName, Player owner)
         {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardByName(cardName);
             return new WorkingCard(card, card, owner);
         }
 
-        public WorkingCard CreateWorkingCardFromCardMouldId(MouldId mouldId, Player owner)
+        public WorkingCard CreateWorkingCardFromCardMouldId(CardKey cardKey, Player owner)
         {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardByCardKey(cardKey);
             return new WorkingCard(card, card, owner);
         }
 

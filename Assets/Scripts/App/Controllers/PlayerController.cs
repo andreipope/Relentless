@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
                         {
                             for (int i = 0; i < card.Amount; i++)
                             {
-                                workingDeck.Add(_cardsController.CreateWorkingCardFromCardMouldId(card.MouldId, player));
+                                workingDeck.Add(_cardsController.CreateWorkingCardFromCardMouldId(card.CardKey, player));
                             }
                         }
 

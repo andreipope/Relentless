@@ -226,7 +226,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
         player.PlayerCardsController.CreateNewCardAndAddToHand(card);
     }
 
@@ -274,7 +274,7 @@ static class BattleCommandsHandler
             return;
         }
 
-        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
         CardModel cardModel = opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
         _aiController.PlayCardOnBoard(cardModel, true);
     }

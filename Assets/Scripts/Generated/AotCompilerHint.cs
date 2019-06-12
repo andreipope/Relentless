@@ -69,6 +69,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.AbilityData>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UniqueAnimation.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardOverrides>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardKey>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAdditionalDamageToHeavyInAttack>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAttackOverlord>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityChangeStat>();
@@ -229,6 +230,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ListOverlordUserInstancesRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ListOverlordUserInstancesResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.OverlordUserInstance>>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.LoginRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.InitialPlayerState>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.Match.Types.Status>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerTimestamp>>();
@@ -342,6 +344,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateOracleRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateUserEloRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UserIdContainer>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.Validator>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::System.Single>();
 

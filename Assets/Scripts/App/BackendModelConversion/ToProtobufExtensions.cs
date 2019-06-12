@@ -6,12 +6,20 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
+        public static Protobuf.CardKey ToProtobuf(this CardKey cardKey)
+        {
+            return new Protobuf.CardKey
+            {
+                MouldId = cardKey.MouldId.Id,
+                Variant = (CardVariant.Types.Enum) cardKey.Variant
+            };
+        }
         public static DeckCard ToProtobuf(this DeckCardData deckCardData)
         {
             return new DeckCard
             {
-                Amount = deckCardData.Amount,
-                MouldId = deckCardData.MouldId.Id
+                CardKey = deckCardData.CardKey.ToProtobuf(),
+                Amount = deckCardData.Amount
             };
         }
 
@@ -127,7 +135,7 @@ namespace Loom.ZombieBattleground.Data
         {
             Protobuf.Card protoCard = new Protobuf.Card
             {
-                MouldId = card.MouldId.Id,
+                CardKey = card.CardKey.ToProtobuf(),
                 Name = card.Name,
                 Cost = card.Cost,
                 Description = card.Description,

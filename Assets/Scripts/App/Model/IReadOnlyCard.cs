@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public interface IReadOnlyCard
     {
-        MouldId MouldId { get; }
+        CardKey CardKey { get; }
 
         string Name { get; }
 

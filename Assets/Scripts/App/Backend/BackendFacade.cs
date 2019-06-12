@@ -273,6 +273,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region Login
 
         private const string CreateAccountMethod = "CreateAccount";
+        private const string LoginMethod = "Login";
 
         public async Task SignUp(string userId)
         {
@@ -283,6 +284,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             await _contractCallProxy.CallAsync(CreateAccountMethod, req);
+        }
+
+        public async Task Login(string userId)
+        {
+            Protobuf.LoginRequest req = new Protobuf.LoginRequest
+            {
+                Version = BackendEndpoint.DataVersion,
+                UserId = userId
+            };
+
+            await _contractCallProxy.CallAsync(LoginMethod, req);
         }
 
         #endregion

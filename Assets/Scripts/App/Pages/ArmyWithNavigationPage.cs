@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.MouldId);
+                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.CardKey);
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)
@@ -329,7 +329,7 @@ namespace Loom.ZombieBattleground
 
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
 
-            if (boardCard.Model.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
+            if (boardCard.Model.Card.Prototype.CardKey == _highlightingVFXItem.CardKey)
             {
                 _highlightingVFXItem.ChangeState(true);
             }

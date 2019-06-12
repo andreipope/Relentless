@@ -539,7 +539,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e.Message}");
+                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e}");
 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)

@@ -21,40 +21,42 @@ namespace Loom.ZombieBattleground.Data
             InitData();
         }
 
-        public Card GetCardFromName(string name)
+        public Card GetCardByName(string name)
         {
-            Card card = Cards.FirstOrDefault(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            Card card = Cards.FirstOrDefault(x =>
+                x.CardKey.Variant == Enumerators.CardVariant.Standard &&
+                String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase)
+            );
+
             if (card == null)
                 throw new KeyNotFoundException();
 
             return card;
         }
-        
-        public Card GetCardFromMouldId(MouldId mouldId)
+
+        public Card GetCardByCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
         {
-            (bool found, Card card) = TryGetCardFromMouldId(mouldId);
+            (bool found, Card card) = TryGetCardFromCardKey(cardKey, allowFallbackToNormalEdition);
             if (!found)
                 throw new KeyNotFoundException();
 
             return card;
         }
 
-        public (bool found, Card card) TryGetCardFromMouldId(MouldId mouldId)
+        public (bool found, Card card) TryGetCardFromCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
         {
-            Card card = Cards.FirstOrDefault(x => x.MouldId == mouldId);
-            if (card == null)
-                return (false, null);
+            Card card = Cards.FirstOrDefault(x => x.CardKey == cardKey);
+            if (card != null)
+                return (true, card);
 
-            return (true, card);
-        }
+            if (allowFallbackToNormalEdition)
+            {
+                card = Cards.FirstOrDefault(x => x.CardKey.MouldId == cardKey.MouldId);
+                if (card != null)
+                    return (true, card);
+            }
 
-        public string GetCardNameFromMouldId(MouldId mouldId)
-        {
-            Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
-            if (card == null)
-                throw new KeyNotFoundException();
-
-            return card.Name;
+            return (false, null);
         }
 
         private void InitData()
@@ -86,6 +88,7 @@ namespace Loom.ZombieBattleground.Data
     public class Faction
     {
         public Enumerators.Faction Name { get; }
+
         public List<Card> Cards { get; }
 
         public Faction(Enumerators.Faction name, List<Card> cards)

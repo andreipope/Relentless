@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.ResetToInitial();
 
-            Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(AbilityUnitOwner.Card.Prototype.Name));
+            Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardByName(AbilityUnitOwner.Card.Prototype.Name));
             InstanceId updatedId = new InstanceId(AbilityUnitOwner.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.Reanimate);
             WorkingCard card = new WorkingCard(prototype, prototype, owner, id: updatedId);
             CardModel reanimatedUnitModel = new CardModel(card);

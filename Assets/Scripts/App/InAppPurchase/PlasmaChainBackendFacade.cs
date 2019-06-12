@@ -12,6 +12,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using log4net;
 using log4netUnitySupport;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
+using Loom.Nethereum.JsonRpc.Client;
 using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
 using OneOf;
@@ -63,13 +64,10 @@ namespace Loom.ZombieBattleground.Iap
 
         public async Task<DAppChainClient> GetConnectedClient()
         {
-            RpcLog.Debug("Creating PlasmaChain client");
-
             DAppChainClient client = CreateClient();
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
-                new NonceTxMiddleware(UserPublicKey, client),
-                new SignedTxMiddleware(UserPrivateKey)
+                new NonceTxMiddleware(UserPublicKey, client), new SignedTxMiddleware(UserPrivateKey)
             });
 
             if (client.ReadClient.ConnectionState != RpcConnectionState.Connected)
@@ -85,20 +83,11 @@ namespace Loom.ZombieBattleground.Iap
             return client;
         }
 
-        public async Task<OneOf<Success, IapException>> ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionResponse fiatResponse)
+        public async Task ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionResponse fiatResponse)
         {
-            try
-            {
-                EvmContract evmContract = GetContract(client, IapContractType.FiatPurchase);
-                RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatResponse);
-                await CallRequestPacksContract(evmContract, requestPacksRequest);
-            }
-            catch (Exception e)
-            {
-                return new IapException($"{nameof(ClaimPacks)} failed", e);
-            }
-
-            return new Success();
+            EvmContract evmContract = GetContract(client, IapContractType.FiatPurchase);
+            RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatResponse);
+            await CallRequestPacksContract(evmContract, requestPacksRequest);
         }
 
         public async Task<int> GetPackTypeBalance(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
@@ -119,28 +108,30 @@ namespace Loom.ZombieBattleground.Iap
         public async Task<IReadOnlyList<Card>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
-
+            List<Card> cards = new List<Card>();
             EvmContract cardFaucetContract = GetContract(client, IapContractType.CardFaucet);
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
-
-            List<Card> cards = new List<Card>();
+            bool isConnectionStateChanged = false;
 
             void ContractEventReceived(object sender, EvmChainEventArgs e)
             {
                 Log.Info($"{nameof(GetPackTypeBalance)}: Received event " + e.EventName);
+
+                // FIXME: handle UpgradedCardToLE and UpgradedCardToBE events
                 GeneratedCardEvent generatedCardEvent = e.DecodeEventDto<GeneratedCardEvent>();
                 Log.Info(
-                    $"{nameof(GetPackTypeBalance)}: CardId = {generatedCardEvent.MouldId}, BoosterType = {generatedCardEvent.BoosterType}");
+                    $"{nameof(GetPackTypeBalance)}: CardTokenId = {generatedCardEvent.CardTokenId}, BoosterType = {(Enumerators.MarketplaceCardPackType) (int) generatedCardEvent.BoosterType}");
 
-                if (generatedCardEvent.MouldId % 10 != 0)
+                if (generatedCardEvent.CardTokenId % 10 != 0)
                 {
-                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with raw MouldId {generatedCardEvent.MouldId}");
+                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with CardTokenId {generatedCardEvent.CardTokenId}");
                     cards.Add(null);
                     return;
                 }
 
-                MouldId mouldId = new MouldId((long) (generatedCardEvent.MouldId / 10));
-                (bool found, Card card) = _dataManager.CachedCardsLibraryData.TryGetCardFromMouldId(mouldId);
+                CardKey cardKey = CardKey.FromCardTokenId((long) generatedCardEvent.CardTokenId);
+                Log.Info($"{nameof(GetPackTypeBalance)}: Parsed CardKey {cardKey}");
+                (bool found, Card card) = _dataManager.CachedCardsLibraryData.TryGetCardFromCardKey(cardKey, true);
                 if (found)
                 {
                     Log.Info($"{nameof(GetPackTypeBalance)}: Found matching card {card}");
@@ -148,40 +139,62 @@ namespace Loom.ZombieBattleground.Iap
                 }
                 else
                 {
-                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with MouldId {mouldId}");
+                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with CardKey {cardKey}");
                     cards.Add(null);
                 }
             }
 
-            cardFaucetContract.EventReceived += ContractEventReceived;
-
-            await client.SubscribeToEvents();
-
-            const int amountToApprove = 1;
-            await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
-            await cardFaucetContract.CallAsync(OpenPackMethod, packType);
-
-            const double timeout = 30;
-            bool timedOut = false;
-            double startTime = Utilites.GetTimestamp();
-
-            await new WaitUntil(() =>
+            void OnRpcClientConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
             {
-                if (Utilites.GetTimestamp() - startTime > timeout)
+                client.ReadClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
+                client.WriteClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
+                Log.Warn("ConnectionStateChanged: " + state);
+                isConnectionStateChanged = true;
+            }
+
+            try
+            {
+                client.ReadClient.ConnectionStateChanged += OnRpcClientConnectionStateChanged;
+                client.WriteClient.ConnectionStateChanged += OnRpcClientConnectionStateChanged;
+
+                cardFaucetContract.EventReceived += ContractEventReceived;
+
+                await client.SubscribeToEvents();
+
+                const int amountToApprove = 1;
+                await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
+                await cardFaucetContract.CallAsync(OpenPackMethod, packType);
+
+                const double timeout = 30;
+                bool timedOut = false;
+                double startTime = Utilites.GetTimestamp();
+
+                await new WaitUntil(() =>
                 {
-                    timedOut = true;
-                    return true;
-                }
+                    if (Utilites.GetTimestamp() - startTime > timeout)
+                    {
+                        timedOut = true;
+                        return true;
+                    }
 
-                return cards.Count == CardsPerPack;
-            });
+                    return cards.Count == CardsPerPack || isConnectionStateChanged;
+                });
 
-            if (timedOut)
-                throw new TimeoutException();
+                if (timedOut)
+                    throw new TimeoutException();
 
-            cards = cards.Where(card => card != null).ToList();
-            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
-            return cards;
+                if (isConnectionStateChanged)
+                    throw new IapException("Lost connection when opening pack");
+
+                cards = cards.Where(card => card != null).ToList();
+                Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
+                return cards;
+            }
+            finally
+            {
+                client.ReadClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
+                client.WriteClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
+            }
         }
 
         private EvmContract GetContract(DAppChainClient client, IapContractType contractType)
@@ -198,6 +211,8 @@ namespace Loom.ZombieBattleground.Iap
 
         private DAppChainClient CreateClient()
         {
+            Log.Debug("Creating PlasmaChain client");
+
             ILogger logger = new UnityLoggerWrapper(RpcLog);
 
             IRpcClient writer = RpcClientFactory
@@ -381,7 +396,7 @@ namespace Loom.ZombieBattleground.Iap
             public override void Dispose()
             {
                 base.Dispose();
-                RpcLog.Debug("Disposing PlasmaChain client");
+                Log.Debug("Disposing PlasmaChain client");
             }
         }
 
@@ -389,7 +404,7 @@ namespace Loom.ZombieBattleground.Iap
         private class GeneratedCardEvent
         {
             [Parameter("uint256", "cardId")]
-            public BigInteger MouldId { get; set; }
+            public BigInteger CardTokenId { get; set; }
 
             [Parameter("uint256", "boosterType", 2)]
             public BigInteger BoosterType { get; set; }

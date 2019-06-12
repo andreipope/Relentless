@@ -738,7 +738,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            Card prototype = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+            Card prototype = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(name));
             WorkingCard card = new WorkingCard(prototype, prototype, Player);
             CardModel cardModel = new CardModel(card);
 

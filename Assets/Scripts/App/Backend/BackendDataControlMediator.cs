@@ -92,11 +92,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
             try
             {
                 await CreateContract();
-                await _backendFacade.SignUp(UserDataModel.UserId);
-            }
-            catch (TxCommitException e) when (e.Message.Contains("user already exists"))
-            {
-                // Ignore
+                try
+                {
+                    await _backendFacade.SignUp(UserDataModel.UserId);
+                }
+                catch (TxCommitException e) when (e.Message.Contains("user already exists"))
+                {
+                    // Ignore
+                }
+                await _backendFacade.Login(UserDataModel.UserId);
             }
             catch (RpcClientException exception)
             {

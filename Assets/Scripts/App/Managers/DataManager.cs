@@ -515,7 +515,7 @@ namespace Loom.ZombieBattleground
                     CachedCollectionData.Cards.Add(
                         new CollectionCardData
                         (
-                            card.MouldId,
+                            card.CardKey,
                             (int) GetMaxCopiesValue(card, set.Name)
                         ));
                 }

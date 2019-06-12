@@ -63,106 +63,107 @@ namespace Loom.ZombieBattleground.Protobuf {
             "ChRnYW1lX21lbWJlcnNoaXBfdGllchgJIAEoBRIPCgd2ZXJzaW9uGAogASgJ",
             "IjoKFFVwZGF0ZVVzZXJFbG9SZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSEQoJ",
             "ZWxvX3Njb3JlGAIgASgDIiQKEUdldEFjY291bnRSZXF1ZXN0Eg8KB3VzZXJf",
-            "aWQYASABKAkiQwoOR2V0RGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIP",
-            "CgdkZWNrX2lkGAIgASgDEg8KB3ZlcnNpb24YAyABKAkiJgoPR2V0RGVja1Jl",
-            "c3BvbnNlEhMKBGRlY2sYAiABKAsyBS5EZWNrIkoKEUNyZWF0ZURlY2tSZXF1",
-            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSDwoH",
-            "dmVyc2lvbhgEIAEoCSIlChJDcmVhdGVEZWNrUmVzcG9uc2USDwoHZGVja19p",
-            "ZBgBIAEoAyJgCg9DcmVhdGVEZWNrRXZlbnQSDwoHdXNlcl9pZBgBIAEoCRIW",
-            "Cg5zZW5kZXJfYWRkcmVzcxgCIAEoCRITCgRkZWNrGAMgASgLMgUuRGVjaxIP",
-            "Cgd2ZXJzaW9uGAQgASgJIkYKEURlbGV0ZURlY2tSZXF1ZXN0Eg8KB3VzZXJf",
-            "aWQYASABKAkSDwoHZGVja19pZBgCIAEoAxIPCgd2ZXJzaW9uGAMgASgJIksK",
-            "D0RlbGV0ZURlY2tFdmVudBIPCgd1c2VyX2lkGAEgASgJEhYKDnNlbmRlcl9h",
-            "ZGRyZXNzGAIgASgJEg8KB2RlY2tfaWQYAyABKAMiSAoPRWRpdERlY2tSZXF1",
-            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSDwoH",
-            "dmVyc2lvbhgDIAEoCSJeCg1FZGl0RGVja0V2ZW50Eg8KB3VzZXJfaWQYASAB",
+            "aWQYASABKAkiLwoMTG9naW5SZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCRIPCgd2",
+            "ZXJzaW9uGAIgASgJIkMKDkdldERlY2tSZXF1ZXN0Eg8KB3VzZXJfaWQYASAB",
+            "KAkSDwoHZGVja19pZBgCIAEoAxIPCgd2ZXJzaW9uGAMgASgJIiYKD0dldERl",
+            "Y2tSZXNwb25zZRITCgRkZWNrGAIgASgLMgUuRGVjayJKChFDcmVhdGVEZWNr",
+            "UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sYAiABKAsyBS5EZWNr",
+            "Eg8KB3ZlcnNpb24YBCABKAkiJQoSQ3JlYXRlRGVja1Jlc3BvbnNlEg8KB2Rl",
+            "Y2tfaWQYASABKAMiYAoPQ3JlYXRlRGVja0V2ZW50Eg8KB3VzZXJfaWQYASAB",
             "KAkSFgoOc2VuZGVyX2FkZHJlc3MYAiABKAkSEwoEZGVjaxgDIAEoCzIFLkRl",
-            "Y2sSDwoHdmVyc2lvbhgEIAEoCSI2Cg1EZWNrc1Jlc3BvbnNlEg8KB3VzZXJf",
-            "aWQYASABKAkSFAoFZGVja3MYAiADKAsyBS5EZWNrIjQKEExpc3REZWNrc1Jl",
-            "cXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJIikKEUxp",
-            "c3REZWNrc1Jlc3BvbnNlEhQKBWRlY2tzGAEgAygLMgUuRGVjayIkChFHZXRB",
-            "SURlY2tzUmVxdWVzdBIPCgd2ZXJzaW9uGAEgASgJIi4KEkdldEFJRGVja3NS",
-            "ZXNwb25zZRIYCgdhaURlY2tzGAEgAygLMgcuQUlEZWNrIikKFkxpc3RDYXJk",
-            "TGlicmFyeVJlcXVlc3QSDwoHdmVyc2lvbhgBIAEoCSIvChdMaXN0Q2FyZExp",
-            "YnJhcnlSZXNwb25zZRIUCgVjYXJkcxgBIAMoCzIFLkNhcmQiLQoaTGlzdE92",
-            "ZXJsb3JkTGlicmFyeVJlcXVlc3QSDwoHdmVyc2lvbhgBIAEoCSJEChtMaXN0",
-            "T3ZlcmxvcmRMaWJyYXJ5UmVzcG9uc2USJQoJb3ZlcmxvcmRzGAEgAygLMhIu",
-            "T3ZlcmxvcmRQcm90b3R5cGUiQwogTGlzdE92ZXJsb3JkVXNlckluc3RhbmNl",
-            "c1JlcXVlc3QSDgoGdXNlcklkGAEgASgJEg8KB3ZlcnNpb24YAiABKAkiTQoh",
-            "TGlzdE92ZXJsb3JkVXNlckluc3RhbmNlc1Jlc3BvbnNlEigKCW92ZXJsb3Jk",
-            "cxgBIAMoCzIVLk92ZXJsb3JkVXNlckluc3RhbmNlIlYKHkdldE92ZXJsb3Jk",
-            "VXNlckluc3RhbmNlUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhIKCm92ZXJs",
-            "b3JkSWQYAiABKAMSDwoHdmVyc2lvbhgDIAEoCSJKCh9HZXRPdmVybG9yZFVz",
-            "ZXJJbnN0YW5jZVJlc3BvbnNlEicKCG92ZXJsb3JkGAEgASgLMhUuT3Zlcmxv",
-            "cmRVc2VySW5zdGFuY2UiOAoUR2V0Q29sbGVjdGlvblJlcXVlc3QSDwoHdXNl",
-            "cl9pZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJIjsKFUdldENvbGxlY3Rpb25S",
-            "ZXNwb25zZRIiCgVjYXJkcxgBIAMoCzITLkNhcmRDb2xsZWN0aW9uQ2FyZCIw",
-            "Ch1HZXRDb2xsZWN0aW9uQnlBZGRyZXNzUmVxdWVzdBIPCgd2ZXJzaW9uGAEg",
-            "ASgJIkQKHkdldENvbGxlY3Rpb25CeUFkZHJlc3NSZXNwb25zZRIiCgVjYXJk",
-            "cxgBIAMoCzITLkNhcmRDb2xsZWN0aW9uQ2FyZCIgCh5SZXdhcmRUdXRvcmlh",
-            "bENvbXBsZXRlZFJlcXVlc3QifwofUmV3YXJkVHV0b3JpYWxDb21wbGV0ZWRS",
-            "ZXNwb25zZRITCgtyZXdhcmRfdHlwZRgCIAEoCRIMCgRoYXNoGAMgASgJEgkK",
-            "AXIYBCABKAkSCQoBcxgFIAEoCRIJCgF2GAYgASgEEhgKBmFtb3VudBgLIAEo",
-            "CzIILkJpZ1VJbnQiJQojQ29uZmlybVJld2FyZFR1dG9yaWFsQ2xhaW1lZFJl",
-            "cXVlc3QiVQoZUmVnaXN0ZXJQbGF5ZXJQb29sUmVxdWVzdBI4ChByZWdpc3Ry",
-            "YXRpb25EYXRhGAEgASgLMh4uUGxheWVyUHJvZmlsZVJlZ2lzdHJhdGlvbkRh",
-            "dGEiHAoaUmVnaXN0ZXJQbGF5ZXJQb29sUmVzcG9uc2UiEwoRUGxheWVyUG9v",
-            "bFJlcXVlc3QiLwoSUGxheWVyUG9vbFJlc3BvbnNlEhkKBHBvb2wYASABKAsy",
-            "Cy5QbGF5ZXJQb29sIjAKEEZpbmRNYXRjaFJlcXVlc3QSDgoGdXNlcklkGAEg",
-            "ASgJEgwKBHRhZ3MYAiADKAkiPgoRRmluZE1hdGNoUmVzcG9uc2USFQoFbWF0",
-            "Y2gYASABKAsyBi5NYXRjaBISCgptYXRjaEZvdW5kGAIgASgIIjUKEkFjY2Vw",
-            "dE1hdGNoUmVxdWVzdBIOCgZ1c2VySWQYASABKAkSDwoHbWF0Y2hJZBgCIAEo",
-            "AyJFChNBY2NlcHRNYXRjaFJlc3BvbnNlEhUKBW1hdGNoGAEgASgLMgYuTWF0",
-            "Y2gSFwoFYmxvY2sYAiABKAsyCC5IaXN0b3J5IkcKFkNhbmNlbEZpbmRNYXRj",
-            "aFJlcXVlc3QSDgoGdXNlcklkGAEgASgJEg8KB21hdGNoSWQYAiABKAMSDAoE",
-            "dGFncxgDIAMoCSIZChdDYW5jZWxGaW5kTWF0Y2hSZXNwb25zZSIiCg9HZXRN",
-            "YXRjaFJlcXVlc3QSDwoHbWF0Y2hJZBgBIAEoAyIpChBHZXRNYXRjaFJlc3Bv",
-            "bnNlEhUKBW1hdGNoGAEgASgLMgYuTWF0Y2giJgoTR2V0R2FtZVN0YXRlUmVx",
-            "dWVzdBIPCgdtYXRjaElkGAEgASgDIjUKFEdldEdhbWVTdGF0ZVJlc3BvbnNl",
-            "Eh0KCWdhbWVTdGF0ZRgBIAEoCzIKLkdhbWVTdGF0ZSItChpHZXRJbml0aWFs",
-            "R2FtZVN0YXRlUmVxdWVzdBIPCgdtYXRjaElkGAEgASgDIjwKG0dldEluaXRp",
-            "YWxHYW1lU3RhdGVSZXNwb25zZRIdCglnYW1lU3RhdGUYASABKAsyCi5HYW1l",
-            "U3RhdGUiSwoTUGxheWVyQWN0aW9uUmVxdWVzdBIPCgdtYXRjaElkGAEgASgD",
-            "EiMKDHBsYXllckFjdGlvbhgCIAEoCzINLlBsYXllckFjdGlvbiItChRQbGF5",
-            "ZXJBY3Rpb25SZXNwb25zZRIVCgVtYXRjaBgBIAEoCzIGLk1hdGNoIlIKGUJ1",
-            "bmRsZVBsYXllckFjdGlvblJlcXVlc3QSDwoHbWF0Y2hJZBgBIAEoAxIkCg1w",
-            "bGF5ZXJBY3Rpb25zGAIgAygLMg0uUGxheWVyQWN0aW9uInEKGkJ1bmRsZVBs",
-            "YXllckFjdGlvblJlc3BvbnNlEh0KCWdhbWVTdGF0ZRgBIAEoCzIKLkdhbWVT",
-            "dGF0ZRIVCgVtYXRjaBgCIAEoCzIGLk1hdGNoEh0KB2hpc3RvcnkYAyADKAsy",
-            "DC5IaXN0b3J5RGF0YSJeCg9FbmRNYXRjaFJlcXVlc3QSDwoHbWF0Y2hJZBgB",
-            "IAEoAxIOCgZ1c2VySWQYAiABKAkSEAoId2lubmVySWQYAyABKAkSGAoQbWF0",
-            "Y2hFeHBlcmllbmNlcxgEIAMoAyIxChBFbmRNYXRjaFJlc3BvbnNlEh0KCWdh",
-            "bWVTdGF0ZRgBIAEoCzIKLkdhbWVTdGF0ZSKCAQoYQWRkU29sb0V4cGVyaWVu",
-            "Y2VSZXF1ZXN0Eg8KB3ZlcnNpb24YASABKAkSDgoGdXNlcklkGAIgASgJEhIK",
-            "Cm92ZXJsb3JkSWQYAyABKAMSEgoKZXhwZXJpZW5jZRgEIAEoAxINCgVpc1dp",
-            "bhgFIAEoCBIOCgZkZWNrSWQYBiABKAMiGwoZQWRkU29sb0V4cGVyaWVuY2VS",
-            "ZXNwb25zZSIzChBLZWVwQWxpdmVSZXF1ZXN0Eg8KB21hdGNoSWQYASABKAMS",
-            "DgoGdXNlcklkGAIgASgJIhMKEUtlZXBBbGl2ZVJlc3BvbnNlIj8KEVJlcGxh",
-            "eUdhbWVSZXF1ZXN0Eg8KB21hdGNoSWQYASABKAMSGQoRc3RvcEF0QWN0aW9u",
-            "SW5kZXgYAiABKAUiYQoSUmVwbGF5R2FtZVJlc3BvbnNlEh0KCWdhbWVTdGF0",
-            "ZRgBIAEoCzIKLkdhbWVTdGF0ZRIsCg5hY3Rpb25PdXRjb21lcxgCIAMoCzIU",
-            "LlBsYXllckFjdGlvbk91dGNvbWUiKQoXR2V0Tm90aWZpY2F0aW9uc1JlcXVl",
-            "c3QSDgoGdXNlcklkGAEgASgJIkAKGEdldE5vdGlmaWNhdGlvbnNSZXNwb25z",
-            "ZRIkCg1ub3RpZmljYXRpb25zGAEgAygLMg0uTm90aWZpY2F0aW9uIkQKGUNs",
-            "ZWFyTm90aWZpY2F0aW9uc1JlcXVlc3QSDgoGdXNlcklkGAEgASgJEhcKD25v",
-            "dGlmaWNhdGlvbklkcxgCIAMoBSIcChpDbGVhck5vdGlmaWNhdGlvbnNSZXNw",
-            "b25zZSKNAQoPR2FtZU1vZGVSZXF1ZXN0EgwKBG5hbWUYASABKAkSEwoLZGVz",
-            "Y3JpcHRpb24YAiABKAkSDwoHdmVyc2lvbhgDIAEoCRIPCgdhZGRyZXNzGAQg",
-            "ASgJEiUKDmdhbWVfbW9kZV90eXBlGAUgASgOMg0uR2FtZU1vZGVUeXBlEg4K",
-            "Bm9yYWNsZRgGIAEoCSKfAQoVVXBkYXRlR2FtZU1vZGVSZXF1ZXN0EgoKAklE",
-            "GAEgASgJEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSDwoH",
-            "dmVyc2lvbhgEIAEoCRIPCgdhZGRyZXNzGAUgASgJEiUKDmdhbWVfbW9kZV90",
-            "eXBlGAYgASgOMg0uR2FtZU1vZGVUeXBlEg4KBm9yYWNsZRgHIAEoCSIzChVE",
-            "ZWxldGVHYW1lTW9kZVJlcXVlc3QSCgoCSUQYASABKAkSDgoGb3JhY2xlGAIg",
-            "ASgJIiAKEkdldEdhbWVNb2RlUmVxdWVzdBIKCgJJRBgBIAEoCSIWChRMaXN0",
-            "R2FtZU1vZGVzUmVxdWVzdCI9CiBHZXRDdXN0b21HYW1lTW9kZUN1c3RvbVVp",
-            "UmVxdWVzdBIZCgdhZGRyZXNzGAEgASgLMgguQWRkcmVzcyJXCiFHZXRDdXN0",
-            "b21HYW1lTW9kZUN1c3RvbVVpUmVzcG9uc2USMgoKdWlFbGVtZW50cxgBIAMo",
-            "CzIeLkN1c3RvbUdhbWVNb2RlQ3VzdG9tVWlFbGVtZW50IlAKIUNhbGxDdXN0",
-            "b21HYW1lTW9kZUZ1bmN0aW9uUmVxdWVzdBIZCgdhZGRyZXNzGAEgASgLMggu",
-            "QWRkcmVzcxIQCghjYWxsRGF0YRgCIAEoDCI6CihTdGF0aWNDYWxsQ3VzdG9t",
-            "R2FtZU1vZGVGdW5jdGlvblJlc3BvbnNlEg4KBm91dHB1dBgBIAEoDEIjqgIg",
-            "TG9vbS5ab21iaWVCYXR0bGVncm91bmQuUHJvdG9idWZiBnByb3RvMw=="));
+            "Y2sSDwoHdmVyc2lvbhgEIAEoCSJGChFEZWxldGVEZWNrUmVxdWVzdBIPCgd1",
+            "c2VyX2lkGAEgASgJEg8KB2RlY2tfaWQYAiABKAMSDwoHdmVyc2lvbhgDIAEo",
+            "CSJLCg9EZWxldGVEZWNrRXZlbnQSDwoHdXNlcl9pZBgBIAEoCRIWCg5zZW5k",
+            "ZXJfYWRkcmVzcxgCIAEoCRIPCgdkZWNrX2lkGAMgASgDIkgKD0VkaXREZWNr",
+            "UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sYAiABKAsyBS5EZWNr",
+            "Eg8KB3ZlcnNpb24YAyABKAkiXgoNRWRpdERlY2tFdmVudBIPCgd1c2VyX2lk",
+            "GAEgASgJEhYKDnNlbmRlcl9hZGRyZXNzGAIgASgJEhMKBGRlY2sYAyABKAsy",
+            "BS5EZWNrEg8KB3ZlcnNpb24YBCABKAkiNgoNRGVja3NSZXNwb25zZRIPCgd1",
+            "c2VyX2lkGAEgASgJEhQKBWRlY2tzGAIgAygLMgUuRGVjayI0ChBMaXN0RGVj",
+            "a3NSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHdmVyc2lvbhgCIAEoCSIp",
+            "ChFMaXN0RGVja3NSZXNwb25zZRIUCgVkZWNrcxgBIAMoCzIFLkRlY2siJAoR",
+            "R2V0QUlEZWNrc1JlcXVlc3QSDwoHdmVyc2lvbhgBIAEoCSIuChJHZXRBSURl",
+            "Y2tzUmVzcG9uc2USGAoHYWlEZWNrcxgBIAMoCzIHLkFJRGVjayIpChZMaXN0",
+            "Q2FyZExpYnJhcnlSZXF1ZXN0Eg8KB3ZlcnNpb24YASABKAkiLwoXTGlzdENh",
+            "cmRMaWJyYXJ5UmVzcG9uc2USFAoFY2FyZHMYASADKAsyBS5DYXJkIi0KGkxp",
+            "c3RPdmVybG9yZExpYnJhcnlSZXF1ZXN0Eg8KB3ZlcnNpb24YASABKAkiRAob",
+            "TGlzdE92ZXJsb3JkTGlicmFyeVJlc3BvbnNlEiUKCW92ZXJsb3JkcxgBIAMo",
+            "CzISLk92ZXJsb3JkUHJvdG90eXBlIkMKIExpc3RPdmVybG9yZFVzZXJJbnN0",
+            "YW5jZXNSZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJ",
+            "Ik0KIUxpc3RPdmVybG9yZFVzZXJJbnN0YW5jZXNSZXNwb25zZRIoCglvdmVy",
+            "bG9yZHMYASADKAsyFS5PdmVybG9yZFVzZXJJbnN0YW5jZSJWCh5HZXRPdmVy",
+            "bG9yZFVzZXJJbnN0YW5jZVJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRISCgpv",
+            "dmVybG9yZElkGAIgASgDEg8KB3ZlcnNpb24YAyABKAkiSgofR2V0T3Zlcmxv",
+            "cmRVc2VySW5zdGFuY2VSZXNwb25zZRInCghvdmVybG9yZBgBIAEoCzIVLk92",
+            "ZXJsb3JkVXNlckluc3RhbmNlIjgKFEdldENvbGxlY3Rpb25SZXF1ZXN0Eg8K",
+            "B3VzZXJfaWQYASABKAkSDwoHdmVyc2lvbhgCIAEoCSI7ChVHZXRDb2xsZWN0",
+            "aW9uUmVzcG9uc2USIgoFY2FyZHMYASADKAsyEy5DYXJkQ29sbGVjdGlvbkNh",
+            "cmQiMAodR2V0Q29sbGVjdGlvbkJ5QWRkcmVzc1JlcXVlc3QSDwoHdmVyc2lv",
+            "bhgBIAEoCSJECh5HZXRDb2xsZWN0aW9uQnlBZGRyZXNzUmVzcG9uc2USIgoF",
+            "Y2FyZHMYASADKAsyEy5DYXJkQ29sbGVjdGlvbkNhcmQiIAoeUmV3YXJkVHV0",
+            "b3JpYWxDb21wbGV0ZWRSZXF1ZXN0In8KH1Jld2FyZFR1dG9yaWFsQ29tcGxl",
+            "dGVkUmVzcG9uc2USEwoLcmV3YXJkX3R5cGUYAiABKAkSDAoEaGFzaBgDIAEo",
+            "CRIJCgFyGAQgASgJEgkKAXMYBSABKAkSCQoBdhgGIAEoBBIYCgZhbW91bnQY",
+            "CyABKAsyCC5CaWdVSW50IiUKI0NvbmZpcm1SZXdhcmRUdXRvcmlhbENsYWlt",
+            "ZWRSZXF1ZXN0IlUKGVJlZ2lzdGVyUGxheWVyUG9vbFJlcXVlc3QSOAoQcmVn",
+            "aXN0cmF0aW9uRGF0YRgBIAEoCzIeLlBsYXllclByb2ZpbGVSZWdpc3RyYXRp",
+            "b25EYXRhIhwKGlJlZ2lzdGVyUGxheWVyUG9vbFJlc3BvbnNlIhMKEVBsYXll",
+            "clBvb2xSZXF1ZXN0Ii8KElBsYXllclBvb2xSZXNwb25zZRIZCgRwb29sGAEg",
+            "ASgLMgsuUGxheWVyUG9vbCIwChBGaW5kTWF0Y2hSZXF1ZXN0Eg4KBnVzZXJJ",
+            "ZBgBIAEoCRIMCgR0YWdzGAIgAygJIj4KEUZpbmRNYXRjaFJlc3BvbnNlEhUK",
+            "BW1hdGNoGAEgASgLMgYuTWF0Y2gSEgoKbWF0Y2hGb3VuZBgCIAEoCCI1ChJB",
+            "Y2NlcHRNYXRjaFJlcXVlc3QSDgoGdXNlcklkGAEgASgJEg8KB21hdGNoSWQY",
+            "AiABKAMiRQoTQWNjZXB0TWF0Y2hSZXNwb25zZRIVCgVtYXRjaBgBIAEoCzIG",
+            "Lk1hdGNoEhcKBWJsb2NrGAIgASgLMgguSGlzdG9yeSJHChZDYW5jZWxGaW5k",
+            "TWF0Y2hSZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCRIPCgdtYXRjaElkGAIgASgD",
+            "EgwKBHRhZ3MYAyADKAkiGQoXQ2FuY2VsRmluZE1hdGNoUmVzcG9uc2UiIgoP",
+            "R2V0TWF0Y2hSZXF1ZXN0Eg8KB21hdGNoSWQYASABKAMiKQoQR2V0TWF0Y2hS",
+            "ZXNwb25zZRIVCgVtYXRjaBgBIAEoCzIGLk1hdGNoIiYKE0dldEdhbWVTdGF0",
+            "ZVJlcXVlc3QSDwoHbWF0Y2hJZBgBIAEoAyI1ChRHZXRHYW1lU3RhdGVSZXNw",
+            "b25zZRIdCglnYW1lU3RhdGUYASABKAsyCi5HYW1lU3RhdGUiLQoaR2V0SW5p",
+            "dGlhbEdhbWVTdGF0ZVJlcXVlc3QSDwoHbWF0Y2hJZBgBIAEoAyI8ChtHZXRJ",
+            "bml0aWFsR2FtZVN0YXRlUmVzcG9uc2USHQoJZ2FtZVN0YXRlGAEgASgLMgou",
+            "R2FtZVN0YXRlIksKE1BsYXllckFjdGlvblJlcXVlc3QSDwoHbWF0Y2hJZBgB",
+            "IAEoAxIjCgxwbGF5ZXJBY3Rpb24YAiABKAsyDS5QbGF5ZXJBY3Rpb24iLQoU",
+            "UGxheWVyQWN0aW9uUmVzcG9uc2USFQoFbWF0Y2gYASABKAsyBi5NYXRjaCJS",
+            "ChlCdW5kbGVQbGF5ZXJBY3Rpb25SZXF1ZXN0Eg8KB21hdGNoSWQYASABKAMS",
+            "JAoNcGxheWVyQWN0aW9ucxgCIAMoCzINLlBsYXllckFjdGlvbiJxChpCdW5k",
+            "bGVQbGF5ZXJBY3Rpb25SZXNwb25zZRIdCglnYW1lU3RhdGUYASABKAsyCi5H",
+            "YW1lU3RhdGUSFQoFbWF0Y2gYAiABKAsyBi5NYXRjaBIdCgdoaXN0b3J5GAMg",
+            "AygLMgwuSGlzdG9yeURhdGEiXgoPRW5kTWF0Y2hSZXF1ZXN0Eg8KB21hdGNo",
+            "SWQYASABKAMSDgoGdXNlcklkGAIgASgJEhAKCHdpbm5lcklkGAMgASgJEhgK",
+            "EG1hdGNoRXhwZXJpZW5jZXMYBCADKAMiMQoQRW5kTWF0Y2hSZXNwb25zZRId",
+            "CglnYW1lU3RhdGUYASABKAsyCi5HYW1lU3RhdGUiggEKGEFkZFNvbG9FeHBl",
+            "cmllbmNlUmVxdWVzdBIPCgd2ZXJzaW9uGAEgASgJEg4KBnVzZXJJZBgCIAEo",
+            "CRISCgpvdmVybG9yZElkGAMgASgDEhIKCmV4cGVyaWVuY2UYBCABKAMSDQoF",
+            "aXNXaW4YBSABKAgSDgoGZGVja0lkGAYgASgDIhsKGUFkZFNvbG9FeHBlcmll",
+            "bmNlUmVzcG9uc2UiMwoQS2VlcEFsaXZlUmVxdWVzdBIPCgdtYXRjaElkGAEg",
+            "ASgDEg4KBnVzZXJJZBgCIAEoCSITChFLZWVwQWxpdmVSZXNwb25zZSI/ChFS",
+            "ZXBsYXlHYW1lUmVxdWVzdBIPCgdtYXRjaElkGAEgASgDEhkKEXN0b3BBdEFj",
+            "dGlvbkluZGV4GAIgASgFImEKElJlcGxheUdhbWVSZXNwb25zZRIdCglnYW1l",
+            "U3RhdGUYASABKAsyCi5HYW1lU3RhdGUSLAoOYWN0aW9uT3V0Y29tZXMYAiAD",
+            "KAsyFC5QbGF5ZXJBY3Rpb25PdXRjb21lIikKF0dldE5vdGlmaWNhdGlvbnNS",
+            "ZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCSJAChhHZXROb3RpZmljYXRpb25zUmVz",
+            "cG9uc2USJAoNbm90aWZpY2F0aW9ucxgBIAMoCzINLk5vdGlmaWNhdGlvbiJE",
+            "ChlDbGVhck5vdGlmaWNhdGlvbnNSZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCRIX",
+            "Cg9ub3RpZmljYXRpb25JZHMYAiADKAUiHAoaQ2xlYXJOb3RpZmljYXRpb25z",
+            "UmVzcG9uc2UijQEKD0dhbWVNb2RlUmVxdWVzdBIMCgRuYW1lGAEgASgJEhMK",
+            "C2Rlc2NyaXB0aW9uGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSDwoHYWRkcmVz",
+            "cxgEIAEoCRIlCg5nYW1lX21vZGVfdHlwZRgFIAEoDjINLkdhbWVNb2RlVHlw",
+            "ZRIOCgZvcmFjbGUYBiABKAkinwEKFVVwZGF0ZUdhbWVNb2RlUmVxdWVzdBIK",
+            "CgJJRBgBIAEoCRIMCgRuYW1lGAIgASgJEhMKC2Rlc2NyaXB0aW9uGAMgASgJ",
+            "Eg8KB3ZlcnNpb24YBCABKAkSDwoHYWRkcmVzcxgFIAEoCRIlCg5nYW1lX21v",
+            "ZGVfdHlwZRgGIAEoDjINLkdhbWVNb2RlVHlwZRIOCgZvcmFjbGUYByABKAki",
+            "MwoVRGVsZXRlR2FtZU1vZGVSZXF1ZXN0EgoKAklEGAEgASgJEg4KBm9yYWNs",
+            "ZRgCIAEoCSIgChJHZXRHYW1lTW9kZVJlcXVlc3QSCgoCSUQYASABKAkiFgoU",
+            "TGlzdEdhbWVNb2Rlc1JlcXVlc3QiPQogR2V0Q3VzdG9tR2FtZU1vZGVDdXN0",
+            "b21VaVJlcXVlc3QSGQoHYWRkcmVzcxgBIAEoCzIILkFkZHJlc3MiVwohR2V0",
+            "Q3VzdG9tR2FtZU1vZGVDdXN0b21VaVJlc3BvbnNlEjIKCnVpRWxlbWVudHMY",
+            "ASADKAsyHi5DdXN0b21HYW1lTW9kZUN1c3RvbVVpRWxlbWVudCJQCiFDYWxs",
+            "Q3VzdG9tR2FtZU1vZGVGdW5jdGlvblJlcXVlc3QSGQoHYWRkcmVzcxgBIAEo",
+            "CzIILkFkZHJlc3MSEAoIY2FsbERhdGEYAiABKAwiOgooU3RhdGljQ2FsbEN1",
+            "c3RvbUdhbWVNb2RlRnVuY3Rpb25SZXNwb25zZRIOCgZvdXRwdXQYASABKAxC",
+            "I6oCIExvb20uWm9tYmllQmF0dGxlZ3JvdW5kLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, global::Loom.ZombieBattleground.Protobuf.ZbDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -186,6 +187,7 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest), global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Version" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UpdateUserEloRequest), global::Loom.ZombieBattleground.Protobuf.UpdateUserEloRequest.Parser, new[]{ "UserId", "EloScore" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetAccountRequest), global::Loom.ZombieBattleground.Protobuf.GetAccountRequest.Parser, new[]{ "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.LoginRequest), global::Loom.ZombieBattleground.Protobuf.LoginRequest.Parser, new[]{ "UserId", "Version" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetDeckRequest), global::Loom.ZombieBattleground.Protobuf.GetDeckRequest.Parser, new[]{ "UserId", "DeckId", "Version" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetDeckResponse), global::Loom.ZombieBattleground.Protobuf.GetDeckResponse.Parser, new[]{ "Deck" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CreateDeckRequest), global::Loom.ZombieBattleground.Protobuf.CreateDeckRequest.Parser, new[]{ "UserId", "Deck", "Version" }, null, null, null),
@@ -3454,6 +3456,163 @@ namespace Loom.ZombieBattleground.Protobuf {
 
   }
 
+  public sealed partial class LoginRequest : pb::IMessage<LoginRequest> {
+    private static readonly pb::MessageParser<LoginRequest> _parser = new pb::MessageParser<LoginRequest>(() => new LoginRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<LoginRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[20]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LoginRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LoginRequest(LoginRequest other) : this() {
+      userId_ = other.userId_;
+      version_ = other.version_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LoginRequest Clone() {
+      return new LoginRequest(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 2;
+    private string version_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as LoginRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(LoginRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserId != other.UserId) return false;
+      if (Version != other.Version) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (Version.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Version);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(LoginRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.Version.Length != 0) {
+        Version = other.Version;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 18: {
+            Version = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class GetDeckRequest : pb::IMessage<GetDeckRequest> {
     private static readonly pb::MessageParser<GetDeckRequest> _parser = new pb::MessageParser<GetDeckRequest>(() => new GetDeckRequest());
     private pb::UnknownFieldSet _unknownFields;
@@ -3462,7 +3621,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[20]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3647,7 +3806,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[21]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3782,7 +3941,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3973,7 +4132,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4102,7 +4261,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4321,7 +4480,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4506,7 +4665,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4691,7 +4850,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4882,7 +5041,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5101,7 +5260,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5250,7 +5409,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5407,7 +5566,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5528,7 +5687,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5657,7 +5816,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5778,7 +5937,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[34]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5907,7 +6066,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[35]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6028,7 +6187,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[36]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6157,7 +6316,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[37]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6278,7 +6437,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[38]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6435,7 +6594,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[39]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6556,7 +6715,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[40]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6741,7 +6900,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[41]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[42]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6876,7 +7035,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[42]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[43]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7033,7 +7192,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[43]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[44]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7154,7 +7313,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[44]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[45]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7283,7 +7442,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[45]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[46]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7404,7 +7563,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[46]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[47]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7505,7 +7664,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[47]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[48]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7789,7 +7948,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[48]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[49]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7890,7 +8049,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[49]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[50]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8025,7 +8184,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[50]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[51]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8129,7 +8288,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[51]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8230,7 +8389,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[52]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[53]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8365,7 +8524,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[53]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[54]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8514,7 +8673,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[54]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[55]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8677,7 +8836,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[55]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[56]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8834,7 +8993,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[56]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[57]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9003,7 +9162,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[57]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[58]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9180,7 +9339,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[58]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[59]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9281,7 +9440,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[59]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[60]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9410,7 +9569,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[60]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[61]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9545,7 +9704,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[61]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[62]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9674,7 +9833,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[62]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[63]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9809,7 +9968,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[63]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[64]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9938,7 +10097,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[64]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[65]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10073,7 +10232,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[65]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[66]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10236,7 +10395,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[66]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[67]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10371,7 +10530,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[67]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[68]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10520,7 +10679,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[68]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[69]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10709,7 +10868,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[69]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[70]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10915,7 +11074,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[70]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[71]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11050,7 +11209,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[71]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[72]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11319,7 +11478,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[72]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[73]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11420,7 +11579,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[73]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[74]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11577,7 +11736,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[74]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[75]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11678,7 +11837,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[75]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[76]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11835,7 +11994,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[76]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[77]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11990,7 +12149,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[77]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[78]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12119,7 +12278,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[78]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[79]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12240,7 +12399,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[79]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[80]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12390,7 +12549,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[80]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[81]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12491,7 +12650,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[81]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[82]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12760,7 +12919,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[82]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[83]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13057,7 +13216,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[83]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[84]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13214,7 +13373,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[84]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[85]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13343,7 +13502,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[85]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[86]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13444,7 +13603,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[86]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[87]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13579,7 +13738,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[87]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[88]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13700,7 +13859,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[88]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[89]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13863,7 +14022,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[89]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[90]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

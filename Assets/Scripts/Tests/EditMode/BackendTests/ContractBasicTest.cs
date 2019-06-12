@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
@@ -119,7 +121,7 @@ namespace Loom.ZombieBattleground.Test
                 List<DeckCardData> cards =
                     new List<DeckCardData>
                     {
-                        new DeckCardData(new MouldId(1), 100500)
+                        new DeckCardData(new CardKey(new MouldId(1), Enumerators.CardVariant.Standard), 100500)
                     };
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", cards, 0, 0);
 

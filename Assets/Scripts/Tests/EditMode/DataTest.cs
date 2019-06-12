@@ -12,6 +12,7 @@ using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -21,9 +22,9 @@ namespace Loom.ZombieBattleground.Test
         [Test]
         public void MouldIdSerialization()
         {
-            MouldId original = new MouldId(long.MaxValue);
+            CardKey original = new CardKey(new MouldId(long.MaxValue), Enumerators.CardVariant.Standard);
             string serialized = JsonConvert.SerializeObject(original);
-            MouldId deserialized = JsonConvert.DeserializeObject<MouldId>(serialized);
+            CardKey deserialized = JsonConvert.DeserializeObject<CardKey>(serialized);
             Assert.AreEqual(original, deserialized);
         }
         [Test]
@@ -35,8 +36,8 @@ namespace Loom.ZombieBattleground.Test
                 "deck name",
                 new List<DeckCardData>
                 {
-                    new DeckCardData(new MouldId(1), 3),
-                    new DeckCardData(new MouldId(2), 4)
+                    new DeckCardData(new CardKey(new MouldId(1), Enumerators.CardVariant.Standard), 3),
+                    new DeckCardData(new CardKey(new MouldId(2), Enumerators.CardVariant.Standard), 4)
                 },
                 Enumerators.Skill.HEALING_TOUCH,
                 Enumerators.Skill.MEND
@@ -50,7 +51,7 @@ namespace Loom.ZombieBattleground.Test
         public void CardProtobufSerialization()
         {
             Card card = new Card(
-                new MouldId(123),
+                new CardKey(new MouldId(123), Enumerators.CardVariant.Standard),
                 "Foo",
                 3,
                 "description",

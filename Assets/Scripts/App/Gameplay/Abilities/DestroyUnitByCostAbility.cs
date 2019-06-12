@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                if(AbilityUnitOwner != null && AbilityUnitOwner.Prototype.MouldId == TorchCardId)
+                if(AbilityUnitOwner != null && AbilityUnitOwner.Prototype.CardKey.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }

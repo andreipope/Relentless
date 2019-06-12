@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground
             List<CardModel> units = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
             if (units.Count > 0)
             {
-                units = units.Where(x => x.Prototype.MouldId != AbilityUnitOwner.Prototype.MouldId).ToList();
+                units = units.Where(x => x.Prototype.CardKey != AbilityUnitOwner.Prototype.CardKey).ToList();
             }
 
             return units;

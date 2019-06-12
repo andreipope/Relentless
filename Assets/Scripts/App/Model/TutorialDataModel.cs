@@ -389,8 +389,8 @@ namespace Loom.ZombieBattleground
 
         public CollectionCardData ToCollectionCardData(IDataManager dataManager)
         {
-            Card card = dataManager.CachedCardsLibraryData.GetCardFromName(CardName);
-            return new CollectionCardData(card.MouldId, Amount);
+            Card card = dataManager.CachedCardsLibraryData.GetCardByName(CardName);
+            return new CollectionCardData(card.CardKey, Amount);
         }
     }
 

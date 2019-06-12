@@ -18,6 +18,7 @@ using Object = UnityEngine.Object;
 using System.IO;
 using Loom.ZombieBattleground.Protobuf;
 using Card = Loom.ZombieBattleground.Data.Card;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using Faction = Loom.ZombieBattleground.Data.Faction;
 using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
@@ -498,7 +499,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CollectionCardData card in data)
             {
-                cardData = new CollectionCardData(card.MouldId, card.Amount);
+                cardData = new CollectionCardData(card.CardKey, card.Amount);
 
                 _collectionData.Cards.Add(cardData);
             }
@@ -546,12 +547,12 @@ namespace Loom.ZombieBattleground
                 {
                     cardData =
                         _tutorialManager
-                            .GetCardData(_dataManager.CachedCardsLibraryData.GetCardNameFromMouldId(card.MouldId))
+                            .GetCardData(_dataManager.CachedCardsLibraryData.GetCardByCardKey(card.CardKey).Name)
                             .ToCollectionCardData(_dataManager);
                 }
                 else
                 {
-                    cardData = _dataManager.CachedCollectionData.GetCardData(card.MouldId);
+                    cardData = _dataManager.CachedCollectionData.GetCardData(card.CardKey);
                 }
 
                 BoardCardView boardCard;
@@ -591,7 +592,7 @@ namespace Loom.ZombieBattleground
                 boardCard.GameObject.SetActive(true);
                 _displayCollectionsBoardCards.Add(boardCard);
 
-                collectionCardData = _collectionData.GetCardData(card.MouldId);
+                collectionCardData = _collectionData.GetCardData(card.CardKey);
                 UpdateCollectionCardsDisplay
                 (
                     card.Name,
@@ -631,7 +632,7 @@ namespace Loom.ZombieBattleground
                 card.SetAmount
                 (
                     BoardCardView.AmountTrayType.Radio,
-                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.MouldId == card.Model.Card.Prototype.MouldId).Amount,
+                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardKey == card.Model.Card.Prototype.CardKey).Amount,
                     (int)GetMaxCopiesValue(card.Model.Card.Prototype)
                 );
             }
@@ -647,8 +648,8 @@ namespace Loom.ZombieBattleground
         {
             foreach(DeckCardData card in deck.Cards)
             {
-                Card fetchedCard = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(card.MouldId);
-                _collectionData.GetCardData(fetchedCard.MouldId).Amount -= card.Amount;
+                Card fetchedCard = _dataManager.CachedCardsLibraryData.GetCardByCardKey(card.CardKey);
+                _collectionData.GetCardData(fetchedCard.CardKey).Amount -= card.Amount;
             }
         }
 
@@ -659,7 +660,7 @@ namespace Loom.ZombieBattleground
             int count = 0;
             foreach(DeckCardData card in _myDeckPage.CurrentEditDeck.Cards)
             {
-                string cardName = _dataManager.CachedCardsLibraryData.GetCardNameFromMouldId(card.MouldId);
+                string cardName = _dataManager.CachedCardsLibraryData.GetCardByCardKey(card.CardKey).Name;
                 _cacheDeckPageIndexDictionary.Add(cardName, page);
 
                 ++count;
@@ -713,7 +714,7 @@ namespace Loom.ZombieBattleground
         
         private BoardCardView CreateDeckCardToPool(DeckCardData card, RectTransform rectContainer)
         {
-            Card prototype = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(card.MouldId);
+            Card prototype = _dataManager.CachedCardsLibraryData.GetCardByCardKey(card.CardKey);
 
             BoardCardView boardCard = CreateBoardCard
             (
@@ -760,7 +761,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            CollectionCardData collectionCardData = _collectionData.GetCardData(card.MouldId);
+            CollectionCardData collectionCardData = _collectionData.GetCardData(card.CardKey);
             if (collectionCardData.Amount == 0)
             {
                 _myDeckPage.OpenAlertDialog(
@@ -768,7 +769,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            DeckCardData existingCards = _myDeckPage.CurrentEditDeck.Cards.Find(x => x.MouldId == card.MouldId);
+            DeckCardData existingCards = _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardKey == card.CardKey);
 
             uint maxCopies = GetMaxCopiesValue(card);
 
@@ -787,17 +788,17 @@ namespace Loom.ZombieBattleground
 
             collectionCardData.Amount--;
             UpdateCollectionCardsDisplay(card.Name, collectionCardData.Amount);
-            bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.MouldId == card.MouldId);
-            _myDeckPage.CurrentEditDeck.AddCard(card.MouldId);
+            bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.CardKey == card.CardKey);
+            _myDeckPage.CurrentEditDeck.AddCard(card.CardKey);
             UpdateDeckPageIndexDictionary();
 
-            if (_displayDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
+            if (_displayDeckBoardCards.Exists(item => item.Model.Card.Prototype.CardKey == card.CardKey))
             {
-                BoardCardView foundItem = _displayDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
+                BoardCardView foundItem = _displayDeckBoardCards.Find(item => item.Model.Card.Prototype.CardKey == card.CardKey);
                 foundItem.SetAmount
                 (
                     BoardCardView.AmountTrayType.Radio,
-                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.MouldId == foundItem.Model.Card.Prototype.MouldId).Amount,
+                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardKey == foundItem.Model.Card.Prototype.CardKey).Amount,
                     (int)GetMaxCopiesValue(card)
                 );
             }
@@ -822,11 +823,11 @@ namespace Loom.ZombieBattleground
                         _myDeckPage.LocatorCollectionCards.GetComponent<RectTransform>(),
                         _displayCollectionsBoardCards.Find
                         (
-                            x => x.Model.Card.Prototype.MouldId == card.MouldId
+                            x => x.Model.Card.Prototype.CardKey == card.CardKey
                         ).GameObject.transform.position,
                         BoardCardScale
                     ),
-                    _displayDeckBoardCards.Find(x => x.Model.Prototype.MouldId == card.MouldId),
+                    _displayDeckBoardCards.Find(x => x.Model.Prototype.CardKey == card.CardKey),
                     isCardAlreadyExist
                 );
             }
@@ -865,7 +866,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveCardFromDeck(IReadOnlyCard card, bool animate = false)
         {
-            CollectionCardData collectionCardData = _collectionData.GetCardData(card.MouldId);
+            CollectionCardData collectionCardData = _collectionData.GetCardData(card.CardKey);
             collectionCardData.Amount++;
             UpdateCollectionCardsDisplay
             (
@@ -873,12 +874,12 @@ namespace Loom.ZombieBattleground
                 collectionCardData.Amount
             );
 
-            _myDeckPage.CurrentEditDeck.RemoveCard(card.MouldId);
+            _myDeckPage.CurrentEditDeck.RemoveCard(card.CardKey);
             UpdateDeckPageIndexDictionary();
 
-            if(_displayDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
+            if(_displayDeckBoardCards.Exists(item => item.Model.Card.Prototype.CardKey == card.CardKey))
             {
-                BoardCardView boardCard = _displayDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
+                BoardCardView boardCard = _displayDeckBoardCards.Find(item => item.Model.Card.Prototype.CardKey == card.CardKey);
                 boardCard.CardsAmountDeckEditing--;
 
                 if (boardCard.CardsAmountDeckEditing <= 0)
@@ -918,7 +919,7 @@ namespace Loom.ZombieBattleground
                             boardCard.GameObject.transform.position,
                             BoardCardScale
                         ),
-                        _displayCollectionsBoardCards.Find(x => x.Model.Prototype.MouldId == card.MouldId),
+                        _displayCollectionsBoardCards.Find(x => x.Model.Prototype.CardKey == card.CardKey),
                         true
                     );
                 }
@@ -1185,12 +1186,12 @@ namespace Loom.ZombieBattleground
                 (_deckPageIndex + 1) * GetDeckCardAmountPerPage(),
                 _myDeckPage.CurrentEditDeck.Cards.Count
             );
-            List<MouldId> cardMouldIds = new List<MouldId>();
+            List<CardKey> cardMouldIds = new List<CardKey>();
             for (int i = startIndex; i < endIndex; ++i)
             {
                 cardMouldIds.Add
                 (
-                    _myDeckPage.CurrentEditDeck.Cards[i].MouldId
+                    _myDeckPage.CurrentEditDeck.Cards[i].CardKey
                 );
             }
             UpdateDeckBoardCardDisplayList(cardMouldIds);
@@ -1201,7 +1202,7 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private void UpdateDeckBoardCardDisplayList(List<MouldId> cardMouldIds)
+        private void UpdateDeckBoardCardDisplayList(List<CardKey> cardMouldIds)
         {
             if(_displayDeckBoardCards == null)
             {
@@ -1217,14 +1218,14 @@ namespace Loom.ZombieBattleground
             }
 
             BoardCardView boardCard;
-            foreach(MouldId cardMouldId in cardMouldIds)
+            foreach(CardKey cardMouldId in cardMouldIds)
             {
-                boardCard = _deckBoardCardsPool.Find(x => x.Model.Card.Prototype.MouldId == cardMouldId);
+                boardCard = _deckBoardCardsPool.Find(x => x.Model.Card.Prototype.CardKey == cardMouldId);
                 if(boardCard == null)
                 {
                     boardCard = CreateDeckCardToPool
                     (
-                        _myDeckPage.CurrentEditDeck.Cards.Find(x => x.MouldId == cardMouldId),
+                        _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardKey == cardMouldId),
                         _myDeckPage.LocatorDeckCards.GetComponent<RectTransform>()
                     );
                 }

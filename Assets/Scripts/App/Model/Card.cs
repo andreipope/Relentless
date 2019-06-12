@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground.Data
     public class Card : IReadOnlyCard
     {
         [JsonProperty]
-        public MouldId MouldId { get; }
+        public CardKey CardKey { get; }
 
         [JsonProperty]
         public string Name { get; }
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonConstructor]
         public Card(
-            MouldId mouldId,
+            CardKey cardKey,
             string name,
             int cost,
             string description,
@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground.Data
             bool hidden
             )
         {
-            MouldId = mouldId;
+            CardKey = cardKey;
             Name = name;
             Cost = cost;
             Description = description;
@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground.Data
 
         public Card(IReadOnlyCard sourceCard)
         {
-            MouldId = sourceCard.MouldId;
+            CardKey = sourceCard.CardKey;
             Name = sourceCard.Name;
             Cost = sourceCard.Cost;
             Description = sourceCard.Description;
@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId.Id}, {nameof(Faction)}: {Faction})";
+            return $"({nameof(Name)}: {Name}, {nameof(CardKey)}: {CardKey}, {nameof(Faction)}: {Faction})";
         }
     }
 
