@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
                 _cardViews
                     .OfType<T>()
                     .Where(v => v.Model == cardModel)
-                    .SingleOrDefault();
+                    .FirstOrDefault();
 
             if (view == null)
             {
