@@ -76,6 +76,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            ResetAffectedUnits(_affectedUnits);
+            BoardChangedHandler(newPlayer.CardsOnBoard.Count);
+        }
+
+
         public override void Action(object info = null)
         {
             base.Action(info);

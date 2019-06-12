@@ -31,16 +31,24 @@ namespace Loom.ZombieBattleground
             
             if(AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
-                
+            
+            bool unitsChanged = false;
             int currentDamage = 0;
             int currentDefense = 0;
 
+            List<CardModel> currentUnits = GetAdjacentUnits();
+
             foreach (CardModel unit in _adjacentUnits) {
+                if (!currentUnits.Contains(unit))
+                {
+                    unitsChanged = true;
+                    break;
+                }
                 currentDamage += unit.CurrentDamage;
                 currentDefense += unit.CurrentDefense;
             }
 
-            if (currentDamage != _addedDamage || currentDefense != _addedDefense) 
+            if (unitsChanged || currentDamage != _addedDamage || currentDefense != _addedDefense) 
             {
                 TriggerAdjacentsRecheck();
             }

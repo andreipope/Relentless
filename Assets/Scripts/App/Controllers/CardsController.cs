@@ -420,6 +420,9 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 cardModel.Die(true);
+
+                _battlegroundController.UnregisterCardView(boardUnitView);
+                
                 boardUnitView.Dispose();
 
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(cardModel);
