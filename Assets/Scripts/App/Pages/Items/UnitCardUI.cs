@@ -91,6 +91,11 @@ public class UnitCardUI
         return _card;
     }
 
+    public GameObject GetGameObject()
+    {
+        return _selfObj != null ? _selfObj : null;
+    }
+
     public IReadOnlyCard GetCardInterface()
     {
         return _card;

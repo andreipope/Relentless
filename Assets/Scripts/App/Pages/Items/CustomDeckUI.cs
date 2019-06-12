@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground
 {
@@ -105,34 +104,7 @@ namespace Loom.ZombieBattleground
             _selectedDeck = deck;
 
             _deckNameText.text = _selectedDeck.Name;
-
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
-            _overlordImage.sprite = GetOverlordThumbnailSprite(overlord.Prototype.Faction);
-
-            SetSkills();
-
-            SetCards();
-
-            UpdateCardsInDeckCountDisplay();
-        }
-
-        public void ShowNewDeck(OverlordUserInstance currentEditOverlord)
-        {
-            Reset();
-
-            _selectedDeck = new Deck(
-                new DeckId(-1),
-                currentEditOverlord.Prototype.Id,
-                GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),
-                new List<DeckCardData>(),
-                0,
-                0);
-
-            // TODO : set name of deck entered by user... if not , use same
-            _deckNameText.text = _selectedDeck.Name;
-
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
-            _overlordImage.sprite = GetOverlordThumbnailSprite(overlord.Prototype.Faction);
+            _overlordImage.sprite = DataUtilities.GetOverlordThumbnailSprite(deck.OverlordId);
 
             SetSkills();
 
@@ -240,30 +212,11 @@ namespace Loom.ZombieBattleground
 
         private void SetSkills()
         {
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_selectedDeck.OverlordId);
+            _overlordPrimarySkillImage.sprite =
+                DataUtilities.GetAbilityIcon(_selectedDeck.OverlordId, _selectedDeck.PrimarySkill);
 
-            // primary skill
-            if (_selectedDeck.PrimarySkill == Enumerators.Skill.NONE)
-            {
-                _overlordPrimarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
-            }
-            else
-            {
-                string iconPath = overlord.GetSkill(_selectedDeck.PrimarySkill).Prototype.IconPath;
-                _overlordPrimarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
-            }
-
-
-            // secondary skill
-            if (_selectedDeck.SecondarySkill == Enumerators.Skill.NONE)
-            {
-                _overlordSecondarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
-            }
-            else
-            {
-                string iconPath = overlord.GetSkill(_selectedDeck.SecondarySkill).Prototype.IconPath;
-                _overlordSecondarySkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
-            }
+            _overlordSecondarySkillImage.sprite =
+                DataUtilities.GetAbilityIcon(_selectedDeck.OverlordId, _selectedDeck.SecondarySkill);
         }
 
 
@@ -282,7 +235,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonViewDeckHandler()
         {
-            _viewDeckPage.Show();
+            _viewDeckPage.Show(_selectedDeck);
         }
 
         private void ButtonRenameHandler()
@@ -294,28 +247,6 @@ namespace Loom.ZombieBattleground
             HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
             deckPage.IsRenameWhileEditing = true;
             deckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
-        }
-
-        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction overlordFaction)
-        {
-            string path = "Images/UI/MyDecks/OverlordPortrait";
-            switch(overlordFaction)
-            {
-                case Enumerators.Faction.AIR:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air");
-                case Enumerators.Faction.FIRE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_fire");
-                case Enumerators.Faction.EARTH:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_earth");
-                case Enumerators.Faction.TOXIC:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_toxic");
-                case Enumerators.Faction.WATER:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_water");
-                case Enumerators.Faction.LIFE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life");
-                default:
-                    return null;
-            }
         }
 
         private void PlayClickSound()

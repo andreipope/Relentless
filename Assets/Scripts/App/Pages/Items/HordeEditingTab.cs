@@ -35,8 +35,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _draggingObject;
 
-        private Button _buttonAutoComplete,
-            _buttonBack;
+        private Button _buttonAutoComplete;
+        private Button _buttonBack;
 
         private Button _buttonLeftArrowScroll;
         private Button _buttonRightArrowScroll;
@@ -158,7 +158,7 @@ namespace Loom.ZombieBattleground
 
             if (deckId == -1)
             {
-                _customDeckUi.ShowNewDeck(_myDeckPage.CurrentEditOverlord);
+                _customDeckUi.ShowDeck(_myDeckPage.CurrentEditDeck);
                 _uiCardCollections.UpdateCardsAmountDisplay();
 
             }
@@ -348,17 +348,16 @@ namespace Loom.ZombieBattleground
             //if (_tutorialManager.BlockAndReport(_buttonAbilities.name))
               //  return;
 
-            PlayClickSound();
+            DataUtilities.PlayClickSound();
             _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlordSkill);
         }
 
         private void ButtonAutoCompleteHandler()
         {
-            Debug.LogError("auto Complete button called");
             if (_tutorialManager.BlockAndReport(_buttonAutoComplete.name))
                 return;
 
-            PlayClickSound();
+            DataUtilities.PlayClickSound();
             FillCollectionData();
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateCardsToDeck
             (
@@ -380,7 +379,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonBackHandler()
         {
-            PlayClickSound();
+            DataUtilities.PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
             _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
         }
@@ -1129,11 +1128,6 @@ namespace Loom.ZombieBattleground
         {
              GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
                 Constants.SfxSoundVolume, false, false, true);
-        }
-
-        public void PlayClickSound()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void OpenAlertDialog(string msg)
