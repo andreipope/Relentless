@@ -167,16 +167,16 @@ namespace Loom.ZombieBattleground
             int attack;
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay)
             {
-                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(
+                int count = GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard).ToList().FindAll(
                                 item => item != CardModel).Count +
-                            GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                            GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
             }
             else if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
             {
-                int count = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                int count = GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;

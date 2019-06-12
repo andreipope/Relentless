@@ -486,7 +486,7 @@ namespace Loom.ZombieBattleground
                         completeCallback?.Invoke();
                     }
                 );
-            }, Enumerators.QueueActionType.CardPlay);
+            }, Enumerators.QueueActionType.CardPlay, startupTime:0f);
         }
 
         private void GotActionCardAttack(CardAttackModel model)
@@ -628,7 +628,7 @@ namespace Loom.ZombieBattleground
                 skill.UseSkillFromEvent(parametrizedAbilityObjects);
 
                 completeCallback();
-            }, Enumerators.QueueActionType.OverlordSkillUsage);
+            }, Enumerators.QueueActionType.OverlordSkillUsage, startupTime:0f);
         }
 
         private void GotActionRankBuff(InstanceId card, IList<Unit> targets)

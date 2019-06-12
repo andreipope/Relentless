@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 unitPosition = boardUnitView.Transform.position;
 
-            _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel);
+            _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel, true);
 
             cardModel.InvokeUnitPrepairingToDie();
             cardModel.SetUnitActiveStatus(false);
@@ -420,6 +420,9 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 cardModel.Die(true);
+
+                _battlegroundController.UnregisterCardView(boardUnitView);
+                
                 boardUnitView.Dispose();
 
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(cardModel);
@@ -462,6 +465,8 @@ namespace Loom.ZombieBattleground
                     return;
                 }
 
+                _battlegroundController.IsOnShorterTime = false;
+
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
 
@@ -469,6 +474,8 @@ namespace Loom.ZombieBattleground
 
                 GameplayActionQueueAction callAbilityAction;
                 GameplayActionQueueAction rankBuffAction = null;
+
+                int cardCost = card.Model.CurrentCost;
 
                 switch (card.Model.Card.Prototype.Kind)
                 {
@@ -565,10 +572,10 @@ namespace Loom.ZombieBattleground
 #if !USE_PRODUCTION_BACKEND
                                         if (!_gameplayManager.AvoidGooCost)
                                         {
-                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                            card.Model.Card.Owner.CurrentGoo -= cardCost;
                                         }
 #else
-                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        card.Model.Card.Owner.CurrentGoo -= cardCost;
 #endif
                                     },
                                     target,
@@ -610,13 +617,13 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
-                                        #if !USE_PRODUCTION_BACKEND
+#if !USE_PRODUCTION_BACKEND
                                         if (!_gameplayManager.AvoidGooCost)
                                         {
-                                            card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                            card.Model.Card.Owner.CurrentGoo -= cardCost;
                                         }
 #else
-                                        card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
+                                        card.Model.Card.Owner.CurrentGoo -= cardCost;
 #endif
 
                                         rankBuffAction?.TriggerActionExternally();
@@ -637,7 +644,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            _actionsQueueController.EnqueueAction(playCardAction, Enumerators.QueueActionType.CardPlay);
+            _actionsQueueController.EnqueueAction(playCardAction, Enumerators.QueueActionType.CardPlay, startupTime:0f);
         }
 
         public void PlayOpponentCard(

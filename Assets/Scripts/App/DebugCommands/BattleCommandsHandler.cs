@@ -374,7 +374,8 @@ static class BattleCommandsHandler
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
         Card prototype = new Card(unit.Model.Card.Prototype);
-        WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
+        InstanceId updatedId = new InstanceId(unit.Model.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.BackFromGraveyard);
+        WorkingCard workingCard = new WorkingCard(prototype, prototype, player, id:updatedId);
         CardModel cardModel = new CardModel(workingCard);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, cardModel);
 

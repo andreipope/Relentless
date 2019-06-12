@@ -261,11 +261,12 @@ namespace Loom.ZombieBattleground
                 .EnqueueAction(
                     completeCallback =>
                     {
+                        _battlegroundController.IsOnShorterTime = false;
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
                         CancelTargetingArrows();
                     },
-                    Enumerators.QueueActionType.OverlordSkillUsage);
+                    Enumerators.QueueActionType.OverlordSkillUsage, startupTime:0f);
         }
 
         public void UseSkill()

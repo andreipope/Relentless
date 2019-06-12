@@ -182,8 +182,9 @@ namespace Loom.ZombieBattleground
                     {
                         GooVials = 0;
                     }
-
-                    TurnTime = (uint) InitialPvPPlayerState.TurnTime;
+                    //We're going to need to change the backend param later
+                    //TurnTime = (uint) InitialPvPPlayerState.TurnTime;
+                    TurnTime = (uint) Constants.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -635,7 +636,7 @@ namespace Loom.ZombieBattleground
                 LeaveMatch?.Invoke();
 
                 completeCallback?.Invoke();
-            }, Enumerators.QueueActionType.LeaveMatch);
+            }, Enumerators.QueueActionType.LeaveMatch, startupTime:0f);
         }
 
         private CardModel GetCardThatNotInDistribution()
