@@ -2,6 +2,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,6 +21,27 @@ namespace Loom.ZombieBattleground
             }
 
             string iconPath = overlord.GetSkill(skill).Prototype.IconPath;
+            return loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+        }
+
+        public static Enumerators.Skill GetOverlordAbilityType(OverlordId overlordId, SkillId skillId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            OverlordUserInstance overlordUserInstance = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Id == skillId);
+            return index != -1 ? overlordUserInstance.Skills[index].Prototype.Skill : Enumerators.Skill.NONE;
+        }
+
+        public static Sprite GetAbilityIcon(OverlordSkillUserInstance skill)
+        {
+            ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+            if (!skill.UserData.IsUnlocked)
+            {
+                return loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+            }
+
+            string iconPath = skill.Prototype.IconPath;
             return loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
         }
 
@@ -54,6 +76,14 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK,
                 Constants.SfxSoundVolume, false, false, true);
+        }
+
+        public static bool IsSkillLocked(OverlordId overlordId, SkillId skillId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            OverlordUserInstance overlordUserInstance = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Id == skillId);
+            return index != -1 && overlordUserInstance.Skills[index].UserData.IsUnlocked;
         }
     }
 }

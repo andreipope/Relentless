@@ -12,24 +12,29 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonChange;
 
+        private Deck _deck;
+        private OverlordId _overlordId;
+
         public void Load(GameObject obj)
         {
             _overlordPrimarySkillImage = obj.transform.Find("Overlord_Skill_Primary/Image").GetComponent<Image>();
             _overlordSecondarySkillImage = obj.transform.Find("Overlord_Skill_Secondary/Image").GetComponent<Image>();
 
+            //change ability
             _buttonChange = obj.transform.Find("Button_Change").GetComponent<Button>();
-            _buttonChange.onClick.AddListener(ButtonChangeHandler);
+            _buttonChange.onClick.AddListener(ButtonChangeAbilityHandler);
         }
 
-        private void ButtonChangeHandler()
+        private void ButtonChangeAbilityHandler()
         {
-            Debug.LogError("Button change handler");
+            GameClient.Get<IUIManager>().DrawPopup<ChampionAbilitiesPopup>(_deck);
         }
 
-        public void ShowAbilities(OverlordId overlordId, Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        public void ShowAbilities(Deck deck)
         {
-            _overlordPrimarySkillImage.sprite = DataUtilities.GetAbilityIcon(overlordId, primarySkill);
-            _overlordSecondarySkillImage.sprite = DataUtilities.GetAbilityIcon(overlordId, secondarySkill);
+            _deck = deck;
+            _overlordPrimarySkillImage.sprite = DataUtilities.GetAbilityIcon(deck.OverlordId, deck.PrimarySkill);
+            _overlordSecondarySkillImage.sprite = DataUtilities.GetAbilityIcon(deck.OverlordId, deck.SecondarySkill);
         }
     }
 }

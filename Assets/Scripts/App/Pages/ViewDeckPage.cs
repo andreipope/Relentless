@@ -1,11 +1,13 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Card = Loom.ZombieBattleground.Data.Card;
+using Deck = Loom.ZombieBattleground.Data.Deck;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -31,6 +33,9 @@ namespace Loom.ZombieBattleground
         private DeckInfoUI _deckInfoUi;
         private AbilitiesInfoUI _abilitiesInfoUi;
         private CardGooInfoUI _cardGooInfoUi;
+
+        private Deck _updatedDeck;
+        private CollectionData _updatedCollectionData;
 
         public void Init()
         {
@@ -73,7 +78,7 @@ namespace Loom.ZombieBattleground
             // abilities info
             _abilitiesInfoUi = new AbilitiesInfoUI();
             _abilitiesInfoUi.Load(_selfPage.transform.Find("ViewDeck/Top_Panel/Middle_Panel/Abilities_Info").gameObject);
-            _abilitiesInfoUi.ShowAbilities(deck.OverlordId, deck.PrimarySkill, deck.SecondarySkill);
+            _abilitiesInfoUi.ShowAbilities(deck);
 
             // Goo info
             _cardGooInfoUi = new CardGooInfoUI();
@@ -91,6 +96,9 @@ namespace Loom.ZombieBattleground
             _cardGooInfoUi.SetGooMeter(deck.Cards);
 
             UpdateCardsInDeckCountDisplay(deck);
+
+            _updatedDeck = deck;
+            _updatedCollectionData = collectionData;
         }
 
         private void UpdateCardsInDeckCountDisplay(Deck deck)
@@ -122,15 +130,16 @@ namespace Loom.ZombieBattleground
 
             if (status)
             {
-                // TODO : save deck
-                // change ui of editor tab
-                // save deck
-                Dispose();
+                HordeSelectionWithNavigationPage myDeckPage =
+                    GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
+                if (myDeckPage != null)
+                {
+                    myDeckPage.HordeEditTab.UpdateEditingTab(_updatedDeck, _updatedCollectionData);
+                    myDeckPage.HordeEditTab.SaveDeck(HordeSelectionWithNavigationPage.Tab.Editing);
+                }
             }
-            else
-            {
-                Dispose();
-            }
+
+            Dispose();
         }
 
         private void UpdatePageScaleToMatchResolution()

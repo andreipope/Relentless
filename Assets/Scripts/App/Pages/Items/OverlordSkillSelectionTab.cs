@@ -1,18 +1,10 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using log4net;
-using DG.Tweening;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 

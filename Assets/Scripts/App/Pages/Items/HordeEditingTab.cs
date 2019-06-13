@@ -252,64 +252,6 @@ namespace Loom.ZombieBattleground
         }
 
 
-        /*private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)
-        {
-            ResetCollectionPageState();
-            CardFilterPopup popup = _uiManager.GetPopup<CardFilterPopup>();
-            popup.ActionPopupHiding -= FilterPopupHidingHandler;
-        }*/
-
-        /*private void ButtonEditDeckUpperLeftArrowHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_buttonUpperLeftArrow.name))
-                return;
-
-            PlayClickSound();
-            MoveDeckPageIndex(-1);
-        }
-
-        private void ButtonEditDeckUpperRightArrowHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_buttonUpperRightArrow.name))
-                return;
-
-            PlayClickSound();
-            MoveDeckPageIndex(1);
-        }
-
-        private void ButtonEditDeckLowerLeftArrowHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_buttonLowerLeftArrow.name))
-                return;
-
-            PlayClickSound();
-            MoveCollectionPageIndex(-1);
-        }
-
-        private void ButtonEditDeckLowerRightArrowHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_buttonLowerRightArrow.name))
-                return;
-
-            PlayClickSound();
-            MoveCollectionPageIndex(1);
-        }*/
-
-       /* private void ButtonSaveEditDeckHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_buttonSaveDeck.name))
-                return;
-
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
-
-            _buttonSaveDeck.enabled = false;
-
-            PlayClickSound();
-
-            SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
-        }
-*/
-
         private void FinishAddDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
@@ -375,6 +317,15 @@ namespace Loom.ZombieBattleground
 
             //ResetCollectionPageState();
             //UpdateEditDeckCardsAmount();
+        }
+
+        public void UpdateEditingTab(Deck deck, CollectionData collectionData)
+        {
+            _myDeckPage.CurrentEditDeck = deck;
+            _collectionData = collectionData;
+
+            _customDeckUi.ShowDeck(_myDeckPage.CurrentEditDeck);
+            _uiCardCollections.UpdateCardsAmountDisplay(_myDeckPage.CurrentEditDeck);
         }
 
         private void ButtonBackHandler()
