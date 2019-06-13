@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();

@@ -797,6 +797,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new TestCardData("Fresh Meat", 1),
+                    new TestCardData("Z-Virus", 1),
                     new TestCardData("Hot", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
@@ -808,7 +809,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 InstanceId playerHotId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 1);
                 InstanceId playerHot2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 2);
-                InstanceId playerHot3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 3);
+                InstanceId playerZVirusId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Z-Virus", 1);
                 InstanceId playerFreshMeatId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Fresh Meat", 1);
 
                 InstanceId opponentHotId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 1);
@@ -828,7 +829,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerHotId, ItemPosition.Start);
                            player.CardPlay(playerHot2Id, ItemPosition.Start);
-                           player.CardPlay(playerHot3Id, ItemPosition.Start);
+                           player.CardAbilityUsed(playerZVirusId, Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS, new List<ParametrizedAbilityInstanceId>());
+                           player.CardPlay(playerZVirusId, ItemPosition.Start);
                        },
                        opponent =>
                        {
@@ -860,7 +862,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count,
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count-1,
                                     pvpTestContext.GetCurrentPlayer().CardsOnBoard.FindAll(card => card.CurrentDamage == card.Card.Prototype.Damage).Count);
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count,
                                     pvpTestContext.GetOpponentPlayer().CardsOnBoard.FindAll(card => card.CurrentDamage == card.Card.Prototype.Damage).Count);

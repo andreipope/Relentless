@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    units = GetRandomEnemyUnits(1);
+                    units = GetRandomUnits(GetAliveUnits(GetOpponentOverlord().CardsOnBoard).ToList(), 1);
                 }
                 if (units.Count > 0)
                 {

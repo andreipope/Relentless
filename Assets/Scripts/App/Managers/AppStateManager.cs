@@ -294,6 +294,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<MatchMakingPopup>().ForceCancelAndHide();
             _uiManager.HidePopup<CardInfoPopup>();
             _uiManager.HidePopup<TutorialAvatarPopup>();
+            _uiManager.HidePopup<LoginPopup>();
             if (!_isReconnecting)
             {
                 _uiManager.HidePopup<ConnectionPopup>();

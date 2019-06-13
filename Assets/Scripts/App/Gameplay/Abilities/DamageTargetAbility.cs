@@ -56,6 +56,7 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
             {
+                AbilityProcessingAction?.TriggerActionExternally();
                 AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                 BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);

@@ -22,6 +22,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object param = null)
         {
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             base.Action(param);

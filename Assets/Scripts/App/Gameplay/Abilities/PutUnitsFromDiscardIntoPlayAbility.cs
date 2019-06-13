@@ -44,6 +44,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense <= 0)
             {
+                AbilityProcessingAction?.TriggerActionExternally();
                 AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
             }
         }

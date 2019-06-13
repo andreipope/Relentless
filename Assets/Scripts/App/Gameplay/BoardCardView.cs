@@ -601,7 +601,7 @@ namespace Loom.ZombieBattleground
 
         protected void UpdatePositionOnHand()
         {
-            if (IsPreview || _hasDestroyed)
+            if (IsPreview || _hasDestroyed || GameObject == null)
                 return;
 
             Transform.DOScale(ScaleOnHand, 0.5f);

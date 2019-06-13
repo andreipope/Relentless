@@ -177,7 +177,7 @@ namespace Loom.ZombieBattleground
 
             if (playable)
             {
-                if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
+                if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard && BoardCardView.Model.CanBePlayed(BoardCardView.Model.Card.Owner))
                 {
                     _isHandCard = false;
                     _cardsController.PlayPlayerCard(OwnerPlayer,

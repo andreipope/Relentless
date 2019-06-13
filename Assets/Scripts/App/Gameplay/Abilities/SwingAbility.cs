@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             _unit = (CardModel) info;
