@@ -407,8 +407,6 @@ namespace Loom.ZombieBattleground
             Player unitOwner = cardModel.OwnerPlayer;
             BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
 
-            cardModel.ResetToInitial();
-
             Vector3 unitPosition = boardUnitView.Transform.position;
 
             _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel, true);
