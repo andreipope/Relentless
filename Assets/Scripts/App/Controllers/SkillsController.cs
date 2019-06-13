@@ -743,16 +743,19 @@ namespace Loom.ZombieBattleground
         private void WindShieldAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
-            List<CardModel> units;
-            if (!boardSkill.IsLocal && targets != null)
+            List<CardModel> units = new List<CardModel>();
+            if (!boardSkill.IsLocal)
             {
-                units = targets.Select(target => target.BoardObject as CardModel).ToList();
+                if (targets != null && targets.Count > 0)
+                {
+                    units = targets.Select(target => target.BoardObject as CardModel).ToList();
+                }
             }
             else
             {
                 units =
                 InternalTools.GetRandomElementsFromList(
-                    owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.AIR),
+                    owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.AIR && !x.IsDead && x.CurrentDefense > 0 && x.IsUnitActive),
                     skill.Value);
 
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target)).ToList();
@@ -1129,9 +1132,12 @@ namespace Loom.ZombieBattleground
             Action<CardModel> callback = null;
             int count = 0;
 
-            if (!boardSkill.IsLocal && targets != null)
+            if (!boardSkill.IsLocal)
             {
-                count = targets.Count;
+                if (targets != null)
+                {
+                    count = targets.Count;
+                }
             }
             else
             {
