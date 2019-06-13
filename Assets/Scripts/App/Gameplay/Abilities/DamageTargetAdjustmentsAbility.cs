@@ -76,6 +76,7 @@ namespace Loom.ZombieBattleground
             if (targetUnit == null)
                 return;
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             _targetUnits = new List<CardModel>();

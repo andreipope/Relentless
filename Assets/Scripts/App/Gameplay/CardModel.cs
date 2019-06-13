@@ -313,28 +313,37 @@ namespace Loom.ZombieBattleground
                     valueHistory[i].Enabled = false;
                 }
             }
-            UnitDefenseChanged?.Invoke(oldDefence, CurrentDefense);
-            UnitDamageChanged?.Invoke(oldDamage, CurrentDamage);
+            InvokeDefenseChanged(oldDefence, CurrentDefense);
+            InvokeDamageChanged(oldDamage, CurrentDamage);
         }
 
         public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentDamageHistory.Add(new ValueHistory(value, reason, forced: forced));
-            UnitDamageChanged?.Invoke(oldValue, CurrentDamage);
+            InvokeDamageChanged(oldValue, CurrentDamage);
         }
 
+        public void InvokeDamageChanged(int oldValue, int currentDamage)
+        {
+            UnitDamageChanged?.Invoke(oldValue, currentDamage);
+        }
 
         public void AddToCurrentCostHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentCostHistory.Add(new ValueHistory(value, reason, forced: forced));
         }
-        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason)
+        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDefense;
-            CurrentDefenseHistory.Add(new ValueHistory(value, reason));
-            UnitDefenseChanged?.Invoke(oldValue, CurrentDefense);
+            CurrentDefenseHistory.Add(new ValueHistory(value, reason, forced: forced));
+            InvokeDefenseChanged(oldValue, CurrentDefense);
+        }
+
+        public void InvokeDefenseChanged(int oldValue, int currentDefense)
+        {
+            UnitDefenseChanged?.Invoke(oldValue, currentDefense);
         }
 
         public void HandleDefenseBuffer(int damage)

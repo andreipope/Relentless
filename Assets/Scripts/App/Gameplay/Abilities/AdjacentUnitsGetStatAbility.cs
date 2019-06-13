@@ -96,6 +96,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            ResetStats();
+            ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+        }
+
         private void ResetStats()
         {
             for (int i = _affectedUnits.Count-1; i >= 0; i--)

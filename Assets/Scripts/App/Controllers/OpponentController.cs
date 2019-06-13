@@ -514,8 +514,8 @@ namespace Loom.ZombieBattleground
 
                     Action callback = () =>
                     {
-                        skillUsageAction.TriggerActionExternally();
                         attackerUnit.DoCombat(target);
+                        skillUsageAction.TriggerActionExternally();
                     };
                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
                 }
