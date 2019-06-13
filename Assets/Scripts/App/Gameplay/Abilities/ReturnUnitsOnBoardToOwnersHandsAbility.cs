@@ -54,6 +54,7 @@ namespace Loom.ZombieBattleground
 
             foreach(CardModel unit in Units)
             {
+                unit.SetUnitCannotDie(true);
                 unit.SetUnitActiveStatus(false);
             }
 
