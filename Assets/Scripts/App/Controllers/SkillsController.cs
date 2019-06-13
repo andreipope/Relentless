@@ -748,7 +748,10 @@ namespace Loom.ZombieBattleground
             {
                 if (targets != null && targets.Count > 0)
                 {
-                    units = targets.Select(target => target.BoardObject as CardModel).ToList();
+                    if (targets.Count > 1 || targets[0].BoardObject is CardModel)
+                    {
+                        units = targets.Select(target => target.BoardObject as CardModel).ToList();
+                    }
                 }
             }
             else
@@ -1135,9 +1138,12 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal)
             {
-                if (targets != null)
+                if (targets != null && targets.Count > 0)
                 {
-                    count = targets.Count;
+                    if (targets.Count > 1 || targets[0].BoardObject is CardModel)
+                    {
+                        count = targets.Count;
+                    }
                 }
             }
             else
