@@ -971,9 +971,12 @@ namespace Loom.ZombieBattleground
 
             Dictionary<IBoardObject, int> sortedTargets = null;
 
-            if (!boardSkill.IsLocal && targets != null)
+            if (!boardSkill.IsLocal)
             {
-                sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
+                if (targets != null && targets.Count > 0 && (targets[0].BoardObject is CardModel || targets[0].BoardObject is Player))
+                {
+                    sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
+                }
             }
             else
             {

@@ -1599,7 +1599,7 @@
           "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's learn how to use them.",
+            "Description": "Creatures aren't all just claws and flesh.\n\nThey have abilities too. Let's learn how to use them.",
             "AboveUI": false,
             "DescriptionTooltipCloseText": "LET'S BEGIN"
           }
