@@ -123,7 +123,7 @@ namespace Loom.Client
             return new FilterLog
             {
                 Address = Address.FromBytes(log.Address.ToByteArray()).LocalAddress,
-                Data = log.Data.ToBase64(),
+                Data = CryptoUtils.BytesToHexString(log.Data.ToByteArray()),
                 Removed = log.Removed,
                 Topics = log.Topics.Select(t => (object) t.ToStringUtf8()).ToArray(),
                 Type = "",

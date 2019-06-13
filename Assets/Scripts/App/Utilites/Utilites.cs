@@ -105,6 +105,26 @@ namespace Loom.ZombieBattleground
         {
             return $"[({list.Count()} items) {String.Join(", ", list)}]";
         }
+
+        public static bool SequenceEqual(this byte[] array1, byte[] array2)
+        {
+            if (array1 == null)
+                throw new ArgumentNullException(nameof(array1));
+
+            if (array2 == null)
+                throw new ArgumentNullException(nameof(array2));
+
+            if (array1.Length != array2.Length)
+                return false;
+
+            for (int i = 0; i < array1.Length; i++)
+            {
+                if (array1[i] != array2[i])
+                    return false;
+            }
+
+            return true;
+        }
         
         /// <summary>
         /// Waits for the task to complete for up to <paramref name="timeoutMilliseconds"/>

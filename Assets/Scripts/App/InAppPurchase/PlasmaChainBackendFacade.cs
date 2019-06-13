@@ -12,11 +12,12 @@ using Loom.ZombieBattleground.BackendCommunication;
 using log4net;
 using log4netUnitySupport;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
-using Loom.Nethereum.JsonRpc.Client;
+using Loom.Nethereum.Contracts;
+using Loom.Nethereum.Hex.HexTypes;
+using Loom.Nethereum.RPC.Eth.DTOs;
 using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
-using OneOf;
-using OneOf.Types;
+using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground.Iap
 {
@@ -108,28 +109,106 @@ namespace Loom.ZombieBattleground.Iap
         public async Task<IReadOnlyList<Card>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
-            List<Card> cards = new List<Card>();
             EvmContract cardFaucetContract = GetContract(client, IapContractType.CardFaucet);
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
-            bool isConnectionStateChanged = false;
 
-            void ContractEventReceived(object sender, EvmChainEventArgs e)
+            const int amountToApprove = 1;
+            await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
+            BroadcastTxResult openPackTxResult = await cardFaucetContract.CallAsync(OpenPackMethod, packType);
+            byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
+
+            async Task<List<EventLog<T>>> GetEvents<T>(string eventName) where T : new()
             {
-                Log.Info($"{nameof(GetPackTypeBalance)}: Received event " + e.EventName);
+                // Get all events since call to OpenPackMethod
+                EvmEvent<T> evmEvent = cardFaucetContract.GetEvent<T>(eventName);
+                NewFilterInput filterInput =
+                    evmEvent.CreateFilterInput(
+                        new BlockParameter(new HexBigInteger(openPackTxResult.Height)),
+                        BlockParameter.CreatePending()
+                    );
+                List<EventLog<T>> changes = await evmEvent.GetAllChanges(filterInput);
 
-                // FIXME: handle UpgradedCardToLE and UpgradedCardToBE events
-                GeneratedCardEvent generatedCardEvent = e.DecodeEventDto<GeneratedCardEvent>();
-                Log.Info(
-                    $"{nameof(GetPackTypeBalance)}: CardTokenId = {generatedCardEvent.CardTokenId}, BoosterType = {(Enumerators.MarketplaceCardPackType) (int) generatedCardEvent.BoosterType}");
+                // Check if those events belong to the transaction that opened the pack
+                changes = changes.Where(log => openPackTxHash.SequenceEqual(CryptoUtils.HexStringToBytes(log.Log.TransactionHash))).ToList();
+                return changes;
+            }
 
-                if (generatedCardEvent.CardTokenId % 10 != 0)
+            const int maxRetryCount = 10;
+            const int retryDelay = 1500;
+
+            // We only have the transaction hash at this point, but it might still be mining.
+            // Poll the result multiple times until we have one.
+            List<EventLog<GeneratedCardEvent>> generatedCardEvents = null;
+            for (int i = 0; i < maxRetryCount; i++)
+            {
+                generatedCardEvents = await GetEvents<GeneratedCardEvent>("GeneratedCard");
+                if (generatedCardEvents.Count != 0)
+                    break;
+
+                Log.Warn($"Retrying getting GeneratedCard events, attempt {i + 1}/{maxRetryCount}");
+                await Task.Delay(retryDelay);
+            }
+
+            Assert.IsNotNull(generatedCardEvents);
+            if (generatedCardEvents.Count == 0)
+                throw new Exception("Exhausted attempts to get generated cards");
+
+            // No need to retry those, if getting GeneratedCard succeeds, these will succeed too
+            List<EventLog<UpgradedCardToBackerEditionEvent>> upgradedCardToBackerEditionEvents =
+                await GetEvents<UpgradedCardToBackerEditionEvent>("UpgradedCardToBE");
+            List<EventLog<UpgradedCardToLimitedEditionEvent>> upgradedCardToLimitedEditionEvents =
+                await GetEvents<UpgradedCardToLimitedEditionEvent>("UpgradedCardToLE");
+
+            Log.Debug($"{nameof(GetPackTypeBalance)}: generatedCardEvents = {Utilites.FormatCallLogList(generatedCardEvents.Select(e => e.Event))}");
+            Log.Debug($"{nameof(GetPackTypeBalance)}: upgradedCardToBackerEditionEvents = {Utilites.FormatCallLogList(upgradedCardToBackerEditionEvents.Select(e => e.Event))}");
+            Log.Debug($"{nameof(GetPackTypeBalance)}: upgradedCardToLimitedEditionEvents = {Utilites.FormatCallLogList(upgradedCardToLimitedEditionEvents.Select(e => e.Event))}");
+
+            // Calculate list of card token IDs, accounting for card upgrades
+            List<BigInteger> cardTokenIds = new List<BigInteger>();
+            for (int i = 0; i < generatedCardEvents.Count; i++)
+            {
+                EventLog<GeneratedCardEvent> generatedCardEvent = generatedCardEvents[i];
+                EventLog<GeneratedCardEvent> nextGeneratedCardEvent = i == generatedCardEvents.Count - 1 ? null : generatedCardEvents[i + 1];
+                EventLog<UpgradedCardToBackerEditionEvent> nextUpgradedCardToBackerEditionEvent =
+                    upgradedCardToBackerEditionEvents.FirstOrDefault(log => log.Log.LogIndex.Value > generatedCardEvent.Log.LogIndex.Value);
+                EventLog<UpgradedCardToLimitedEditionEvent> nextUpgradedCardToLimitedEditionEvent =
+                    upgradedCardToLimitedEditionEvents.FirstOrDefault(log => log.Log.LogIndex.Value > generatedCardEvent.Log.LogIndex.Value);
+
+                BigInteger? upgradeEventLogIndex =
+                    nextUpgradedCardToBackerEditionEvent?.Log.LogIndex.Value ??
+                    nextUpgradedCardToLimitedEditionEvent?.Log.LogIndex.Value;
+                BigInteger? upgradedCardTokenId =
+                    nextUpgradedCardToBackerEditionEvent?.Event.CardTokenId ??
+                    nextUpgradedCardToLimitedEditionEvent?.Event.CardTokenId;
+
+                if (nextGeneratedCardEvent != null)
                 {
-                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with CardTokenId {generatedCardEvent.CardTokenId}");
-                    cards.Add(null);
-                    return;
+                    if (upgradeEventLogIndex != null)
+                    {
+                        cardTokenIds.Add(
+                            upgradeEventLogIndex.Value < nextGeneratedCardEvent.Log.LogIndex.Value ?
+                                upgradedCardTokenId.Value :
+                                generatedCardEvent.Event.CardTokenId
+                        );
+                    }
+                    else
+                    {
+                        cardTokenIds.Add(generatedCardEvent.Event.CardTokenId);
+                    }
                 }
+                else
+                {
+                    cardTokenIds.Add(upgradedCardTokenId ?? generatedCardEvent.Event.CardTokenId);
+                }
+            }
 
-                CardKey cardKey = CardKey.FromCardTokenId((long) generatedCardEvent.CardTokenId);
+            Log.Debug($"{nameof(GetPackTypeBalance)}: cardTokenIds = {Utilites.FormatCallLogList(cardTokenIds)}");
+
+            // Convert card token IDs to actual cards
+            List<Card> cards = new List<Card>();
+            foreach (BigInteger cardTokenId in cardTokenIds)
+            {
+                CardKey cardKey = CardKey.FromCardTokenId((long) cardTokenId);
                 Log.Info($"{nameof(GetPackTypeBalance)}: Parsed CardKey {cardKey}");
                 (bool found, Card card) = _dataManager.CachedCardsLibraryData.TryGetCardFromCardKey(cardKey, true);
                 if (found)
@@ -144,57 +223,9 @@ namespace Loom.ZombieBattleground.Iap
                 }
             }
 
-            void OnRpcClientConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
-            {
-                client.ReadClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
-                client.WriteClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
-                Log.Warn("ConnectionStateChanged: " + state);
-                isConnectionStateChanged = true;
-            }
-
-            try
-            {
-                client.ReadClient.ConnectionStateChanged += OnRpcClientConnectionStateChanged;
-                client.WriteClient.ConnectionStateChanged += OnRpcClientConnectionStateChanged;
-
-                cardFaucetContract.EventReceived += ContractEventReceived;
-
-                await client.SubscribeToEvents();
-
-                const int amountToApprove = 1;
-                await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
-                await cardFaucetContract.CallAsync(OpenPackMethod, packType);
-
-                const double timeout = 30;
-                bool timedOut = false;
-                double startTime = Utilites.GetTimestamp();
-
-                await new WaitUntil(() =>
-                {
-                    if (Utilites.GetTimestamp() - startTime > timeout)
-                    {
-                        timedOut = true;
-                        return true;
-                    }
-
-                    return cards.Count == CardsPerPack || isConnectionStateChanged;
-                });
-
-                if (timedOut)
-                    throw new TimeoutException();
-
-                if (isConnectionStateChanged)
-                    throw new IapException("Lost connection when opening pack");
-
-                cards = cards.Where(card => card != null).ToList();
-                Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
-                return cards;
-            }
-            finally
-            {
-                client.ReadClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
-                client.WriteClient.ConnectionStateChanged -= OnRpcClientConnectionStateChanged;
-            }
+            cards = cards.Where(card => card != null).ToList();
+            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
+            return cards;
         }
 
         private EvmContract GetContract(DAppChainClient client, IapContractType contractType)
@@ -234,7 +265,12 @@ namespace Loom.ZombieBattleground.Iap
                 StaticCallTimeout = Constants.PlasmaChainCallTimeout
             };
 
-            return new LoggingDAppChainClient(writer, reader, clientConfiguration)
+            return new LoggingDAppChainClient(
+                writer,
+                reader,
+                clientConfiguration,
+                new NotifyingDAppChainClientCallExecutor(clientConfiguration)
+            )
             {
                 Logger = logger
             };
@@ -408,6 +444,35 @@ namespace Loom.ZombieBattleground.Iap
 
             [Parameter("uint256", "boosterType", 2)]
             public BigInteger BoosterType { get; set; }
+
+            public override string ToString()
+            {
+                return $"{nameof(CardTokenId)}: {CardTokenId}, {nameof(BoosterType)}: {BoosterType}";
+            }
+        }
+
+        [Event("UpgradedCardToBE")]
+        private class UpgradedCardToBackerEditionEvent
+        {
+            [Parameter("uint256", "cardId")]
+            public BigInteger CardTokenId { get; set; }
+
+            public override string ToString()
+            {
+                return $"{nameof(CardTokenId)}: {CardTokenId}";
+            }
+        }
+
+        [Event("UpgradedCardToLE")]
+        private class UpgradedCardToLimitedEditionEvent
+        {
+            [Parameter("uint256", "cardId")]
+            public BigInteger CardTokenId { get; set; }
+
+            public override string ToString()
+            {
+                return $"{nameof(CardTokenId)}: {CardTokenId}";
+            }
         }
 
         private struct RequestPacksRequest
