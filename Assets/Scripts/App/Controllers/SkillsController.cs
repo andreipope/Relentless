@@ -269,8 +269,8 @@ namespace Loom.ZombieBattleground
                             targetPlayer,
                             (x) =>
                             {
-                                skillUsageAction.TriggerActionExternally();
                                 DoActionByType(skill, targets, completeCallback);
+                                skillUsageAction.TriggerActionExternally();
                             }, _isDirection);
 
                         if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -318,8 +318,8 @@ namespace Loom.ZombieBattleground
                             targetUnitView,
                             (x) =>
                             {
-                                skillUsageAction.TriggerActionExternally();
                                 DoActionByType(skill, targets, completeCallback);
+                                skillUsageAction.TriggerActionExternally();
                                 skill.SkillUsedAction(targets);
                             }, _isDirection);
 
@@ -360,8 +360,8 @@ namespace Loom.ZombieBattleground
                         targets[0].BoardObject,
                         (x) =>
                         {
-                            skillUsageAction.TriggerActionExternally();
                             DoActionByType(skill, targets, completeCallback);
+                            skillUsageAction.TriggerActionExternally();
                             skill.SkillUsedAction(_targets);
                         }, _isDirection);
 

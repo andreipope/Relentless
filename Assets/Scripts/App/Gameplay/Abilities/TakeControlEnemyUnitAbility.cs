@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    TakeControlEnemyUnit(GetRandomEnemyUnits(Count));
+                    TakeControlEnemyUnit(GetRandomUnits(GetAliveUnits(GetOpponentOverlord().CardsOnBoard).ToList(), Count));
                 }
             }
         }

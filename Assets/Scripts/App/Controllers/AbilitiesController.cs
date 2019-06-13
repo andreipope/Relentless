@@ -641,6 +641,7 @@ namespace Loom.ZombieBattleground
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
 
+                               abilityHelperAction?.TriggerActionExternally();
                                abilityHelperAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                                _cardsController.CardForAbilityChoosed += callback;

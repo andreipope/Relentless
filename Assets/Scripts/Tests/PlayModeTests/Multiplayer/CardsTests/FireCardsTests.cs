@@ -853,6 +853,90 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        public IEnumerator AlphaWithLeash()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
+                    new TestCardData("Alpha", 1),
+                    new TestCardData("Leash", 1),
+                    new TestCardData("Hot", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
+                    new TestCardData("Alpha", 1),
+                    new TestCardData("Hot", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
+
+                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Alpha", 1);
+                InstanceId playerLeashId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Leash", 1);
+                InstanceId playerHotId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 1);
+                InstanceId playerHot2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 2);
+                InstanceId playerHot3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 3);
+                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Alpha", 1);
+                InstanceId opponentHotId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 1);
+                InstanceId opponentHot2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 2);
+
+                CardModel playerHotUnit = null;
+                CardModel playerHot2Unit = null;
+                CardModel playerHot3Unit = null;
+                CardModel playerAlphaUnit = null;
+
+                CardModel opponentHotUnit = null;
+                CardModel opponentHot2Unit = null;
+                CardModel opponentAlphaUnit = null;
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                    player => {},
+                    opponent => {},
+                    player => {},
+                    opponent => {},
+                    player =>
+                    {
+                        player.CardPlay(playerHotId, ItemPosition.Start);
+                        player.CardPlay(playerHot2Id, ItemPosition.Start);
+                        player.CardPlay(playerHot3Id, ItemPosition.Start);
+                    },
+                    opponent =>
+                    {
+                        opponent.CardPlay(opponentHotId, ItemPosition.Start);
+                        opponent.CardPlay(opponentHot2Id, ItemPosition.Start);
+                        opponent.CardPlay(opponentCardId, ItemPosition.Start);
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
+                        opponent.LetsThink(2, true);
+
+                        opponent.AssertInQueue(() =>
+                        {
+                            opponentHotUnit = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHotId);
+                            opponentHot2Unit = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHot2Id);
+                            opponentAlphaUnit = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId);
+                        });
+                    },
+                    player => {
+                        player.CardPlay(playerLeashId, ItemPosition.Start, opponentCardId);
+                    },
+                    opponent => {},
+                    player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.IsTrue(playerHotUnit.HasFeral);
+                    Assert.IsTrue(playerHot2Unit.HasFeral);
+                    Assert.IsTrue(playerHot3Unit.HasFeral);
+                    Assert.IsTrue(!opponentHotUnit.HasFeral);
+                    Assert.IsTrue(!opponentHot2Unit.HasFeral);
+                    Assert.NotNull(opponentAlphaUnit);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            }, 400);
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
         public IEnumerator Alpha()
         {
             return AsyncTest(async () =>

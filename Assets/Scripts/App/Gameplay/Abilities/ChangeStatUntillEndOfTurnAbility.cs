@@ -42,6 +42,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeActionTriggered();
@@ -66,6 +67,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();

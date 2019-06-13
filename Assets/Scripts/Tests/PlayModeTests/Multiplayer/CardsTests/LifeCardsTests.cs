@@ -992,6 +992,84 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        public IEnumerator ZVirusWithLeashAndResurrect()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new TestCardData("Z-Virus", 1),
+                    new TestCardData("Leash", 1),
+                    new TestCardData("Zeeder", 1),
+                    new TestCardData("Trunk", 20)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new TestCardData("Z-Virus", 1),
+                    new TestCardData("Trunk", 20)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
+
+                InstanceId playerZVirusId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Z-Virus", 1);
+                InstanceId playerLeashId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Leash", 1);
+                InstanceId playerZeederId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeeder", 1);
+                InstanceId playerTrunkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
+                InstanceId opponentZVirusId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Z-Virus", 1);
+                InstanceId opponentTrunk1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
+                InstanceId opponentTrunk2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 2);
+                InstanceId opponentTrunk3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 3);
+
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardAbilityUsed(playerZVirusId, Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS, new List<ParametrizedAbilityInstanceId>());
+                           player.CardPlay(playerZVirusId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardAbilityUsed(opponentZVirusId, Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardPlay(opponentZVirusId, ItemPosition.Start);
+                       },
+                       player => 
+                       {
+                           player.CardPlay(playerLeashId, ItemPosition.Start, opponentZVirusId);
+                       },
+                       opponent => 
+                       {
+                           opponent.CardPlay(opponentTrunk1Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentTrunk2Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentTrunk3Id, ItemPosition.Start);
+                       },
+                       player => {
+                           player.CardPlay(playerTrunkId, ItemPosition.Start);
+                           player.CardPlay(playerZeederId, ItemPosition.End, opponentZVirusId);
+                       },
+                       opponent => 
+                       {
+                           opponent.CardAttack(opponentTrunk1Id, opponentZVirusId);
+                           opponent.CardAttack(opponentTrunk2Id, opponentZVirusId);
+                       },
+                       player => 
+                       {
+                           
+                       },
+                       opponent => {},
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            }, 300);
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
         public IEnumerator ZVirusWithLeash()
         {
             return AsyncTest(async () =>
