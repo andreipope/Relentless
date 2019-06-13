@@ -2,54 +2,54 @@
   "cardTypes": [
     {
       "name": "Feral",
-      "tooltip": "Can attack when this zombie enters the battleground",
+      "tooltip": "Can attack when this creature enters the battleground",
       "type": "FERAL"
     },
     {
       "name": "Heavy",
-      "tooltip": "Enemies must attack this zombie first",
+      "tooltip": "Enemies must attack this creature first",
       "type": "HEAVY"
     }
   ],
   "mechanics": [
     {
       "name": "Entry",
-      "tooltip": "Ability activates when this zombie enters the battleground",
+      "tooltip": "Ability activates when this creature enters the battleground",
       "type": "ENTRY"
     },
     {
       "name": "Death",
-      "tooltip": "Ability activates when this zombie dies",
+      "tooltip": "Ability activates when this creature dies",
       "type": "DEATH"
     },
     {
       "name": "Attack",
-      "tooltip": "Ability activates when this zombie attacks",
+      "tooltip": "Ability activates when this creature attacks",
       "type": "ATTACK"
     },
     {
       "name": "Freeze",
-      "tooltip": "Freezes any zombie it damages - a frozen zombie loses it's next turn",
+      "tooltip": "Freezes any creature it damages - a frozen creature loses it's next turn",
       "type": "FREEZE"
     },
     {
       "name": "Flash",
-      "tooltip": "This zombie can attack twice",
+      "tooltip": "This creature can attack twice",
       "type": "FLASH"
     },
     {
       "name": "Destroy",
-      "tooltip": "Zombies damaged by this are removed from battleground",
+      "tooltip": "Creatures damaged by this are removed from battleground",
       "type": "DESTROY"
     },
     {
       "name": "Distract",
-      "tooltip": "Zombie with this status is unable to use it's ability",
+      "tooltip": "Creature with this status is unable to use it's ability",
       "type": "DISTRACT"
     },
     {
       "name": "Swing X",
-      "tooltip": "Deal X damage to zombies that are adjacent to target",
+      "tooltip": "Deal X damage to creatures that are adjacent to target",
       "type": "SWING"
     },
     {
@@ -84,7 +84,7 @@
     },
     {
       "name": "Devour",
-      "tooltip": "Killing a zombie will gain it's attack and / or defense values",
+      "tooltip": "Killing a creature will gain it's attack and / or defense values",
       "type": "DEVOUR"
     },
     {
@@ -94,37 +94,37 @@
     },
     {
       "name": "Reanimate",
-      "tooltip": "Resummon this zombie when it is Destroyed",
+      "tooltip": "Resummon this creature when it is Destroyed",
       "type": "REANIMATE"
     },
     {
       "name": "Restore",
-      "tooltip": "Add Def to wounded zombie up to its max Def",
+      "tooltip": "Add Def to wounded creature up to its max Def",
       "type": "RESTORE"
     },
     {
       "name": "Chainsaw",
-      "tooltip": "Add 4 Atk to a zombie; End: -4 Def",
+      "tooltip": "Add 4 Atk to a creature; End: -4 Def",
       "type": "CHAINSAW"
     },
     {
       "name": "Blitz",
-      "tooltip": "Can attack zombies when this enters the battleground",
+      "tooltip": "Can attack creatures when this enters the battleground",
       "type": "BLITZ"
     },
     {
       "name": "Super Serum",
-      "tooltip": "Add 3 Atk and 3 Def to a zombie; End: -3 Def",
+      "tooltip": "Add 3 Atk and 3 Def to a creature; End: -3 Def",
       "type": "SUPER_SERUM"
     },
     {
       "name": "Feral",
-      "tooltip": "Can attack when this zombie enters the battleground",
+      "tooltip": "Can attack when this creature enters the battleground",
       "type": "FERAL"
     },
     {
       "name": "Heavy",
-      "tooltip": "Enemies must attack this zombie first",
+      "tooltip": "Enemies must attack this creature first",
       "type": "HEAVY"
     }
   ],
