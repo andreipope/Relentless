@@ -68,6 +68,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
+        public bool CannotDie { get; private set; }
+
         public InstanceId InstanceId => Card.InstanceId;
 
         public Player OwnerPlayer => Card.Owner;
@@ -313,28 +315,37 @@ namespace Loom.ZombieBattleground
                     valueHistory[i].Enabled = false;
                 }
             }
-            UnitDefenseChanged?.Invoke(oldDefence, CurrentDefense);
-            UnitDamageChanged?.Invoke(oldDamage, CurrentDamage);
+            InvokeDefenseChanged(oldDefence, CurrentDefense);
+            InvokeDamageChanged(oldDamage, CurrentDamage);
         }
 
         public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentDamageHistory.Add(new ValueHistory(value, reason, forced: forced));
-            UnitDamageChanged?.Invoke(oldValue, CurrentDamage);
+            InvokeDamageChanged(oldValue, CurrentDamage);
         }
 
+        public void InvokeDamageChanged(int oldValue, int currentDamage)
+        {
+            UnitDamageChanged?.Invoke(oldValue, currentDamage);
+        }
 
         public void AddToCurrentCostHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentCostHistory.Add(new ValueHistory(value, reason, forced: forced));
         }
-        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason)
+        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDefense;
-            CurrentDefenseHistory.Add(new ValueHistory(value, reason));
-            UnitDefenseChanged?.Invoke(oldValue, CurrentDefense);
+            CurrentDefenseHistory.Add(new ValueHistory(value, reason, forced: forced));
+            InvokeDefenseChanged(oldValue, CurrentDefense);
+        }
+
+        public void InvokeDefenseChanged(int oldValue, int currentDefense)
+        {
+            UnitDefenseChanged?.Invoke(oldValue, currentDefense);
         }
 
         public void HandleDefenseBuffer(int damage)
@@ -348,6 +359,11 @@ namespace Loom.ZombieBattleground
         public void SetUnitActiveStatus(bool isActive)
         {
             IsUnitActive = isActive;
+        }
+
+        public void SetUnitCannotDie(bool cannotDie)
+        {
+            CannotDie = cannotDie;
         }
 
         public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true, bool isDead = true)
@@ -1116,6 +1132,7 @@ namespace Loom.ZombieBattleground
             IsPlayable = false;
             IsAttacking = false;
             IsDead = false;
+            CannotDie = false;
             AttackAsFirst = false;
             IsUnitActive = true;
             CantAttackInThisTurnBlocker = false;

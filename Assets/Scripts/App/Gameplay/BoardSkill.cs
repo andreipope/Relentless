@@ -178,7 +178,6 @@ namespace Loom.ZombieBattleground
 
                     Action callback = () =>
                     {
-                        skillUsageAction.TriggerActionExternally();
                         switch (target)
                         {
                             case Player player:
@@ -192,6 +191,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         EndDoSkill(parametrizedAbilityObjects);
+                        skillUsageAction.TriggerActionExternally();
                     };
 
                     FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(SelfObject.transform, target, action: callback);

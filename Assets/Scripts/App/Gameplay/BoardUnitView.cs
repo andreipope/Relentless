@@ -711,7 +711,7 @@ namespace Loom.ZombieBattleground
 
         private void CheckOnDie()
         {
-            if (Model.CurrentDefense <= 0 && !Model.IsDead)
+            if (Model.CurrentDefense <= 0 && !Model.IsDead && !Model.CannotDie)
             {
                 if (Model.IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 {

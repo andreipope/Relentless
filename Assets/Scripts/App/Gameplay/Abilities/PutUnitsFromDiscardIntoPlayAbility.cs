@@ -10,10 +10,20 @@ namespace Loom.ZombieBattleground
     {
         public int Count { get; }
 
+        private List<CardModel> _targets;
+
+        private List<PastActionsPopup.TargetEffectParam> _targetEffects;
+
+        private bool _targetsAreReady;
+
         public PutUnitsFromDiscardIntoPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
+
+            _targets = new List<CardModel>();
+            _targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            _targetsAreReady = false;
         }
 
         public override void Activate()
@@ -44,6 +54,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense <= 0)
             {
+                PrepareTargets();
+                AbilityProcessingAction?.TriggerActionExternally();
                 AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
             }
         }
@@ -52,58 +64,23 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<CardModel> targets = new List<CardModel>();
-            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
-
-            Player playerOwner = null;
-            
-            foreach (Enumerators.Target targetType in AbilityData.Targets)
+            if (!_targetsAreReady)
             {
-                switch (targetType)
-                {
-                    case Enumerators.Target.PLAYER:
-                        playerOwner = PlayerCallerOfAbility;
-                        break;
-                    case Enumerators.Target.OPPONENT:
-                        playerOwner = GetOpponentOverlord();
-                        break;
-                }
-
-                List<CardModel> elements =
-                    playerOwner.PlayerCardsController.CardsInGraveyard
-                        .FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE && card != AbilityUnitOwner);
-
-                elements = elements.OrderByDescending(x => x.InstanceId.Id).ToList();
-
-                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
-                {
-                    elements = GetRandomElements(elements, Count);
-                }
-
-                if (HasEmptySpaceOnBoard(playerOwner, out int emptyFields) && elements.Count > 0)
-                {
-                    for (int i = 0; i < emptyFields; i++)
-                    {
-                        if (i >= elements.Count)
-                            break;
-
-                        targets.Add(elements[i]);
-                    }
-                }
+                PrepareTargets();
             }
 
-            if (targets.Count > 0)
+            if (_targets.Count > 0)
             {
-                foreach (CardModel target in targets)
+                foreach (CardModel target in _targets)
                 {
-                    PutCardOnBoard(target.OwnerPlayer, target, ref targetEffects);
+                    PutCardOnBoard(target.OwnerPlayer, target, ref _targetEffects);
                 }
 
                 ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                     Caller = AbilityUnitOwner,
-                    TargetEffects = targetEffects
+                    TargetEffects = _targetEffects
                 });
             }
 
@@ -127,6 +104,53 @@ namespace Loom.ZombieBattleground
                 ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
                 Target = cardModel
             });
+        }
+
+        private void PrepareTargets() 
+        {
+            List<CardModel> targets = new List<CardModel>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            Player playerOwner = null;
+            
+            foreach (Enumerators.Target targetType in AbilityData.Targets)
+            {
+                switch (targetType)
+                {
+                    case Enumerators.Target.PLAYER:
+                        playerOwner = PlayerCallerOfAbility;
+                        break;
+                    case Enumerators.Target.OPPONENT:
+                        playerOwner = GetOpponentOverlord();
+                        break;
+                }
+
+                List<CardModel> elements =
+                    playerOwner.PlayerCardsController.CardsInGraveyard
+                        .FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE && card != AbilityUnitOwner);
+     
+                elements = elements.OrderByDescending(x => x.InstanceId.Id).ToList();
+
+                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+                {
+                    elements = GetRandomElements(elements, Count);
+                }
+
+                if (HasEmptySpaceOnBoard(playerOwner, out int emptyFields) && elements.Count > 0)
+                {
+                    for (int i = 0; i < emptyFields; i++)
+                    {
+                        if (i >= elements.Count)
+                            break;
+
+                        targets.Add(elements[i]);
+                    }
+                }
+            }
+
+            _targets = targets;
+            _targetEffects = targetEffects;
+            _targetsAreReady = true;
         }
     }
 }

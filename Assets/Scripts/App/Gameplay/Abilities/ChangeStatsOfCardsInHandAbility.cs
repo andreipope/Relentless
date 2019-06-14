@@ -102,6 +102,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            _affectedCards?.ForEach(ResetStatsOfTargetCard);
+            CheckSubTriggers();
+        }
+
         private void CheckSubTriggers()
         {
             List<CardModel> cards = new List<CardModel>();

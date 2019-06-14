@@ -407,9 +407,6 @@ namespace Loom.ZombieBattleground
             Player unitOwner = cardModel.OwnerPlayer;
             BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
 
-            cardModel.Card.InstanceCard.Cost = cardModel.Card.Prototype.Cost;
-            cardModel.DisableBuffsOnValueHistory(cardModel.CurrentCostHistory);
-
             Vector3 unitPosition = boardUnitView.Transform.position;
 
             _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel, true);
@@ -433,7 +430,7 @@ namespace Loom.ZombieBattleground
 
                 _gameplayManager.RearrangeHands();
             },
-                2f);
+                1f);
         }
 
         public void ResetPlayerCardsOnBattlegroundPosition()

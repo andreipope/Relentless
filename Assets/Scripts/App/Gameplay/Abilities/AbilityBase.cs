@@ -306,8 +306,6 @@ namespace Loom.ZombieBattleground
 
         public void ChangePlayerCallerOfAbility(Player player)
         {
-            PlayerOwnerHasChanged(PlayerCallerOfAbility, player);
-
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
@@ -315,6 +313,8 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
 
             PlayerCallerOfAbility = player;
+
+            PlayerOwnerHasChanged(PlayerCallerOfAbility, player);
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;

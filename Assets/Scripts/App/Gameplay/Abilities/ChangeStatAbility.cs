@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ChangeStatsOfPlayerAllyCards(-Defense, -Attack, false);
+                ResetAffectedUnits();
                 _affectedUnits.Clear();
             }
         }
@@ -159,6 +159,16 @@ namespace Loom.ZombieBattleground
                 ChangeStatsToItself();
                 RemoveBuffFromUnit(oldAttack, oldDefense, cardStat);
             }
+        }
+
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            ResetAffectedUnits();
+            _affectedUnits.Clear();
+            ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
         }
 
         private void ChangeStatsToItself()
