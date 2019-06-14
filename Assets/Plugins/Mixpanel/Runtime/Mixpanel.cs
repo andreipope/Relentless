@@ -696,7 +696,7 @@ namespace mixpanel
                 Register("$app_version_string", platform.MixpanelUnityPlatform.get_android_version_name());
                 #endif
 
-                #if UNITY_IOS
+                #if UNITY_IOS && MIXPANEL_USE_IOS_IFA
                 if (useIosIfa && !detail.IOSIdentifiers.MIXPANEL_USE_IOS_IFA_ENABLED)
                 {
                     Debug.LogError("Mixpanel: If you want to use the automatic $ios_ifa property, you have to define the MIXPANEL_USE_IOS_IFA script symbol in the player settings."+
