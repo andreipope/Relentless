@@ -85,5 +85,22 @@ namespace Loom.ZombieBattleground
             int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Id == skillId);
             return index != -1 && overlordUserInstance.Skills[index].UserData.IsUnlocked;
         }
+
+
+        public static Enumerators.Skill GetSkill(OverlordId overlordId, SkillId skillId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            OverlordUserInstance overlordUserInstance = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Id == skillId);
+            return index != -1 ? overlordUserInstance.Skills[index].Prototype.Skill : Enumerators.Skill.NONE;
+        }
+
+        public static SkillId GetSkillId(OverlordId overlordId, Enumerators.Skill skillType)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            OverlordUserInstance overlordUserInstance = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Skill == skillType);
+            return overlordUserInstance.Skills[index].Prototype.Id;
+        }
     }
 }

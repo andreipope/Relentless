@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
 
         private GameObject _abilityBarPrefab;
+
+        private TextMeshProUGUI _selectedAbilitiesCount;
 
         private Button _buttonCancel;
         private Button _buttonSave;
@@ -59,6 +62,8 @@ namespace Loom.ZombieBattleground
 
             _abilityBarPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/AbilityBarUI");
 
+            _selectedAbilitiesCount = Self.transform.Find("Abilities/Panel_BG/Top_Panel/Abilities_Selected").GetComponent<TextMeshProUGUI>();
+
             _buttonCancel = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
@@ -68,13 +73,15 @@ namespace Loom.ZombieBattleground
             _allAbilitiesContent = Self.transform.Find("Abilities/Panel_BG/Ability_List/Element/Scroll View").GetComponent<ScrollRect>().content;
 
             ShowOverlordAbilities();
+            ShowAbilitiesInDeck();
+            ShowAbilityCount();
 
             OnSelectSkill += SelectSkill;
         }
 
         private void SelectSkill(SkillId skillId)
         {
-            AbilityBarUI abilityBarUi = _abilitiesBar.Find(abilityBar => abilityBar.SelectedSkillId == skillId);
+            AbilityBarUI abilityBarUi = _abilitiesBar.Find(abilityBar => abilityBar.SkillId == skillId);
 
             bool isSkillUnLocked = DataUtilities.IsSkillLocked(_deck.OverlordId, skillId);
             if (!isSkillUnLocked)
@@ -82,27 +89,24 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            int selectedAbilityCount = _abilitiesBar.FindAll(abilityBar => abilityBar.IsSelected).Count;
             if (abilityBarUi.IsSelected)
             {
                 abilityBarUi.SelectAbility(false);
+
+                selectedAbilityCount -= 1;
             }
             else
             {
-                if (abilityBarUi.SelectedSkill == Enumerators.Skill.NONE)
+                if (selectedAbilityCount < 2)
                 {
-
                     abilityBarUi.SelectAbility(true);
 
-                    if (_deck.PrimarySkill == Enumerators.Skill.NONE)
-                    {
-                        //_deck.PrimarySkill =
-                    }
-                    else if (_deck.SecondarySkill == Enumerators.Skill.NONE)
-                    {
-                        //_deck.SecondarySkill =
-                    }
+                    selectedAbilityCount += 1;
                 }
             }
+
+            UpdateCountDisplay(selectedAbilityCount);
         }
 
         private void ShowOverlordAbilities()
@@ -125,6 +129,44 @@ namespace Loom.ZombieBattleground
 
                 _abilitiesBar.Add(abilityBarUi);
             }
+        }
+
+        private void ShowAbilitiesInDeck()
+        {
+            if (_deck.PrimarySkill != Enumerators.Skill.NONE)
+            {
+                SkillId skillId = DataUtilities.GetSkillId(_deck.OverlordId, _deck.PrimarySkill);
+                AbilityBarUI abilityBarUi = _abilitiesBar.Find(ability => ability.SkillId == skillId);
+                abilityBarUi.SelectAbility(true);
+            }
+
+            if (_deck.SecondarySkill != Enumerators.Skill.NONE)
+            {
+                SkillId skillId = DataUtilities.GetSkillId(_deck.OverlordId, _deck.SecondarySkill);
+                AbilityBarUI abilityBarUi = _abilitiesBar.Find(ability => ability.SkillId == skillId);
+                abilityBarUi.SelectAbility(true);
+            }
+        }
+
+        private void ShowAbilityCount()
+        {
+            int count = 0;
+            if (_deck.PrimarySkill != Enumerators.Skill.NONE)
+            {
+                count += 1;
+            }
+
+            if (_deck.SecondarySkill != Enumerators.Skill.NONE)
+            {
+                count += 1;
+            }
+
+            UpdateCountDisplay(count);
+        }
+
+        private void UpdateCountDisplay(int abilityCount)
+        {
+            _selectedAbilitiesCount.text = "<color=#FFFF00>"+ abilityCount +"/2</color> ABILITIES SELECTED";
         }
 
         private void ButtonSaveHandler()
@@ -153,6 +195,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+
+            OnSelectSkill -= SelectSkill;
         }
 
         public void Update()

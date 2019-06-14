@@ -25,8 +25,7 @@ public class AbilityBarUI
     private Sprite _unSelectedAbilitySprite;
     private Sprite _selectedAbilitySprite;
 
-    public SkillId SelectedSkillId;
-    public Enumerators.Skill SelectedSkill;
+    public SkillId SkillId;
     public bool IsSelected;
 
 
@@ -50,12 +49,11 @@ public class AbilityBarUI
         _unSelectedAbilitySprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseAbility/selectability_idle");
 
         IsSelected = false;
-        SelectedSkill = Enumerators.Skill.NONE;
     }
 
     private void ButtonAbilityHandler()
     {
-        ChampionAbilitiesPopup.OnSelectSkill?.Invoke(SelectedSkillId);
+        ChampionAbilitiesPopup.OnSelectSkill?.Invoke(SkillId);
     }
 
     public void SelectAbility(bool select)
@@ -67,7 +65,7 @@ public class AbilityBarUI
 
     public void FillAbility(OverlordSkillUserInstance skill)
     {
-        SelectedSkillId = skill.Prototype.Id;
+        SkillId = skill.Prototype.Id;
         _abilityName.text = skill.Prototype.Title;
         _abilityDescription.text = skill.Prototype.Description;
         _abilityImage.sprite = DataUtilities.GetAbilityIcon(skill);
