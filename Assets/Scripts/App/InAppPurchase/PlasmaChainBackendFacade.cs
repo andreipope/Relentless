@@ -84,10 +84,10 @@ namespace Loom.ZombieBattleground.Iap
             return client;
         }
 
-        public async Task ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionResponse fiatResponse)
+        public async Task ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionReceipt fiatReceipt)
         {
             EvmContract evmContract = GetContract(client, IapContractType.FiatPurchase);
-            RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatResponse);
+            RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatReceipt);
             await CallRequestPacksContract(evmContract, requestPacksRequest);
         }
 
@@ -105,7 +105,6 @@ namespace Loom.ZombieBattleground.Iap
             return amount;
         }
 
-        [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
         public async Task<IReadOnlyList<Card>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
@@ -128,7 +127,7 @@ namespace Loom.ZombieBattleground.Iap
                     );
                 List<EventLog<T>> changes = await evmEvent.GetAllChanges(filterInput);
 
-                // Check if those events belong to the transaction that opened the pack
+                // Filter out events not belonging to the call we just made
                 changes = changes.Where(log => openPackTxHash.SequenceEqual(CryptoUtils.HexStringToBytes(log.Log.TransactionHash))).ToList();
                 return changes;
             }
@@ -276,38 +275,6 @@ namespace Loom.ZombieBattleground.Iap
             };
         }
 
-        private RequestPacksRequest CreateContractRequestFromTransactionResponse(AuthFiatApiFacade.TransactionResponse fiatResponse)
-        {
-            string r = fiatResponse.VerifyHash.signature.SubstringIndexed(2, 66);
-            string s = fiatResponse.VerifyHash.signature.SubstringIndexed(66, 130);
-            string v = fiatResponse.VerifyHash.signature.SubstringIndexed(130, 132);
-
-            RequestPacksRequest request = new RequestPacksRequest
-            {
-                UserId = fiatResponse.UserId,
-                R = CryptoUtils.HexStringToBytes(r),
-                S = CryptoUtils.HexStringToBytes(s),
-                V = (byte) Int32.Parse(v, NumberStyles.AllowHexSpecifier),
-                Hash = CryptoUtils.HexStringToBytes(fiatResponse.VerifyHash.hash),
-                Amount = new[]
-                {
-                    fiatResponse.Booster,
-                    fiatResponse.Super,
-                    fiatResponse.Air,
-                    fiatResponse.Earth,
-                    fiatResponse.Fire,
-                    fiatResponse.Life,
-                    fiatResponse.Toxic,
-                    fiatResponse.Water,
-                    fiatResponse.Small,
-                    fiatResponse.Minion,
-                    fiatResponse.Binance
-                },
-                TxID = fiatResponse.TxID
-            };
-            return request;
-        }
-
         private async Task CallRequestPacksContract(EvmContract contract, RequestPacksRequest requestPacksRequest)
         {
             Log.Info($"{nameof(CallRequestPacksContract)}, ContractRequest:\n" + JsonConvert.SerializeObject(requestPacksRequest));
@@ -358,7 +325,7 @@ namespace Loom.ZombieBattleground.Iap
             }
         }
 
-        private string GetContractAddress(IapContractType contractType)
+        private static string GetContractAddress(IapContractType contractType)
         {
             switch (contractType)
             {
@@ -391,7 +358,7 @@ namespace Loom.ZombieBattleground.Iap
             }
         }
 
-        private IapContractType GetPackContractTypeFromId(Enumerators.MarketplaceCardPackType packId)
+        private static IapContractType GetPackContractTypeFromId(Enumerators.MarketplaceCardPackType packId)
         {
             switch (packId)
             {
@@ -418,6 +385,41 @@ namespace Loom.ZombieBattleground.Iap
                 default:
                     throw new Exception($"Not found ContractType from pack id {packId}");
             }
+        }
+
+        private static RequestPacksRequest CreateContractRequestFromTransactionResponse(AuthFiatApiFacade.TransactionReceipt fiatReceipt)
+        {
+            byte[] signature = fiatReceipt.VerifyHash.Signature;
+            byte[] r = new byte[32];
+            Array.Copy(signature, 0, r, 0, 32);
+            byte[] s = new byte[32];
+            Array.Copy(signature, 32, s, 0, 32);
+            byte v = signature[signature.Length - 1];
+
+            RequestPacksRequest request = new RequestPacksRequest
+            {
+                UserId = fiatReceipt.UserId,
+                R = r,
+                S = s,
+                V = v,
+                Hash = fiatReceipt.VerifyHash.Hash,
+                Amount = new[]
+                {
+                    fiatReceipt.Booster,
+                    fiatReceipt.Super,
+                    fiatReceipt.Air,
+                    fiatReceipt.Earth,
+                    fiatReceipt.Fire,
+                    fiatReceipt.Life,
+                    fiatReceipt.Toxic,
+                    fiatReceipt.Water,
+                    fiatReceipt.Small,
+                    fiatReceipt.Minion,
+                    fiatReceipt.Binance
+                },
+                TxID = fiatReceipt.TxID
+            };
+            return request;
         }
 
         private class LoggingDAppChainClient : DAppChainClient
@@ -477,13 +479,13 @@ namespace Loom.ZombieBattleground.Iap
 
         private struct RequestPacksRequest
         {
-            public int UserId;
+            public BigInteger UserId;
             public byte[] R;
             public byte[] S;
             public byte V;
             public byte[] Hash;
-            public int[] Amount;
-            public int TxID;
+            public uint[] Amount;
+            public BigInteger TxID;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
@@ -98,7 +99,7 @@ namespace Loom.ZombieBattleground.Iap
             Log.Info($"{nameof(RequestFiatValidation)}");
             SetState(IapPurchaseState.RequestingFiatValidation, null);
 
-            AuthFiatApiFacade.ValidationResponse validationResponse;
+            ValidationResponse validationResponse;
             try
             {
                 validationResponse = await _authFiatApiFacade.RegisterTransactionAndValidate(fiatValidationData);
@@ -109,7 +110,7 @@ namespace Loom.ZombieBattleground.Iap
                 return IapPurchaseProcessingError.ValidationFailed;
             }
 
-            return await RequestFiatTransaction(validationResponse.txId);
+            return await RequestFiatTransaction(validationResponse.TxId);
         }
 
         /// <summary>
@@ -117,15 +118,15 @@ namespace Loom.ZombieBattleground.Iap
         /// </summary>
         /// <param name="txId"></param>
         /// <returns></returns>
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestFiatTransaction(int txId)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestFiatTransaction(BigInteger txId)
         {
             Log.Info($"{nameof(RequestFiatTransaction)}(int txId = {txId})");
             SetState(IapPurchaseState.RequestingFiatTransaction, null);
-            AuthFiatApiFacade.TransactionResponse matchingTx;
+            AuthFiatApiFacade.TransactionReceipt matchingTx;
             try
             {
-                List<AuthFiatApiFacade.TransactionResponse> recordList = await _authFiatApiFacade.ListPendingTransactions();
-                recordList.Sort((resA, resB) => resB.TxID - resA.TxID);
+                List<AuthFiatApiFacade.TransactionReceipt> recordList = await _authFiatApiFacade.ListPendingTransactions();
+                recordList.Sort((resA, resB) => (int) (resB.TxID - resA.TxID));
                 Log.Debug($"{nameof(RequestFiatTransaction)}: received TxIDs " + Utilites.FormatCallLogList(recordList.Select(tr => tr.TxID)));
                 matchingTx = recordList.SingleOrDefault(record => record.TxID == txId);
                 if (matchingTx == null)
@@ -145,7 +146,7 @@ namespace Loom.ZombieBattleground.Iap
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestPack(AuthFiatApiFacade.TransactionResponse record)
+        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestPack(AuthFiatApiFacade.TransactionReceipt record)
         {
             Log.Debug($"{nameof(RequestPack)}(UserId: {record.UserId}, TxID: {record.TxID})");
             SetState(IapPurchaseState.RequestingPack, null);
@@ -180,7 +181,7 @@ namespace Loom.ZombieBattleground.Iap
         /// <param name="userId"></param>
         /// <param name="txId"></param>
         /// <returns></returns>
-        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> AuthClaim(int userId, int txId)
+        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> AuthClaim(BigInteger userId, BigInteger txId)
         {
             Log.Debug($"{nameof(AuthClaim)}(userID = {userId}, txID = {txId})");
 

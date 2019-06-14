@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DeepEqual.Syntax;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Iap;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -20,13 +22,32 @@ namespace Loom.ZombieBattleground.Test
     public class DataTest
     {
         [Test]
-        public void MouldIdSerialization()
+        public void TransactionResponseSerialization()
         {
-            CardKey original = new CardKey(new MouldId(long.MaxValue), Enumerators.CardVariant.Standard);
+            string json =
+                @"{""VerifyHash"":{""hash"":""0xf1a0b8586d04cf9fab76636aa859b575c8e8eae18bfc57f093d1c97703a3eca9"",""signature"":""0x59e2e78ae04a206aad5639f120df820fd971ff3242b7afc1ec6ab7ffdeb2f25716b2dc6e403046446118e41dea6ed0753a867272ca1600b160abb9185f1717141b""},""UserId"":1,""Booster"":1,""Air"":0,""Earth"":0,""Fire"":0,""Life"":0,""Toxic"":0,""Water"":0,""Super"":0,""Small"":0,""Minion"":0,""Binance"":0,""TxID"":170141183460469231731687303715884105729}";
+
+            AuthFiatApiFacade.TransactionReceipt transactionReceipt = JsonConvert.DeserializeObject<AuthFiatApiFacade.TransactionReceipt>(json);
+            Assert.AreEqual(BigInteger.Parse("170141183460469231731687303715884105729"), transactionReceipt.TxID);
+        }
+
+        [Test]
+        public void BigIntegerSerialization()
+        {
+            BigInteger original = new BigInteger(long.MaxValue) * new BigInteger(long.MaxValue);
+            BigInteger deserialized = original.ToProtobufUInt().FromProtobuf();
+            Assert.AreEqual(original, deserialized);
+        }
+
+        [Test]
+        public void CardKeySerialization()
+        {
+            CardKey original = new CardKey(new MouldId(long.MaxValue), Enumerators.CardVariant.Limited);
             string serialized = JsonConvert.SerializeObject(original);
             CardKey deserialized = JsonConvert.DeserializeObject<CardKey>(serialized);
             Assert.AreEqual(original, deserialized);
         }
+
         [Test]
         public void DeckProtobufSerialization()
         {

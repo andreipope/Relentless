@@ -66,9 +66,9 @@ namespace Loom.ZombieBattleground.Iap
             {
                 // Get the products IDs from Marketplace and use them for IAP
                 IReadOnlyList<AuthFiatApiFacade.StoreData> stores = await _authFiatApiFacade.GetProducts();
-                AuthFiatApiFacade.StoreData storeData = stores.Single(store => store.store == GetAuthPlatformName());
+                AuthFiatApiFacade.StoreData storeData = stores.Single(store => store.Store == GetAuthPlatformName());
                 productDefinitions =
-                    storeData.packs
+                    storeData.Packs
                         .Select(pack => ProductDataToMarketplaceProduct(storeData, pack))
                         .ToList();
             }
@@ -153,7 +153,7 @@ namespace Loom.ZombieBattleground.Iap
         public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ClaimMarketplacePurchases()
         {
             Log.Debug(nameof(ClaimMarketplacePurchases));
-            List<AuthFiatApiFacade.TransactionResponse> transactions;
+            List<AuthFiatApiFacade.TransactionReceipt> transactions;
             try
             {
                 transactions = await _authFiatApiFacade.ListPendingTransactions();
@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground.Iap
                 using (plasmaChainClient)
                 {
                     Log.Debug("Pending transaction TxIDs: " + Utilites.FormatCallLogList(transactions.Select(tx => tx.TxID)));
-                    foreach (AuthFiatApiFacade.TransactionResponse transaction in transactions)
+                    foreach (AuthFiatApiFacade.TransactionReceipt transaction in transactions)
                     {
                         Log.Debug("Claiming transaction with TxId " + transaction.TxID);
                         IapPurchaseProcessor iapPurchaseProcessor =
@@ -416,13 +416,13 @@ namespace Loom.ZombieBattleground.Iap
             AuthFiatApiFacade.ProductData productData)
         {
             return new IapMarketplaceProduct(
-                new ProductDefinition(productData.store_id, productData.store_id, ProductType.Consumable),
+                new ProductDefinition(productData.StoreId, productData.StoreId, ProductType.Consumable),
                 new ProductMetadata(
                     null,
-                    productData.display_name,
-                    productData.description,
-                    storeData.currency,
-                    productData.price / (decimal) storeData.unit_percent
+                    productData.DisplayName,
+                    productData.Description,
+                    storeData.Currency,
+                    productData.Price / (decimal) storeData.UnitPercent
                 )
             );
         }

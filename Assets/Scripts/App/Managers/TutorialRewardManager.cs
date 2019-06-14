@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
             return b;
         }
 
-        public int BigUIntToInt(Client.Protobuf.BigUInt bigNumber)
+        public BigInteger BigUIntToInt(Client.Protobuf.BigUInt bigNumber)
         {
             Array someArray = Convert.FromBase64String
             (

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Numerics;
 using Loom.Client;
 using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
@@ -834,6 +835,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             return await _contractCallProxy.CallAsync<ClearNotificationsResponse>(ClearNotificationsMethod, request);
         }
+
+        #endregion
+
+        #region Debug
+
+        public async Task<DebugCreateBoosterPackReceiptResponse> DebugCreateBoosterPackReceipt(int userId, int boosterAmount, BigInteger txId)
+        {
+            DebugCreateBoosterPackReceiptRequest request = new DebugCreateBoosterPackReceiptRequest
+            {
+                UserId = new BigInteger(userId).ToProtobufUInt(),
+                BoosterAmount = boosterAmount,
+                RelativeTxId = txId.ToProtobufUInt()
+            };
+
+            return await _contractCallProxy.StaticCallAsync<DebugCreateBoosterPackReceiptResponse>("DebugCreateBoosterPackReceipt", request);
+        }
+
 
         #endregion
     }

@@ -162,8 +162,13 @@ namespace Loom.ZombieBattleground.Protobuf {
             "ASADKAsyHi5DdXN0b21HYW1lTW9kZUN1c3RvbVVpRWxlbWVudCJQCiFDYWxs",
             "Q3VzdG9tR2FtZU1vZGVGdW5jdGlvblJlcXVlc3QSGQoHYWRkcmVzcxgBIAEo",
             "CzIILkFkZHJlc3MSEAoIY2FsbERhdGEYAiABKAwiOgooU3RhdGljQ2FsbEN1",
-            "c3RvbUdhbWVNb2RlRnVuY3Rpb25SZXNwb25zZRIOCgZvdXRwdXQYASABKAxC",
-            "I6oCIExvb20uWm9tYmllQmF0dGxlZ3JvdW5kLlByb3RvYnVmYgZwcm90bzM="));
+            "c3RvbUdhbWVNb2RlRnVuY3Rpb25SZXNwb25zZRIOCgZvdXRwdXQYASABKAwi",
+            "dwokRGVidWdDcmVhdGVCb29zdGVyUGFja1JlY2VpcHRSZXF1ZXN0EhgKBnVz",
+            "ZXJJZBgBIAEoCzIILkJpZ1VJbnQSFQoNYm9vc3RlckFtb3VudBgCIAEoBRIe",
+            "CgxyZWxhdGl2ZVR4SWQYAyABKAsyCC5CaWdVSW50IkgKJURlYnVnQ3JlYXRl",
+            "Qm9vc3RlclBhY2tSZWNlaXB0UmVzcG9uc2USHwoXdHJhbnNhY3Rpb25SZXNw",
+            "b25zZUpzb24YASABKAlCI6oCIExvb20uWm9tYmllQmF0dGxlZ3JvdW5kLlBy",
+            "b3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, global::Loom.ZombieBattleground.Protobuf.ZbDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -257,7 +262,9 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiRequest), global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiRequest.Parser, new[]{ "Address" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiResponse), global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiResponse.Parser, new[]{ "UiElements" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CallCustomGameModeFunctionRequest), global::Loom.ZombieBattleground.Protobuf.CallCustomGameModeFunctionRequest.Parser, new[]{ "Address", "CallData" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse), global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse.Parser, new[]{ "Output" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse), global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse.Parser, new[]{ "Output" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptRequest), global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptRequest.Parser, new[]{ "UserId", "BoosterAmount", "RelativeTxId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptResponse), global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptResponse.Parser, new[]{ "TransactionResponseJson" }, null, null, null)
           }));
     }
     #endregion
@@ -14135,6 +14142,332 @@ namespace Loom.ZombieBattleground.Protobuf {
             break;
           case 10: {
             Output = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DebugCreateBoosterPackReceiptRequest : pb::IMessage<DebugCreateBoosterPackReceiptRequest> {
+    private static readonly pb::MessageParser<DebugCreateBoosterPackReceiptRequest> _parser = new pb::MessageParser<DebugCreateBoosterPackReceiptRequest>(() => new DebugCreateBoosterPackReceiptRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DebugCreateBoosterPackReceiptRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[91]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugCreateBoosterPackReceiptRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugCreateBoosterPackReceiptRequest(DebugCreateBoosterPackReceiptRequest other) : this() {
+      userId_ = other.userId_ != null ? other.userId_.Clone() : null;
+      boosterAmount_ = other.boosterAmount_;
+      relativeTxId_ = other.relativeTxId_ != null ? other.relativeTxId_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugCreateBoosterPackReceiptRequest Clone() {
+      return new DebugCreateBoosterPackReceiptRequest(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private global::Loom.Client.Protobuf.BigUInt userId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.Client.Protobuf.BigUInt UserId {
+      get { return userId_; }
+      set {
+        userId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "boosterAmount" field.</summary>
+    public const int BoosterAmountFieldNumber = 2;
+    private int boosterAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int BoosterAmount {
+      get { return boosterAmount_; }
+      set {
+        boosterAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "relativeTxId" field.</summary>
+    public const int RelativeTxIdFieldNumber = 3;
+    private global::Loom.Client.Protobuf.BigUInt relativeTxId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.Client.Protobuf.BigUInt RelativeTxId {
+      get { return relativeTxId_; }
+      set {
+        relativeTxId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DebugCreateBoosterPackReceiptRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DebugCreateBoosterPackReceiptRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(UserId, other.UserId)) return false;
+      if (BoosterAmount != other.BoosterAmount) return false;
+      if (!object.Equals(RelativeTxId, other.RelativeTxId)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (userId_ != null) hash ^= UserId.GetHashCode();
+      if (BoosterAmount != 0) hash ^= BoosterAmount.GetHashCode();
+      if (relativeTxId_ != null) hash ^= RelativeTxId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (userId_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(UserId);
+      }
+      if (BoosterAmount != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(BoosterAmount);
+      }
+      if (relativeTxId_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(RelativeTxId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (userId_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserId);
+      }
+      if (BoosterAmount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(BoosterAmount);
+      }
+      if (relativeTxId_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RelativeTxId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DebugCreateBoosterPackReceiptRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.userId_ != null) {
+        if (userId_ == null) {
+          userId_ = new global::Loom.Client.Protobuf.BigUInt();
+        }
+        UserId.MergeFrom(other.UserId);
+      }
+      if (other.BoosterAmount != 0) {
+        BoosterAmount = other.BoosterAmount;
+      }
+      if (other.relativeTxId_ != null) {
+        if (relativeTxId_ == null) {
+          relativeTxId_ = new global::Loom.Client.Protobuf.BigUInt();
+        }
+        RelativeTxId.MergeFrom(other.RelativeTxId);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (userId_ == null) {
+              userId_ = new global::Loom.Client.Protobuf.BigUInt();
+            }
+            input.ReadMessage(userId_);
+            break;
+          }
+          case 16: {
+            BoosterAmount = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            if (relativeTxId_ == null) {
+              relativeTxId_ = new global::Loom.Client.Protobuf.BigUInt();
+            }
+            input.ReadMessage(relativeTxId_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DebugCreateBoosterPackReceiptResponse : pb::IMessage<DebugCreateBoosterPackReceiptResponse> {
+    private static readonly pb::MessageParser<DebugCreateBoosterPackReceiptResponse> _parser = new pb::MessageParser<DebugCreateBoosterPackReceiptResponse>(() => new DebugCreateBoosterPackReceiptResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DebugCreateBoosterPackReceiptResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[92]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugCreateBoosterPackReceiptResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugCreateBoosterPackReceiptResponse(DebugCreateBoosterPackReceiptResponse other) : this() {
+      transactionResponseJson_ = other.transactionResponseJson_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugCreateBoosterPackReceiptResponse Clone() {
+      return new DebugCreateBoosterPackReceiptResponse(this);
+    }
+
+    /// <summary>Field number for the "transactionResponseJson" field.</summary>
+    public const int TransactionResponseJsonFieldNumber = 1;
+    private string transactionResponseJson_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string TransactionResponseJson {
+      get { return transactionResponseJson_; }
+      set {
+        transactionResponseJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DebugCreateBoosterPackReceiptResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DebugCreateBoosterPackReceiptResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (TransactionResponseJson != other.TransactionResponseJson) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (TransactionResponseJson.Length != 0) hash ^= TransactionResponseJson.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (TransactionResponseJson.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TransactionResponseJson);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (TransactionResponseJson.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TransactionResponseJson);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DebugCreateBoosterPackReceiptResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.TransactionResponseJson.Length != 0) {
+        TransactionResponseJson = other.TransactionResponseJson;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            TransactionResponseJson = input.ReadString();
             break;
           }
         }

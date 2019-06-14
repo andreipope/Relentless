@@ -94,8 +94,6 @@ namespace Loom.ZombieBattleground
                     .ToArray();
         }
 
-
-
         public static string FormatCallLogList<T>(IList<T> list)
         {
             return $"[({list.Count} items) {String.Join(", ", list)}]";

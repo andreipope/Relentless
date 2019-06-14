@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Iap;
+using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
@@ -16,6 +18,7 @@ namespace Loom.ZombieBattleground
         private static IapMediator _iapMediator;
         private static AuthFiatApiFacade _authFiatApiFacade;
         private static PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private static BackendFacade _backendFacade;
 
         public static void Initialize()
         {
@@ -23,6 +26,7 @@ namespace Loom.ZombieBattleground
             _iapMediator = GameClient.Get<IapMediator>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _backendFacade = GameClient.Get<BackendFacade>();
         }
 
         [CommandHandler]
@@ -43,8 +47,15 @@ namespace Loom.ZombieBattleground
         [CommandHandler]
         public static async void AuthApiGetTransactions()
         {
-            List<AuthFiatApiFacade.TransactionResponse> list = await _authFiatApiFacade.ListPendingTransactions();
+            List<AuthFiatApiFacade.TransactionReceipt> list = await _authFiatApiFacade.ListPendingTransactions();
             Debug.Log(JsonUtility.PrettyPrint(JsonConvert.SerializeObject(list)));
+        }
+
+        [CommandHandler]
+        public static async void DebugCreateBoosterPackReceipt(int userId, int boosterAmount, int relativeTxId)
+        {
+            DebugCreateBoosterPackReceiptResponse response = await _backendFacade.DebugCreateBoosterPackReceipt(userId, boosterAmount, relativeTxId);
+            Debug.Log(JsonUtility.PrettyPrint(response.TransactionResponseJson));
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground.Data
 
         public Enumerators.CardVariant Variant { get; }
 
+        [JsonConstructor]
         public CardKey(MouldId mouldId, Enumerators.CardVariant variant)
         {
             MouldId = mouldId;

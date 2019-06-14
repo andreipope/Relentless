@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -320,6 +321,20 @@ namespace Loom.ZombieBattleground.Data
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public static BigInteger FromProtobuf(this Client.Protobuf.BigUInt bigUInt)
+        {
+            byte[] rawBytes = bigUInt.Value.ToByteArray();
+
+            // +1 so that the last element is 0, which forces BigInteger to treat data as unsigned
+            byte[] bytes = new byte[rawBytes.Length + 1];
+            Array.Copy(rawBytes, bytes, rawBytes.Length);
+
+            // Swap endianness
+            Array.Reverse(bytes, 0, rawBytes.Length);
+
+            return new BigInteger(bytes);
         }
     }
 }
