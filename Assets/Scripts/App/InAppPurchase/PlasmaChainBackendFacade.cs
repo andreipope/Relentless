@@ -125,7 +125,15 @@ namespace Loom.ZombieBattleground.Iap
                         new BlockParameter(new HexBigInteger(openPackTxResult.Height)),
                         BlockParameter.CreatePending()
                     );
-                List<EventLog<T>> changes = await evmEvent.GetAllChanges(filterInput);
+                List<EventLog<T>> changes;
+                try
+                {
+                    changes = await evmEvent.GetAllChanges(filterInput);
+                }
+                catch (RpcClientException e) when (e.Message.Contains("to block before end block"))
+                {
+                    return null;
+                }
 
                 // Filter out events not belonging to the call we just made
                 changes = changes.Where(log => openPackTxHash.SequenceEqual(CryptoUtils.HexStringToBytes(log.Log.TransactionHash))).ToList();
@@ -141,7 +149,7 @@ namespace Loom.ZombieBattleground.Iap
             for (int i = 0; i < maxRetryCount; i++)
             {
                 generatedCardEvents = await GetEvents<GeneratedCardEvent>("GeneratedCard");
-                if (generatedCardEvents.Count != 0)
+                if (generatedCardEvents != null && generatedCardEvents.Count != 0)
                     break;
 
                 Log.Warn($"Retrying getting GeneratedCard events, attempt {i + 1}/{maxRetryCount}");

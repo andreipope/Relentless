@@ -246,7 +246,7 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
