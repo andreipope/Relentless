@@ -52,9 +52,9 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static async void DebugCreateBoosterPackReceipt(int userId, int boosterAmount, int relativeTxId)
+        public static async void DebugCreateBoosterPackReceipt(int userId, int boosterAmount)
         {
-            DebugCreateBoosterPackReceiptResponse response = await _backendFacade.DebugCreateBoosterPackReceipt(userId, boosterAmount, relativeTxId);
+            DebugCreateBoosterPackReceiptResponse response = await _backendFacade.DebugCreateBoosterPackReceipt(userId, boosterAmount);
             Debug.Log(JsonUtility.PrettyPrint(response.TransactionResponseJson));
         }
     }

@@ -794,24 +794,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
 #endregion
 
-#region RewardTutorial
-        private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
-        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
-        {
-            Log.Debug("GetRewardTutorialCompletedResponse");
-            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
-            return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
-        }
-
-        private const string RewardTutorialClaimMethod = "ConfirmRewardTutorialClaimed";
-        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed()
-        {
-            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest();
-            return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
-        }
-#endregion
-
-        #region Notifications
+#region Notifications
         private const string GetNotificationsMethod = "GetNotifications";
         private const string ClearNotificationsMethod = "ClearNotifications";
 
@@ -840,16 +823,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Debug
 
-        public async Task<DebugCreateBoosterPackReceiptResponse> DebugCreateBoosterPackReceipt(int userId, int boosterAmount, BigInteger txId)
+        public async Task<DebugCreateBoosterPackReceiptResponse> DebugCreateBoosterPackReceipt(int userId, int boosterAmount)
         {
             DebugCreateBoosterPackReceiptRequest request = new DebugCreateBoosterPackReceiptRequest
             {
                 UserId = new BigInteger(userId).ToProtobufUInt(),
                 BoosterAmount = boosterAmount,
-                RelativeTxId = txId.ToProtobufUInt()
             };
 
-            return await _contractCallProxy.StaticCallAsync<DebugCreateBoosterPackReceiptResponse>("DebugCreateBoosterPackReceipt", request);
+            return await _contractCallProxy.CallAsync<DebugCreateBoosterPackReceiptResponse>("DebugCreateBoosterPackReceipt", request);
         }
 
 
