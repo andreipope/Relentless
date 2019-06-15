@@ -29,6 +29,8 @@ public class UnitCardUI
 
     private Card _card;
 
+    private Material _grayScaleMaterial;
+
     public void Init(GameObject obj)
     {
         _selfObj = obj;
@@ -48,6 +50,9 @@ public class UnitCardUI
         _cardAmountTray = _selfObj.transform.Find("AmountWithCounterTray").gameObject;
 
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+        _grayScaleMaterial = _loadObjectsManager.GetObjectByPath<Material>("Materials/UI-Default-Grayscale");
+
     }
 
     public void FillCardData(Card card, int cardCount = 0)
@@ -134,5 +139,15 @@ public class UnitCardUI
     public void EnableObject(bool enable)
     {
         _selfObj.SetActive(enable);
+    }
+
+    public void GrayScaleCard(bool selected)
+    {
+        Material material = selected ? null : _grayScaleMaterial;
+
+        _frameImage.material = material;
+        _unitImage.material = material;
+        _rankImage.material = material;
+        _setImage.material = material;
     }
 }
