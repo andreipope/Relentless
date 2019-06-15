@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
         private void ButtonChangeAbilityHandler()
         {
             GameClient.Get<IUIManager>().DrawPopup<ChampionAbilitiesPopup>(_deck);
+            ChampionAbilitiesPopup.OnSaveSelectedSkill += OnSaveSelectedSkill;
         }
 
         public void ShowAbilities(Deck deck)
@@ -35,6 +36,22 @@ namespace Loom.ZombieBattleground
             _deck = deck;
             _overlordPrimarySkillImage.sprite = DataUtilities.GetAbilityIcon(deck.OverlordId, deck.PrimarySkill);
             _overlordSecondarySkillImage.sprite = DataUtilities.GetAbilityIcon(deck.OverlordId, deck.SecondarySkill);
+        }
+
+        private void OnSaveSelectedSkill(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            if (_deck == null)
+                return;
+
+            _deck.PrimarySkill = primarySkill;
+            _deck.SecondarySkill = secondarySkill;
+
+            ShowAbilities(_deck);
+        }
+
+        public void Dispose()
+        {
+            ChampionAbilitiesPopup.OnSaveSelectedSkill -= OnSaveSelectedSkill;
         }
     }
 }

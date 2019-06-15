@@ -167,6 +167,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             Object.Destroy(_selfPage);
+            _abilitiesInfoUi.Dispose();
         }
 
         private void LoadAllCardsInDeck(Deck deck)

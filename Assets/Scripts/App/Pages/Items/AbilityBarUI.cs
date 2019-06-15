@@ -1,6 +1,5 @@
 ﻿
 using Loom.ZombieBattleground;
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;

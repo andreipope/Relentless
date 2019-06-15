@@ -33,6 +33,7 @@ namespace Loom.ZombieBattleground
         private List<AbilityBarUI> _abilitiesBar;
 
         public static Action<SkillId> OnSelectSkill;
+        public static Action<Enumerators.Skill, Enumerators.Skill> OnSaveSelectedSkill;
 
         public GameObject Self { get; private set; }
 
@@ -171,7 +172,8 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSaveHandler()
         {
-            //TODO: save the change abilities
+            //TODO: save the change abilities, in deck
+            //TODO : delete old ability select code and save accordingly
             SaveAbilities();
 
             Hide();
@@ -184,7 +186,23 @@ namespace Loom.ZombieBattleground
 
         private void SaveAbilities()
         {
+            DataUtilities.PlayClickSound();
 
+            Enumerators.Skill primarySkill = Enumerators.Skill.NONE;
+            Enumerators.Skill secondaySkill = Enumerators.Skill.NONE;
+
+            List<AbilityBarUI> abilityBarUis = _abilitiesBar.FindAll(ability => ability.IsSelected);
+            if (abilityBarUis.Count > 1)
+            {
+                primarySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[0].SkillId);
+                secondaySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[1].SkillId);
+            }
+            else if (abilityBarUis.Count == 1)
+            {
+                primarySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[0].SkillId);
+            }
+
+            OnSaveSelectedSkill?.Invoke(primarySkill, secondaySkill);
         }
 
         public void Hide()
