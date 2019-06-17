@@ -105,9 +105,10 @@ namespace Loom.ZombieBattleground.Iap
             return amount;
         }
 
-        public async Task<IReadOnlyList<Card>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
+        public async Task<IReadOnlyList<CardKey>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
+            EvmContract zbgCardContract = GetContract(client, IapContractType.ZbgCard);
             EvmContract cardFaucetContract = GetContract(client, IapContractType.CardFaucet);
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
 
@@ -119,7 +120,7 @@ namespace Loom.ZombieBattleground.Iap
             async Task<List<EventLog<T>>> GetEvents<T>(string eventName) where T : new()
             {
                 // Get all events since call to OpenPackMethod
-                EvmEvent<T> evmEvent = cardFaucetContract.GetEvent<T>(eventName);
+                EvmEvent<T> evmEvent = zbgCardContract.GetEvent<T>(eventName);
                 NewFilterInput filterInput =
                     evmEvent.CreateFilterInput(
                         new BlockParameter(new HexBigInteger(openPackTxResult.Height)),
@@ -145,94 +146,35 @@ namespace Loom.ZombieBattleground.Iap
 
             // We only have the transaction hash at this point, but it might still be mining.
             // Poll the result multiple times until we have one.
-            List<EventLog<GeneratedCardEvent>> generatedCardEvents = null;
+            List<EventLog<TransferWithQuantityEvent>> transferWithQuantityEvents = null;
+            await Task.Delay(1500);
             for (int i = 0; i < maxRetryCount; i++)
             {
-                generatedCardEvents = await GetEvents<GeneratedCardEvent>("GeneratedCard");
-                if (generatedCardEvents != null && generatedCardEvents.Count != 0)
+                transferWithQuantityEvents = await GetEvents<TransferWithQuantityEvent>("TransferWithQuantity");
+                if (transferWithQuantityEvents != null && transferWithQuantityEvents.Count == CardsPerPack)
                     break;
 
-                Log.Warn($"Retrying getting GeneratedCard events, attempt {i + 1}/{maxRetryCount}");
+                Log.Warn($"Retrying getting {nameof(TransferWithQuantityEvent)} events, attempt {i + 1}/{maxRetryCount}");
                 await Task.Delay(retryDelay);
             }
 
-            Assert.IsNotNull(generatedCardEvents);
-            if (generatedCardEvents.Count == 0)
+            Assert.IsNotNull(transferWithQuantityEvents);
+            if (transferWithQuantityEvents.Count == 0)
                 throw new Exception("Exhausted attempts to get generated cards");
 
-            // No need to retry those, if getting GeneratedCard succeeds, these will succeed too
-            List<EventLog<UpgradedCardToBackerEditionEvent>> upgradedCardToBackerEditionEvents =
-                await GetEvents<UpgradedCardToBackerEditionEvent>("UpgradedCardToBE");
-            List<EventLog<UpgradedCardToLimitedEditionEvent>> upgradedCardToLimitedEditionEvents =
-                await GetEvents<UpgradedCardToLimitedEditionEvent>("UpgradedCardToLE");
+            Log.Debug($"{nameof(GetPackTypeBalance)}: transferEvents = {Utilites.FormatCallLogList(transferWithQuantityEvents.Select(e => e.Event))}");
 
-            Log.Debug($"{nameof(GetPackTypeBalance)}: generatedCardEvents = {Utilites.FormatCallLogList(generatedCardEvents.Select(e => e.Event))}");
-            Log.Debug($"{nameof(GetPackTypeBalance)}: upgradedCardToBackerEditionEvents = {Utilites.FormatCallLogList(upgradedCardToBackerEditionEvents.Select(e => e.Event))}");
-            Log.Debug($"{nameof(GetPackTypeBalance)}: upgradedCardToLimitedEditionEvents = {Utilites.FormatCallLogList(upgradedCardToLimitedEditionEvents.Select(e => e.Event))}");
-
-            // Calculate list of card token IDs, accounting for card upgrades
-            List<BigInteger> cardTokenIds = new List<BigInteger>();
-            for (int i = 0; i < generatedCardEvents.Count; i++)
-            {
-                EventLog<GeneratedCardEvent> generatedCardEvent = generatedCardEvents[i];
-                EventLog<GeneratedCardEvent> nextGeneratedCardEvent = i == generatedCardEvents.Count - 1 ? null : generatedCardEvents[i + 1];
-                EventLog<UpgradedCardToBackerEditionEvent> nextUpgradedCardToBackerEditionEvent =
-                    upgradedCardToBackerEditionEvents.FirstOrDefault(log => log.Log.LogIndex.Value > generatedCardEvent.Log.LogIndex.Value);
-                EventLog<UpgradedCardToLimitedEditionEvent> nextUpgradedCardToLimitedEditionEvent =
-                    upgradedCardToLimitedEditionEvents.FirstOrDefault(log => log.Log.LogIndex.Value > generatedCardEvent.Log.LogIndex.Value);
-
-                BigInteger? upgradeEventLogIndex =
-                    nextUpgradedCardToBackerEditionEvent?.Log.LogIndex.Value ??
-                    nextUpgradedCardToLimitedEditionEvent?.Log.LogIndex.Value;
-                BigInteger? upgradedCardTokenId =
-                    nextUpgradedCardToBackerEditionEvent?.Event.CardTokenId ??
-                    nextUpgradedCardToLimitedEditionEvent?.Event.CardTokenId;
-
-                if (nextGeneratedCardEvent != null)
-                {
-                    if (upgradeEventLogIndex != null)
-                    {
-                        cardTokenIds.Add(
-                            upgradeEventLogIndex.Value < nextGeneratedCardEvent.Log.LogIndex.Value ?
-                                upgradedCardTokenId.Value :
-                                generatedCardEvent.Event.CardTokenId
-                        );
-                    }
-                    else
-                    {
-                        cardTokenIds.Add(generatedCardEvent.Event.CardTokenId);
-                    }
-                }
-                else
-                {
-                    cardTokenIds.Add(upgradedCardTokenId ?? generatedCardEvent.Event.CardTokenId);
-                }
-            }
-
+            // Get card keys
+            List<BigInteger> cardTokenIds = transferWithQuantityEvents.Select(evt => evt.Event.TokenId).ToList();
             Log.Debug($"{nameof(GetPackTypeBalance)}: cardTokenIds = {Utilites.FormatCallLogList(cardTokenIds)}");
 
-            // Convert card token IDs to actual cards
-            List<Card> cards = new List<Card>();
-            foreach (BigInteger cardTokenId in cardTokenIds)
-            {
-                CardKey cardKey = CardKey.FromCardTokenId((long) cardTokenId);
-                Log.Info($"{nameof(GetPackTypeBalance)}: Parsed CardKey {cardKey}");
-                (bool found, Card card) = _dataManager.CachedCardsLibraryData.TryGetCardFromCardKey(cardKey, true);
-                if (found)
-                {
-                    Log.Info($"{nameof(GetPackTypeBalance)}: Found matching card {card}");
-                    cards.Add(card);
-                }
-                else
-                {
-                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with CardKey {cardKey}");
-                    cards.Add(null);
-                }
-            }
+            List<CardKey> cardKeys =
+                cardTokenIds
+                    .Select(cardTokenId => CardKey.FromCardTokenId((long) cardTokenId))
+                    .ToList();
 
-            cards = cards.Where(card => card != null).ToList();
-            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
-            return cards;
+            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cardKeys)}");
+            return cardKeys;
         }
 
         private EvmContract GetContract(DAppChainClient client, IapContractType contractType)
@@ -304,6 +246,9 @@ namespace Loom.ZombieBattleground.Iap
             _abiDictionary = new Dictionary<IapContractType, TextAsset>
             {
                 {
+                    IapContractType.ZbgCard, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/ZBGCardABI")
+                },
+                {
                     IapContractType.FiatPurchase, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/FiatPurchaseABI")
                 },
                 {
@@ -337,6 +282,8 @@ namespace Loom.ZombieBattleground.Iap
         {
             switch (contractType)
             {
+                case IapContractType.ZbgCard:
+                    return PlasmaChainEndpointsContainer.ContractAddressZbgCard;
                 case IapContractType.FiatPurchase:
                     return PlasmaChainEndpointsContainer.ContractAddressFiatPurchase;
                 case IapContractType.CardFaucet:
@@ -482,6 +429,73 @@ namespace Loom.ZombieBattleground.Iap
             public override string ToString()
             {
                 return $"{nameof(CardTokenId)}: {CardTokenId}";
+            }
+        }
+
+        // event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+        [Event("Transfer")]
+        private class TransferEvent
+        {
+            [Parameter("address", "from", 1, true)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, true)]
+            public string To { get; set; }
+
+            [Parameter("uint256", "tokenId", 3, true)]
+            public BigInteger TokenId { get; set; }
+
+            public override string ToString()
+            {
+                return $"({nameof(From)}: {From}, {nameof(To)}: {To}, {nameof(TokenId)}: {TokenId})";
+            }
+        }
+
+        // event BatchTransfer(address indexed from, address indexed to, uint256[] tokenTypes, uint256[] amounts);
+        [Event("BatchTransfer")]
+        private class BatchTransferEvent
+        {
+            [Parameter("address", "from", 1, true)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, true)]
+            public string To { get; set; }
+
+            [Parameter("uint256[]", "tokenTypes", 3, false)]
+            public BigInteger[] TokenTypes { get; set; }
+
+            [Parameter("uint256[]", "amounts", 4, false)]
+            public BigInteger[] Amounts { get; set; }
+
+            public override string ToString()
+            {
+                return
+                    $"({nameof(From)}: {From}, " +
+                    $"{nameof(To)}: {To}, " +
+                    $"{nameof(TokenTypes)}: {Utilites.FormatCallLogList(TokenTypes)}, " +
+                    $"{nameof(Amounts)}: {Utilites.FormatCallLogList(Amounts)})";
+            }
+        }
+
+        // event TransferWithQuantity(address indexed from, address indexed to, uint256 indexed tokenId, uint256 quantity);
+        [Event("TransferWithQuantity")]
+        private class TransferWithQuantityEvent
+        {
+            [Parameter("address", "from", 1, false)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, false)]
+            public string To { get; set; }
+
+            [Parameter("uint256", "tokenId", 3, true)]
+            public BigInteger TokenId { get; set; }
+
+            [Parameter("uint256", "amount", 4, false)]
+            public BigInteger Amount { get; set; }
+
+            public override string ToString()
+            {
+                return $"({nameof(From)}: {From}, {nameof(To)}: {To}, {nameof(TokenId)}: {TokenId}, {nameof(Amount)}: {Amount})";
             }
         }
 

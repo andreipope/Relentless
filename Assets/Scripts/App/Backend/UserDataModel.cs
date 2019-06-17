@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -6,6 +7,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
     public class UserDataModel
     {
         public string UserId;
+
+        public BigInteger UserIdNumber;
 
         public byte[] PrivateKey;
 
@@ -21,9 +24,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public string AccessToken;
 
-        public UserDataModel(string userId, byte[] privateKey)
+        public UserDataModel(string userId, BigInteger userIdNumber, byte[] privateKey)
         {
             UserId = userId;
+            UserIdNumber = userIdNumber;
             PrivateKey = privateKey;
         }
 

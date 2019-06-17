@@ -823,11 +823,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Debug
 
-        public async Task<DebugCreateBoosterPackReceiptResponse> DebugCreateBoosterPackReceipt(int userId, int boosterAmount)
+        public async Task<DebugCreateBoosterPackReceiptResponse> DebugCreateBoosterPackReceipt(BigInteger userId, int boosterAmount)
         {
             DebugCreateBoosterPackReceiptRequest request = new DebugCreateBoosterPackReceiptRequest
             {
-                UserId = new BigInteger(userId).ToProtobufUInt(),
+                UserId = userId.ToProtobufUInt(),
                 BoosterAmount = boosterAmount,
             };
 

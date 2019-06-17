@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground.Data
 {
     public class CardsLibraryData
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CardsLibraryData));
+
         public List<Faction> Factions { get; private set; }
 
         public IList<Card> Cards { get; private set; }
@@ -36,14 +39,14 @@ namespace Loom.ZombieBattleground.Data
 
         public Card GetCardByCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
         {
-            (bool found, Card card) = TryGetCardFromCardKey(cardKey, allowFallbackToNormalEdition);
+            (bool found, Card card) = TryGetCardByCardKey(cardKey, allowFallbackToNormalEdition);
             if (!found)
                 throw new KeyNotFoundException();
 
             return card;
         }
 
-        public (bool found, Card card) TryGetCardFromCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
+        public (bool found, Card card) TryGetCardByCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
         {
             Card card = Cards.FirstOrDefault(x => x.CardKey == cardKey);
             if (card != null)
@@ -57,6 +60,28 @@ namespace Loom.ZombieBattleground.Data
             }
 
             return (false, null);
+        }
+
+        public IReadOnlyList<Card> GetCardsByCardKeys(IReadOnlyList<CardKey> cardKeys, bool allowFallbackToNormalEdition = false)
+        {
+            // Convert card token IDs to actual cards
+            List<Card> cards = new List<Card>();
+            foreach (CardKey cardKey in cardKeys)
+            {
+                (bool found, Card card) = TryGetCardByCardKey(cardKey, allowFallbackToNormalEdition);
+                if (found)
+                {
+                    cards.Add(card);
+                }
+                else
+                {
+                    Log.Warn($"{nameof(GetCardsByCardKeys)}: Unknown card with CardKey {cardKey}");
+                    cards.Add(null);
+                }
+            }
+
+            cards = cards.Where(card => card != null).ToList();
+            return cards;
         }
 
         private void InitData()

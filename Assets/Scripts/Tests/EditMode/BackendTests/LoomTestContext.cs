@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Numerics;
 using System.Threading.Tasks;
 using log4net;
 using log4net.Core;
@@ -17,7 +18,8 @@ namespace Loom.ZombieBattleground.Test
 
         public void TestSetUp()
         {
-            _userDataModel = new UserDataModel(TestHelper.Instance.CreateTestUserName(), CryptoUtils.GeneratePrivateKey());
+            (string userId, BigInteger userIdNumber) = TestHelper.Instance.CreateTestUser();
+            _userDataModel = new UserDataModel(userId, userIdNumber, CryptoUtils.GeneratePrivateKey());
             BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
             TaggedLoggerWrapper taggedLoggerWrapper = new TaggedLoggerWrapper(Logging.GetLog(nameof(BackendFacade)).Logger, _userDataModel.UserId);
             ILog log = new LogImpl(taggedLoggerWrapper);

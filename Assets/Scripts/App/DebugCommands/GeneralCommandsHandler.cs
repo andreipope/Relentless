@@ -21,8 +21,10 @@ namespace Loom.ZombieBattleground
         [CommandHandler(Description = "Logs in into the game with a fake random user")]
         private static async void FakeLogin()
         {
+            long userId = UnityEngine.Random.Range(100000, int.MaxValue);
             UserDataModel userDataModel = new UserDataModel(
-                "ZombieSlayer_Fake_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                "ZombieSlayer_Fake_" + userId,
+                userId,
                 CryptoUtils.GeneratePrivateKey()
             );
 

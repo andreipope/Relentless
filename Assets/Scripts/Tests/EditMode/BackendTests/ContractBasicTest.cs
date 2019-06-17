@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
@@ -35,7 +36,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
@@ -65,7 +66,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
@@ -85,7 +86,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
@@ -99,7 +100,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
@@ -115,7 +116,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 List<DeckCardData> cards =
@@ -137,7 +138,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck(new DeckId(1), new OverlordId(0), "Default", null, 0, 0);
@@ -150,7 +151,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
@@ -165,7 +166,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck(new DeckId(123), new OverlordId(0), "GauravRandomDeck", null, 0, 0);
@@ -181,7 +182,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 await LoomTestContext.BackendFacade.DeleteDeck(user, new DeckId(1));
@@ -193,7 +194,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
@@ -207,7 +208,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 await LoomTestContext.AssertThrowsAsync(
@@ -223,7 +224,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 GetAIDecksResponse getAIDecksResponse = await LoomTestContext.BackendFacade.GetAiDecks();
@@ -243,7 +244,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 GetCollectionResponse getCollectionResponse = await LoomTestContext.BackendFacade.GetCardCollection(user);
@@ -258,7 +259,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 ListOverlordUserInstancesResponse listOverlordUserInstancesResponse = await LoomTestContext.BackendFacade.ListOverlordUserInstances(user);
@@ -279,7 +280,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = TestHelper.Instance.CreateTestUserName();
+                (string user, BigInteger _) = TestHelper.Instance.CreateTestUser();
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 GetOverlordUserInstanceResponse getOverlordUserInstanceResponse =

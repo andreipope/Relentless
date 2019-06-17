@@ -529,7 +529,8 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
             try
             {
-                IReadOnlyList<Card> cards = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
+                IReadOnlyList<CardKey> cardKeys = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
+                IReadOnlyList<Card> cards = _dataManager.CachedCardsLibraryData.GetCardsByCardKeys(cardKeys, true);
 
                 _cardsToDisplayQueqe.Clear();
                 _cardsToDisplayQueqe.AddRange(cards);
