@@ -1,0 +1,7 @@
+﻿{
+	"name": "I2",
+    "references": ["Unity.TextMeshPro"],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
