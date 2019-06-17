@@ -17,7 +17,7 @@ MonoBehaviour:
     UserAgreesToHaveItInsideThePluginsFolder: 0
     GoogleLiveSyncIsUptoDate: 1
     mTerms:
-    - Term: TMPFonts
+    - Term: _DefaultFonts
       TermType: 9
       Description: 
       Languages:
@@ -2477,7 +2477,7 @@ MonoBehaviour:
       - Brakuus
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Champion_ShortDesc_0
+    - Term: GameData_Champion_ShortDescription_0
       TermType: 0
       Description: 
       Languages:
@@ -2501,7 +2501,7 @@ MonoBehaviour:
       - Harden
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_0
+    - Term: GameData_ChampionSkill_Description_0
       TermType: 0
       Description: 
       Languages:
@@ -2525,7 +2525,7 @@ MonoBehaviour:
       - Stoneskin
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_1
+    - Term: GameData_ChampionSkill_Description_1
       TermType: 0
       Description: 
       Languages:
@@ -2549,7 +2549,7 @@ MonoBehaviour:
       - Fortify
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_2
+    - Term: GameData_ChampionSkill_Description_2
       TermType: 0
       Description: 
       Languages:
@@ -2573,7 +2573,7 @@ MonoBehaviour:
       - Phalanx
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_3
+    - Term: GameData_ChampionSkill_Description_3
       TermType: 0
       Description: 
       Languages:
@@ -2597,7 +2597,7 @@ MonoBehaviour:
       - Fortress
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_4
+    - Term: GameData_ChampionSkill_Description_4
       TermType: 0
       Description: 
       Languages:
@@ -2621,7 +2621,7 @@ MonoBehaviour:
       - Razu
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Champion_ShortDesc_1
+    - Term: GameData_Champion_ShortDescription_1
       TermType: 0
       Description: 
       Languages:
@@ -2645,7 +2645,7 @@ MonoBehaviour:
       - Fire Bolt
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_5
+    - Term: GameData_ChampionSkill_Description_5
       TermType: 0
       Description: 
       Languages:
@@ -2669,7 +2669,7 @@ MonoBehaviour:
       - Rabies
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_6
+    - Term: GameData_ChampionSkill_Description_6
       TermType: 0
       Description: 
       Languages:
@@ -2693,7 +2693,7 @@ MonoBehaviour:
       - Fireball
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_7
+    - Term: GameData_ChampionSkill_Description_7
       TermType: 0
       Description: 
       Languages:
@@ -2717,7 +2717,7 @@ MonoBehaviour:
       - Mass Rabies
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_8
+    - Term: GameData_ChampionSkill_Description_8
       TermType: 0
       Description: 
       Languages:
@@ -2741,7 +2741,7 @@ MonoBehaviour:
       - Meteor Shower
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_9
+    - Term: GameData_ChampionSkill_Description_9
       TermType: 0
       Description: 
       Languages:
@@ -2765,7 +2765,7 @@ MonoBehaviour:
       - Vash'Kala
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Champion_ShortDesc_2
+    - Term: GameData_Champion_ShortDescription_2
       TermType: 0
       Description: 
       Languages:
@@ -2789,7 +2789,7 @@ MonoBehaviour:
       - Freeze
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_10
+    - Term: GameData_ChampionSkill_Description_10
       TermType: 0
       Description: 
       Languages:
@@ -2813,7 +2813,7 @@ MonoBehaviour:
       - Ice Bolt
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_11
+    - Term: GameData_ChampionSkill_Description_11
       TermType: 0
       Description: 
       Languages:
@@ -2837,7 +2837,7 @@ MonoBehaviour:
       - Ice Wall
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_12
+    - Term: GameData_ChampionSkill_Description_12
       TermType: 0
       Description: 
       Languages:
@@ -2861,7 +2861,7 @@ MonoBehaviour:
       - Shatter
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_13
+    - Term: GameData_ChampionSkill_Description_13
       TermType: 0
       Description: 
       Languages:
@@ -2885,7 +2885,7 @@ MonoBehaviour:
       - Blizzard
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_14
+    - Term: GameData_ChampionSkill_Description_14
       TermType: 0
       Description: 
       Languages:
@@ -2909,7 +2909,7 @@ MonoBehaviour:
       - Kalile
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Champion_ShortDesc_3
+    - Term: GameData_Champion_ShortDescription_3
       TermType: 0
       Description: 
       Languages:
@@ -2933,7 +2933,7 @@ MonoBehaviour:
       - Push
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_15
+    - Term: GameData_ChampionSkill_Description_15
       TermType: 0
       Description: 
       Languages:
@@ -2963,7 +2963,7 @@ MonoBehaviour:
       - Draw
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_16
+    - Term: GameData_ChampionSkill_Description_16
       TermType: 0
       Description: 
       Languages:
@@ -2987,7 +2987,7 @@ MonoBehaviour:
       - Wind Shield
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_17
+    - Term: GameData_ChampionSkill_Description_17
       TermType: 0
       Description: 
       Languages:
@@ -3011,7 +3011,7 @@ MonoBehaviour:
       - Levitate
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_18
+    - Term: GameData_ChampionSkill_Description_18
       TermType: 0
       Description: 
       Languages:
@@ -3035,7 +3035,7 @@ MonoBehaviour:
       - Retreat
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_19
+    - Term: GameData_ChampionSkill_Description_19
       TermType: 0
       Description: 
       Languages:
@@ -3059,7 +3059,7 @@ MonoBehaviour:
       - Mhalik
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Champion_ShortDesc_4
+    - Term: GameData_Champion_ShortDescription_4
       TermType: 0
       Description: 
       Languages:
@@ -3083,7 +3083,7 @@ MonoBehaviour:
       - Poison Dart
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_20
+    - Term: GameData_ChampionSkill_Description_20
       TermType: 0
       Description: 
       Languages:
@@ -3107,7 +3107,7 @@ MonoBehaviour:
       - Toxic Power
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_21
+    - Term: GameData_ChampionSkill_Description_21
       TermType: 0
       Description: 
       Languages:
@@ -3131,7 +3131,7 @@ MonoBehaviour:
       - Breakout
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_22
+    - Term: GameData_ChampionSkill_Description_22
       TermType: 0
       Description: 
       Languages:
@@ -3155,7 +3155,7 @@ MonoBehaviour:
       - Infect
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_23
+    - Term: GameData_ChampionSkill_Description_23
       TermType: 0
       Description: 
       Languages:
@@ -3179,7 +3179,7 @@ MonoBehaviour:
       - Epidemic
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_24
+    - Term: GameData_ChampionSkill_Description_24
       TermType: 0
       Description: 
       Languages:
@@ -3203,7 +3203,7 @@ MonoBehaviour:
       - Valash
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Champion_ShortDesc_5
+    - Term: GameData_Champion_ShortDescription_5
       TermType: 0
       Description: 
       Languages:
@@ -3227,7 +3227,7 @@ MonoBehaviour:
       - Healing Touch
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_25
+    - Term: GameData_ChampionSkill_Description_25
       TermType: 0
       Description: 
       Languages:
@@ -3251,7 +3251,7 @@ MonoBehaviour:
       - Mend
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_26
+    - Term: GameData_ChampionSkill_Description_26
       TermType: 0
       Description: 
       Languages:
@@ -3275,7 +3275,7 @@ MonoBehaviour:
       - Resurrect
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_27
+    - Term: GameData_ChampionSkill_Description_27
       TermType: 0
       Description: 
       Languages:
@@ -3299,7 +3299,7 @@ MonoBehaviour:
       - Enhance
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_28
+    - Term: GameData_ChampionSkill_Description_28
       TermType: 0
       Description: 
       Languages:
@@ -3323,7 +3323,7 @@ MonoBehaviour:
       - Reanimate
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_ChampionSkill_Desc_29
+    - Term: GameData_ChampionSkill_Description_29
       TermType: 0
       Description: 
       Languages:

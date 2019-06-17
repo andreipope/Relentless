@@ -235,82 +235,82 @@ GameData_BuffsToolTip_Restore,Add Def to wounded creature up to its max Def,Add 
 GameData_BuffsToolTip_Blitz,Can attack creatures when this enters the battleground,Can attack creatures when this enters the battleground,Can attack creatures when this enters the battleground,Can attack creatures when this enters the battleground,Can attack creatures when this enters the battleground,Can attack creatures when this enters the battleground
 ,,,,,,
 GameData_Champion_Name_0,Brakuus,Brakuus,Brakuus,Brakuus,Brakuus,Brakuus
-GameData_Champion_ShortDesc_0,The Guardian,The Guardian,The Guardian,The Guardian,The Guardian,The Guardian
+GameData_Champion_ShortDescription_0,The Guardian,The Guardian,The Guardian,The Guardian,The Guardian,The Guardian
 GameData_ChampionSkill_Title_0,Harden,Harden,Harden,Harden,Harden,Harden
-GameData_ChampionSkill_Desc_0,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion
+GameData_ChampionSkill_Description_0,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion,Give +2 Def to your Champion
 GameData_ChampionSkill_Title_1,Stoneskin,Stoneskin,Stoneskin,Stoneskin,Stoneskin,Stoneskin
-GameData_ChampionSkill_Desc_1,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def
+GameData_ChampionSkill_Description_1,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def,Give an ally Earth creature +1 Def
 GameData_ChampionSkill_Title_2,Fortify,Fortify,Fortify,Fortify,Fortify,Fortify
-GameData_ChampionSkill_Desc_2,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy
+GameData_ChampionSkill_Description_2,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy,Give an ally Earth creature Heavy
 GameData_ChampionSkill_Title_3,Phalanx,Phalanx,Phalanx,Phalanx,Phalanx,Phalanx
-GameData_ChampionSkill_Desc_3,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def
+GameData_ChampionSkill_Description_3,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def,Give all ally Earth creatures +1 Def
 GameData_ChampionSkill_Title_4,Fortress,Fortress,Fortress,Fortress,Fortress,Fortress
-GameData_ChampionSkill_Desc_4,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy
+GameData_ChampionSkill_Description_4,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy,Give 2 random ally Earth creatures Heavy
 ,,,,,,
 GameData_Champion_Name_1,Razu,Razu,Razu,Razu,Razu,Razu
-GameData_Champion_ShortDesc_1,The Fire Daemon,The Fire Daemon,The Fire Daemon,The Fire Daemon,The Fire Daemon,The Fire Daemon
+GameData_Champion_ShortDescription_1,The Fire Daemon,The Fire Daemon,The Fire Daemon,The Fire Daemon,The Fire Daemon,The Fire Daemon
 GameData_ChampionSkill_Title_5,Fire Bolt,Fire Bolt,Fire Bolt,Fire Bolt,Fire Bolt,Fire Bolt
-GameData_ChampionSkill_Desc_5,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target
+GameData_ChampionSkill_Description_5,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target,Deal 1 damage to target
 GameData_ChampionSkill_Title_6,Rabies,Rabies,Rabies,Rabies,Rabies,Rabies
-GameData_ChampionSkill_Desc_6,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral
+GameData_ChampionSkill_Description_6,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral,Give an ally Fire creature Feral
 GameData_ChampionSkill_Title_7,Fireball,Fireball,Fireball,Fireball,Fireball,Fireball
-GameData_ChampionSkill_Desc_7,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target
+GameData_ChampionSkill_Description_7,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target,Deal 2 damage to a target
 GameData_ChampionSkill_Title_8,Mass Rabies,Mass Rabies,Mass Rabies,Mass Rabies,Mass Rabies,Mass Rabies
-GameData_ChampionSkill_Desc_8,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral
+GameData_ChampionSkill_Description_8,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral,Give 2 random ally Fire creatures Feral
 GameData_ChampionSkill_Title_9,Meteor Shower,Meteor Shower,Meteor Shower,Meteor Shower,Meteor Shower,Meteor Shower
-GameData_ChampionSkill_Desc_9,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures
+GameData_ChampionSkill_Description_9,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures,Deal 2 damage to all creatures
 ,,,,,,
 GameData_Champion_Name_2,Vash'Kala,Vash'Kala,Vash'Kala,Vash'Kala,Vash'Kala,Vash'Kala
-GameData_Champion_ShortDesc_2,The Ancient One,The Ancient One,The Ancient One,The Ancient One,The Ancient One,The Ancient One
+GameData_Champion_ShortDescription_2,The Ancient One,The Ancient One,The Ancient One,The Ancient One,The Ancient One,The Ancient One
 GameData_ChampionSkill_Title_10,Freeze,Freeze,Freeze,Freeze,Freeze,Freeze
-GameData_ChampionSkill_Desc_10,Freeze a creature,Freeze a creature,Freeze a creature,Freeze a creature,Freeze a creature,Freeze a creature
+GameData_ChampionSkill_Description_10,Freeze a creature,Freeze a creature,Freeze a creature,Freeze a creature,Freeze a creature,Freeze a creature
 GameData_ChampionSkill_Title_11,Ice Bolt,Ice Bolt,Ice Bolt,Ice Bolt,Ice Bolt,Ice Bolt
-GameData_ChampionSkill_Desc_11,"Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it"
+GameData_ChampionSkill_Description_11,"Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it","Deal 2 damage to a target creature. If it survives, Freeze it"
 GameData_ChampionSkill_Title_12,Ice Wall,Ice Wall,Ice Wall,Ice Wall,Ice Wall,Ice Wall
-GameData_ChampionSkill_Desc_12,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion
+GameData_ChampionSkill_Description_12,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion,Add 2 Def to target Water creature or your Champion
 GameData_ChampionSkill_Title_13,Shatter,Shatter,Shatter,Shatter,Shatter,Shatter
-GameData_ChampionSkill_Desc_13,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature
+GameData_ChampionSkill_Description_13,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature,Destroy a Frozen enemy creature
 GameData_ChampionSkill_Title_14,Blizzard,Blizzard,Blizzard,Blizzard,Blizzard,Blizzard
-GameData_ChampionSkill_Desc_14,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies
+GameData_ChampionSkill_Description_14,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies,Freeze 2 random creature enemies
 ,,,,,,
 GameData_Champion_Name_3,Kalile,Kalile,Kalile,Kalile,Kalile,Kalile
-GameData_Champion_ShortDesc_3,Tempest of Storms,Tempest of Storms,Tempest of Storms,Tempest of Storms,Tempest of Storms,Tempest of Storms
+GameData_Champion_ShortDescription_3,Tempest of Storms,Tempest of Storms,Tempest of Storms,Tempest of Storms,Tempest of Storms,Tempest of Storms
 GameData_ChampionSkill_Title_15,Push,Push,Push,Push,Push,Push
-GameData_ChampionSkill_Desc_15,"Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand"
+GameData_ChampionSkill_Description_15,"Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand","Spend remaining goo to return a creature of equal cost, or less, to owner's hand"
 GameData_ChampionSkill_Title_16,Draw,Draw,Draw,Draw,Draw,Draw
-GameData_ChampionSkill_Desc_16,Draw a card,Draw a card,Draw a card,Draw a card,Draw a card,Draw a card
+GameData_ChampionSkill_Description_16,Draw a card,Draw a card,Draw a card,Draw a card,Draw a card,Draw a card
 GameData_ChampionSkill_Title_17,Wind Shield,Wind Shield,Wind Shield,Wind Shield,Wind Shield,Wind Shield
-GameData_ChampionSkill_Desc_17,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard
+GameData_ChampionSkill_Description_17,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard,Give a random ally Air creature Guard
 GameData_ChampionSkill_Title_18,Levitate,Levitate,Levitate,Levitate,Levitate,Levitate
-GameData_ChampionSkill_Desc_18,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1
+GameData_ChampionSkill_Description_18,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1,Reduce the cost of a random card in your hand by 1
 GameData_ChampionSkill_Title_19,Retreat,Retreat,Retreat,Retreat,Retreat,Retreat
-GameData_ChampionSkill_Desc_19,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand
+GameData_ChampionSkill_Description_19,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand,Return all creatures to their owner's hand
 ,,,,,,
 GameData_Champion_Name_4,Mhalik,Mhalik,Mhalik,Mhalik,Mhalik,Mhalik
-GameData_Champion_ShortDesc_4,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence
+GameData_Champion_ShortDescription_4,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence,Lord of Pestilence
 GameData_ChampionSkill_Title_20,Poison Dart,Poison Dart,Poison Dart,Poison Dart,Poison Dart,Poison Dart
-GameData_ChampionSkill_Desc_20,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy
+GameData_ChampionSkill_Description_20,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy,Deal 1 damage to an enemy
 GameData_ChampionSkill_Title_21,Toxic Power,Toxic Power,Toxic Power,Toxic Power,Toxic Power,Toxic Power
-GameData_ChampionSkill_Desc_21,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk
+GameData_ChampionSkill_Description_21,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk,Deal 1 damage to an ally Toxic creature and give it +1 Atk
 GameData_ChampionSkill_Title_22,Breakout,Breakout,Breakout,Breakout,Breakout,Breakout
-GameData_ChampionSkill_Desc_22,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies
+GameData_ChampionSkill_Description_22,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies,Deal 1 damage to 5 random enemies
 GameData_ChampionSkill_Title_23,Infect,Infect,Infect,Infect,Infect,Infect
-GameData_ChampionSkill_Desc_23,"Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature"
+GameData_ChampionSkill_Description_23,"Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature","Destroy an ally Toxic creature, deal its Atk to a random enemy creature"
 GameData_ChampionSkill_Title_24,Epidemic,Epidemic,Epidemic,Epidemic,Epidemic,Epidemic
-GameData_ChampionSkill_Desc_24,"Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures"
+GameData_ChampionSkill_Description_24,"Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures","Destroy an 2 random Toxic creatures, deal their Atk to 2 enemy creatures"
 ,,,,,,
 GameData_Champion_Name_5,Valash,Valash,Valash,Valash,Valash,Valash
-GameData_Champion_ShortDesc_5,Nature's Warden,Nature's Warden,Nature's Warden,Nature's Warden,Nature's Warden,Nature's Warden
+GameData_Champion_ShortDescription_5,Nature's Warden,Nature's Warden,Nature's Warden,Nature's Warden,Nature's Warden,Nature's Warden
 GameData_ChampionSkill_Title_25,Healing Touch,Healing Touch,Healing Touch,Healing Touch,Healing Touch,Healing Touch
-GameData_ChampionSkill_Desc_25,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature
+GameData_ChampionSkill_Description_25,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature,Restore 2 Def to an ally creature
 GameData_ChampionSkill_Title_26,Mend,Mend,Mend,Mend,Mend,Mend
-GameData_ChampionSkill_Desc_26,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion
+GameData_ChampionSkill_Description_26,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion,Restore 2 Def to your Champion
 GameData_ChampionSkill_Title_27,Resurrect,Resurrect,Resurrect,Resurrect,Resurrect,Resurrect
-GameData_ChampionSkill_Desc_27,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature
+GameData_ChampionSkill_Description_27,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature,Reanimate a random 3 goo-cost ally Life creature
 GameData_ChampionSkill_Title_28,Enhance,Enhance,Enhance,Enhance,Enhance,Enhance
-GameData_ChampionSkill_Desc_28,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion
+GameData_ChampionSkill_Description_28,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion,Restore 2 Def to all ally Life creatures and your Champion
 GameData_ChampionSkill_Title_29,Reanimate,Reanimate,Reanimate,Reanimate,Reanimate,Reanimate
-GameData_ChampionSkill_Desc_29,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures
+GameData_ChampionSkill_Description_29,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures,Reanimate 2 random ally Life creatures
 ,,,,,,
 GameData_Cards_Name_1,Whizper,Whizper,Whizper,Whizper,Whizper,Whizper
 GameData_Cards_Name_2,Gale,Gale,Gale,Gale,Gale,Gale
