@@ -3,8 +3,10 @@ using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
@@ -37,9 +39,15 @@ namespace Loom.ZombieBattleground
 
         private RectTransform _allCardsContent;
 
+        private Camera _mainCamera;
+
         private Deck _selectedDeck;
 
         private ViewDeckPage _viewDeckPage;
+
+        private DeckCardUI _selectedDeckCard;
+
+        private GameObject _cardListScrollRect;
 
         public void Init()
         {
@@ -52,9 +60,13 @@ namespace Loom.ZombieBattleground
 
             _viewDeckPage = new ViewDeckPage();
             _viewDeckPage.Init();
+
+            _mainCamera = Camera.main;
+
+            _selectedDeckCard = null;
         }
 
-        public void Reset()
+        private void Reset()
         {
             _selectedDeck = null;
 
@@ -78,6 +90,8 @@ namespace Loom.ZombieBattleground
             _deckNameText = selfObject.transform.Find("Top_Panel/Panel_Image/Deck_Name").GetComponent<TextMeshProUGUI>();
             _cardsCountText = selfObject.transform.Find("Bottom_Panel/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
 
+            _cardListScrollRect = selfObject.transform.parent.Find("Panel_Content/Army/Element/Scroll View").gameObject;
+
             _buttonRename = selfObject.transform.Find("Top_Panel/Panel_Image/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
 
@@ -92,6 +106,8 @@ namespace Loom.ZombieBattleground
             _overlordImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Image/Image").GetComponent<Image>();
             _overlordPrimarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Primary/Image").GetComponent<Image>();
             _overlordSecondarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Secondary/Image").GetComponent<Image>();
+
+            _selectedDeckCard = null;
         }
 
         public void ShowDeck(Deck deck)
@@ -134,15 +150,69 @@ namespace Loom.ZombieBattleground
         public void AddCard(Card card, int cardAmount)
         {
             GameObject deckCard = Object.Instantiate(_deckCardPrefab, _allCardsContent);
+
             MultiPointerClickHandler multiPointerClickHandler = deckCard.AddComponent<MultiPointerClickHandler>();
             multiPointerClickHandler.SingleClickReceived += () => { OnSingleClickDeckCard(card); };
             multiPointerClickHandler.DoubleClickReceived += () => { OnMultiClickDeckCard(card); };
+
+            // add drag / drop
+            OnBehaviourHandler onBehaviourHandler = deckCard.AddComponent<OnBehaviourHandler>();
+            onBehaviourHandler.DragBegan += DragBeganEventHandler;
+            onBehaviourHandler.DragUpdated += DragUpdatedEventHandler;
+            onBehaviourHandler.DragEnded += DragEndedEventHandler;
 
             DeckCardUI deckCardUi = new DeckCardUI();
             deckCardUi.Init(deckCard);
             deckCardUi.FillCard(card, cardAmount);
             _deckCards.Add(deckCardUi);
         }
+
+        private void DragBeganEventHandler(PointerEventData arg1, GameObject obj)
+        {
+            if (_selectedDeckCard != null)
+                return;
+
+            GameObject cardObj = Object.Instantiate(_deckCardPrefab, obj.transform, false);
+            cardObj.transform.localScale = Vector3.one;
+
+            Card selectedCard = _deckCards.Find(card => card.GetGameObject() == obj).GetCard();
+            DeckCardUI deckCardUi = new DeckCardUI();
+            deckCardUi.Init(cardObj);
+            deckCardUi.FillCard(selectedCard, 0);
+
+            _selectedDeckCard = deckCardUi;
+        }
+
+        private void DragUpdatedEventHandler(PointerEventData arg1, GameObject arg2)
+        {
+            if (_selectedDeckCard == null)
+                return;
+
+            _selectedDeckCard.GetGameObject().transform.SetParent(_uiManager.Canvas.transform);
+            Vector3 position = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            _selectedDeckCard.GetGameObject().transform.position = new Vector3(position.x, position.y, _selectedDeckCard.GetGameObject().transform.position.z);
+        }
+
+        private void DragEndedEventHandler(PointerEventData arg1, GameObject arg2)
+        {
+            if (_selectedDeckCard == null)
+                return;
+
+            Vector3 point = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            if (hit.collider != null)
+            {
+                if (hit.collider.gameObject == _cardListScrollRect)
+                {
+                    RemoveCardFromDeck(_selectedDeckCard.GetCard());
+                }
+            }
+
+            Object.Destroy(_selectedDeckCard.GetGameObject());
+            _selectedDeckCard = null;
+        }
+
+
 
         public void RemoveCard(Card card)
         {
@@ -187,6 +257,11 @@ namespace Loom.ZombieBattleground
         }
 
         private void OnMultiClickDeckCard(Card selectedCard)
+        {
+            RemoveCardFromDeck(selectedCard);
+        }
+
+        private void RemoveCardFromDeck(Card selectedCard)
         {
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.RemoveCardFromDeck
             (

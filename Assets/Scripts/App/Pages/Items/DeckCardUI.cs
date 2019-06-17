@@ -59,6 +59,11 @@ namespace Loom.ZombieBattleground
             _cardCountIndicator.EnableIndicator(cardAmount);
         }
 
+        public Card GetCard()
+        {
+            return _card;
+        }
+
         public GameObject GetGameObject()
         {
             return _selfObject;
@@ -114,18 +119,20 @@ namespace Loom.ZombieBattleground
 
         private List<Button> _indicators;
 
+        private Transform _meterTransform;
+
         public void Init(GameObject obj)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _indicatorPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/Indicator");
 
-            var meterTransform = obj.transform.Find("CardCount/Meter").transform;
+            _meterTransform = obj.transform.Find("CardCount/Meter").transform;
 
             _indicators = new List<Button>();
             for (int i = 0; i < MaxIndicatorCount; i++)
             {
-                var indicatorObj = Object.Instantiate(_indicatorPrefab, meterTransform);
+                var indicatorObj = Object.Instantiate(_indicatorPrefab, _meterTransform);
                 _indicators.Add(indicatorObj.GetComponent<Button>());
             }
 
@@ -134,6 +141,8 @@ namespace Loom.ZombieBattleground
 
         public void EnableIndicator(int count)
         {
+            _meterTransform.gameObject.SetActive(count > 0);
+
             for (int i = 0; i < MaxIndicatorCount; i++)
             {
                 _indicators[i].interactable = i < count;

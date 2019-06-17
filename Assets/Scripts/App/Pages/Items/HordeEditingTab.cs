@@ -388,6 +388,7 @@ namespace Loom.ZombieBattleground
 
         private void FillCollectionData()
         {
+            _collectionData = new CollectionData();
             _collectionData.Cards.Clear();
 
             List<CollectionCardData> data;

@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
@@ -45,6 +46,10 @@ namespace Loom.ZombieBattleground
 
         private PageType _pageType;
 
+        private static UnitCardUI _selectedUnitCard;
+
+        private GameObject _deckScrollRect;
+
         #region IUIElement
 
         public void Init()
@@ -62,6 +67,8 @@ namespace Loom.ZombieBattleground
             _cardFilter.UpdateGooCostFilterEvent += UpdateGooCostFilterHandler;
 
             _mainCamera = Camera.main;
+
+            _selectedUnitCard = null;
         }
 
         public void Show(GameObject obj, PageType pageType)
@@ -79,6 +86,8 @@ namespace Loom.ZombieBattleground
             _allCardsContent = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View")
                 .GetComponent<ScrollRect>().content;
 
+            _deckScrollRect = _selfPage.transform.Find("Deck_Content/Cards/Scroll View").gameObject;
+
             switch (pageType)
             {
                 case PageType.Army:
@@ -95,6 +104,8 @@ namespace Loom.ZombieBattleground
 
             UpdateCardsUiList();
             _cardFilter.Show(_selfPage.transform.Find("Panel_Frame/Lower_Items/Filters").gameObject);
+
+            _selectedUnitCard = null;
         }
 
         private void UpdateCardsUiList()
@@ -209,15 +220,10 @@ namespace Loom.ZombieBattleground
 
         private void InstantiateCard(Card card)
         {
-            GameObject go = Object.Instantiate(_cardCreaturePrefab);
-            go.transform.SetParent(_allCardsContent);
+            GameObject go = Object.Instantiate(_cardCreaturePrefab, _allCardsContent, false);
             go.transform.localScale = Vector3.one * BoardCardScale;
 
-            UnitCardUI unitCard = new UnitCardUI();
-            unitCard.Init(go);
-            int index = _dataManager.CachedCollectionData.Cards.FindIndex(cardData => cardData.MouldId == card.MouldId);
-            int cardAmount = index != -1 ?_dataManager.CachedCollectionData.Cards[index].Amount : 0;
-            unitCard.FillCardData(card, cardAmount);
+            UnitCardUI unitCard = CreateUnitCardUi(card, go);
 
             _cardUIList.Add(unitCard);
 
@@ -231,8 +237,67 @@ namespace Loom.ZombieBattleground
             else if (_pageType == PageType.DeckEditing)
             {
                 multiPointerClickHandler.DoubleClickReceived += () => { BoardCardDoubleClickHandler(unitCard.GetCard()); };
+
+                // add drag / drop
+                OnBehaviourHandler onBehaviourHandler = go.AddComponent<OnBehaviourHandler>();
+                onBehaviourHandler.DragBegan += DragBeganEventHandler;
+                onBehaviourHandler.DragUpdated += DragUpdatedEventHandler;
+                onBehaviourHandler.DragEnded += DragEndedEventHandler;
             }
         }
+
+        private UnitCardUI CreateUnitCardUi(Card card, GameObject cardObj)
+        {
+            UnitCardUI unitCard = new UnitCardUI();
+            unitCard.Init(cardObj);
+            unitCard.FillCardData(card, 0);
+
+            return unitCard;
+        }
+
+        private void DragBeganEventHandler(PointerEventData arg1, GameObject obj)
+        {
+            if (_selectedUnitCard != null)
+                return;
+
+            GameObject cardObj = Object.Instantiate(_cardCreaturePrefab, obj.transform, false);
+            cardObj.transform.localScale = Vector3.one;
+
+            Card selectedCard = _cardUIList.Find(card => card.GetGameObject() == obj).GetCard();
+            UnitCardUI unitCard = CreateUnitCardUi(selectedCard, cardObj);
+
+            _selectedUnitCard = unitCard;
+        }
+
+        private void DragUpdatedEventHandler(PointerEventData arg1, GameObject arg2)
+        {
+            if (_selectedUnitCard == null)
+                return;
+
+            _selectedUnitCard.GetGameObject().transform.SetParent(_uiManager.Canvas.transform);
+            Vector3 position = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            _selectedUnitCard.GetGameObject().transform.position = new Vector3(position.x, position.y, _selectedUnitCard.GetGameObject().transform.position.z);
+        }
+
+        private void DragEndedEventHandler(PointerEventData arg1, GameObject arg2)
+        {
+            if(_selectedUnitCard == null)
+                return;
+
+            Vector3 point = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            if (hit.collider != null)
+            {
+                if (hit.collider.gameObject == _deckScrollRect)
+                {
+                    AddCardToDeck(_selectedUnitCard.GetCard());
+                }
+            }
+
+            Object.Destroy(_selectedUnitCard.GetGameObject());
+            _selectedUnitCard = null;
+        }
+        
 
         public void UpdateCardsAmountDisplay(int deckId)
         {
@@ -313,6 +378,12 @@ namespace Loom.ZombieBattleground
         {
             if (_selfPage == null)
                 return;
+
+            if (_selectedUnitCard != null)
+            {
+                Object.Destroy(_selectedUnitCard.GetGameObject());
+                _selectedUnitCard = null;
+            }
 
             _cardFilter.Hide();
         }
@@ -419,6 +490,11 @@ namespace Loom.ZombieBattleground
         }
 
         private void BoardCardDoubleClickHandler(Card selectedCard)
+        {
+            AddCardToDeck(selectedCard);
+        }
+
+        private void AddCardToDeck(Card selectedCard)
         {
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
