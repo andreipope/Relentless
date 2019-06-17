@@ -166,7 +166,7 @@ PlayerSettings:
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
-  stripEngineCode: 1
+  stripEngineCode: 0
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
   ForceInternetPermission: 0
@@ -609,7 +609,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: 
+    1: USE_STAGING_BACKEND
     7: 
   platformArchitecture: {}
   scriptingBackend: {}
@@ -686,7 +686,7 @@ PlayerSettings:
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
     Build: 1
-    Collab: 0
+    Collab: 1
     UNet: 1
   luminIcon:
     m_Name: 
