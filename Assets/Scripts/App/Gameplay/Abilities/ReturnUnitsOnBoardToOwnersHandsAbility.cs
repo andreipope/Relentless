@@ -34,6 +34,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             Units = new List<CardModel>();
@@ -53,6 +54,7 @@ namespace Loom.ZombieBattleground
 
             foreach(CardModel unit in Units)
             {
+                unit.SetUnitCannotDie(true);
                 unit.SetUnitActiveStatus(false);
             }
 

@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.22";
+        internal const string CurrentVersionBase = "0.1.23";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -139,7 +139,9 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float TurnTime = 120;
+        internal const float TurnTime = 70;
+
+        internal const float ShortTurnTime = 15;
 
         internal const int MaxDecksCount = 10;
 

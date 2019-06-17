@@ -42,13 +42,15 @@ namespace Loom.Client.Internal
             GC.SuppressFinalize(this);
         }
 
-        public virtual event RpcClientConnectionStateChangedHandler ConnectionStateChanged;
+        public event RpcClientConnectionStateChangedHandler ConnectionStateChanged;
+        public event EventHandler<JsonRpcEventData> EventReceived;
+
         public abstract RpcConnectionState ConnectionState { get; }
         public abstract Task<TResult> SendAsync<TResult, TArgs>(string method, TArgs args);
         public abstract Task ConnectAsync();
         public abstract Task DisconnectAsync();
-        public abstract Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics);
-        public abstract Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler);
+        public abstract Task SubscribeToEventsAsync(ICollection<string> topics);
+        public abstract Task UnsubscribeFromEventsAsync();
 
         protected abstract void Dispose(bool disposing);
 
@@ -60,6 +62,11 @@ namespace Loom.Client.Internal
 
             this.lastConnectionState = state;
             ConnectionStateChanged?.Invoke(this, state);
+        }
+
+        protected void InvokeEventReceived(JsonRpcEventData eventData)
+        {
+            EventReceived?.Invoke(this, eventData);
         }
 
         protected void HandleJsonRpcResponseError(JsonRpcResponse partialMsg)

@@ -178,7 +178,6 @@ namespace Loom.ZombieBattleground
 
                     Action callback = () =>
                     {
-                        skillUsageAction.TriggerActionExternally();
                         switch (target)
                         {
                             case Player player:
@@ -192,6 +191,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         EndDoSkill(parametrizedAbilityObjects);
+                        skillUsageAction.TriggerActionExternally();
                     };
 
                     FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(SelfObject.transform, target, action: callback);
@@ -261,11 +261,12 @@ namespace Loom.ZombieBattleground
                 .EnqueueAction(
                     completeCallback =>
                     {
+                        _battlegroundController.IsOnShorterTime = false;
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
                         CancelTargetingArrows();
                     },
-                    Enumerators.QueueActionType.OverlordSkillUsage);
+                    Enumerators.QueueActionType.OverlordSkillUsage, startupTime:0f);
         }
 
         public void UseSkill()

@@ -42,7 +42,16 @@ namespace Loom.ZombieBattleground
         {
             if (Instance == this)
             {
-                GameClient.Instance.InitServices();
+                try
+                {
+                    GameClient.Instance.InitServices();
+                }
+                catch (Exception)
+                {
+                    // Nothing we can do here, just crash quickly
+                    Destroy(gameObject);
+                    throw;
+                }
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 

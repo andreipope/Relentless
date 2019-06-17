@@ -105,6 +105,7 @@ public class EndTurnButton : MonoBehaviour
 
         if (_active && _hovering)
         {
+            _gameplayManager.GetController<BattlegroundController>().IsOnShorterTime = false;
             _gameplayManager.GetController<BattlegroundController>().StopTurn();
             SetEnabled(false);
         }

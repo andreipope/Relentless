@@ -2200,7 +2200,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            Func<Contract, IContractCallProxy> contractCallProxyFactory =
+            Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory =
                 contract => new ThreadedContractCallProxyWrapper(new CustomContractCallProxy(contract, false, false));
             DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration();
             await client.Start(

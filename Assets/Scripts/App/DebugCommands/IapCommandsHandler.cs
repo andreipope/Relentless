@@ -15,14 +15,14 @@ namespace Loom.ZombieBattleground
     {
         private static IapMediator _iapMediator;
         private static AuthFiatApiFacade _authFiatApiFacade;
-        private static FiatPlasmaManager _fiatPlasmaManager;
+        private static PlasmaChainBackendFacade _plasmaChainBackendFacade;
 
         public static void Initialize()
         {
             CommandHandlers.RegisterCommandHandlers(typeof(IapCommandsHandler));
             _iapMediator = GameClient.Get<IapMediator>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
-            _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
         }
 
         [CommandHandler]

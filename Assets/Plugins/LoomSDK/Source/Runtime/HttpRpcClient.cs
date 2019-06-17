@@ -16,12 +16,6 @@ namespace Loom.Client
 
         private readonly Uri url;
 
-        public override event RpcClientConnectionStateChangedHandler ConnectionStateChanged
-        {
-            add { throw new NotSupportedException(); }
-            remove { throw new NotSupportedException(); }
-        }
-
         public override RpcConnectionState ConnectionState => RpcConnectionState.NonApplicable;
 
         public HttpRpcClient(string url)
@@ -29,12 +23,12 @@ namespace Loom.Client
             this.url = new Uri(url);
         }
 
-        public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics)
+        public override Task SubscribeToEventsAsync(ICollection<string> topics)
         {
             throw new NotImplementedException();
         }
 
-        public override Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler)
+        public override Task UnsubscribeFromEventsAsync()
         {
             throw new NotImplementedException();
         }

@@ -1395,7 +1395,10 @@ namespace Loom.ZombieBattleground
                     {
                         _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                         _dataManager.CachedUserLocalData.LastSelectedDeckId = new DeckId(-1);
-                        _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
+                        _uiManager.GetPage<HordeSelectionWithNavigationPage>().AssignSelectedDeck
+                        (
+                            _dataManager.CachedDecksData.Decks[0]
+                        );
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
                         await _backendFacade.DeleteDeck(

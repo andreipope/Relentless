@@ -52,7 +52,8 @@ namespace Loom.ZombieBattleground
                 CardModel.ResetToInitial();
 
                 Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(CardModel.Card.Prototype.Name));
-                WorkingCard card = new WorkingCard(prototype, prototype, SelectedPlayer);
+                InstanceId updatedId = new InstanceId(CardModel.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.BackToDeck);
+                WorkingCard card = new WorkingCard(prototype, prototype, SelectedPlayer, id: updatedId);
                 CardModel cardModel = new CardModel(card);
                 PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(cardModel, true);
             }

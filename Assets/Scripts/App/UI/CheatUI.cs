@@ -26,6 +26,9 @@ namespace Loom.ZombieBattleground
 
         private void OnGUI()
         {
+            if (_pvpManager == null)
+                return;
+
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
             Rect pvpCheatsRect = new Rect(20, 20, 200, 160);

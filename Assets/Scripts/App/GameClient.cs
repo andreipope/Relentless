@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            Log.Info("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+            Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName}");
 
             DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
-            Func<Contract, IContractCallProxy> contractCallProxyFactory =
+            Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory =
                 contract => new ThreadedContractCallProxyWrapper(new CustomContractCallProxy(contract, true, true));
 
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
@@ -74,11 +74,9 @@ namespace Loom.ZombieBattleground
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<AuthFiatApiFacade>(new AuthFiatApiFacade());
-            AddService<FiatPlasmaManager>(new FiatPlasmaManager());
-            AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
-            AddService<ContractManager>(new ContractManager());
+            AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
         }
 
@@ -151,6 +149,8 @@ namespace Loom.ZombieBattleground
         {
             return Instance.GetService<T>();
         }
+
+        public static bool InstanceExists => _instance != null;
 
         public static void ClearInstance()
         {

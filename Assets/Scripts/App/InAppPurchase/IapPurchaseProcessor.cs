@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
-using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
+
+#if UNITY_ANDROID || UNITY_IOS
+using Loom.Newtonsoft.Json;
 using UnityEngine.Assertions;
 using UnityEngine.Purchasing.Security;
+#endif
 
 namespace Loom.ZombieBattleground.Iap
 {
@@ -20,16 +23,19 @@ namespace Loom.ZombieBattleground.Iap
         private static readonly ILog Log = Logging.GetLog(nameof(IapPurchaseProcessor));
 
         private readonly AuthFiatApiFacade _authFiatApiFacade;
-        private readonly FiatPlasmaManager _fiatPlasmaManager;
+        private readonly PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private readonly DAppChainClient _plasmaChainClient;
         private readonly PurchaseStateChangedHandler _setStateAction;
 
         public IapPurchaseProcessor(
             AuthFiatApiFacade authFiatApiFacade,
-            FiatPlasmaManager fiatPlasmaManager,
+            PlasmaChainBackendFacade plasmaChainBackendFacade,
+            DAppChainClient plasmaChainClient,
             PurchaseStateChangedHandler stateAction)
         {
             _authFiatApiFacade = authFiatApiFacade;
-            _fiatPlasmaManager = fiatPlasmaManager;
+            _plasmaChainBackendFacade = plasmaChainBackendFacade;
+            _plasmaChainClient = plasmaChainClient;
             _setStateAction = stateAction;
         }
 
@@ -140,12 +146,12 @@ namespace Loom.ZombieBattleground.Iap
             try
             {
                 // Claim pack on Plasmachain
-                await _fiatPlasmaManager.ClaimPacks(record);
+                await _plasmaChainBackendFacade.ClaimPacks(_plasmaChainClient, record);
             }
             catch (TxCommitException e)
             {
                 // If the pack was already claimed, call is expected to fail. We can safely ignore this.
-                Log.Debug($"{nameof(_fiatPlasmaManager.ClaimPacks)} failed, this is expected: " + e);
+                Log.Debug($"{nameof(_plasmaChainBackendFacade.ClaimPacks)} failed, this is expected: " + e);
             }
             catch (IapException e)
             {

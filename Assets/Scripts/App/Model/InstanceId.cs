@@ -1,4 +1,5 @@
 using System;
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -14,6 +15,28 @@ namespace Loom.ZombieBattleground.Data
 
         public InstanceId(int id)
         {
+            Id = id;
+        }
+
+        public InstanceId(int id, Enumerators.ReasonForInstanceIdChange reasonForChange)
+        {
+            switch(reasonForChange)
+            {
+                case Enumerators.ReasonForInstanceIdChange.Reanimate:
+                    id = id*1000+1;
+                    break;
+                case Enumerators.ReasonForInstanceIdChange.BackToDeck:
+                    id = id*1000+2;
+                    break;
+                case Enumerators.ReasonForInstanceIdChange.BackToHand:
+                    id = id*1000+3;
+                    break;
+                case Enumerators.ReasonForInstanceIdChange.BackFromGraveyard:
+                    id = id*1000+4;
+                    break;
+                default:
+                    break;
+            }
             Id = id;
         }
 

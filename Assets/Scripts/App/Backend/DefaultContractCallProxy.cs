@@ -4,11 +4,11 @@ using Loom.Google.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public class DefaultContractCallProxy : IContractCallProxy
+    public class DefaultContractCallProxy<TChainEvent> : IContractCallProxy
     {
-        public Contract Contract { get; }
+        public Contract<TChainEvent> Contract { get; }
 
-        public DefaultContractCallProxy(Contract contract)
+        public DefaultContractCallProxy(Contract<TChainEvent> contract)
         {
             Contract = contract;
         }

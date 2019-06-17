@@ -174,19 +174,25 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
                     new TestCardData("Maelztrom", 1),
+                    new TestCardData("Z-Virus", 1),
+                    new TestCardData("Vindrom", 1),
                     new TestCardData("Whizper", 20));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
                     new TestCardData("Maelztrom", 1),
+                    new TestCardData("Z-Virus", 1),
+                    new TestCardData("Vindrom", 1),
                     new TestCardData("Whizper", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerWhizperId1 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whizper", 1);
-                InstanceId playerWhizperId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whizper", 2);
+                InstanceId playerZVirusId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Z-Virus", 1);
+                InstanceId playerVindromId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Vindrom", 1);
                 InstanceId playerMaelstromId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Maelztrom", 1);
 
                 InstanceId opponentWhizperId1 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whizper", 1);
-                InstanceId opponentWhizperId2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whizper", 2);
+                InstanceId opponentZVirusId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Z-Virus", 1);
+                InstanceId opponentVindromId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Vindrom", 1);
                 InstanceId opponentMaelstromrId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Maelztrom", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
@@ -195,27 +201,26 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.CardPlay(playerWhizperId1, ItemPosition.Start);
-                           player.CardPlay(playerWhizperId2, ItemPosition.Start);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentWhizperId1, ItemPosition.Start);
-                           opponent.CardPlay(opponentWhizperId2, ItemPosition.Start);
+                           opponent.CardPlay(opponentZVirusId, ItemPosition.Start);
+                           opponent.CardPlay(opponentVindromId, ItemPosition.Start);
                        },
                        player =>
                        {
                            player.CardPlay(playerMaelstromId, ItemPosition.Start);
+                           player.CardPlay(playerWhizperId1, ItemPosition.Start);
+                           player.CardPlay(playerZVirusId, ItemPosition.Start);
+                           player.CardPlay(playerVindromId, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentWhizperId1, ItemPosition.Start);
-                           opponent.CardPlay(opponentWhizperId2, ItemPosition.Start);
-                       },
-                       player => {},
-                       opponent => {
                            opponent.CardPlay(opponentMaelstromrId, ItemPosition.Start);
                        },
+                       player => {},
+                       opponent => {},
                        player => {},
                        opponent => {}
                    };

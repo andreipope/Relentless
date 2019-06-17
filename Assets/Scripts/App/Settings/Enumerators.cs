@@ -963,6 +963,14 @@ namespace Loom.ZombieBattleground.Common
             AbilityDamage
         }
 
+        public enum ReasonForInstanceIdChange
+        {
+            Reanimate,
+            BackToDeck,
+            BackToHand,
+            BackFromGraveyard
+        }
+
         public enum CardSetType
         {
             Basic,

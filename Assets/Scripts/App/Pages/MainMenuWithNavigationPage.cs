@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
 
             AnimateOverlordPortrait(); 
             
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);
 
             _uiManager.GetPopup<DeckSelectionPopup>().SelectDeckEvent += OnSelectDeckEvent;
@@ -163,7 +163,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
             }
 
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             if (deck == null)
             {
                 deck = _uiManager.GetPopup<DeckSelectionPopup>().GetDefaultDeck();

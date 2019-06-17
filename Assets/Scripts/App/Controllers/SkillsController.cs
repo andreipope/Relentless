@@ -269,8 +269,8 @@ namespace Loom.ZombieBattleground
                             targetPlayer,
                             (x) =>
                             {
-                                skillUsageAction.TriggerActionExternally();
                                 DoActionByType(skill, targets, completeCallback);
+                                skillUsageAction.TriggerActionExternally();
                             }, _isDirection);
 
                         if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -318,8 +318,8 @@ namespace Loom.ZombieBattleground
                             targetUnitView,
                             (x) =>
                             {
-                                skillUsageAction.TriggerActionExternally();
                                 DoActionByType(skill, targets, completeCallback);
+                                skillUsageAction.TriggerActionExternally();
                                 skill.SkillUsedAction(targets);
                             }, _isDirection);
 
@@ -360,8 +360,8 @@ namespace Loom.ZombieBattleground
                         targets[0].BoardObject,
                         (x) =>
                         {
-                            skillUsageAction.TriggerActionExternally();
                             DoActionByType(skill, targets, completeCallback);
+                            skillUsageAction.TriggerActionExternally();
                             skill.SkillUsedAction(_targets);
                         }, _isDirection);
 
@@ -541,7 +541,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Skill.PUSH:
                     int ownerGoo = skill.OwnerPlayer.CurrentGoo;
                     int cardCost = skill.FightTargetingArrow.SelectedCard.Model.Prototype.Cost;
-                    state = ownerGoo > 0 && cardCost <= ownerGoo;
+                    state = cardCost <= ownerGoo;
                     break;
                 default:
                     break;
@@ -743,16 +743,22 @@ namespace Loom.ZombieBattleground
         private void WindShieldAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
-            List<CardModel> units;
-            if (!boardSkill.IsLocal && targets != null)
+            List<CardModel> units = new List<CardModel>();
+            if (!boardSkill.IsLocal)
             {
-                units = targets.Select(target => target.BoardObject as CardModel).ToList();
+                if (targets != null && targets.Count > 0)
+                {
+                    if (targets.Count > 1 || targets[0].BoardObject is CardModel)
+                    {
+                        units = targets.Select(target => target.BoardObject as CardModel).ToList();
+                    }
+                }
             }
             else
             {
                 units =
                 InternalTools.GetRandomElementsFromList(
-                    owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.AIR),
+                    owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.AIR && !x.IsDead && x.CurrentDefense > 0 && x.IsUnitActive),
                     skill.Value);
 
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target)).ToList();
@@ -848,6 +854,7 @@ namespace Loom.ZombieBattleground
                .ToList();
             foreach (CardModel unit in units)
             {
+                unit.SetUnitCannotDie(true);
                 unit.SetUnitActiveStatus(false);
             }
 
@@ -964,9 +971,12 @@ namespace Loom.ZombieBattleground
 
             Dictionary<IBoardObject, int> sortedTargets = null;
 
-            if (!boardSkill.IsLocal && targets != null)
+            if (!boardSkill.IsLocal)
             {
-                sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
+                if (targets != null && targets.Count > 0 && (targets[0].BoardObject is CardModel || targets[0].BoardObject is Player))
+                {
+                    sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
+                }
             }
             else
             {
@@ -1129,9 +1139,15 @@ namespace Loom.ZombieBattleground
             Action<CardModel> callback = null;
             int count = 0;
 
-            if (!boardSkill.IsLocal && targets != null)
+            if (!boardSkill.IsLocal)
             {
-                count = targets.Count;
+                if (targets != null && targets.Count > 0)
+                {
+                    if (targets.Count > 1 || targets[0].BoardObject is CardModel)
+                    {
+                        count = targets.Count;
+                    }
+                }
             }
             else
             {
@@ -1548,7 +1564,8 @@ namespace Loom.ZombieBattleground
                 cardModel.ResetToInitial();
 
                 Card prototype = new Card(GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromName(cardModel.Card.Prototype.Name));
-                WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer);
+                InstanceId updatedId = new InstanceId(cardModel.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.Reanimate);
+                WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer, id:updatedId);
                 CardModel reanimatedUnitModel = new CardModel(card);
 
                 reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
