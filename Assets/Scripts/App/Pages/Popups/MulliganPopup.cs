@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -84,16 +85,16 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < _gameplayManager.CurrentPlayer.MulliganCards.Count; i++)
             {
-                CardModel card = _gameplayManager.CurrentPlayer.MulliganCards[i];
+                CardModel cardModel = _gameplayManager.CurrentPlayer.MulliganCards[i];
 
                 GameObject cardObj = Object.Instantiate(_unitCardPrefab, _cardsParentTransform, false);
                 cardObj.transform.localScale = Vector3.one * UnitCardSize;
 
                 UnitCardUI unitCardUi = new UnitCardUI();
                 unitCardUi.Init(cardObj);
-                unitCardUi.FillCardData((Card)card.Prototype, 0);
+                unitCardUi.FillCardData((Card)cardModel.Prototype, 0);
 
-                MulliganUnitCard mulliganUnitCard = new MulliganUnitCard(unitCardUi, true);
+                MulliganUnitCard mulliganUnitCard = new MulliganUnitCard(unitCardUi, cardModel, true);
                 _mulliganCards.Add(mulliganUnitCard);
 
                 MultiPointerClickHandler multiPointerClickHandler = cardObj.AddComponent<MultiPointerClickHandler>();
@@ -106,25 +107,22 @@ namespace Loom.ZombieBattleground
             mulliganUnitCard.SelectCard(!mulliganUnitCard.IsSelected);
         }
 
-
-
-        public void ContinueButtonOnClickHandler()
+        private void ContinueButtonOnClickHandler()
         {
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
-                // TODO : Not sure what to send here
-                //_gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCards.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.CardModel).ToList());
+                var cardModels = _mulliganCards.FindAll(mulliganCard => mulliganCard.IsSelected).Select(x => x.GetCardModel()).ToList();
+                _gameplayManager.GetController<CardsController>().CardsDistribution(cardModels);
             }
 
-            // TODO : Not sure what to send here
-            //InvokeMulliganCardsEvent(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.CardModel).ToList());
+            InvokeMulliganCardsEvent(_mulliganCards.FindAll(mulliganCard => !mulliganCard.IsSelected).Select(x => x.GetCardModel()).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.HidePopup<MulliganPopup>();
         }
 
-        public void InvokeMulliganCardsEvent(List<CardModel> cards)
+        private void InvokeMulliganCardsEvent(List<CardModel> cards)
         {
             MulliganCards?.Invoke(cards);
         }
@@ -133,14 +131,17 @@ namespace Loom.ZombieBattleground
     public class MulliganUnitCard
     {
         private readonly UnitCardUI _unitCardUi;
-        public bool IsSelected;
+        private readonly CardModel _cardModel;
 
         private readonly GameObject _crossGameObject;
         private const float CrossScaleSize = 2f;
 
-        public MulliganUnitCard(UnitCardUI unitCardUi, bool isSelected)
+        public bool IsSelected;
+
+        public MulliganUnitCard(UnitCardUI unitCardUi, CardModel cardModel, bool isSelected)
         {
             _unitCardUi = unitCardUi;
+            _cardModel = cardModel;
 
             GameObject crossPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/UI/Cards/MulliganCross");
             _crossGameObject = Object.Instantiate(crossPrefab, unitCardUi.GetGameObject().transform, false);
@@ -153,6 +154,11 @@ namespace Loom.ZombieBattleground
             IsSelected = select;
             _crossGameObject.SetActive(!IsSelected);
             _unitCardUi.GrayScaleCard(IsSelected);
+        }
+
+        public CardModel GetCardModel()
+        {
+            return _cardModel;
         }
     }
 }
