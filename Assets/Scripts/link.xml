@@ -9,8 +9,6 @@
     <assembly fullname="Opencoding.Console" preserve="all" />
     <assembly fullname="Opencoding.Console.Misc" preserve="all" />
     <assembly fullname="Opencoding.CommandHandlers" preserve="all" />
-    <assembly fullname="UnityEngine.AnimationModule" preserver="all" />
-    <assembly fullname="UnityEngine.Physics2DModule" preserver="all" />
 
     <assembly fullname="System">
         <type fullname="Mono.Unity.UnityTlsProvider" preserve="all" />
