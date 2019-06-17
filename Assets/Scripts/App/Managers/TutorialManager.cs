@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -591,15 +592,20 @@ namespace Loom.ZombieBattleground
                     {
                         InternalTools.DoActionDelayed(() =>
                         {
-                            TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(item.Id,
-                                                                                            item.Description,
-                                                                                            item.Align,
-                                                                                            item.Owner,
-                                                                                            (Vector3)item.Position,
-                                                                                            true,
-                                                                                            false,
-                                                                                            layer: Enumerators.TutorialObjectLayer.Default,
-                                                                                            boardObjectOwner: sender);
+                            TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem
+                            (
+                                item.Id,
+                                Enum.TryParse($"GameData_InGameTutorial_{item.Id}", out LocalizationTerm term) ? 
+                                    LocalizationUtil.GetLocalizedString(term) :
+                                    "",
+                                item.Align,
+                                item.Owner,
+                                (Vector3)item.Position,
+                                true,
+                                false,
+                                layer: Enumerators.TutorialObjectLayer.Default,
+                                boardObjectOwner: sender
+                            );
                             _ingameTutorialActiveTooltips.Add(tooltipItem);
 
                             if (item.AppearOnce)

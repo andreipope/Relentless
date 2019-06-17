@@ -9473,7 +9473,7 @@ MonoBehaviour:
       - <b>Entry:</b> Destroy all <b>Frozen</b> creatures.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_00
+    - Term: GameData_InGameTutorial_0
       TermType: 0
       Description: 
       Languages:
@@ -9485,7 +9485,7 @@ MonoBehaviour:
       - Entry abilities activate as the card is played.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_01
+    - Term: GameData_InGameTutorial_1
       TermType: 0
       Description: 
       Languages:
@@ -9497,7 +9497,7 @@ MonoBehaviour:
       - Turn abilities activate at the start of every turn.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_02
+    - Term: GameData_InGameTutorial_2
       TermType: 0
       Description: 
       Languages:
@@ -9509,7 +9509,7 @@ MonoBehaviour:
       - End abilities activate at the end of every turn.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_03
+    - Term: GameData_InGameTutorial_3
       TermType: 0
       Description: 
       Languages:
@@ -9521,7 +9521,7 @@ MonoBehaviour:
       - Attack abilities activate as the creature fights.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_04
+    - Term: GameData_InGameTutorial_4
       TermType: 0
       Description: 
       Languages:
@@ -9533,7 +9533,7 @@ MonoBehaviour:
       - Death abilities trigger when the creature's Def is 0
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_05
+    - Term: GameData_InGameTutorial_5
       TermType: 0
       Description: 
       Languages:
@@ -9545,7 +9545,7 @@ MonoBehaviour:
       - Delayed abilities activate after a certain number of turns
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_06
+    - Term: GameData_InGameTutorial_6
       TermType: 0
       Description: 
       Languages:
@@ -9557,7 +9557,7 @@ MonoBehaviour:
       - A frozen creature cannot attack the next turn.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_07
+    - Term: GameData_InGameTutorial_7
       TermType: 0
       Description: 
       Languages:
@@ -9569,7 +9569,7 @@ MonoBehaviour:
       - Reanimated creatures reappear after one death.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_08
+    - Term: GameData_InGameTutorial_8
       TermType: 0
       Description: 
       Languages:
@@ -9581,7 +9581,7 @@ MonoBehaviour:
       - Heavy creatures must be attacked first.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_InGameTutorial_09
+    - Term: GameData_InGameTutorial_9
       TermType: 0
       Description: 
       Languages:
