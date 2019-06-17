@@ -111,11 +111,11 @@ namespace Loom.ZombieBattleground
         {
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
-                var cardModels = _mulliganCards.FindAll(mulliganCard => mulliganCard.IsSelected).Select(x => x.GetCardModel()).ToList();
+                var cardModels = _mulliganCards.FindAll(mulliganCard => !mulliganCard.IsSelected).Select(x => x.GetCardModel()).ToList();
                 _gameplayManager.GetController<CardsController>().CardsDistribution(cardModels);
             }
 
-            InvokeMulliganCardsEvent(_mulliganCards.FindAll(mulliganCard => !mulliganCard.IsSelected).Select(x => x.GetCardModel()).ToList());
+            InvokeMulliganCardsEvent(_mulliganCards.FindAll(mulliganCard => mulliganCard.IsSelected).Select(x => x.GetCardModel()).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
