@@ -127,6 +127,7 @@
         LevelUp_Label_Header,
         LevelUp_Label_RewardDisabled,
         LevelUp_Button_Continue,
+        Handle_Error_General,
         Waning_OTP_Incorrect,
         Warning_ForgotPassword_InvalidEmail,
         Warning_Register_EmptyEmailOrPassword,

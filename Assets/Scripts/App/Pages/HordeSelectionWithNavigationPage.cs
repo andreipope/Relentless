@@ -7,6 +7,7 @@ using log4net;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using TMPro;
@@ -302,7 +303,13 @@ namespace Loom.ZombieBattleground
             if (_tab == Tab.Editing)
             {
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
+                _uiManager.DrawPopup<QuestionPopup>
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.HordeEditing_Popup_ConfirmSaveProgress
+                    )
+                );
             }
             else
             {
@@ -344,7 +351,13 @@ namespace Loom.ZombieBattleground
         {
             if(!CheckAvailableDeckExist())
             {
-                _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
+                _uiManager.DrawPopup<WarningPopup>
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_HordeSelection_SearchDeck_NotFound
+                    )
+                );
                 _uiManager.GetPopup<ElementFilterPopup>().ResetSelectedFactionList();
                 _uiManager.DrawPopup<ElementFilterPopup>();
             }
@@ -376,7 +389,13 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             if (GetDeckListFromUserCache().Count <= 1)
             {
-                OpenAlertDialog("Cannot delete. You must have at least one deck.");
+                OpenAlertDialog
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.HordeSelection_Popup_InfoDeleteLastDeck
+                    )
+                );
                 return;
             }
 
@@ -385,7 +404,13 @@ namespace Loom.ZombieBattleground
             {
                 _buttonDelete.enabled = false;
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Are you sure you want to delete " + deck.Name + "?");
+                _uiManager.DrawPopup<QuestionPopup>
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.HordeSelection_Popup_ConfirmDeleteDeck
+                    ).Replace("{DECK_NAME}", deck.Name)
+                );
             }
         }
         
@@ -447,7 +472,13 @@ namespace Loom.ZombieBattleground
             ApplySelectedDeckIdByDefault();
             if(!success)
             {
-                OpenAlertDialog("Something went wrong.\nPlease try again.");                
+                OpenAlertDialog
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Handle_Error_General
+                    )
+                );                
             }
             ChangeTab(Tab.SelectDeck);
         }
@@ -682,7 +713,13 @@ namespace Loom.ZombieBattleground
             
             if(deckListToDisplay.Count <= 0)
             {
-                OpenAlertDialog($"No decks found with that search.");
+                OpenAlertDialog
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_HordeSelection_SearchDeck_NotFound
+                    )
+                );
                 return deckList;
             }
 
