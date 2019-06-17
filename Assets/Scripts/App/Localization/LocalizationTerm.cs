@@ -2,6 +2,7 @@
 {
     public enum LocalizationTerm
     {
+        None,
         Common_Button_GotIt,
         Common_Button_Yes,
         Common_Button_No,
