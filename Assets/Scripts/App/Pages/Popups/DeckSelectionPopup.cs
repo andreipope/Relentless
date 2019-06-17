@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    // TODO : Merge fixes
+                    // TODO
                     //hordeSelection.AssignSelectedDeck(deck);
                     //hordeSelection.AssignCurrentEditDeck(deck);
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
