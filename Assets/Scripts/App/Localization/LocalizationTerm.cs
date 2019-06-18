@@ -180,6 +180,11 @@
         Warning_HordeEditing_AddCard_NotEnough,
         Warning_HordeEditing_AddCard_RankMaxOut,
         Warning_HordeEditing_AddCard_MaxDeckSize,
+        Warning_HordeEditing_AddDeck_Error,
+        Warning_HordeEditing_EditDeck_Error,
+        Warning_HordeEditing_DeleteDeck_Error,
+        Warning_HordeEditing_DeckName_Empty,
+        Warning_HordeEditing_DeckName_Exist,
         GameData_BattleFlavor_0,
         GameData_BattleFlavor_1,
         GameData_BattleFlavor_2,
@@ -859,6 +864,6 @@
         GameData_Tutorial_2_TutorialStep_9_ChampionSayTooltip_0,
         GameData_Tutorial_2_TutorialStep_11_ChampionSayTooltip_0,
         GameData_Tutorial_2_TutorialStep_21_ChampionSayTooltip_0,
-        GameData_Tutorial_2_TutorialStep_22_ChampionSayTooltip_0
+        GameData_Tutorial_2_TutorialStep_22_ChampionSayTooltip_0,
     }
 }

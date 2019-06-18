@@ -153,12 +153,12 @@ MonoBehaviour:
       TermType: 0
       Description: 
       Languages:
-      - Deleteing Deck...
-      - Deleteing Deck...
-      - Deleteing Deck...
-      - Deleteing Deck...
-      - Deleteing Deck...
-      - Deleteing Deck...
+      - Deleting Deck . . .
+      - Deleting Deck . . .
+      - Deleting Deck . . .
+      - Deleting Deck . . .
+      - Deleting Deck . . .
+      - Deleting Deck . . .
       Flags: 000000000000
       Languages_Touch: []
     - Term: HordeEditing_Popup_ConfirmSaveProgress
@@ -237,12 +237,12 @@ MonoBehaviour:
       TermType: 0
       Description: 
       Languages:
-      - Saving Deck...
-      - Saving Deck...
-      - Saving Deck...
-      - Saving Deck...
-      - Saving Deck...
-      - Saving Deck...
+      - Saving Deck . . .
+      - Saving Deck . . .
+      - Saving Deck . . .
+      - Saving Deck . . .
+      - Saving Deck . . .
+      - Saving Deck . . .
       Flags: 000000000000
       Languages_Touch: []
     - Term: ChampionSelection_Label_Header
@@ -2211,6 +2211,66 @@ MonoBehaviour:
       - Cannot have more than {MAX_DECK_SIZE} cards in one deck.
       - Cannot have more than {MAX_DECK_SIZE} cards in one deck.
       - Cannot have more than {MAX_DECK_SIZE} cards in one deck.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_HordeEditing_AddDeck_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Not able to Add Deck
+      - Not able to Add Deck
+      - Not able to Add Deck
+      - Not able to Add Deck
+      - Not able to Add Deck
+      - Not able to Add Deck
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_HordeEditing_EditDeck_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Not able to Edit Deck
+      - Not able to Edit Deck
+      - Not able to Edit Deck
+      - Not able to Edit Deck
+      - Not able to Edit Deck
+      - Not able to Edit Deck
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_HordeEditing_DeleteDeck_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Not able to Delete Deck
+      - Not able to Delete Deck
+      - Not able to Delete Deck
+      - Not able to Delete Deck
+      - Not able to Delete Deck
+      - Not able to Delete Deck
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_HordeEditing_DeckName_Empty
+      TermType: 0
+      Description: 
+      Languages:
+      - Saving Deck with an empty name is not allowed.
+      - Saving Deck with an empty name is not allowed.
+      - Saving Deck with an empty name is not allowed.
+      - Saving Deck with an empty name is not allowed.
+      - Saving Deck with an empty name is not allowed.
+      - Saving Deck with an empty name is not allowed.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_HordeEditing_DeckName_Exist
+      TermType: 0
+      Description: 
+      Languages:
+      - 'Not able to Edit Deck: \n Deck Name already exists.'
+      - 'Not able to Edit Deck: \n Deck Name already exists.'
+      - 'Not able to Edit Deck: \n Deck Name already exists.'
+      - 'Not able to Edit Deck: \n Deck Name already exists.'
+      - 'Not able to Edit Deck: \n Deck Name already exists.'
+      - 'Not able to Edit Deck: \n Deck Name already exists.'
       Flags: 000000000000
       Languages_Touch: []
     - Term: GameData_BattleFlavor_0

@@ -10,7 +10,7 @@ HordeSelection_Button_Rename,RENAME,RENAME,RENAME,RENAME,RENAME,RENAME
 HordeSelection_Button_Build,BUILD A NEW DECK,BUILD A NEW DECK,BUILD A NEW DECK,BUILD A NEW DECK,BUILD A NEW DECK,BUILD A NEW DECK
 HordeSelection_Popup_InfoDeleteLastDeck,Cannot delete. You must have at least one deck.,Cannot delete. You must have at least one deck.,Cannot delete. You must have at least one deck.,Cannot delete. You must have at least one deck.,Cannot delete. You must have at least one deck.,Cannot delete. You must have at least one deck.
 HordeSelection_Popup_ConfirmDeleteDeck,Are you sure you want to delete {DECK_NAME}?,Are you sure you want to delete {DECK_NAME}?,Are you sure you want to delete {DECK_NAME}?,Are you sure you want to delete {DECK_NAME}?,Are you sure you want to delete {DECK_NAME}?,Are you sure you want to delete {DECK_NAME}?
-HordeSelection_Spinner_DeletingDeck,Deleteing Deck...,Deleteing Deck...,Deleteing Deck...,Deleteing Deck...,Deleteing Deck...,Deleteing Deck...
+HordeSelection_Spinner_DeletingDeck,Deleting Deck . . .,Deleting Deck . . .,Deleting Deck . . .,Deleting Deck . . .,Deleting Deck . . .,Deleting Deck . . .
 ,,,,,,
 HordeEditing_Popup_ConfirmSaveProgress,Would you like to save your progress?,Would you like to save your progress?,Would you like to save your progress?,Would you like to save your progress?,Would you like to save your progress?,Would you like to save your progress?
 HordeEditing_Button_Auto,AUTO,AUTO,AUTO,AUTO,AUTO,AUTO
@@ -18,7 +18,7 @@ HordeEditing_Button_Filter,FILTER,FILTER,FILTER,FILTER,FILTER,FILTER
 HordeEditing_Button_Abilities,ABILITIES,ABILITIES,ABILITIES,ABILITIES,ABILITIES,ABILITIES
 HordeEditing_Input_Search,SEARCH,SEARCH,SEARCH,SEARCH,SEARCH,SEARCH
 HordeEditing_Button_Save,SAVE DECK,SAVE DECK,SAVE DECK,SAVE DECK,SAVE DECK,SAVE DECK
-HordeEditing_Spinner_SavingDeck,Saving Deck...,Saving Deck...,Saving Deck...,Saving Deck...,Saving Deck...,Saving Deck...
+HordeEditing_Spinner_SavingDeck,Saving Deck . . .,Saving Deck . . .,Saving Deck . . .,Saving Deck . . .,Saving Deck . . .,Saving Deck . . .
 ,,,,,,
 ChampionSelection_Label_Header,NEW DECK,NEW DECK,NEW DECK,NEW DECK,NEW DECK,NEW DECK
 ChampionSelection_Button_Continue,CONTINUE,CONTINUE,CONTINUE,CONTINUE,CONTINUE,CONTINUE
@@ -212,6 +212,11 @@ Warning_HordeEditing_AddCard_AgainstChampionFaction,Cannot add from the faction 
 Warning_HordeEditing_AddCard_NotEnough,You don't have enough of this card. Buy or earn packs to get more cards.,You don't have enough of this card. Buy or earn packs to get more cards.,You don't have enough of this card. Buy or earn packs to get more cards.,You don't have enough of this card. Buy or earn packs to get more cards.,You don't have enough of this card. Buy or earn packs to get more cards.,You don't have enough of this card. Buy or earn packs to get more cards.
 Warning_HordeEditing_AddCard_RankMaxOut,Cannot have more than {MAX_COPIES}  copies of an {CARD_RANK} card in one deck.,Cannot have more than {MAX_COPIES}  copies of an {CARD_RANK} card in one deck.,Cannot have more than {MAX_COPIES}  copies of an {CARD_RANK} card in one deck.,Cannot have more than {MAX_COPIES}  copies of an {CARD_RANK} card in one deck.,Cannot have more than {MAX_COPIES}  copies of an {CARD_RANK} card in one deck.,Cannot have more than {MAX_COPIES}  copies of an {CARD_RANK} card in one deck.
 Warning_HordeEditing_AddCard_MaxDeckSize,Cannot have more than {MAX_DECK_SIZE} cards in one deck.,Cannot have more than {MAX_DECK_SIZE} cards in one deck.,Cannot have more than {MAX_DECK_SIZE} cards in one deck.,Cannot have more than {MAX_DECK_SIZE} cards in one deck.,Cannot have more than {MAX_DECK_SIZE} cards in one deck.,Cannot have more than {MAX_DECK_SIZE} cards in one deck.
+Warning_HordeEditing_AddDeck_Error,Not able to Add Deck,Not able to Add Deck,Not able to Add Deck,Not able to Add Deck,Not able to Add Deck,Not able to Add Deck
+Warning_HordeEditing_EditDeck_Error,Not able to Edit Deck,Not able to Edit Deck,Not able to Edit Deck,Not able to Edit Deck,Not able to Edit Deck,Not able to Edit Deck
+Warning_HordeEditing_DeleteDeck_Error,Not able to Delete Deck,Not able to Delete Deck,Not able to Delete Deck,Not able to Delete Deck,Not able to Delete Deck,Not able to Delete Deck
+Warning_HordeEditing_DeckName_Empty,Saving Deck with an empty name is not allowed.,Saving Deck with an empty name is not allowed.,Saving Deck with an empty name is not allowed.,Saving Deck with an empty name is not allowed.,Saving Deck with an empty name is not allowed.,Saving Deck with an empty name is not allowed.
+Warning_HordeEditing_DeckName_Exist,Not able to Edit Deck: \n Deck Name already exists.,Not able to Edit Deck: \n Deck Name already exists.,Not able to Edit Deck: \n Deck Name already exists.,Not able to Edit Deck: \n Deck Name already exists.,Not able to Edit Deck: \n Deck Name already exists.,Not able to Edit Deck: \n Deck Name already exists.
 ,,,,,,
 GameData_BattleFlavor_0,Filling up the goo,Filling up the goo,Filling up the goo,Filling up the goo,Filling up the goo,Filling up the goo
 GameData_BattleFlavor_1,Positioning the creatures,Positioning the creatures,Positioning the creatures,Positioning the creatures,Positioning the creatures,Positioning the creatures
