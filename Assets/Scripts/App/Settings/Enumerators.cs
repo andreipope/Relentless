@@ -971,5 +971,13 @@ namespace Loom.ZombieBattleground.Common
             BackToHand,
             BackFromGraveyard
         }
+
+        public enum CardSetType
+        {
+            Basic,
+            KickStarter,
+            Season1,
+            Season2
+        }
     }
 }

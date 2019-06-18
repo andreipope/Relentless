@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: c5efdf6834c734d69bc61d410631d4c0, type: 3}
-    totalSpriteSurfaceArea: 5592412
+    totalSpriteSurfaceArea: 8496879
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -56,6 +56,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1819446476a324679b5fb635eab4818e, type: 3}
   - {fileID: 21300000, guid: 9b962fa58f6124288bc4a508af22d94a, type: 3}
   - {fileID: 21300000, guid: ebd6ba66f922341eba5fd76c39027471, type: 3}
+  - {fileID: 21300000, guid: 83d09c075383c4c7ab77da16f6eafbc4, type: 3}
   - {fileID: 21300000, guid: 2a07114755b234fd9982bd3493cd12d8, type: 3}
   - {fileID: 21300000, guid: 98d55647c81e9437b9e6fc37c786ca34, type: 3}
   - {fileID: 21300000, guid: 65866d7755ed4444f8ad4a6c974bf6f5, type: 3}
@@ -65,11 +66,13 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3aa1d2b81e4b347eb96ed6af7fad976f, type: 3}
   - {fileID: 21300000, guid: d9dd8a79b0d6343e5936b5d6cb9d6a19, type: 3}
   - {fileID: 21300000, guid: 413e1cc9b02c14d04bb21170c1f713c2, type: 3}
+  - {fileID: 21300000, guid: fb913abcef6bd4fa68c84c2bc3b57238, type: 3}
   - {fileID: 21300000, guid: acc845fd658fc40c99e873206796ea79, type: 3}
   - {fileID: 21300000, guid: fa6a3a0ef2761455b9ddb71644f0a7e3, type: 3}
   - {fileID: 21300000, guid: 05fdae5eccc024e2a9544522ef6a0f9b, type: 3}
   - {fileID: 21300000, guid: 6a241e3fed420411aa63d453cae3fd62, type: 3}
   - {fileID: 21300000, guid: e73d907fa8a51435c8c4934593dbb8a3, type: 3}
+  - {fileID: 21300000, guid: bde54e7fb2e0e4db18385ad8df79185e, type: 3}
   m_PackedSpriteNamesToIndex:
   - element_toxic
   - deck_cardcounttray_bottom
@@ -81,6 +84,7 @@ SpriteAtlas:
   - element_water
   - element_fire
   - skill_selected_counter
+  - arrow_pressed
   - header_tray
   - deck_new
   - element_earth
@@ -90,10 +94,12 @@ SpriteAtlas:
   - filter_element_glow
   - elements_list
   - deck_cardcounttray_top
+  - arrow_normal
   - new_deck_btn_normal
   - element_item
   - element_x
   - deck_thumbnail_new
   - element_life
+  - editdeck_panel
   m_Tag: HordePage_Atlas
   m_IsVariant: 0
