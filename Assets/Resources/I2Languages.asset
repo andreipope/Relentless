@@ -1547,6 +1547,18 @@ MonoBehaviour:
       - CONTINUE
       Flags: 000000000000
       Languages_Touch: []
+    - Term: Handle_Error_General
+      TermType: 0
+      Description: 
+      Languages:
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      Flags: 000000000000
+      Languages_Touch: []
     - Term: Waning_OTP_Incorrect
       TermType: 0
       Description: 
@@ -2013,12 +2025,12 @@ MonoBehaviour:
       TermType: 0
       Description: 
       Languages:
-      - Something went wrong. Please try again.
-      - Something went wrong. Please try again.
-      - Something went wrong. Please try again.
-      - Something went wrong. Please try again.
-      - Something went wrong. Please try again.
-      - Something went wrong. Please try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
+      - Something went wrong.\nPlease try again.
       Flags: 000000000000
       Languages_Touch: []
     - Term: Warning_HordeEditing_AddCard_AgainstChampionFaction
@@ -9969,6 +9981,390 @@ MonoBehaviour:
       - You still have a battle to win.
       - You still have a battle to win.
       - You still have a battle to win.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_0_AvatarDescription
+      TermType: 0
+      Description: 
+      Languages:
+      - Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow
+        my deck while you learn the ropes.
+      - Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow
+        my deck while you learn the ropes.
+      - Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow
+        my deck while you learn the ropes.
+      - Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow
+        my deck while you learn the ropes.
+      - Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow
+        my deck while you learn the ropes.
+      - Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow
+        my deck while you learn the ropes.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_1_AvatarDescription
+      TermType: 0
+      Description: 
+      Languages:
+      - Destroy the enemy overlord to win!
+      - Destroy the enemy overlord to win!
+      - Destroy the enemy overlord to win!
+      - Destroy the enemy overlord to win!
+      - Destroy the enemy overlord to win!
+      - Destroy the enemy overlord to win!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_28_AvatarDescription
+      TermType: 0
+      Description: 
+      Languages:
+      - NOICE! \nYou won your first match!
+      - NOICE! \nYou won your first match!
+      - NOICE! \nYou won your first match!
+      - NOICE! \nYou won your first match!
+      - NOICE! \nYou won your first match!
+      - NOICE! \nYou won your first match!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_0_AvatarDescription
+      TermType: 0
+      Description: 
+      Languages:
+      - Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's
+        learn how to use them.
+      - Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's
+        learn how to use them.
+      - Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's
+        learn how to use them.
+      - Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's
+        learn how to use them.
+      - Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's
+        learn how to use them.
+      - Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's
+        learn how to use them.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_4_TutorialStep_0_AvatarDescription
+      TermType: 0
+      Description: 
+      Languages:
+      - This time it's all up to you...\n\nUse everything you've learned and make
+        me proud!
+      - This time it's all up to you...\n\nUse everything you've learned and make
+        me proud!
+      - This time it's all up to you...\n\nUse everything you've learned and make
+        me proud!
+      - This time it's all up to you...\n\nUse everything you've learned and make
+        me proud!
+      - This time it's all up to you...\n\nUse everything you've learned and make
+        me proud!
+      - This time it's all up to you...\n\nUse everything you've learned and make
+        me proud!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_4_TutorialStep_7_AvatarDescription
+      TermType: 0
+      Description: 
+      Languages:
+      - There's nothing more I can teach you. Congratulations!\n\nNow you can take
+        your skills online by challenging other players in VS mode.
+      - There's nothing more I can teach you. Congratulations!\n\nNow you can take
+        your skills online by challenging other players in VS mode.
+      - There's nothing more I can teach you. Congratulations!\n\nNow you can take
+        your skills online by challenging other players in VS mode.
+      - There's nothing more I can teach you. Congratulations!\n\nNow you can take
+        your skills online by challenging other players in VS mode.
+      - There's nothing more I can teach you. Congratulations!\n\nNow you can take
+        your skills online by challenging other players in VS mode.
+      - There's nothing more I can teach you. Congratulations!\n\nNow you can take
+        your skills online by challenging other players in VS mode.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_0_TooltipCloseText
+      TermType: 0
+      Description: 
+      Languages:
+      - GOT IT
+      - GOT IT
+      - GOT IT
+      - GOT IT
+      - GOT IT
+      - GOT IT
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_1_TooltipCloseText
+      TermType: 0
+      Description: 
+      Languages:
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_28_TooltipCloseText
+      TermType: 0
+      Description: 
+      Languages:
+      - GOT IT!
+      - GOT IT!
+      - GOT IT!
+      - GOT IT!
+      - GOT IT!
+      - GOT IT!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_0_TooltipCloseText
+      TermType: 0
+      Description: 
+      Languages:
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      - LET'S BEGIN
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_4_TutorialStep_0_TooltipCloseText
+      TermType: 0
+      Description: 
+      Languages:
+      - BATTLE!
+      - BATTLE!
+      - BATTLE!
+      - BATTLE!
+      - BATTLE!
+      - BATTLE!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_4_TutorialStep_7_TooltipCloseText
+      TermType: 0
+      Description: 
+      Languages:
+      - CONTINUE
+      - CONTINUE
+      - CONTINUE
+      - CONTINUE
+      - CONTINUE
+      - CONTINUE
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_2_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - GROWL!
+      - GROWL!
+      - GROWL!
+      - GROWL!
+      - GROWL!
+      - GROWL!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_3_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - I will burn you to ash!
+      - I will burn you to ash!
+      - I will burn you to ash!
+      - I will burn you to ash!
+      - I will burn you to ash!
+      - I will burn you to ash!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_8_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_9_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - My minion cannot attack yet. So I'm done for now.
+      - My minion cannot attack yet. So I'm done for now.
+      - My minion cannot attack yet. So I'm done for now.
+      - My minion cannot attack yet. So I'm done for now.
+      - My minion cannot attack yet. So I'm done for now.
+      - My minion cannot attack yet. So I'm done for now.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_11_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Not bad for a slab of rock.
+      - Not bad for a slab of rock.
+      - Not bad for a slab of rock.
+      - Not bad for a slab of rock.
+      - Not bad for a slab of rock.
+      - Not bad for a slab of rock.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_12_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Let's attack that zombie.
+      - Let's attack that zombie.
+      - Let's attack that zombie.
+      - Let's attack that zombie.
+      - Let's attack that zombie.
+      - Let's attack that zombie.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_14_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - I'm done. Let's move on, shall we?
+      - I'm done. Let's move on, shall we?
+      - I'm done. Let's move on, shall we?
+      - I'm done. Let's move on, shall we?
+      - I'm done. Let's move on, shall we?
+      - I'm done. Let's move on, shall we?
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_16_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Double trouble.
+      - Double trouble.
+      - Double trouble.
+      - Double trouble.
+      - Double trouble.
+      - Double trouble.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_17_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Turn him to ash!
+      - Turn him to ash!
+      - Turn him to ash!
+      - Turn him to ash!
+      - Turn him to ash!
+      - Turn him to ash!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_0_TutorialStep_24_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      - Two can play that game.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_1_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - I'll crush you!
+      - I'll crush you!
+      - I'll crush you!
+      - I'll crush you!
+      - I'll crush you!
+      - I'll crush you!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_2_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Not if I defeat you first!
+      - Not if I defeat you first!
+      - Not if I defeat you first!
+      - Not if I defeat you first!
+      - Not if I defeat you first!
+      - Not if I defeat you first!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_5_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Pesky Feral zombies!
+      - Pesky Feral zombies!
+      - Pesky Feral zombies!
+      - Pesky Feral zombies!
+      - Pesky Feral zombies!
+      - Pesky Feral zombies!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_8_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - We're done here, let's move on!
+      - We're done here, let's move on!
+      - We're done here, let's move on!
+      - We're done here, let's move on!
+      - We're done here, let's move on!
+      - We're done here, let's move on!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_9_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Now you can't touch me.
+      - Now you can't touch me.
+      - Now you can't touch me.
+      - Now you can't touch me.
+      - Now you can't touch me.
+      - Now you can't touch me.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_11_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Play the feral, first!
+      - Play the feral, first!
+      - Play the feral, first!
+      - Play the feral, first!
+      - Play the feral, first!
+      - Play the feral, first!
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_21_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - My fireball will end him.
+      - My fireball will end him.
+      - My fireball will end him.
+      - My fireball will end him.
+      - My fireball will end him.
+      - My fireball will end him.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: GameData_Tutorial_2_TutorialStep_22_OverlordSayTooltip_0
+      TermType: 0
+      Description: 
+      Languages:
+      - Gotcha.
+      - Gotcha.
+      - Gotcha.
+      - Gotcha.
+      - Gotcha.
+      - Gotcha.
       Flags: 000000000000
       Languages_Touch: []
     CaseInsensitiveTerms: 0
