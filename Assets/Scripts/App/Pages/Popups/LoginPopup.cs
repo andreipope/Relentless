@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -297,7 +298,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Incorrect verification code.\nPlease try again.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Waning_OTP_Incorrect
+                    )
+                );
             }
         }
 
@@ -312,7 +319,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please enter a valid email address.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_ForgotPassword_InvalidEmail
+                    )
+                );
             }
         }
 
@@ -345,19 +358,37 @@ namespace Loom.ZombieBattleground
 
             if (string.IsNullOrEmpty(_emailFieldRegister.text) || string.IsNullOrEmpty(_passwordFieldRegister.text) || string.IsNullOrEmpty(_confirmFieldRegister.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please enter both your email and password.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Register_EmptyEmailOrPassword
+                    )
+                );
                 return;
             }
 
             if (!Utilites.ValidateEmail(_emailFieldRegister.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please enter a valid email address.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Register_InvalidEmail
+                    )
+                );
                 return;
             }
 
             if (_passwordFieldRegister.text != _confirmFieldRegister.text)
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please make sure your passwords match.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Register_ConfirmPasswordNotMatch
+                    )
+                );
                 return;
             }
 
@@ -368,7 +399,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Incorrect email or password. Please try again.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Register_IncorrectEmailOrPassword
+                    )
+                );
             }
         }
 
@@ -379,13 +416,25 @@ namespace Loom.ZombieBattleground
 
             if (string.IsNullOrEmpty(_emailFieldLogin.text) || string.IsNullOrEmpty(_passwordFieldLogin.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please enter both your email and password.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Login_EmptyEmailOrPassword
+                    )
+                );
                 return;
             }
 
             if (!Utilites.ValidateEmail(_emailFieldLogin.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please enter a valid email address.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Login_InvalidEmail
+                    )
+                );
                 return;
             }
 
@@ -396,7 +445,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Incorrect email or password. Please try again.");
+                _uiManager.GetPopup<WarningPopup>().Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Login_IncorrectEmailOrPassword
+                    )
+                );
             }
         }
 
@@ -432,7 +487,10 @@ namespace Loom.ZombieBattleground
                     string errorMsg = string.Empty;
                     if (e.Message.Contains("Forbidden"))
                     {
-                        errorMsg = "Incorrect verification code.\nPlease try again.";
+                        errorMsg = LocalizationUtil.GetLocalizedString
+                        (
+                            LocalizationTerm.Waning_OTP_Incorrect
+                        );
                     }
                     _lastErrorMessage = e.Message;
                     SetUIState(LoginState.ValidationFailed, errorMsg);
@@ -499,7 +557,14 @@ namespace Loom.ZombieBattleground
             {
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
-                SetUIState(LoginState.ValidationFailed, "Unable to register at this time.\nPlease try again a bit later.");
+                SetUIState
+                (
+                    LoginState.ValidationFailed, 
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Register_RequestError
+                    )
+                );
 
                 _registerButton.enabled = true;
             }
@@ -509,7 +574,10 @@ namespace Loom.ZombieBattleground
                 string errorMsg = string.Empty;
                 if (e.Message.Contains("BadRequest"))
                 {
-                    errorMsg = "That email is already in use.\nPlease use a different email or login to your existing account.";
+                    errorMsg = LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Register_EmailAlreadyUsed
+                    );
                 }
 
                 _lastErrorMessage = e.Message;
@@ -601,7 +669,14 @@ namespace Loom.ZombieBattleground
 
                     onNetworkExceptionCallbackFunc: exception =>
                     {
-                        SetUIState(LoginState.ValidationFailed, "Unable to login at this time.\nPlease try again a bit later.");
+                        SetUIState
+                        (
+                            LoginState.ValidationFailed, 
+                            LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_Login_RequestError
+                            )
+                        );
 
                         _loginButton.enabled = true;
                         return Task.CompletedTask;
@@ -621,7 +696,10 @@ namespace Loom.ZombieBattleground
                             _lastErrorMessage = exception.Message;
                             if (exception.Message.Contains("NotFound") || exception.Message.Contains("Unauthorized"))
                             {
-                                _lastErrorMessage = "Incorrect username and/or password.\nPlease try again.";
+                                _lastErrorMessage = LocalizationUtil.GetLocalizedString
+                                (
+                                    LocalizationTerm.Warning_Login_Unauthorized
+                                );
                             }
                             SetUIState(LoginState.ValidationFailed);
 
@@ -728,7 +806,10 @@ namespace Loom.ZombieBattleground
 
                         if(_uiManager.GetPopup<YouWonYouLostPopup>().Self == null)
                         {
-                            string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                            string tutorialSkipQuestion = LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.StartTutorial_Label_Body
+                            );
                             QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
                             questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
 
@@ -882,7 +963,10 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    string msgToShow = "We were unable to verify your login credentials at this time. Please restart the game and try again later.";
+                    string msgToShow = LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Login_ValidationFailed
+                    );
 
                     if (!string.IsNullOrEmpty(errorMsg))
                         msgToShow = errorMsg;
@@ -943,8 +1027,12 @@ namespace Loom.ZombieBattleground
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)
         {
-            _versionMismatchText.text =
-                $"This version ({exception.LocalVersion}) is out of date.\n\nPlease download version {exception.RemoteVersion}.";
+            _versionMismatchText.text = LocalizationUtil.GetLocalizedString
+            (
+                LocalizationTerm.Warning_Login_ValidationFailed
+            )
+            .Replace("LOCAL_VERSION", exception.LocalVersion)
+            .Replace("REMOTE_VERSION", exception.RemoteVersion);
         }
 
         private void GenerateKeysAndUserFromUserID(
