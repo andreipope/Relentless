@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class ChampionAbilitiesPopup : IUIPopup
+    public class SelectOverlordAbilitiesPopup : IUIPopup
     {
         private static readonly ILog Log = Logging.GetLog(nameof(CardInfoWithSearchPopup));
 
@@ -25,6 +25,7 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonCancel;
         private Button _buttonSave;
+        private Button _buttonContinue;
 
         private RectTransform _allAbilitiesContent;
 
@@ -34,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         public static Action<SkillId> OnSelectSkill;
         public static Action<Enumerators.Skill, Enumerators.Skill> OnSaveSelectedSkill;
+
+        private bool _isCreatingNewDeck;
 
         public GameObject Self { get; private set; }
 
@@ -46,8 +49,14 @@ namespace Loom.ZombieBattleground
 
         public void Show(object data)
         {
-            Deck deck = (Deck)data;
-            _deck = deck.Clone();
+            if (data is object[] param)
+            {
+                Deck deck = (Deck)param[0];
+                _isCreatingNewDeck = (bool) param[1];
+                _deck = deck.Clone();
+
+            }
+
             Show();
         }
 
@@ -57,19 +66,33 @@ namespace Loom.ZombieBattleground
                 return;
 
             Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ChampionAbilityPopup"),
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"),
                 _uiManager.Canvas2.transform,
                 false);
 
             _abilityBarPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/AbilityBarUI");
 
-            _selectedAbilitiesCount = Self.transform.Find("Abilities/Panel_BG/Top_Panel/Abilities_Selected").GetComponent<TextMeshProUGUI>();
+            _selectedAbilitiesCount = Self.transform.Find("Abilities/Panel_BG/Top_Panel/Header_Small/Abilities_Selected").GetComponent<TextMeshProUGUI>();
 
-            _buttonCancel = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Button_Cancel").GetComponent<Button>();
+            _buttonCancel = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
-            _buttonSave = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Button_Save").GetComponent<Button>();
+            _buttonContinue = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Continue").GetComponent<Button>();
+            _buttonContinue.onClick.AddListener(ButtonContinueHandler);
+
+            _buttonSave = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Save").GetComponent<Button>();
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
+
+            if (_isCreatingNewDeck)
+            {
+                _buttonSave.gameObject.SetActive(false);
+                _buttonContinue.gameObject.SetActive(true);
+            }
+            else
+            {
+                _buttonSave.gameObject.SetActive(true);
+                _buttonContinue.gameObject.SetActive(false);
+            }
 
             _allAbilitiesContent = Self.transform.Find("Abilities/Panel_BG/Ability_List/Element/Scroll View").GetComponent<ScrollRect>().content;
 
@@ -172,15 +195,23 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSaveHandler()
         {
-            //TODO: save the change abilities, in deck
-            //TODO : delete old ability select code and save accordingly
+            DataUtilities.PlayClickSound();
             SaveAbilities();
-
             Hide();
+        }
+
+        private void ButtonContinueHandler()
+        {
+            DataUtilities.PlayClickSound();
+            SaveAbilities();
+            Hide();
+
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_deck.Name, true});
         }
 
         private void ButtonCancelHandler()
         {
+            DataUtilities.PlayClickSound();
             Hide();
         }
 

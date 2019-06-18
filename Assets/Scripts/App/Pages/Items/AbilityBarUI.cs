@@ -42,17 +42,17 @@ public class AbilityBarUI
         _buttonAbility = _selfObj.transform.Find("AbilityBar").GetComponent<Button>();
         _buttonAbility.onClick.AddListener(ButtonAbilityHandler);
 
-
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         _selectedAbilitySprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseAbility/selectability_selected");
         _unSelectedAbilitySprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseAbility/selectability_idle");
 
         IsSelected = false;
+        SelectAbility(IsSelected);
     }
 
     private void ButtonAbilityHandler()
     {
-        ChampionAbilitiesPopup.OnSelectSkill?.Invoke(SkillId);
+        SelectOverlordAbilitiesPopup.OnSelectSkill?.Invoke(SkillId);
     }
 
     public void SelectAbility(bool select)

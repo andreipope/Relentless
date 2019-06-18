@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 5421368041854123568}
   - component: {fileID: 2148322012903064778}
   m_Layer: 0
-  m_Name: Image_Overlord_Top
+  m_Name: Image_Overlord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

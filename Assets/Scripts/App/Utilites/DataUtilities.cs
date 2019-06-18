@@ -102,5 +102,13 @@ namespace Loom.ZombieBattleground
             int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Skill == skillType);
             return overlordUserInstance.Skills[index].Prototype.Id;
         }
+
+        public static Sprite GetOverlordImage(Enumerators.Faction overlordFaction)
+        {
+            string path = "Images/UI/Overlord_Image/";
+            path = path + "champion_image_" + overlordFaction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+
+        }
     }
 }

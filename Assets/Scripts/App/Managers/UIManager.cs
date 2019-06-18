@@ -88,7 +88,9 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new SettingsWithCreditsPopup());
             _uiPopups.Add(new YouWonYouLostWithRewardPopup());
             _uiPopups.Add(new InternetConnectionPopup());
-            _uiPopups.Add(new ChampionAbilitiesPopup());
+            _uiPopups.Add(new SelectOverlordAbilitiesPopup());
+            _uiPopups.Add(new OverlordSelectionPopup());
+            _uiPopups.Add(new RenamePopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

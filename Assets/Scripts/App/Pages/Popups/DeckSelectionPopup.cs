@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
-using DG.Tweening;
 using log4net;
 using UnityEngine;
 using UnityEngine.UI;
@@ -335,10 +333,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
-                _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab
-                (
-                    HordeSelectionWithNavigationPage.Tab.SelectOverlord
-                );
+                //_uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
             };
         }
 

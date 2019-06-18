@@ -86,14 +86,13 @@ namespace Loom.ZombieBattleground
             _allCardsContent = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View")
                 .GetComponent<ScrollRect>().content;
 
-            _deckScrollRect = _selfPage.transform.Find("Deck_Content/Cards/Scroll View").gameObject;
-
             switch (pageType)
             {
                 case PageType.Army:
                     LoadAllCards();
                     break;
                 case PageType.DeckEditing:
+                    _deckScrollRect = _selfPage.transform.Find("Deck_Content/Cards/Scroll View").gameObject;
                     LoadUserOwnedCards();
                     break;
                 default:
