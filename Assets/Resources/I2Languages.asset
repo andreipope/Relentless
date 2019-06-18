@@ -10151,7 +10151,7 @@ MonoBehaviour:
       - CONTINUE
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_2_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_2_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10163,7 +10163,7 @@ MonoBehaviour:
       - GROWL!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_3_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_3_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10175,7 +10175,7 @@ MonoBehaviour:
       - I will burn you to ash!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_8_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_8_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10187,7 +10187,7 @@ MonoBehaviour:
       - Two can play that game.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_9_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_9_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10199,7 +10199,7 @@ MonoBehaviour:
       - My minion cannot attack yet. So I'm done for now.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_11_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_11_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10211,7 +10211,7 @@ MonoBehaviour:
       - Not bad for a slab of rock.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_12_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_12_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10223,7 +10223,7 @@ MonoBehaviour:
       - Let's attack that zombie.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_14_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_14_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10235,7 +10235,7 @@ MonoBehaviour:
       - I'm done. Let's move on, shall we?
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_16_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_16_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10247,7 +10247,7 @@ MonoBehaviour:
       - Double trouble.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_17_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_17_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10259,7 +10259,7 @@ MonoBehaviour:
       - Turn him to ash!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_0_TutorialStep_24_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_0_TutorialStep_24_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10271,7 +10271,7 @@ MonoBehaviour:
       - Two can play that game.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_1_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_1_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10283,7 +10283,7 @@ MonoBehaviour:
       - I'll crush you!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_2_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_2_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10295,7 +10295,7 @@ MonoBehaviour:
       - Not if I defeat you first!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_5_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_5_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10307,7 +10307,7 @@ MonoBehaviour:
       - Pesky Feral zombies!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_8_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_8_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10319,7 +10319,7 @@ MonoBehaviour:
       - We're done here, let's move on!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_9_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_9_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10331,7 +10331,7 @@ MonoBehaviour:
       - Now you can't touch me.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_11_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_11_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10343,7 +10343,7 @@ MonoBehaviour:
       - Play the feral, first!
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_21_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_21_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
@@ -10355,7 +10355,7 @@ MonoBehaviour:
       - My fireball will end him.
       Flags: 000000000000
       Languages_Touch: []
-    - Term: GameData_Tutorial_2_TutorialStep_22_OverlordSayTooltip_0
+    - Term: GameData_Tutorial_2_TutorialStep_22_ChampionSayTooltip_0
       TermType: 0
       Description: 
       Languages:
