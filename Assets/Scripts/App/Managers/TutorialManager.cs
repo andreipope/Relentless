@@ -746,8 +746,10 @@ namespace Loom.ZombieBattleground
                 {
                     TutorialDescriptionTooltip tooltip = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.Find(x => x.Id == tooltipId);
 
-                    DrawDescriptionTooltip(tooltip.Id,
-                                           tooltip.Description,
+                    DrawDescriptionTooltip(tooltip.Id,                                           
+                                           Enum.TryParse($"GameData_Tutorial_{CurrentTutorial.Id}_Tooltip_{tooltipId}", out LocalizationTerm term) ? 
+                                                LocalizationUtil.GetLocalizedString(term) :
+                                                "",
                                            tooltip.TutorialTooltipAlign,
                                            tooltip.TutorialTooltipOwner,
                                            tooltip.TutorialTooltipOwnerId,
@@ -771,7 +773,17 @@ namespace Loom.ZombieBattleground
 
             if (step.TutorialAvatar != null)
             {
-                DrawAvatar(step.TutorialAvatar.Description, step.TutorialAvatar.DescriptionTooltipCloseText, step.TutorialAvatar.Pose, step.TutorialAvatar.AboveUI);
+                DrawAvatar
+                (                    
+                    Enum.TryParse($"GameData_Tutorial_{CurrentTutorial.Id}_TutorialStep_{_currentTutorialStepIndex}_AvatarDescription", out LocalizationTerm avatarDescriptionTerm) ? 
+                        LocalizationUtil.GetLocalizedString(avatarDescriptionTerm) :
+                        "",
+                    Enum.TryParse($"GameData_Tutorial_{CurrentTutorial.Id}_TutorialStep_{_currentTutorialStepIndex}_TooltipCloseText", out LocalizationTerm tooltipCloseTextTerm) ? 
+                        LocalizationUtil.GetLocalizedString(tooltipCloseTextTerm) :
+                        "",
+                    step.TutorialAvatar.Pose,
+                    step.TutorialAvatar.AboveUI
+                );
             }
 
             if (!string.IsNullOrEmpty(step.SoundToPlay))
@@ -791,18 +803,25 @@ namespace Loom.ZombieBattleground
                 case TutorialGameplayStep gameStep:
                     if (gameStep.OverlordSayTooltips != null)
                     {
+                        int tooltipIndex = 0;
                         foreach (OverlordSayTooltipInfo tooltip in gameStep.OverlordSayTooltips)
                         {
-                            DrawOverlordSayPopup(tooltip.Description,
-                                                tooltip.TutorialTooltipAlign,
-                                                tooltip.TutorialTooltipOwner,
-                                                tooltip.AppearDelay,
-                                                true,
-                                                tooltip.Duration,
-                                                tooltip.SoundToPlay,
-                                                tooltip.SoundToPlayBeginDelay,
-                                                tooltip.ActionToHideThisPopup,
-                                                tooltip.MinimumShowTime);
+                            DrawOverlordSayPopup
+                            (
+                                Enum.TryParse($"GameData_Tutorial_{CurrentTutorial.Id}_TutorialStep_{_currentTutorialStepIndex}_ChampionSayTooltip_{tooltipIndex}", out LocalizationTerm term) ? 
+                                    LocalizationUtil.GetLocalizedString(term) :
+                                    "",
+                                tooltip.TutorialTooltipAlign,
+                                tooltip.TutorialTooltipOwner,
+                                tooltip.AppearDelay,
+                                true,
+                                tooltip.Duration,
+                                tooltip.SoundToPlay,
+                                tooltip.SoundToPlayBeginDelay,
+                                tooltip.ActionToHideThisPopup,
+                                tooltip.MinimumShowTime
+                            );
+                            ++tooltipIndex;
                         }
                     }
 
@@ -1120,18 +1139,23 @@ namespace Loom.ZombieBattleground
             {
                 TutorialDescriptionTooltip tooltipInfo = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.Find(x => x.Id == id);
 
-                DrawDescriptionTooltip(tooltipInfo.Id,
-                                       tooltipInfo.Description,
-                                       tooltipInfo.TutorialTooltipAlign,
-                                       tooltipInfo.TutorialTooltipOwner,
-                                       tooltipInfo.TutorialTooltipOwnerId,
-                                       (Vector3)tooltipInfo.Position,
-                                       tooltipInfo.Resizable,
-                                       tooltipInfo.AppearDelay,
-                                       tooltipInfo.DynamicPosition,
-                                       tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime,
-                                       tooltipInfo.TutorialUIElementOwnerName);
+                DrawDescriptionTooltip
+                (
+                    tooltipInfo.Id,
+                    Enum.TryParse($"GameData_Tutorial_{CurrentTutorial.Id}_Tooltip_{tooltip.Id}", out LocalizationTerm term) ? 
+                        LocalizationUtil.GetLocalizedString(term) :
+                        "",
+                    tooltipInfo.TutorialTooltipAlign,
+                    tooltipInfo.TutorialTooltipOwner,
+                    tooltipInfo.TutorialTooltipOwnerId,
+                    (Vector3)tooltipInfo.Position,
+                    tooltipInfo.Resizable,
+                    tooltipInfo.AppearDelay,
+                    tooltipInfo.DynamicPosition,
+                    tooltipInfo.TutorialTooltipLayer,
+                    tooltipInfo.MinimumShowTime,
+                    tooltipInfo.TutorialUIElementOwnerName
+                );
             }
             else
             {
@@ -1150,18 +1174,23 @@ namespace Loom.ZombieBattleground
                 if (tooltipInfo == null)
                     return;
 
-                DrawDescriptionTooltip(tooltipInfo.Id,
-                                       tooltipInfo.Description,
-                                       tooltipInfo.TutorialTooltipAlign,
-                                       tooltipInfo.TutorialTooltipOwner,
-                                       tooltipInfo.TutorialTooltipOwnerId,
-                                       position,
-                                       tooltipInfo.Resizable,
-                                       tooltipInfo.AppearDelay,
-                                       tooltipInfo.DynamicPosition,
-                                       tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime,
-                                       tooltipInfo.TutorialUIElementOwnerName);
+                DrawDescriptionTooltip
+                (
+                    tooltipInfo.Id,
+                    Enum.TryParse($"GameData_Tutorial_{CurrentTutorial.Id}_Tooltip_{tooltipInfo.Id}", out LocalizationTerm term) ? 
+                        LocalizationUtil.GetLocalizedString(term) :
+                        "",
+                    tooltipInfo.TutorialTooltipAlign,
+                    tooltipInfo.TutorialTooltipOwner,
+                    tooltipInfo.TutorialTooltipOwnerId,
+                    position,
+                    tooltipInfo.Resizable,
+                    tooltipInfo.AppearDelay,
+                    tooltipInfo.DynamicPosition,
+                    tooltipInfo.TutorialTooltipLayer,
+                    tooltipInfo.MinimumShowTime,
+                    tooltipInfo.TutorialUIElementOwnerName
+                );
             }
             else
             {
@@ -1255,15 +1284,18 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialActivityActionHandler.OverlordSayTooltip:
                     {
                         OverlordSayTooltipInfo data = activity.TutorialActivityActionHandlerData as OverlordSayTooltipInfo;
-                        DrawOverlordSayPopup(data.Description,
-                                            data.TutorialTooltipAlign,
-                                            data.TutorialTooltipOwner,
-                                            data.AppearDelay,
-                                            duration: data.Duration,
-                                            soundToPlay: data.SoundToPlay,
-                                            soundToPlayBeginDelay: data.SoundToPlayBeginDelay,
-                                            actionToHideThisPopup: data.ActionToHideThisPopup,
-                                            minimumShowTime: data.MinimumShowTime);
+                        DrawOverlordSayPopup
+                        (
+                            data.Description,
+                            data.TutorialTooltipAlign,
+                            data.TutorialTooltipOwner,
+                            data.AppearDelay,
+                            duration: data.Duration,
+                            soundToPlay: data.SoundToPlay,
+                            soundToPlayBeginDelay: data.SoundToPlayBeginDelay,
+                            actionToHideThisPopup: data.ActionToHideThisPopup,
+                            minimumShowTime: data.MinimumShowTime
+                        );
                     }
                     break;
                 case Enumerators.TutorialActivityActionHandler.DrawDescriptionTooltips:
