@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 705c195fa8d1c42c1b042cf1708d1f8c, type: 3}
-    totalSpriteSurfaceArea: 16575978
+    totalSpriteSurfaceArea: 19133994
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -56,8 +56,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 953e68d32a88c4a7089b6d9b9d67944d, type: 3}
   - {fileID: 21300000, guid: 835c4aa40b0894c0cbd74beeb4bd6a9b, type: 3}
   - {fileID: 21300000, guid: 6c8b59652fd7345fbafd7aaf8c7f3aa6, type: 3}
+  - {fileID: 21300000, guid: 6cf265d74d7c34f81b8904c4690abf80, type: 3}
   - {fileID: 21300000, guid: 81b14ef7511c64f52b7a074b23cec3a2, type: 3}
   - {fileID: 21300000, guid: a532c4a86abb94cf5a7887b47b0b87f7, type: 3}
+  - {fileID: 21300000, guid: e38a39a8891a347978d9ac949921e7d3, type: 3}
   - {fileID: 21300000, guid: 13f34909e7deb45ce910846667d90ff6, type: 3}
   - {fileID: 21300000, guid: 6b33732bd80d342baa045b3c10bd8e82, type: 3}
   - {fileID: 21300000, guid: 0d6b623b234bb4f10ba8c5d5787683a4, type: 3}
@@ -78,8 +80,10 @@ SpriteAtlas:
   - button_brown_pressed
   - panel_game_mode
   - panel_popup
+  - header_short_new
   - button_red_pressed
   - search_bar
+  - deck_popups_panel
   - arrow_pressed
   - button_green_pressed
   - header_short
