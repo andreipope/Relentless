@@ -1559,6 +1559,78 @@ MonoBehaviour:
       - Something went wrong.\nPlease try again.
       Flags: 000000000000
       Languages_Touch: []
+    - Term: Warning_DataManager_CardLibrary_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Issue with Loading Card Library Data
+      - Issue with Loading Card Library Data
+      - Issue with Loading Card Library Data
+      - Issue with Loading Card Library Data
+      - Issue with Loading Card Library Data
+      - Issue with Loading Card Library Data
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_DataManager_ChampionsData_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Issue with Loading Overlords Data
+      - Issue with Loading Overlords Data
+      - Issue with Loading Overlords Data
+      - Issue with Loading Overlords Data
+      - Issue with Loading Overlords Data
+      - Issue with Loading Overlords Data
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_DataManager_CardCollection_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Issue with Loading Card Collection Data
+      - Issue with Loading Card Collection Data
+      - Issue with Loading Card Collection Data
+      - Issue with Loading Card Collection Data
+      - Issue with Loading Card Collection Data
+      - Issue with Loading Card Collection Data
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_DataManager_PlayerDecksData_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Issue with Loading Decks Data
+      - Issue with Loading Decks Data
+      - Issue with Loading Decks Data
+      - Issue with Loading Decks Data
+      - Issue with Loading Decks Data
+      - Issue with Loading Decks Data
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_DataManager_AIDecksData_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Issue with Loading Opponent AI Decks
+      - Issue with Loading Opponent AI Decks
+      - Issue with Loading Opponent AI Decks
+      - Issue with Loading Opponent AI Decks
+      - Issue with Loading Opponent AI Decks
+      - Issue with Loading Opponent AI Decks
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_DataManager_ChampionLeveling_Error
+      TermType: 0
+      Description: 
+      Languages:
+      - Issue with Loading Overlord Leveling Data
+      - Issue with Loading Overlord Leveling Data
+      - Issue with Loading Overlord Leveling Data
+      - Issue with Loading Overlord Leveling Data
+      - Issue with Loading Overlord Leveling Data
+      - Issue with Loading Overlord Leveling Data
+      Flags: 000000000000
+      Languages_Touch: []
     - Term: Waning_OTP_Incorrect
       TermType: 0
       Description: 

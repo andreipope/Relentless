@@ -13,6 +13,7 @@ using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -307,7 +308,13 @@ namespace Loom.ZombieBattleground
                         }
                         catch(Exception)
                         {
-                            ShowLoadDataFailMessage("Issue with Loading Card Library Data");
+                            ShowLoadDataFailMessage
+                            (
+                                LocalizationUtil.GetLocalizedString
+                                (
+                                    LocalizationTerm.Warning_DataManager_CardLibrary_Error
+                                )
+                            );
                             throw;
                         }
                     }
@@ -322,7 +329,13 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Overlords Data");
+                        ShowLoadDataFailMessage
+                        (
+                            LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_DataManager_ChampionsData_Error
+                            )
+                        );
                         throw;
                     }
                     break;
@@ -353,7 +366,13 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Card Collection Data");
+                        ShowLoadDataFailMessage
+                        (
+                            LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_DataManager_CardCollection_Error
+                            )
+                        );
                         throw;
                     }
 
@@ -366,7 +385,13 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception e)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Decks Data");
+                        ShowLoadDataFailMessage
+                        (
+                            LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_DataManager_PlayerDecksData_Error
+                            )
+                        );
                         Log.Warn(e);
                         throw;
                     }
@@ -384,7 +409,13 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
+                        ShowLoadDataFailMessage
+                        (
+                            LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_DataManager_AIDecksData_Error
+                            )
+                        );
                         throw;
                     }
                     break;
@@ -396,7 +427,13 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Overlord Leveling Data");
+                        ShowLoadDataFailMessage
+                        (
+                            LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_DataManager_ChampionLeveling_Error
+                            )
+                        );
                         throw;
                     }
                     break;
