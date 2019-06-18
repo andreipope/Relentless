@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 705c195fa8d1c42c1b042cf1708d1f8c, type: 3}
-    totalSpriteSurfaceArea: 19133994
+    totalSpriteSurfaceArea: 19307167
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -61,6 +61,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a532c4a86abb94cf5a7887b47b0b87f7, type: 3}
   - {fileID: 21300000, guid: e38a39a8891a347978d9ac949921e7d3, type: 3}
   - {fileID: 21300000, guid: 13f34909e7deb45ce910846667d90ff6, type: 3}
+  - {fileID: 21300000, guid: 774b72dacc8ae44c999a2ce4ad29bf01, type: 3}
   - {fileID: 21300000, guid: 6b33732bd80d342baa045b3c10bd8e82, type: 3}
   - {fileID: 21300000, guid: 0d6b623b234bb4f10ba8c5d5787683a4, type: 3}
   - {fileID: 21300000, guid: f0352a2c8e36c46fc937d9925f3b6faa, type: 3}
@@ -85,6 +86,7 @@ SpriteAtlas:
   - search_bar
   - deck_popups_panel
   - arrow_pressed
+  - deck_panel_deco
   - button_green_pressed
   - header_short
   - panel_long_blank
