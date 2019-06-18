@@ -48,19 +48,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
 
             if (!File.Exists(UserDataFilePath))
-            {
                 return false;
-            }
 
             string modelJson = File.ReadAllText(UserDataFilePath);
-
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (_dataManager.ConfigData.EncryptData)
-            {
-                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
-            } else {
-                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(modelJson);
-            }
+            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
             return true;
         }
 
@@ -70,15 +61,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 throw new ArgumentNullException(nameof(userDataModel));
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
-
-            if (_dataManager.ConfigData.EncryptData)
-            {
-                File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
-            }
-            else
-            {
-                File.WriteAllText(UserDataFilePath, modelJson);
-            }
+            File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
             UserDataModel = userDataModel;
             return true;
         }

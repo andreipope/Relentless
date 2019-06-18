@@ -58,18 +58,6 @@ namespace Loom.ZombieBattleground
             Debug.Log(JsonUtility.PrettyPrint(JsonConvert.SerializeObject(list)));
         }
 
-        [CommandHandler(Description = "Give user a booster. If userId is left as -1, current user id will be used.")]
-        public static async void IapDebugCreateBoosterPackReceipt(int boosterAmount, long userId = -1)
-        {
-            if (userId == -1)
-            {
-                userId = (long) _backendDataControlMediator.UserDataModel.UserIdNumber;
-            }
-
-            DebugCreateBoosterPackReceiptResponse response = await _backendFacade.DebugCreateBoosterPackReceipt(userId, boosterAmount);
-            Debug.Log(JsonUtility.PrettyPrint(response.TransactionResponseJson));
-        }
-
         [CommandHandler]
         public static async void IapOpenPack()
         {

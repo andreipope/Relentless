@@ -373,6 +373,12 @@ namespace Loom.ZombieBattleground
                     {
                         ButtonPackTypeHandler(id);
                     });
+
+                // FIXME
+                if (packTypes[i] != Enumerators.MarketplaceCardPackType.Booster)
+                {
+                    buttonParent.gameObject.SetActive(false);
+                }
             }
 
             _selfPage.transform.Find("pack_holder_tray/PackContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1f;

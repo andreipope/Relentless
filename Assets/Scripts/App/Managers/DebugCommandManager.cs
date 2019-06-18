@@ -17,6 +17,7 @@ public class DebugCommandsManager : IService
         TutorialRewardCommandsHandler.Initialize();
         NetworkCommandsHandler.Initialize();
         IapCommandsHandler.Initialize();
+        RewardsCommandsHandler.Initialize();
 #endif
     }
 

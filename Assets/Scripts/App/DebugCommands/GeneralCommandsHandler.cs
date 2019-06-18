@@ -10,12 +10,14 @@ namespace Loom.ZombieBattleground
     public static class GeneralCommandsHandler
     {
         private static BackendDataControlMediator _backendDataControlMediator;
+        private static BackendFacade _backendFacade;
 
         public static void Initialize()
         {
             CommandHandlers.RegisterCommandHandlers(typeof(GeneralCommandsHandler));
 
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _backendFacade = GameClient.Get<BackendFacade>();
         }
 
         [CommandHandler(Description = "Logs in into the game with a fake random user")]
@@ -113,6 +115,21 @@ namespace Loom.ZombieBattleground
         public static void HideYouWonYouLostPopup()
         {
             GameClient.Get<IUIManager>().HidePopup<YouWonYouLostPopup>();
+        }
+
+        [CommandHandler]
+        public static async void DebugGetUserIdByAddress()
+        {
+            string userId = await _backendFacade.DebugGetUserIdByAddress(_backendDataControlMediator.UserDataModel.Address);
+            Debug.Log("User Id: " + userId);
+        }
+
+        [CommandHandler]
+        public static async void DebugGetPendingCardAmountChangeItems()
+        {
+            DebugGetPendingCardAmountChangeItemsResponse response =
+                await _backendFacade.DebugGetPendingCardAmountChangeItems(_backendDataControlMediator.UserDataModel.Address);
+            Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
         }
     }
 }

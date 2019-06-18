@@ -46,9 +46,9 @@ namespace Loom.ZombieBattleground.Iap
 
         private byte[] UserPrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
 
-        public byte[] UserPublicKey => CryptoUtils.PublicKeyFromPrivateKey(UserPrivateKey);
+        public byte[] UserPublicKey => _backendDataControlMediator.UserDataModel.PublicKey;
 
-        public Address UserPlasmaChainAddress => Address.FromPublicKey(UserPublicKey, PlasmaChainEndpointsContainer.Chainid);
+        public Address UserPlasmaChainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, PlasmaChainEndpointsContainer.Chainid);
 
         public void Init()
         {

@@ -158,11 +158,23 @@ namespace Loom.ZombieBattleground.Protobuf {
             "Q2FsbEN1c3RvbUdhbWVNb2RlRnVuY3Rpb25SZXF1ZXN0EhkKB2FkZHJlc3MY",
             "ASABKAsyCC5BZGRyZXNzEhAKCGNhbGxEYXRhGAIgASgMIjoKKFN0YXRpY0Nh",
             "bGxDdXN0b21HYW1lTW9kZUZ1bmN0aW9uUmVzcG9uc2USDgoGb3V0cHV0GAEg",
-            "ASgMIlcKJERlYnVnQ3JlYXRlQm9vc3RlclBhY2tSZWNlaXB0UmVxdWVzdBIY",
-            "CgZ1c2VySWQYASABKAsyCC5CaWdVSW50EhUKDWJvb3N0ZXJBbW91bnQYAiAB",
-            "KAUiSAolRGVidWdDcmVhdGVCb29zdGVyUGFja1JlY2VpcHRSZXNwb25zZRIf",
-            "Chd0cmFuc2FjdGlvblJlc3BvbnNlSnNvbhgBIAEoCUIjqgIgTG9vbS5ab21i",
-            "aWVCYXR0bGVncm91bmQuUHJvdG9idWZiBnByb3RvMw=="));
+            "ASgMIj0KK0dldFBlbmRpbmdNaW50aW5nVHJhbnNhY3Rpb25SZWNlaXB0c1Jl",
+            "cXVlc3QSDgoGdXNlcklkGAEgASgJIm8KLEdldFBlbmRpbmdNaW50aW5nVHJh",
+            "bnNhY3Rpb25SZWNlaXB0c1Jlc3BvbnNlEj8KEXJlY2VpcHRDb2xsZWN0aW9u",
+            "GAEgASgLMiQuTWludGluZ1RyYW5zYWN0aW9uUmVjZWlwdENvbGxlY3Rpb24i",
+            "WAouQ29uZmlybVBlbmRpbmdNaW50aW5nVHJhbnNhY3Rpb25SZWNlaXB0UmVx",
+            "dWVzdBIOCgZ1c2VySWQYASABKAkSFgoEdHhJZBgCIAEoCzIILkJpZ1VJbnQi",
+            "VQoiRGVidWdNaW50Qm9vc3RlclBhY2tSZWNlaXB0UmVxdWVzdBIYCgZ1c2Vy",
+            "SWQYASABKAsyCC5CaWdVSW50EhUKDWJvb3N0ZXJBbW91bnQYAiABKAUiZwoj",
+            "RGVidWdNaW50Qm9vc3RlclBhY2tSZWNlaXB0UmVzcG9uc2USEwoLcmVjZWlw",
+            "dEpzb24YASABKAkSKwoHcmVjZWlwdBgCIAEoCzIaLk1pbnRpbmdUcmFuc2Fj",
+            "dGlvblJlY2VpcHQiOwoeRGVidWdHZXRVc2VySWRCeUFkZHJlc3NSZXF1ZXN0",
+            "EhkKB2FkZHJlc3MYASABKAsyCC5BZGRyZXNzIkgKK0RlYnVnR2V0UGVuZGlu",
+            "Z0NhcmRBbW91bnRDaGFuZ2VJdGVtc1JlcXVlc3QSGQoHYWRkcmVzcxgBIAEo",
+            "CzIILkFkZHJlc3MiYgosRGVidWdHZXRQZW5kaW5nQ2FyZEFtb3VudENoYW5n",
+            "ZUl0ZW1zUmVzcG9uc2USMgoJY29udGFpbmVyGAEgASgLMh8uQ2FyZEFtb3Vu",
+            "dENoYW5nZUl0ZW1zQ29udGFpbmVyQiOqAiBMb29tLlpvbWJpZUJhdHRsZWdy",
+            "b3VuZC5Qcm90b2J1ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, global::Loom.ZombieBattleground.Protobuf.ZbDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -254,8 +266,14 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiResponse), global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiResponse.Parser, new[]{ "UiElements" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CallCustomGameModeFunctionRequest), global::Loom.ZombieBattleground.Protobuf.CallCustomGameModeFunctionRequest.Parser, new[]{ "Address", "CallData" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse), global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse.Parser, new[]{ "Output" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptRequest), global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptRequest.Parser, new[]{ "UserId", "BoosterAmount" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptResponse), global::Loom.ZombieBattleground.Protobuf.DebugCreateBoosterPackReceiptResponse.Parser, new[]{ "TransactionResponseJson" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsRequest), global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsRequest.Parser, new[]{ "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsResponse), global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsResponse.Parser, new[]{ "ReceiptCollection" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ConfirmPendingMintingTransactionReceiptRequest), global::Loom.ZombieBattleground.Protobuf.ConfirmPendingMintingTransactionReceiptRequest.Parser, new[]{ "UserId", "TxId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest), global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest.Parser, new[]{ "UserId", "BoosterAmount" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptResponse), global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptResponse.Parser, new[]{ "ReceiptJson", "Receipt" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugGetUserIdByAddressRequest), global::Loom.ZombieBattleground.Protobuf.DebugGetUserIdByAddressRequest.Parser, new[]{ "Address" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsRequest), global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsRequest.Parser, new[]{ "Address" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsResponse), global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsResponse.Parser, new[]{ "Container" }, null, null, null)
           }));
     }
     #endregion
@@ -13497,11 +13515,11 @@ namespace Loom.ZombieBattleground.Protobuf {
 
   }
 
-  public sealed partial class DebugCreateBoosterPackReceiptRequest : pb::IMessage<DebugCreateBoosterPackReceiptRequest> {
-    private static readonly pb::MessageParser<DebugCreateBoosterPackReceiptRequest> _parser = new pb::MessageParser<DebugCreateBoosterPackReceiptRequest>(() => new DebugCreateBoosterPackReceiptRequest());
+  public sealed partial class GetPendingMintingTransactionReceiptsRequest : pb::IMessage<GetPendingMintingTransactionReceiptsRequest> {
+    private static readonly pb::MessageParser<GetPendingMintingTransactionReceiptsRequest> _parser = new pb::MessageParser<GetPendingMintingTransactionReceiptsRequest>(() => new GetPendingMintingTransactionReceiptsRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<DebugCreateBoosterPackReceiptRequest> Parser { get { return _parser; } }
+    public static pb::MessageParser<GetPendingMintingTransactionReceiptsRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -13514,22 +13532,449 @@ namespace Loom.ZombieBattleground.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DebugCreateBoosterPackReceiptRequest() {
+    public GetPendingMintingTransactionReceiptsRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DebugCreateBoosterPackReceiptRequest(DebugCreateBoosterPackReceiptRequest other) : this() {
+    public GetPendingMintingTransactionReceiptsRequest(GetPendingMintingTransactionReceiptsRequest other) : this() {
+      userId_ = other.userId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetPendingMintingTransactionReceiptsRequest Clone() {
+      return new GetPendingMintingTransactionReceiptsRequest(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GetPendingMintingTransactionReceiptsRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GetPendingMintingTransactionReceiptsRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserId != other.UserId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GetPendingMintingTransactionReceiptsRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GetPendingMintingTransactionReceiptsResponse : pb::IMessage<GetPendingMintingTransactionReceiptsResponse> {
+    private static readonly pb::MessageParser<GetPendingMintingTransactionReceiptsResponse> _parser = new pb::MessageParser<GetPendingMintingTransactionReceiptsResponse>(() => new GetPendingMintingTransactionReceiptsResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GetPendingMintingTransactionReceiptsResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[89]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetPendingMintingTransactionReceiptsResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetPendingMintingTransactionReceiptsResponse(GetPendingMintingTransactionReceiptsResponse other) : this() {
+      receiptCollection_ = other.receiptCollection_ != null ? other.receiptCollection_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetPendingMintingTransactionReceiptsResponse Clone() {
+      return new GetPendingMintingTransactionReceiptsResponse(this);
+    }
+
+    /// <summary>Field number for the "receiptCollection" field.</summary>
+    public const int ReceiptCollectionFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection receiptCollection_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection ReceiptCollection {
+      get { return receiptCollection_; }
+      set {
+        receiptCollection_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GetPendingMintingTransactionReceiptsResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GetPendingMintingTransactionReceiptsResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(ReceiptCollection, other.ReceiptCollection)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (receiptCollection_ != null) hash ^= ReceiptCollection.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (receiptCollection_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ReceiptCollection);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (receiptCollection_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ReceiptCollection);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GetPendingMintingTransactionReceiptsResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.receiptCollection_ != null) {
+        if (receiptCollection_ == null) {
+          receiptCollection_ = new global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection();
+        }
+        ReceiptCollection.MergeFrom(other.ReceiptCollection);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (receiptCollection_ == null) {
+              receiptCollection_ = new global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection();
+            }
+            input.ReadMessage(receiptCollection_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ConfirmPendingMintingTransactionReceiptRequest : pb::IMessage<ConfirmPendingMintingTransactionReceiptRequest> {
+    private static readonly pb::MessageParser<ConfirmPendingMintingTransactionReceiptRequest> _parser = new pb::MessageParser<ConfirmPendingMintingTransactionReceiptRequest>(() => new ConfirmPendingMintingTransactionReceiptRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ConfirmPendingMintingTransactionReceiptRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[90]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ConfirmPendingMintingTransactionReceiptRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ConfirmPendingMintingTransactionReceiptRequest(ConfirmPendingMintingTransactionReceiptRequest other) : this() {
+      userId_ = other.userId_;
+      txId_ = other.txId_ != null ? other.txId_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ConfirmPendingMintingTransactionReceiptRequest Clone() {
+      return new ConfirmPendingMintingTransactionReceiptRequest(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "txId" field.</summary>
+    public const int TxIdFieldNumber = 2;
+    private global::Loom.Client.Protobuf.BigUInt txId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.Client.Protobuf.BigUInt TxId {
+      get { return txId_; }
+      set {
+        txId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ConfirmPendingMintingTransactionReceiptRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ConfirmPendingMintingTransactionReceiptRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserId != other.UserId) return false;
+      if (!object.Equals(TxId, other.TxId)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (txId_ != null) hash ^= TxId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (txId_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(TxId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (txId_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TxId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ConfirmPendingMintingTransactionReceiptRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.txId_ != null) {
+        if (txId_ == null) {
+          txId_ = new global::Loom.Client.Protobuf.BigUInt();
+        }
+        TxId.MergeFrom(other.TxId);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (txId_ == null) {
+              txId_ = new global::Loom.Client.Protobuf.BigUInt();
+            }
+            input.ReadMessage(txId_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DebugMintBoosterPackReceiptRequest : pb::IMessage<DebugMintBoosterPackReceiptRequest> {
+    private static readonly pb::MessageParser<DebugMintBoosterPackReceiptRequest> _parser = new pb::MessageParser<DebugMintBoosterPackReceiptRequest>(() => new DebugMintBoosterPackReceiptRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DebugMintBoosterPackReceiptRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[91]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugMintBoosterPackReceiptRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugMintBoosterPackReceiptRequest(DebugMintBoosterPackReceiptRequest other) : this() {
       userId_ = other.userId_ != null ? other.userId_.Clone() : null;
       boosterAmount_ = other.boosterAmount_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DebugCreateBoosterPackReceiptRequest Clone() {
-      return new DebugCreateBoosterPackReceiptRequest(this);
+    public DebugMintBoosterPackReceiptRequest Clone() {
+      return new DebugMintBoosterPackReceiptRequest(this);
     }
 
     /// <summary>Field number for the "userId" field.</summary>
@@ -13556,11 +14001,11 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as DebugCreateBoosterPackReceiptRequest);
+      return Equals(other as DebugMintBoosterPackReceiptRequest);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(DebugCreateBoosterPackReceiptRequest other) {
+    public bool Equals(DebugMintBoosterPackReceiptRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -13619,7 +14064,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(DebugCreateBoosterPackReceiptRequest other) {
+    public void MergeFrom(DebugMintBoosterPackReceiptRequest other) {
       if (other == null) {
         return;
       }
@@ -13660,15 +14105,15 @@ namespace Loom.ZombieBattleground.Protobuf {
 
   }
 
-  public sealed partial class DebugCreateBoosterPackReceiptResponse : pb::IMessage<DebugCreateBoosterPackReceiptResponse> {
-    private static readonly pb::MessageParser<DebugCreateBoosterPackReceiptResponse> _parser = new pb::MessageParser<DebugCreateBoosterPackReceiptResponse>(() => new DebugCreateBoosterPackReceiptResponse());
+  public sealed partial class DebugMintBoosterPackReceiptResponse : pb::IMessage<DebugMintBoosterPackReceiptResponse> {
+    private static readonly pb::MessageParser<DebugMintBoosterPackReceiptResponse> _parser = new pb::MessageParser<DebugMintBoosterPackReceiptResponse>(() => new DebugMintBoosterPackReceiptResponse());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<DebugCreateBoosterPackReceiptResponse> Parser { get { return _parser; } }
+    public static pb::MessageParser<DebugMintBoosterPackReceiptResponse> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[89]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[92]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13677,55 +14122,69 @@ namespace Loom.ZombieBattleground.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DebugCreateBoosterPackReceiptResponse() {
+    public DebugMintBoosterPackReceiptResponse() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DebugCreateBoosterPackReceiptResponse(DebugCreateBoosterPackReceiptResponse other) : this() {
-      transactionResponseJson_ = other.transactionResponseJson_;
+    public DebugMintBoosterPackReceiptResponse(DebugMintBoosterPackReceiptResponse other) : this() {
+      receiptJson_ = other.receiptJson_;
+      receipt_ = other.receipt_ != null ? other.receipt_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DebugCreateBoosterPackReceiptResponse Clone() {
-      return new DebugCreateBoosterPackReceiptResponse(this);
+    public DebugMintBoosterPackReceiptResponse Clone() {
+      return new DebugMintBoosterPackReceiptResponse(this);
     }
 
-    /// <summary>Field number for the "transactionResponseJson" field.</summary>
-    public const int TransactionResponseJsonFieldNumber = 1;
-    private string transactionResponseJson_ = "";
+    /// <summary>Field number for the "receiptJson" field.</summary>
+    public const int ReceiptJsonFieldNumber = 1;
+    private string receiptJson_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string TransactionResponseJson {
-      get { return transactionResponseJson_; }
+    public string ReceiptJson {
+      get { return receiptJson_; }
       set {
-        transactionResponseJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        receiptJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "receipt" field.</summary>
+    public const int ReceiptFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt receipt_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt Receipt {
+      get { return receipt_; }
+      set {
+        receipt_ = value;
       }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as DebugCreateBoosterPackReceiptResponse);
+      return Equals(other as DebugMintBoosterPackReceiptResponse);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(DebugCreateBoosterPackReceiptResponse other) {
+    public bool Equals(DebugMintBoosterPackReceiptResponse other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (TransactionResponseJson != other.TransactionResponseJson) return false;
+      if (ReceiptJson != other.ReceiptJson) return false;
+      if (!object.Equals(Receipt, other.Receipt)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (TransactionResponseJson.Length != 0) hash ^= TransactionResponseJson.GetHashCode();
+      if (ReceiptJson.Length != 0) hash ^= ReceiptJson.GetHashCode();
+      if (receipt_ != null) hash ^= Receipt.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -13739,9 +14198,13 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (TransactionResponseJson.Length != 0) {
+      if (ReceiptJson.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(TransactionResponseJson);
+        output.WriteString(ReceiptJson);
+      }
+      if (receipt_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Receipt);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -13751,8 +14214,11 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (TransactionResponseJson.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(TransactionResponseJson);
+      if (ReceiptJson.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ReceiptJson);
+      }
+      if (receipt_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Receipt);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -13761,12 +14227,18 @@ namespace Loom.ZombieBattleground.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(DebugCreateBoosterPackReceiptResponse other) {
+    public void MergeFrom(DebugMintBoosterPackReceiptResponse other) {
       if (other == null) {
         return;
       }
-      if (other.TransactionResponseJson.Length != 0) {
-        TransactionResponseJson = other.TransactionResponseJson;
+      if (other.ReceiptJson.Length != 0) {
+        ReceiptJson = other.ReceiptJson;
+      }
+      if (other.receipt_ != null) {
+        if (receipt_ == null) {
+          receipt_ = new global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt();
+        }
+        Receipt.MergeFrom(other.Receipt);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -13780,7 +14252,419 @@ namespace Loom.ZombieBattleground.Protobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            TransactionResponseJson = input.ReadString();
+            ReceiptJson = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (receipt_ == null) {
+              receipt_ = new global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt();
+            }
+            input.ReadMessage(receipt_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DebugGetUserIdByAddressRequest : pb::IMessage<DebugGetUserIdByAddressRequest> {
+    private static readonly pb::MessageParser<DebugGetUserIdByAddressRequest> _parser = new pb::MessageParser<DebugGetUserIdByAddressRequest>(() => new DebugGetUserIdByAddressRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DebugGetUserIdByAddressRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[93]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetUserIdByAddressRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetUserIdByAddressRequest(DebugGetUserIdByAddressRequest other) : this() {
+      address_ = other.address_ != null ? other.address_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetUserIdByAddressRequest Clone() {
+      return new DebugGetUserIdByAddressRequest(this);
+    }
+
+    /// <summary>Field number for the "address" field.</summary>
+    public const int AddressFieldNumber = 1;
+    private global::Loom.Client.Protobuf.Address address_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.Client.Protobuf.Address Address {
+      get { return address_; }
+      set {
+        address_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DebugGetUserIdByAddressRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DebugGetUserIdByAddressRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Address, other.Address)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (address_ != null) hash ^= Address.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (address_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Address);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (address_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Address);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DebugGetUserIdByAddressRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.address_ != null) {
+        if (address_ == null) {
+          address_ = new global::Loom.Client.Protobuf.Address();
+        }
+        Address.MergeFrom(other.Address);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (address_ == null) {
+              address_ = new global::Loom.Client.Protobuf.Address();
+            }
+            input.ReadMessage(address_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DebugGetPendingCardAmountChangeItemsRequest : pb::IMessage<DebugGetPendingCardAmountChangeItemsRequest> {
+    private static readonly pb::MessageParser<DebugGetPendingCardAmountChangeItemsRequest> _parser = new pb::MessageParser<DebugGetPendingCardAmountChangeItemsRequest>(() => new DebugGetPendingCardAmountChangeItemsRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DebugGetPendingCardAmountChangeItemsRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[94]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetPendingCardAmountChangeItemsRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetPendingCardAmountChangeItemsRequest(DebugGetPendingCardAmountChangeItemsRequest other) : this() {
+      address_ = other.address_ != null ? other.address_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetPendingCardAmountChangeItemsRequest Clone() {
+      return new DebugGetPendingCardAmountChangeItemsRequest(this);
+    }
+
+    /// <summary>Field number for the "address" field.</summary>
+    public const int AddressFieldNumber = 1;
+    private global::Loom.Client.Protobuf.Address address_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.Client.Protobuf.Address Address {
+      get { return address_; }
+      set {
+        address_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DebugGetPendingCardAmountChangeItemsRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DebugGetPendingCardAmountChangeItemsRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Address, other.Address)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (address_ != null) hash ^= Address.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (address_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Address);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (address_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Address);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DebugGetPendingCardAmountChangeItemsRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.address_ != null) {
+        if (address_ == null) {
+          address_ = new global::Loom.Client.Protobuf.Address();
+        }
+        Address.MergeFrom(other.Address);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (address_ == null) {
+              address_ = new global::Loom.Client.Protobuf.Address();
+            }
+            input.ReadMessage(address_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DebugGetPendingCardAmountChangeItemsResponse : pb::IMessage<DebugGetPendingCardAmountChangeItemsResponse> {
+    private static readonly pb::MessageParser<DebugGetPendingCardAmountChangeItemsResponse> _parser = new pb::MessageParser<DebugGetPendingCardAmountChangeItemsResponse>(() => new DebugGetPendingCardAmountChangeItemsResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DebugGetPendingCardAmountChangeItemsResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbCallsReflection.Descriptor.MessageTypes[95]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetPendingCardAmountChangeItemsResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetPendingCardAmountChangeItemsResponse(DebugGetPendingCardAmountChangeItemsResponse other) : this() {
+      container_ = other.container_ != null ? other.container_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DebugGetPendingCardAmountChangeItemsResponse Clone() {
+      return new DebugGetPendingCardAmountChangeItemsResponse(this);
+    }
+
+    /// <summary>Field number for the "container" field.</summary>
+    public const int ContainerFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer container_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer Container {
+      get { return container_; }
+      set {
+        container_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DebugGetPendingCardAmountChangeItemsResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DebugGetPendingCardAmountChangeItemsResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Container, other.Container)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (container_ != null) hash ^= Container.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (container_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Container);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (container_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Container);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DebugGetPendingCardAmountChangeItemsResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.container_ != null) {
+        if (container_ == null) {
+          container_ = new global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer();
+        }
+        Container.MergeFrom(other.Container);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (container_ == null) {
+              container_ = new global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer();
+            }
+            input.ReadMessage(container_);
             break;
           }
         }

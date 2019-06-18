@@ -75,7 +75,8 @@ namespace Loom.Client
 
         public async Task<List<EventLog<T>>> GetAllChanges<T>(NewFilterInput filterInput) where T : new()
         {
-            return DecodeAllEvents<T>(await GetAllChanges(filterInput));
+            FilterLog[] changes = await GetAllChanges(filterInput);
+            return DecodeAllEvents<T>(changes);
         }
 
         public bool IsLogForEvent(JToken log)

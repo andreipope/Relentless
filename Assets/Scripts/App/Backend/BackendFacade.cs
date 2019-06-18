@@ -570,7 +570,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
 #endregion
 
-
 #region PVP
 
         private const string FindMatchMethod = "FindMatch";
@@ -759,7 +758,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
 #endregion
 
-#region Custom Game Modes
+        #region Custom Game Modes
 
         private const string ListGameModesMethod = "ListGameModes";
         private const string CallCustomGameModeFunctionMethod = "CallCustomGameModeFunction";
@@ -794,7 +793,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
 #endregion
 
-#region Notifications
+        #region Notifications
         private const string GetNotificationsMethod = "GetNotifications";
         private const string ClearNotificationsMethod = "ClearNotifications";
 
@@ -821,19 +820,63 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        #region Debug
+        #region Rewards
 
-        public async Task<DebugCreateBoosterPackReceiptResponse> DebugCreateBoosterPackReceipt(BigInteger userId, int boosterAmount)
+        public async Task<GetPendingMintingTransactionReceiptsResponse> GetPendingMintingTransactionReceipts(string userId)
         {
-            DebugCreateBoosterPackReceiptRequest request = new DebugCreateBoosterPackReceiptRequest
+            GetPendingMintingTransactionReceiptsRequest request = new GetPendingMintingTransactionReceiptsRequest
             {
-                UserId = userId.ToProtobufUInt(),
-                BoosterAmount = boosterAmount,
+                UserId = userId,
             };
 
-            return await _contractCallProxy.CallAsync<DebugCreateBoosterPackReceiptResponse>("DebugCreateBoosterPackReceipt", request);
+            return await _contractCallProxy.StaticCallAsync<GetPendingMintingTransactionReceiptsResponse>("GetPendingMintingTransactionReceipts", request);
         }
 
+        public async Task ConfirmPendingMintingTransactionReceipt(string userId, BigInteger txId)
+        {
+            ConfirmPendingMintingTransactionReceiptRequest request = new ConfirmPendingMintingTransactionReceiptRequest
+            {
+                UserId = userId,
+                TxId = txId.ToProtobufUInt()
+            };
+
+            await _contractCallProxy.CallAsync("ConfirmPendingMintingTransactionReceipt", request);
+        }
+
+        #endregion
+
+        #region Debug
+
+        public async Task<string> DebugGetUserIdByAddress(Address address)
+        {
+            DebugGetUserIdByAddressRequest request = new DebugGetUserIdByAddressRequest
+            {
+                Address = address.ToProtobufAddress()
+            };
+
+            return (await _contractCallProxy.StaticCallAsync<UserIdContainer>("DebugGetUserIdByAddress", request)).UserId;
+        }
+
+        public async Task<DebugGetPendingCardAmountChangeItemsResponse> DebugGetPendingCardAmountChangeItems(Address address)
+        {
+            DebugGetPendingCardAmountChangeItemsRequest request = new DebugGetPendingCardAmountChangeItemsRequest
+            {
+                Address = address.ToProtobufAddress()
+            };
+
+            return await _contractCallProxy.StaticCallAsync<DebugGetPendingCardAmountChangeItemsResponse>("DebugGetPendingCardAmountChangeItems", request);
+        }
+
+        public async Task<DebugMintBoosterPackReceiptResponse> DebugMintBoosterPackReceipt(BigInteger userId, int boosterAmount)
+        {
+            DebugMintBoosterPackReceiptRequest request = new DebugMintBoosterPackReceiptRequest
+            {
+                UserId = userId.ToProtobufUInt(),
+                BoosterAmount = boosterAmount
+            };
+
+            return await _contractCallProxy.CallAsync<DebugMintBoosterPackReceiptResponse>("DebugMintBoosterPackReceipt", request);
+        }
 
         #endregion
     }

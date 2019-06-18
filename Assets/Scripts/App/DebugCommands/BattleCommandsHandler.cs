@@ -41,6 +41,7 @@ static class BattleCommandsHandler
         _cardsController = _gameplayManager.GetController<CardsController>();
         _aiController = _gameplayManager.GetController<AIController>();
         _boardController = _gameplayManager.GetController<BoardController>();
+
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]

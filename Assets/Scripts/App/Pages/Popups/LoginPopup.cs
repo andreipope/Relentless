@@ -406,16 +406,31 @@ namespace Loom.ZombieBattleground
             CreateVaultTokenData vaultTokenData = new CreateVaultTokenData();
             try
             {
+                UserDataModel userDataModel = _backendDataControlMediator.UserDataModel;
                 if (noOTP)
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(userDataModel.AccessToken);
                 }
                 else
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, userDataModel.AccessToken);
                 }
+
                 GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
-                _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
+                _backendDataControlMediator.UserDataModel =
+                    new UserDataModel(
+                        userDataModel.UserId,
+                        userDataModel.UserIdNumber,
+                        Convert.FromBase64String(vaultDataData.data.privatekey)
+                    )
+                    {
+                        IsValid = userDataModel.IsValid,
+                        IsRegistered = userDataModel.IsRegistered,
+                        Email = userDataModel.Email,
+                        Password = userDataModel.Password,
+                        GUID = userDataModel.GUID,
+                        AccessToken = userDataModel.AccessToken
+                    };
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)

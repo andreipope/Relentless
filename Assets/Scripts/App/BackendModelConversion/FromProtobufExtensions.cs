@@ -280,8 +280,8 @@ namespace Loom.ZombieBattleground.Data
             {
                 case Protobuf.LevelReward.RewardOneofCase.SkillReward:
                     return new OverlordSkillRewardItem(levelReward.Level, levelReward.SkillReward.SkillIndex);
-                case Protobuf.LevelReward.RewardOneofCase.UnitReward:
-                    return new UnitRewardItem(levelReward.Level, (Enumerators.CardRank) levelReward.UnitReward.Rank, levelReward.UnitReward.Count);
+                case Protobuf.LevelReward.RewardOneofCase.BoosterPackReward:
+                    return new BoosterPackRewardItem(levelReward.Level, levelReward.BoosterPackReward.Amount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

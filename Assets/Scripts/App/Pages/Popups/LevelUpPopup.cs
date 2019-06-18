@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
                         FillRewardSkillInfo(overlordSkillRewardItem.SkillIndex);
                         AbilityInstanceOnSelectionChanged(_newOpenAbility);
                         break;
-                    case UnitRewardItem _:
+                    case BoosterPackRewardItem _:
                         // TODO: handle
                         break;
                 }
