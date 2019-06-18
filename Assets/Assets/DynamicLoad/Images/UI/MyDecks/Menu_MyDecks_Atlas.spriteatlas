@@ -42,14 +42,14 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 4ef2958c8e5db47529b57a8c378b2e1a, type: 3}
-    totalSpriteSurfaceArea: 10915388
+    totalSpriteSurfaceArea: 9819770
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 62decff0d542444cd8b86695025ced9b, type: 3}
-  - {fileID: 21300000, guid: 16022361755b74fe4addc76d1e0f1ab1, type: 3}
   - {fileID: 21300000, guid: 54b99912da7ab4dd1af3af657155c87a, type: 3}
   - {fileID: 21300000, guid: 9c300c22959c74cb7b575f1950bc2424, type: 3}
+  - {fileID: 21300000, guid: e38e2ea2854144798a3bf83d96420ab0, type: 3}
   - {fileID: 21300000, guid: 2a2974f25103e4867b382898af446de9, type: 3}
   - {fileID: 21300000, guid: cc60eb036d91e4abb9738175a3b48939, type: 3}
   - {fileID: 21300000, guid: 681af953f37d24a8094dcdffa54c9961, type: 3}
@@ -58,28 +58,27 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1d9181d4c315c4129a11917c1081272a, type: 3}
   - {fileID: 21300000, guid: c79a8615c94d74150a6ee7ca62f4e99c, type: 3}
   - {fileID: 21300000, guid: 14c0ce655e5e048fd92b4e0d7a77aeb6, type: 3}
+  - {fileID: 21300000, guid: 4604ef65652bc4ac6981e20d846c78f9, type: 3}
   - {fileID: 21300000, guid: d2644df529d7445f7ac8656140cb3454, type: 3}
   - {fileID: 21300000, guid: 973d5c2611c6543859309bf7530fbed6, type: 3}
   - {fileID: 21300000, guid: 2e914f365df5e4b8c9782e0a815d93b0, type: 3}
-  - {fileID: 21300000, guid: 1ac661e6827ff47e794b7ef1b84650c6, type: 3}
   - {fileID: 21300000, guid: e44f1c573b34145ec848abec011773b7, type: 3}
   - {fileID: 21300000, guid: af6dfc678945442b0a6a8fc953225bb9, type: 3}
   - {fileID: 21300000, guid: a30c4b97ba24743068edfa7e6f05e7e1, type: 3}
-  - {fileID: 21300000, guid: cf776d086048543a58080a454f13424d, type: 3}
   - {fileID: 21300000, guid: 0a1d3f187e41c4787a22aa7dd2d458b4, type: 3}
   - {fileID: 21300000, guid: a58747688b7374e3284773284d8e205a, type: 3}
   - {fileID: 21300000, guid: 21570c78c53f040e68c2c4f3ad7bd198, type: 3}
   - {fileID: 21300000, guid: 8d0aee98d508a433486de7c8be64224e, type: 3}
   - {fileID: 21300000, guid: cc7c5ff99c9e34b24bd13238fe07580d, type: 3}
-  - {fileID: 21300000, guid: c644272a8535640c6b3856b847788f9e, type: 3}
   - {fileID: 21300000, guid: f17cb53aff7d84148be51fa406a7d24f, type: 3}
-  - {fileID: 21300000, guid: b1bb20da1112040a78f78e0c9445255a, type: 3}
   - {fileID: 21300000, guid: 204b2a7b29488494a9f5713b18463e31, type: 3}
+  - {fileID: 21300000, guid: e18ede7ba471f44d1995d9a44881e879, type: 3}
   - {fileID: 21300000, guid: f19f219b499f547fcbbe320fd01b367d, type: 3}
+  - {fileID: 21300000, guid: 21929deba794b4cdd8d0e474bc6807c7, type: 3}
+  - {fileID: 21300000, guid: f483243c98caf42afa7ebf3470b39f22, type: 3}
   - {fileID: 21300000, guid: 612c093c59d064f419a6b3889995a18f, type: 3}
   - {fileID: 21300000, guid: 12a8d55cb34cf4efea3716adaa293eea, type: 3}
   - {fileID: 21300000, guid: 3fb8cd8c7674c49edb192a549823415b, type: 3}
-  - {fileID: 21300000, guid: 84ad87bc5fb3b4a3f83d18de7cc0d92f, type: 3}
   - {fileID: 21300000, guid: 30f3590dd5d564dd38b2c1979c73136f, type: 3}
   - {fileID: 21300000, guid: 3a93202dc4aad4160817198d1f312513, type: 3}
   - {fileID: 21300000, guid: c3a3824dcd86d4af19d41cf707b3ba7a, type: 3}
@@ -92,9 +91,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ce8fa5cf05ea7413ba2aa40e6e240716, type: 3}
   m_PackedSpriteNamesToIndex:
   - abilities_button_earth
-  - overlord_frame_bottom_selected
   - mydeck_cardindicator_on
   - deck_thumbnail_selected
+  - champion_portrait_mask
   - deck_frame
   - overlord_portrait_air
   - abilities_button_toxic
@@ -103,28 +102,27 @@ SpriteAtlas:
   - deck_info_scrollbar_bg
   - goograph_bg
   - deck_thumbnail_earth
+  - champion_frame_on
   - deck_thumbnail_life
   - deck_thumbnail_normal
   - abilities_button_fire
-  - select_overlord_panel
   - overlord_portrait_life
   - overlord_portrait_water
   - deck_thumbnail_air
-  - overlord_frame_top_selected
   - editdeck_cardcount
   - abilities_button_life
   - deck_overlord_frame
   - page_normal
   - deck_thumbnail_toxic
-  - overlord_frame_top_unselected
   - mydeck_card_frame
-  - overlord_frame_bottom_unselected
   - abilities_button_air
+  - champion_frame_off
   - deck_rename_idle
+  - select_champion_panel
+  - champion_description_frame
   - abilities_button_water
   - overlord_portrait_earth
   - mydeck_card_bg
-  - selected_overlord_info
   - overlord_portrait_fire
   - page_selected
   - deck_thumbnail_water

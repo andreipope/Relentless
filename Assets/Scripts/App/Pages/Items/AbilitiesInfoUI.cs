@@ -27,8 +27,8 @@ namespace Loom.ZombieBattleground
 
         private void ButtonChangeAbilityHandler()
         {
-            GameClient.Get<IUIManager>().DrawPopup<ChampionAbilitiesPopup>(_deck);
-            ChampionAbilitiesPopup.OnSaveSelectedSkill += OnSaveSelectedSkill;
+            GameClient.Get<IUIManager>().DrawPopup<SelectOverlordAbilitiesPopup>(new object[] {_deck, false});
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += OnSaveSelectedSkill;
         }
 
         public void ShowAbilities(Deck deck)
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            ChampionAbilitiesPopup.OnSaveSelectedSkill -= OnSaveSelectedSkill;
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill -= OnSaveSelectedSkill;
         }
     }
 }

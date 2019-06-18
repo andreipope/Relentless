@@ -320,8 +320,10 @@ namespace Loom.ZombieBattleground
 
             PlayClickSound();
             HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+            // TODO : Not sure, why this variable
             deckPage.IsRenameWhileEditing = true;
-            deckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_selectedDeck.Name, true});
         }
 
         private void PlayClickSound()

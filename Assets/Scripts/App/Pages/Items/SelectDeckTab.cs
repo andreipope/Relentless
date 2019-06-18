@@ -399,7 +399,9 @@ namespace Loom.ZombieBattleground
             _myDeckPage._selectedDeckId = -1;
 
             PlayClickSound();
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
+
+            _uiManager.DrawPopup<OverlordSelectionPopup>();
+            //_myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
         }
 
         private void ButtonLeftArrowHandler()
@@ -611,7 +613,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+            //_myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
         }
 
         private void PlayClickSound()

@@ -50,29 +50,6 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
-        public readonly Dictionary<Enumerators.Faction, Enumerators.Faction> FactionAgainstDictionary =
-            new Dictionary<Enumerators.Faction, Enumerators.Faction>
-            {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
-                }
-            };
-
         private List<Enumerators.Faction> _availableFaction;
 
         private HordeSelectionWithNavigationPage.Tab _nextTab;
@@ -283,15 +260,6 @@ namespace Loom.ZombieBattleground
             //_buttonSaveDeck.enabled = true;
 
             _myDeckPage.ChangeTab(_nextTab);
-        }
-
-        private void ButtonOverlordAbilitiesHandler()
-        {
-            //if (_tutorialManager.BlockAndReport(_buttonAbilities.name))
-              //  return;
-
-            DataUtilities.PlayClickSound();
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlordSkill);
         }
 
         private void ButtonAutoCompleteHandler()
@@ -580,14 +548,6 @@ namespace Loom.ZombieBattleground
             }
         }*/
 
-        private void AddDragging()
-        {
-            /*OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
-            eventHandler.DragBegan += BoardCardDragBeganHandler;
-            eventHandler.DragEnded += BoardCardDeckDragEndedHandler;
-            eventHandler.DragUpdated += BoardCardDragUpdatedHandler;*/
-        }
-
         public void AddCardToDeck(IReadOnlyCard card, bool animate = false)
         {
             if (_myDeckPage.CurrentEditDeck == null)
@@ -597,7 +557,7 @@ namespace Loom.ZombieBattleground
             }
 
             OverlordUserInstance overlordData = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
-            if (FactionAgainstDictionary[overlordData.Prototype.Faction] == card.Faction)
+            if (Constants.FactionAgainstDictionary[overlordData.Prototype.Faction] == card.Faction)
             {
                 OpenAlertDialog(
                     "Cannot add from the faction your Overlord is weak against.");
@@ -1032,9 +992,11 @@ namespace Loom.ZombieBattleground
             if(_myDeckPage.IsEditingNewDeck)
             {
                 deckGeneratorController.FinishAddDeck += FinishAddDeck;
-                _myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.Prototype.Id;
-                _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedPrimarySkill;
-                _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedSecondarySkill;
+                //_myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.Prototype.Id;
+
+                // TODO: save skill
+                //_myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedPrimarySkill;
+                //_myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedSecondarySkill;
 
                 deckGeneratorController.ProcessAddDeck(_myDeckPage.CurrentEditDeck);
             }
