@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
@@ -140,7 +141,10 @@ namespace Loom.ZombieBattleground
                         }
                         if (GameClient.Get<ITutorialManager>().IsTutorial)
                         {
-                            message = Constants.ErrorMessageForConnectionFailed;
+                            message = LocalizationUtil.GetLocalizedString
+                            (
+                                LocalizationTerm.Warning_ServerConnection_Failed
+                            );
                         }
                         OpenAlertDialog("Not able to Edit Deck: \n" + message);
                         return Task.CompletedTask;

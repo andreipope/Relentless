@@ -181,12 +181,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
 
-        public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
-        public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
-        public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
-        public const string ErrorMessageForMaxDecks =
-            "You can't have more than 10 decks, delete 1 or more decks and try again.";
-
         public const bool MulliganEnabled = true;
 
         public static readonly bool AlwaysGuestLogin = false;

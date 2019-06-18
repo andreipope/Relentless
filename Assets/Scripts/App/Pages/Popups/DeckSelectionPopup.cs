@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using DG.Tweening;
@@ -328,7 +329,14 @@ namespace Loom.ZombieBattleground
 
                 if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
                 {
-                    _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                    _uiManager.DrawPopup<WarningPopup>
+                    (
+                        LocalizationUtil.GetLocalizedString
+                        (
+                            LocalizationTerm.Warning_HordeSelection_MaxDeck
+                        )
+                        .Replace("{MAX_DECKS}", Constants.MaxDecksCount.ToString())
+                    );
                     return;
                 }
 

@@ -1823,6 +1823,48 @@ MonoBehaviour:
       - This version ({LOCAL_VERSION}) is out of date. Please download version {REMOTE_VERSION}.
       Flags: 000000000000
       Languages_Touch: []
+    - Term: Warning_Server_MaintenanceMode
+      TermType: 0
+      Description: 
+      Languages:
+      - Our server is currently undergoing maintenance. Please try again later.
+      - Our server is currently undergoing maintenance. Please try again later.
+      - Our server is currently undergoing maintenance. Please try again later.
+      - Our server is currently undergoing maintenance. Please try again later.
+      - Our server is currently undergoing maintenance. Please try again later.
+      - Our server is currently undergoing maintenance. Please try again later.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_ServerConnection_Impossible
+      TermType: 0
+      Description: 
+      Languages:
+      - The connection to the server has timed out. Please check your internet connection
+        and try again later.
+      - The connection to the server has timed out. Please check your internet connection
+        and try again later.
+      - The connection to the server has timed out. Please check your internet connection
+        and try again later.
+      - The connection to the server has timed out. Please check your internet connection
+        and try again later.
+      - The connection to the server has timed out. Please check your internet connection
+        and try again later.
+      - The connection to the server has timed out. Please check your internet connection
+        and try again later.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_ServerConnection_Failed
+      TermType: 0
+      Description: 
+      Languages:
+      - Please check your internet connection
+      - Please check your internet connection
+      - Please check your internet connection
+      - Please check your internet connection
+      - Please check your internet connection
+      - Please check your internet connection
+      Flags: 000000000000
+      Languages_Touch: []
     - Term: Warning_SystemRequirement_NotSatisfy
       TermType: 0
       Description: 
@@ -2091,6 +2133,24 @@ MonoBehaviour:
       - No decks found with that search.
       - No decks found with that search.
       - No decks found with that search.
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: Warning_HordeSelection_MaxDeck
+      TermType: 0
+      Description: 
+      Languages:
+      - You can't have more than {MAX_DECKS} decks, delete 1 or more decks and try
+        again.
+      - You can't have more than {MAX_DECKS} decks, delete 1 or more decks and try
+        again.
+      - You can't have more than {MAX_DECKS} decks, delete 1 or more decks and try
+        again.
+      - You can't have more than {MAX_DECKS} decks, delete 1 or more decks and try
+        again.
+      - You can't have more than {MAX_DECKS} decks, delete 1 or more decks and try
+        again.
+      - You can't have more than {MAX_DECKS} decks, delete 1 or more decks and try
+        again.
       Flags: 000000000000
       Languages_Touch: []
     - Term: Warning_HordeEditing_AddDeck_Failed

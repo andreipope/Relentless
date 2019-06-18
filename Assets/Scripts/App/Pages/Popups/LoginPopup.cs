@@ -927,14 +927,28 @@ namespace Loom.ZombieBattleground
             if (_backendFacade.BackendEndpoint.IsMaintenanceMode && _state != LoginState.ValidationFailed)
             {
                 _lastPopupState = _state;
-                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForMaintenanceMode);
+                SetUIState
+                (
+                    LoginState.ValidationFailed,
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_Server_MaintenanceMode
+                    )
+                );
                 return;
             }
 
             if (_backendFacade.BackendEndpoint.IsConnectionImpossible && _state != LoginState.ValidationFailed)
             {
                 _lastPopupState = _state;
-                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForConnectionImpossible);
+                SetUIState
+                (
+                    LoginState.ValidationFailed,
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_ServerConnection_Impossible
+                    )
+                );
                 return;
             }
 

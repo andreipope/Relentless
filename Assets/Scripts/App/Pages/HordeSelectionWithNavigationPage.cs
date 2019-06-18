@@ -252,7 +252,14 @@ namespace Loom.ZombieBattleground
 
             if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount && !_tutorialManager.IsTutorial)
             {
-                _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                _uiManager.DrawPopup<WarningPopup>
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_HordeSelection_MaxDeck
+                    )
+                    .Replace("{MAX_DECKS}", Constants.MaxDecksCount.ToString())
+                );
                 return;
             }
 
