@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground.Localization
                     new LocalizedString(term.ToString())
                 );
             }
-            return LocalizedStringDictionary[term].ToString();
+            return LocalizedStringDictionary[term].ToString().Replace("\\n", "\n");
         }
     }
 }
