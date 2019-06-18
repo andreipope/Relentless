@@ -109,6 +109,7 @@ namespace Loom.ZombieBattleground
                 actionType == Enumerators.QueueActionType.StopTurnPart3Finish ||
                 actionType == Enumerators.QueueActionType.EndMatch ||
                 actionType == Enumerators.QueueActionType.CardPlay ||
+                actionType == Enumerators.QueueActionType.InitUnitCombat ||
                 actionType == Enumerators.QueueActionType.OverlordSkillUsage ||
                 actionType == Enumerators.QueueActionType.LeaveMatch;
         }

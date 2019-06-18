@@ -775,7 +775,8 @@ namespace Loom.ZombieBattleground.Common
             StopTurnPart3Finish,
             EndMatch,
             UnitCombat,
-            LeaveMatch
+            LeaveMatch,
+            InitUnitCombat
         }
 
         public enum TooltipAlign
