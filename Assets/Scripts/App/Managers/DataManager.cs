@@ -269,11 +269,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ConfirmDeleteDeckReceivedHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
-        }
-
         private void ShowLoadDataFailMessage(string msg)
         {
             // Crash fast on CI

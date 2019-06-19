@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -86,6 +87,30 @@ namespace Loom.ZombieBattleground
 
             DebugMintBoosterPackReceiptResponse response = await _backendFacade.DebugMintBoosterPackReceipt(userId, boosterAmount);
             Debug.Log("Result: \n" + JsonUtility.PrettyPrint(response.ReceiptJson));
+        }
+
+        [CommandHandler(Description = "Mint boosters and claim them immediately. If userId is left as -1, current user id will be used.")]
+        public static async void DebugMintAndClaimBoosterPacks(int boosterPackAmount, int userId = -1)
+        {
+            if (userId == -1)
+            {
+                userId = (int) _backendDataControlMediator.UserDataModel.UserIdNumber;
+            }
+
+            try
+            {
+                DebugMintBoosterPackReceiptResponse response = await _backendFacade.DebugMintBoosterPackReceipt(userId, boosterPackAmount);
+                using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
+                {
+                    await _plasmaChainBackendFacade.ClaimPacks(client, response.Receipt.FromProtobuf());
+                }
+
+                Debug.Log($"Added {boosterPackAmount} packs!");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
     }
 }

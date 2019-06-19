@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static void ShowYouWonYouLostPopup(bool win)
+        public static void ShowYouWonYouLostPopup(bool win = true)
         {
             GameClient.Get<IUIManager>().DrawPopup<YouWonYouLostPopup>(new object[] { win });
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Iap;
 using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.Data
@@ -14,10 +15,10 @@ namespace Loom.ZombieBattleground.Data
         {
             return new CardKey(new MouldId(cardKey.MouldId), (Enumerators.CardVariant) cardKey.Variant);
         }
+
         public static CollectionCardData FromProtobuf(this CardCollectionCard cardCollection)
         {
-            return new CollectionCardData
-            (
+            return new CollectionCardData(
                 cardCollection.CardKey.FromProtobuf(),
                 (int) cardCollection.Amount
             );
@@ -45,8 +46,7 @@ namespace Loom.ZombieBattleground.Data
 
             if (unit.Parameter != null)
             {
-                parameter = new Unit.ParameterType
-                (
+                parameter = new Unit.ParameterType(
                     unit.Parameter.Damage,
                     unit.Parameter.Defense,
                     unit.Parameter.CardName
@@ -92,8 +92,8 @@ namespace Loom.ZombieBattleground.Data
                 ability.ChoosableAbilities.Select(c => c.FromProtobuf()).ToList(),
                 ability.Defense2,
                 ability.Cost,
-                (Enumerators.CardKind)ability.TargetCardKind,
-                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList()
+                (Enumerators.CardKind) ability.TargetCardKind,
+                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription) g).ToList()
             );
         }
 
@@ -179,8 +179,8 @@ namespace Loom.ZombieBattleground.Data
                 new OverlordId(deck.OverlordId),
                 deck.Name,
                 deck.Cards.Select(card => card.FromProtobuf()).ToList(),
-                (Enumerators.Skill)deck.PrimarySkill,
-                (Enumerators.Skill)deck.SecondarySkill
+                (Enumerators.Skill) deck.PrimarySkill,
+                (Enumerators.Skill) deck.SecondarySkill
             );
         }
 
@@ -239,7 +239,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static CardInstanceSpecificData FromProtobuf(this Protobuf.CardInstanceSpecificData card)
         {
-           return new CardInstanceSpecificData(
+            return new CardInstanceSpecificData(
                 card.Damage,
                 card.Defense,
                 (Enumerators.Faction) card.Faction,
@@ -316,7 +316,7 @@ namespace Loom.ZombieBattleground.Data
                         notificationEndMatch.NewExperience,
                         notificationEndMatch.IsWin,
                         notificationEndMatch.Rewards.Select(reward => reward.FromProtobuf()).ToList()
-                        );
+                    );
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -334,6 +334,29 @@ namespace Loom.ZombieBattleground.Data
             Array.Reverse(bytes, 0, rawBytes.Length);
 
             return new BigInteger(bytes);
+        }
+
+        public static AuthFiatApiFacade.TransactionReceipt FromProtobuf(this MintingTransactionReceipt transactionReceipt)
+        {
+            return new AuthFiatApiFacade.TransactionReceipt(
+                new AuthFiatApiFacade.TransactionReceipt.VerifySignResult(
+                    transactionReceipt.VerifyHash.Hash.ToByteArray(),
+                    transactionReceipt.VerifyHash.Signature.ToByteArray()
+                ),
+                transactionReceipt.UserId.FromProtobuf(),
+                (uint) transactionReceipt.Booster,
+                (uint) transactionReceipt.Super,
+                (uint) transactionReceipt.Air,
+                (uint) transactionReceipt.Earth,
+                (uint) transactionReceipt.Fire,
+                (uint) transactionReceipt.Life,
+                (uint) transactionReceipt.Toxic,
+                (uint) transactionReceipt.Water,
+                (uint) transactionReceipt.Small,
+                (uint) transactionReceipt.Minion,
+                (uint) transactionReceipt.Binance,
+                transactionReceipt.TxId.FromProtobuf()
+            );
         }
     }
 }

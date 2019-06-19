@@ -1,17 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
-using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using log4net;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
-using static Loom.ZombieBattleground.OverlordExperienceManager;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -25,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IDataManager _dataManager;
+
         private IUIManager _uiManager;
 
         private Button _buttonOk;
@@ -35,13 +33,15 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _skillDescription;
 
-        private TextMeshProUGUI _message;
+        private TextMeshProUGUI _noRewardMessage;
 
         private HorizontalLayoutGroup _abilitiesGroup;
 
         private GameObject _rewardSkillObject;
 
-        private GameObject _rewardDisabledObject;
+        private GameObject _rewardBoosterPackObject;
+
+        private GameObject _noRewardObject;
 
         private List<AbilityViewItem> _abilities;
 
@@ -57,6 +57,7 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            _dataManager = GameClient.Get<IDataManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 
@@ -100,12 +101,13 @@ namespace Loom.ZombieBattleground
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
             _rewardSkillObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardSkill_Panel").gameObject;
+            _rewardBoosterPackObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardBoosterPack_Panel").gameObject;
 
-            _rewardDisabledObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardDisabled_Panel").gameObject;
+            _noRewardObject = Self.transform.Find("Pivot/levelup_panel/UI/NoReward_Panel").gameObject;
 
             _abilitiesGroup = _rewardSkillObject.transform.Find("Abilities").GetComponent<HorizontalLayoutGroup>();
 
-            _message = _rewardDisabledObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+            _noRewardMessage = _noRewardObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 
             _currentLevel = Self.transform.Find("Pivot/levelup_panel/UI/Text_Level").GetComponent<TextMeshProUGUI>();
             _skillName = _rewardSkillObject.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
@@ -130,25 +132,50 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo(EndMatchResults endMatchResults)
         {
-            _rewardDisabledObject.SetActive(true);
+            _noRewardObject.SetActive(false);
             _rewardSkillObject.SetActive(false);
-            _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
+            _rewardBoosterPackObject.SetActive(false);
 
-            foreach (LevelReward levelReward in endMatchResults.LevelRewards)
+            LevelReward levelReward = endMatchResults.LevelRewards.OrderBy(reward => reward.Level).FirstOrDefault();
+            switch (levelReward)
             {
-                switch (levelReward)
-                {
-                    case OverlordSkillRewardItem overlordSkillRewardItem:
-                        _rewardDisabledObject.SetActive(false);
-                        _rewardSkillObject.SetActive(true);
-                        FillRewardSkillInfo(overlordSkillRewardItem.SkillIndex);
-                        AbilityInstanceOnSelectionChanged(_newOpenAbility);
-                        break;
-                    case BoosterPackRewardItem _:
-                        // TODO: handle
-                        break;
-                }
+                case OverlordSkillRewardItem overlordSkillRewardItem:
+                    _rewardSkillObject.SetActive(true);
+                    FillRewardSkillInfo(overlordSkillRewardItem.SkillIndex);
+                    AbilityInstanceOnSelectionChanged(_newOpenAbility);
+                    break;
+                case BoosterPackRewardItem boosterPackRewardItem:
+                    _rewardBoosterPackObject.SetActive(true);
+                    FillRewardBoosterPackInfo(boosterPackRewardItem.Amount);
+                    break;
+                case null:
+                    _noRewardObject.SetActive(true);
+                    FillNoRewardInfo(endMatchResults.CurrentLevel);
+                    break;
             }
+        }
+
+        private void FillNoRewardInfo(int currentLevel)
+        {
+            if (currentLevel >= _dataManager.CachedOverlordLevelingData.MaxLevel)
+            {
+                _noRewardMessage.text = "You've collected all the rewards available for this champion!";
+            }
+            else
+            {
+                LevelReward nextLevelReward =
+                    _dataManager.CachedOverlordLevelingData.Rewards
+                        .OrderBy(reward => reward.Level)
+                        .FirstOrDefault(reward => reward.Level > currentLevel);
+
+                Assert.IsNotNull(nextLevelReward);
+                _noRewardMessage.text = $"Get next reward at level {nextLevelReward?.Level ?? 0}!";
+            }
+        }
+
+        private void FillRewardBoosterPackInfo(int amount)
+        {
+            // TODO: show amount?
         }
 
         private void FillRewardSkillInfo(int skillIndex)
