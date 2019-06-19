@@ -168,6 +168,8 @@ namespace Loom.ZombieBattleground
 
             Object.Destroy(_selfPage);
             _abilitiesInfoUi.Dispose();
+
+            _deckInfoUi.Dispose();
         }
 
         private void LoadAllCardsInDeck(Deck deck)

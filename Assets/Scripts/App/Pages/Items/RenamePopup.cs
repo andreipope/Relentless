@@ -2,6 +2,7 @@
 
 using System;
 using log4net;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,16 +20,15 @@ namespace Loom.ZombieBattleground
 
         private TMP_InputField _inputFieldRenameDeckName;
 
-        private HordeSelectionWithNavigationPage _myDeckPage;
-
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
 
         public GameObject Self { get; private set;  }
 
         public static Action<string> OnSelectDeckName;
+        public static Action<string> OnSaveNewDeckName;
 
-        private string _deckName = string.Empty;
+        private Deck _deck;
         private bool _isCreatingNewDeck;
 
         public void Init()
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
                 _uiManager.Canvas2.transform,
                 false);
 
-             _inputFieldRenameDeckName = Self.transform.Find("Tab_Rename/Panel_Content/InputText_DeckName").GetComponent<TMP_InputField>();
+            _inputFieldRenameDeckName = Self.transform.Find("Tab_Rename/Panel_Content/InputText_DeckName").GetComponent<TMP_InputField>();
             _inputFieldRenameDeckName.onEndEdit.AddListener(OnInputFieldRenameEndedEdit);
             _inputFieldRenameDeckName.text = "Deck Name";
 
@@ -59,8 +59,6 @@ namespace Loom.ZombieBattleground
             _buttonCancel = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
-            _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
-
             if (_isCreatingNewDeck)
             {
                 _buttonSaveRenameDeck.gameObject.SetActive(false);
@@ -72,14 +70,14 @@ namespace Loom.ZombieBattleground
                 _buttonContinue.gameObject.SetActive(false);
             }
 
-            SetName(_deckName);
+            SetName(_deck.Name);
         }
 
         public void Show(object data)
         {
             if(data is object[] param)
             {
-                _deckName = (string) param[0];
+                _deck = (Deck) param[0];
                 _isCreatingNewDeck = (bool) param[1];
             }
             Show();
@@ -117,7 +115,7 @@ namespace Loom.ZombieBattleground
 
         }
 
-        public void SetName(string name)
+        private void SetName(string name)
         {
             _inputFieldRenameDeckName.text = name;
         }
@@ -128,22 +126,36 @@ namespace Loom.ZombieBattleground
                 return;
 
             DataUtilities.PlayClickSound();
-            string newName = _inputFieldRenameDeckName.text;
-            _myDeckPage.HordeEditTab.RenameDeck(newName);
+            string newDeckName = _inputFieldRenameDeckName.text;
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            if (!deckGeneratorController.VerifyDeckName(newDeckName))
+                return;
+
+            _deck.Name = newDeckName;
+            deckGeneratorController.FinishEditDeck += FinishEditDeckName;
+            deckGeneratorController.ProcessEditDeck(_deck);
 
             Hide();
+        }
+
+        private void FinishEditDeckName(bool success, Deck deck)
+        {
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            deckGeneratorController.FinishEditDeck -= FinishEditDeckName;
+
+            OnSaveNewDeckName?.Invoke(deck.Name);
         }
 
         private void ButtonContinueHandler()
         {
             DataUtilities.PlayClickSound();
 
-            string deckName = _inputFieldRenameDeckName.text;
+            string newDeckName = _inputFieldRenameDeckName.text;
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
-            if (!deckGeneratorController.VerifyDeckName(deckName))
+            if (!deckGeneratorController.VerifyDeckName(newDeckName))
                 return;
 
-            OnSelectDeckName?.Invoke(deckName);
+            OnSelectDeckName?.Invoke(newDeckName);
 
             Hide();
 

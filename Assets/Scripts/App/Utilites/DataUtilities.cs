@@ -2,7 +2,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Loom.ZombieBattleground
 {
@@ -108,7 +107,6 @@ namespace Loom.ZombieBattleground
             string path = "Images/UI/Overlord_Image/";
             path = path + "champion_image_" + overlordFaction.ToString().ToLower();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
-
         }
     }
 }

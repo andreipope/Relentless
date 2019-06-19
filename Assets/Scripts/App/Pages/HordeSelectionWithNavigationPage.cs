@@ -46,8 +46,6 @@ namespace Loom.ZombieBattleground
 
         public bool IsEditingNewDeck;
 
-        public bool IsRenameWhileEditing;
-
         #endregion
 
         #region IUIElement
@@ -101,8 +99,10 @@ namespace Loom.ZombieBattleground
                 editingTabObj
             };
 
-            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill += SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += SaveOverlordAbilitiesHandler;
             RenamePopup.OnSelectDeckName += SelectDeckNameHandler;
+            RenamePopup.OnSaveNewDeckName += SaveNewDeckNameHandler;
 
             LoadTabs();
         }
@@ -118,13 +118,14 @@ namespace Loom.ZombieBattleground
             Object.Destroy(_selfPage);
             _selfPage = null;
 
-            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill -= SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill -= SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill -= SaveOverlordAbilitiesHandler;
+            RenamePopup.OnSelectDeckName -= SelectDeckNameHandler;
+            RenamePopup.OnSaveNewDeckName -= SaveNewDeckNameHandler;
 
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
         }
-
-
 
         public void Dispose()
         {
@@ -204,11 +205,25 @@ namespace Loom.ZombieBattleground
             CurrentEditDeck.SecondarySkill = secondarySkill;
         }
 
+        private void SaveOverlordAbilitiesHandler(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            CurrentEditDeck.PrimarySkill = primarySkill;
+            CurrentEditDeck.SecondarySkill = secondarySkill;
+
+            HordeEditTab.GetCustomDeck().ChangeAbilities(primarySkill, secondarySkill);
+        }
+
         private void SelectDeckNameHandler(string deckName)
         {
             CurrentEditDeck.Name = deckName;
-
             ChangeTab(Tab.Editing);
+        }
+
+        private void SaveNewDeckNameHandler(string deckName)
+        {
+            CurrentEditDeck.Name = deckName;
+            HordeSelectDeckTab.ChangeSelectedDeckName(deckName);
+            HordeEditTab.GetCustomDeck().ChangeDeckName(deckName);
         }
 
         private Deck CreateNewDeckData(OverlordId overlordId)

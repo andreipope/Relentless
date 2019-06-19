@@ -12,6 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class DeckInfoObject
     {
+        public DeckId DeckId;
         public Button Button;
         public TextMeshProUGUI TextDeckName;
         public Image ImagePanel;
@@ -135,6 +136,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void ChangeSelectedDeckName(string newDeckName)
+        {
+            DeckInfoObject deckUI = _deckInfoObjectList.Find(deckObj => deckObj.DeckId == _myDeckPage.CurrentEditDeck.Id);
+            deckUI.TextDeckName.text = newDeckName;
+        }
+
         public void InputFieldApplyFilter()
         {
             _inputFieldSearchDeckName.text = "";
@@ -244,6 +251,7 @@ namespace Loom.ZombieBattleground
                 int cardsAmount = deck.GetNumCards();
                 OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
+                deckInfoObject.DeckId = deck.Id;
                 deckInfoObject.TextDeckName.text = deckName;
                 if (_tutorialManager.IsTutorial)
                 {
@@ -613,7 +621,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            //_myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+
+            _uiManager.DrawPopup<RenamePopup>(new object[] { _myDeckPage.CurrentEditDeck, false});
         }
 
         private void PlayClickSound()

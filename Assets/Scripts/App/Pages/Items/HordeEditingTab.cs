@@ -296,6 +296,11 @@ namespace Loom.ZombieBattleground
             _uiCardCollections.UpdateCardsAmountDisplay(_myDeckPage.CurrentEditDeck);
         }
 
+        public CustomDeckUI GetCustomDeck()
+        {
+            return _customDeckUi;
+        }
+
         private void ButtonBackHandler()
         {
             DataUtilities.PlayClickSound();
@@ -993,12 +998,10 @@ namespace Loom.ZombieBattleground
             {
                 deckGeneratorController.FinishAddDeck += FinishAddDeck;
                 //_myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.Prototype.Id;
-
-                // TODO: save skill
                 //_myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedPrimarySkill;
                 //_myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedSecondarySkill;
-
                 deckGeneratorController.ProcessAddDeck(_myDeckPage.CurrentEditDeck);
+
             }
             else
             {
@@ -1007,7 +1010,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void RenameDeck(string newName)
+        /*public void RenameDeck(string newName)
         {
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
 
@@ -1030,7 +1033,7 @@ namespace Loom.ZombieBattleground
                 SaveDeck(tab);
                 _myDeckPage.IsRenameWhileEditing = false;
             }
-        }
+        }*/
 
         private void PlayAddCardSound()
         {

@@ -40,6 +40,18 @@ namespace Loom.ZombieBattleground
             _currentEditDeck = deck.Clone();
             _deckNameText.text = deck.Name;
             _overlordImage.sprite = DataUtilities.GetOverlordThumbnailSprite(deck.OverlordId);
+
+            RenamePopup.OnSaveNewDeckName += OnSaveNewDeckName;
+        }
+
+        public void Dispose()
+        {
+            RenamePopup.OnSaveNewDeckName -= OnSaveNewDeckName;
+        }
+
+        private void OnSaveNewDeckName(string name)
+        {
+            _deckNameText.text = name;
         }
 
         private void ButtonAutoCompleteHandler()
@@ -73,6 +85,8 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRenameHandler()
         {
+            IUIManager uiManager = GameClient.Get<IUIManager>();
+            uiManager.DrawPopup<RenamePopup>(new object[] {_currentEditDeck, false});
 
         }
     }

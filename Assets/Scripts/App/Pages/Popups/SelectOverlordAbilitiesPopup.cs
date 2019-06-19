@@ -34,6 +34,7 @@ namespace Loom.ZombieBattleground
         private List<AbilityBarUI> _abilitiesBar;
 
         public static Action<SkillId> OnSelectSkill;
+        public static Action<Enumerators.Skill, Enumerators.Skill> OnSelectOverlordSkill;
         public static Action<Enumerators.Skill, Enumerators.Skill> OnSaveSelectedSkill;
 
         private bool _isCreatingNewDeck;
@@ -196,17 +197,17 @@ namespace Loom.ZombieBattleground
         private void ButtonSaveHandler()
         {
             DataUtilities.PlayClickSound();
-            SaveAbilities();
+            GetSelectedAbilities();
             Hide();
         }
 
         private void ButtonContinueHandler()
         {
             DataUtilities.PlayClickSound();
-            SaveAbilities();
+            GetSelectedAbilities(false);
             Hide();
 
-            _uiManager.DrawPopup<RenamePopup>(new object[] {_deck.Name, true});
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_deck, true});
         }
 
         private void ButtonCancelHandler()
@@ -215,25 +216,51 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
-        private void SaveAbilities()
+        private void GetSelectedAbilities(bool save = true)
         {
             DataUtilities.PlayClickSound();
 
             Enumerators.Skill primarySkill = Enumerators.Skill.NONE;
-            Enumerators.Skill secondaySkill = Enumerators.Skill.NONE;
+            Enumerators.Skill secondarySkill = Enumerators.Skill.NONE;
 
             List<AbilityBarUI> abilityBarUis = _abilitiesBar.FindAll(ability => ability.IsSelected);
             if (abilityBarUis.Count > 1)
             {
                 primarySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[0].SkillId);
-                secondaySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[1].SkillId);
+                secondarySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[1].SkillId);
             }
             else if (abilityBarUis.Count == 1)
             {
                 primarySkill = DataUtilities.GetSkill(_deck.OverlordId, abilityBarUis[0].SkillId);
             }
 
-            OnSaveSelectedSkill?.Invoke(primarySkill, secondaySkill);
+            if (save)
+            {
+                SaveAbilities(primarySkill, secondarySkill);
+            }
+            else
+            {
+                OnSelectOverlordSkill?.Invoke(primarySkill, secondarySkill);
+            }
+        }
+
+        private void SaveAbilities(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            deckGeneratorController.FinishEditDeck += FinishEditSelectedAbilities;
+
+            _deck.PrimarySkill = primarySkill;
+            _deck.SecondarySkill = secondarySkill;
+
+            deckGeneratorController.ProcessEditDeck(_deck);
+        }
+
+        private void FinishEditSelectedAbilities(bool success, Deck deck)
+        {
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            deckGeneratorController.FinishEditDeck -= FinishEditSelectedAbilities;
+
+            OnSaveSelectedSkill?.Invoke(deck.PrimarySkill, deck.SecondarySkill);
         }
 
         public void Hide()

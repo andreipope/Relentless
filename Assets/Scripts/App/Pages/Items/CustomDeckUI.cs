@@ -3,7 +3,6 @@ using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -127,6 +126,19 @@ namespace Loom.ZombieBattleground
             SetCards();
 
             UpdateCardsInDeckCountDisplay();
+        }
+
+        public void ChangeDeckName(string newName)
+        {
+            _deckNameText.text = newName;
+        }
+
+        public void ChangeAbilities(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            _selectedDeck.PrimarySkill = primarySkill;
+            _selectedDeck.SecondarySkill = secondarySkill;
+
+            SetSkills();
         }
 
         private void SetCards()
@@ -319,11 +331,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-            // TODO : Not sure, why this variable
-            deckPage.IsRenameWhileEditing = true;
-
-            _uiManager.DrawPopup<RenamePopup>(new object[] {_selectedDeck.Name, true});
+            
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_selectedDeck, false});
         }
 
         private void PlayClickSound()
