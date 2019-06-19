@@ -25,6 +25,12 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
+            if (creature.Model.OwnerPlayer.IsLocalPlayer && GameplayManager.GetController<ActionsQueueController>().RootQueue.GetChildCount() > 0)
+            {
+                Dispose();
+                return;
+            }
+
             IBoardObject target = null;
 
             if (SelectedCard != null)

@@ -81,7 +81,6 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new GameModePopup());
             _uiPopups.Add(new YouWonYouLostPopup());
             _uiPopups.Add(new ElementFilterPopup());
-            _uiPopups.Add(new CardFilterPopup());
             _uiPopups.Add(new CardInfoWithSearchPopup());
             _uiPopups.Add(new MySettingPopup());
             _uiPopups.Add(new LoadingBarPopup());
@@ -89,6 +88,9 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new SettingsWithCreditsPopup());
             _uiPopups.Add(new YouWonYouLostWithRewardPopup());
             _uiPopups.Add(new InternetConnectionPopup());
+            _uiPopups.Add(new SelectOverlordAbilitiesPopup());
+            _uiPopups.Add(new OverlordSelectionPopup());
+            _uiPopups.Add(new RenamePopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

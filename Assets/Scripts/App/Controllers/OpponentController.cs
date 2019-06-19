@@ -526,7 +526,7 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
 
-            }, Enumerators.QueueActionType.UnitCombat);
+            }, Enumerators.QueueActionType.InitUnitCombat);
         }
 
         private void GotActionUseCardAbility(UseCardAbilityModel model)
