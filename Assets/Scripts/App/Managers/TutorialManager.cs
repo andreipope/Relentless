@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
 
         private IAppStateManager _appStateManager;
-        
+
         private INetworkActionManager _networkActionManager;
 
         private OverlordsTalkingController _overlordsChatController;
@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
             _networkActionManager = GameClient.Get<INetworkActionManager>();
-            
+
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -1433,10 +1433,8 @@ namespace Loom.ZombieBattleground
                     {
                         _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                         _dataManager.CachedUserLocalData.LastSelectedDeckId = new DeckId(-1);
-                        _uiManager.GetPage<HordeSelectionWithNavigationPage>().AssignSelectedDeck
-                        (
-                            _dataManager.CachedDecksData.Decks[0]
-                        );
+                        // TODO : Merge fixes
+                        //_uiManager.GetPage<HordeSelectionWithNavigationPage>().AssignSelectedDeck(_dataManager.CachedDecksData.Decks[0]);
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
                         await _backendFacade.DeleteDeck(

@@ -6,6 +6,11 @@ namespace Loom.ZombieBattleground.Data
     {
         public List<CollectionCardData> Cards;
 
+        public CollectionData()
+        {
+            Cards = new List<CollectionCardData>();
+        }
+
         public CollectionCardData GetCardData(MouldId mouldId)
         {
             foreach (CollectionCardData cardData in Cards)

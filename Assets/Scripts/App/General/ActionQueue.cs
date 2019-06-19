@@ -46,6 +46,12 @@ namespace Loom.ZombieBattleground
             return actionQueue;
         }
 
+        public int GetChildCount()
+        {
+            return _innerQueues.Count;
+        }
+        
+
         /// <summary>
         /// Traverses the queue hierarchy, starts action execution, cleans up completed actions.
         /// </summary>
