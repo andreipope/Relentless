@@ -8,6 +8,7 @@ using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Iap;
@@ -513,7 +514,13 @@ namespace Loom.ZombieBattleground
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryPackBalanceRequestCount = 0;
-                    _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nWould you like to retry?");
+                    _uiManager.DrawPopup<WarningPopup>
+                    (
+                        LocalizationUtil.GetLocalizedString
+                        (
+                            LocalizationTerm.Warning_PackOpener_PackBalanceRequest_Error
+                        )
+                    );
                 }
                 else
                 {
@@ -526,7 +533,13 @@ namespace Loom.ZombieBattleground
         {
             _lastOpenPackIdRequest = packType;
             SetButtonInteractable(false);
-            _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
+            _uiManager.DrawPopup<LoadingOverlayPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.Spinner_PackOpener_RetrievingCards
+                )
+            );
             try
             {
                 IReadOnlyList<Card> cards = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
@@ -545,7 +558,13 @@ namespace Loom.ZombieBattleground
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryOpenPackRequestCount = 0;
-                    _uiManager.DrawPopup<WarningPopup>("Something went wrong.");
+                    _uiManager.DrawPopup<WarningPopup>
+                    (
+                        LocalizationUtil.GetLocalizedString
+                        (
+                            LocalizationTerm.Warning_PackOpener_RetrievingCards_Error
+                        )
+                    );
                 }
                 else
                 {
@@ -556,7 +575,13 @@ namespace Loom.ZombieBattleground
 
         private async Task SimulateRetriveTutorialCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
+            _uiManager.DrawPopup<LoadingOverlayPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.Spinner_PackOpener_RetrievingCards
+                )
+            );
             _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
             _uiManager.HidePopup<LoadingOverlayPopup>();
             await Task.Delay(TimeSpan.FromSeconds(1));
