@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.UI;
@@ -101,15 +102,27 @@ namespace Loom.ZombieBattleground
         private void RankedTypeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.DrawPopup<WarningPopup>(
-                        $"Ranked Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+            _uiManager.DrawPopup<WarningPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.Warning_RankedGames_Disabled
+                )
+                .Replace("{GAME_VERSION}", BuildMetaInfo.Instance.DisplayVersionName)
+            );
         }
 
         private void FriendlyTypeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.DrawPopup<WarningPopup>(
-                         $"Friendly Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+            _uiManager.DrawPopup<WarningPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.Warning_FriendlyGames_Disabled
+                )
+                .Replace("{GAME_VERSION}", BuildMetaInfo.Instance.DisplayVersionName)
+            );
         }
 
         private void CustomTypeButtonOnClickHandler()

@@ -128,6 +128,7 @@
         LevelUp_Label_Header,
         LevelUp_Label_RewardDisabled,
         LevelUp_Button_Continue,
+        LoadingPage_Message_Loading,
         Handle_Error_General,
         Warning_DataManager_CardLibrary_Error,
         Warning_DataManager_ChampionsData_Error,

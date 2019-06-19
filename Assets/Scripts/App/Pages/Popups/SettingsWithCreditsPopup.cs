@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
@@ -349,7 +350,13 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmLogout;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to logout?"); 
+            _uiManager.DrawPopup<QuestionPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.SettingsPopup_Popup_ConfirmLogout
+                )
+            ); 
         }
         
         private void ConfirmLogout(bool status)
@@ -407,7 +414,13 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectHelpLink;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to redirect to help link?");            
+            _uiManager.DrawPopup<QuestionPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.SettingsPopup_Popup_ConfirmHelp
+                )
+            );
         }
         
         private void ConfirmRedirectHelpLink(bool status)
@@ -423,7 +436,13 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectSupportLink;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to redirect to support link?");
+            _uiManager.DrawPopup<QuestionPopup>
+            (
+                LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.SettingsPopup_Popup_ConfirmSupport
+                )
+            );
         }
         
         private void ConfirmRedirectSupportLink(bool status)

@@ -1547,6 +1547,18 @@ MonoBehaviour:
       - CONTINUE
       Flags: 000000000000
       Languages_Touch: []
+    - Term: LoadingPage_Message_Loading
+      TermType: 0
+      Description: 
+      Languages:
+      - LOADING...
+      - LOADING...
+      - LOADING...
+      - LOADING...
+      - LOADING...
+      - LOADING...
+      Flags: 000000000000
+      Languages_Touch: []
     - Term: Handle_Error_General
       TermType: 0
       Description: 
@@ -1911,12 +1923,12 @@ MonoBehaviour:
       TermType: 0
       Description: 
       Languages:
-      - Something went wrong. Would you like to retry?
-      - Something went wrong. Would you like to retry?
-      - Something went wrong. Would you like to retry?
-      - Something went wrong. Would you like to retry?
-      - Something went wrong. Would you like to retry?
-      - Something went wrong. Would you like to retry?
+      - Something went wrong.\nWould you like to retry?
+      - Something went wrong.\nWould you like to retry?
+      - Something went wrong.\nWould you like to retry?
+      - Something went wrong.\nWould you like to retry?
+      - Something went wrong.\nWould you like to retry?
+      - Something went wrong.\nWould you like to retry?
       Flags: 000000000000
       Languages_Touch: []
     - Term: Warning_PackOpener_RetrievingCards_Error
@@ -2091,12 +2103,12 @@ MonoBehaviour:
       TermType: 0
       Description: 
       Languages:
-      - Failed to initialize store. Please try again
-      - Failed to initialize store. Please try again
-      - Failed to initialize store. Please try again
-      - Failed to initialize store. Please try again
-      - Failed to initialize store. Please try again
-      - Failed to initialize store. Please try again
+      - Failed to initialize store.\nPlease try again
+      - Failed to initialize store.\nPlease try again
+      - Failed to initialize store.\nPlease try again
+      - Failed to initialize store.\nPlease try again
+      - Failed to initialize store.\nPlease try again
+      - Failed to initialize store.\nPlease try again
       Flags: 000000000000
       Languages_Touch: []
     - Term: Warning_Shop_RequestPack_Success
@@ -2115,12 +2127,12 @@ MonoBehaviour:
       TermType: 0
       Description: 
       Languages:
-      - 'Error while processing purchase: {ERROR_MSG}'
-      - 'Error while processing purchase: {ERROR_MSG}'
-      - 'Error while processing purchase: {ERROR_MSG}'
-      - 'Error while processing purchase: {ERROR_MSG}'
-      - 'Error while processing purchase: {ERROR_MSG}'
-      - 'Error while processing purchase: {ERROR_MSG}'
+      - Error while processing purchase.
+      - Error while processing purchase.
+      - Error while processing purchase.
+      - Error while processing purchase.
+      - Error while processing purchase.
+      - Error while processing purchase.
       Flags: 000000000000
       Languages_Touch: []
     - Term: Warning_HordeSelection_SearchDeck_NotFound

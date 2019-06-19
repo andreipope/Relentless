@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -154,7 +155,10 @@ namespace Loom.ZombieBattleground
 
             _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
             _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
-            _loadingText.text = "LOADING...";
+            _loadingText.text = LocalizationUtil.GetLocalizedString
+            (
+                LocalizationTerm.LoadingPage_Message_Loading
+            );
 
             _loaderBar.fillAmount = 0.03f;
 
@@ -186,7 +190,13 @@ namespace Loom.ZombieBattleground
         {
             if (!SystemRequirementTool.CheckIfMeetMinimumSystemRequirement())
             {
-                OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");
+                OpenAlertDialog
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_SystemRequirement_NotSatisfy
+                    )
+                );
             }
         }
         
@@ -207,7 +217,13 @@ namespace Loom.ZombieBattleground
                 _isHasInternetConnection = false;
                 InternetConnectionPopup popup = _uiManager.GetPopup<InternetConnectionPopup>();
                 popup.ConfirmationReceived += ConfirmRetryIfNoConnection;
-                popup.Show("Please check your internet connection and try again.");            
+                popup.Show
+                (
+                    LocalizationUtil.GetLocalizedString
+                    (
+                        LocalizationTerm.Warning_InternetConnection_Error
+                    )
+                );
             }
         }
 
