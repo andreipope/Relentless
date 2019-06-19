@@ -286,7 +286,7 @@ namespace Loom.ZombieBattleground
                 deckInfoObject.Button.onClick.RemoveAllListeners();
                 deckInfoObject.Button.onClick.AddListener(() =>
                 {
-                    _myDeckPage._selectedDeckId = (int) deck.Id.Id;
+                    _myDeckPage.SelectedDeckId = (int) deck.Id.Id;
                     ChangeSelectDeckIndex(index);
                     PlayClickSound();
                 });
@@ -356,16 +356,7 @@ namespace Loom.ZombieBattleground
         public Deck GetSelectedDeck()
         {
             List<Deck> deckList = _myDeckPage.GetDeckList();
-            if(deckList.Count <= 0)
-            {
-                _myDeckPage.SelectDeckIndex = 0;
-                return null;
-            }
-            else if(_myDeckPage.SelectDeckIndex < 0 || _myDeckPage.SelectDeckIndex >= deckList.Count)
-            {
-                _myDeckPage.SelectDeckIndex = 0;
-            }
-            return deckList.Find(deck => deck.Id.Id == _myDeckPage._selectedDeckId);
+            return deckList.Find(deck => deck.Id.Id == _myDeckPage.SelectedDeckId);
         }
 
         private List<Deck> GetDeckListBySearchKeywordToDisplay()
@@ -404,7 +395,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _myDeckPage._selectedDeckId = -1;
+            _myDeckPage.SelectedDeckId = -1;
 
             PlayClickSound();
 
@@ -462,7 +453,7 @@ namespace Loom.ZombieBattleground
 
         private void FilterPopupHidingHandler()
         {
-            ApplyFilter();
+            ApplyDeckFilter();
         }
 
         private void ApplyFilter()
@@ -601,7 +592,7 @@ namespace Loom.ZombieBattleground
             _cacheDeckListToDisplay = _myDeckPage.GetDeckList();
             _myDeckPage.SelectDeckIndex = Mathf.Min(_myDeckPage.SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
 
-            _myDeckPage._selectedDeckId = (int)_cacheDeckListToDisplay[_myDeckPage.SelectDeckIndex].Id.Id;
+            _myDeckPage.SelectedDeckId = (int)_cacheDeckListToDisplay[_myDeckPage.SelectDeckIndex].Id.Id;
             _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectDeck);
         }
 

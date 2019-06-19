@@ -179,10 +179,15 @@ namespace Loom.ZombieBattleground
             _deckCards.Add(deckCardUi);
         }
 
-        private void DragBeganEventHandler(PointerEventData arg1, GameObject obj)
+        private void DragBeganEventHandler(PointerEventData pointerEventData, GameObject obj)
         {
             if (_selectedDeckCard != null)
                 return;
+
+            if (pointerEventData.delta.normalized.y >= 0.5f || pointerEventData.delta.normalized.y <= -0.5f)
+            {
+                return;
+            }
 
             GameObject cardObj = Object.Instantiate(_deckCardPrefab, obj.transform, false);
             cardObj.transform.localScale = Vector3.one;
@@ -195,7 +200,7 @@ namespace Loom.ZombieBattleground
             _selectedDeckCard = deckCardUi;
         }
 
-        private void DragUpdatedEventHandler(PointerEventData arg1, GameObject arg2)
+        private void DragUpdatedEventHandler(PointerEventData pointerEventData, GameObject arg2)
         {
             if (_selectedDeckCard == null)
                 return;
