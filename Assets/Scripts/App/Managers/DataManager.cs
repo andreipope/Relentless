@@ -105,7 +105,9 @@ namespace Loom.ZombieBattleground
             // FIXME: remove next line after fetching collection from backend is implemented
             FillFullCollection();
 
-            _localizationManager.ApplyLocalization();
+            // FIXME: Remove previous LocalizationManager implementation after a new one is complete
+            //_localizationManager.ApplyLocalization();
+            LocalizationUtil.ApplyLocalization();
 
             if (Constants.DevModeEnabled)
             {

@@ -17,18 +17,6 @@ MonoBehaviour:
     UserAgreesToHaveItInsideThePluginsFolder: 0
     GoogleLiveSyncIsUptoDate: 1
     mTerms:
-    - Term: _DefaultFonts
-      TermType: 9
-      Description: 
-      Languages:
-      - EN_Bevan
-      - CH_NotoSansRegular_Common1
-      - KR_NotosansRegular_1
-      - JP_TogaliteRegular_KanaPunctuation
-      - EN_Bevan
-      - TH_Krungthep
-      Flags: 000000000000
-      Languages_Touch: []
     - Term: Common_Button_GotIt
       TermType: 0
       Description: 
@@ -10571,6 +10559,30 @@ MonoBehaviour:
       - Gotcha.
       Flags: 000000000000
       Languages_Touch: []
+    - Term: _BodyFonts
+      TermType: 9
+      Description: 
+      Languages:
+      - EN_FiraSans_ExtraBold
+      - CH_NotoSansRegular_Common1
+      - KR_NotosansRegular_1
+      - JP_TogaliteRegular_KanaPunctuation
+      - EN_FiraSans_ExtraBold
+      - TH_Krungthep
+      Flags: 000000000000
+      Languages_Touch: []
+    - Term: _HeaderFonts
+      TermType: 9
+      Description: 
+      Languages:
+      - EN_Bevan
+      - CH_NotoSansRegular_Common1
+      - KR_NotosansRegular_1
+      - JP_TogaliteRegular_KanaPunctuation
+      - EN_Bevan
+      - TH_Krungthep
+      Flags: 000000000000
+      Languages_Touch: []
     CaseInsensitiveTerms: 0
     OnMissingTranslation: 1
     mTerm_AppName: 
@@ -10610,6 +10622,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: c07fbd81c2009462d91ed3fe2f63a828, type: 2}
     - {fileID: 11400000, guid: 4933e7700805b4be9a38e270015cc1dc, type: 2}
     - {fileID: 11400000, guid: 078c2b6ecb04142f8b042bb157faf368, type: 2}
+    - {fileID: 11400000, guid: f62a7ce3b260846dfaca35ed1cf2e6eb, type: 2}
     Spreadsheet_LocalFileName: Assets/DynamicLoad/Data/localization_data.csv
     Spreadsheet_LocalCSVSeparator: ','
     Spreadsheet_LocalCSVEncoding: utf-8
