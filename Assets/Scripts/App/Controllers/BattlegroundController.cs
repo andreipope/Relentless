@@ -276,10 +276,12 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            Action completeCallback = () => { };
+            Action completeCallback = () => {};
 
             boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
                 boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
+
+            GameplayActionQueueAction DeathProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -292,6 +294,7 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
+                    DeathProcessingAction?.TriggerActionExternally();
                     boardUnitView.Dispose();
                     cardModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(cardModel);
                     cardModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(cardModel);
@@ -324,8 +327,6 @@ namespace Loom.ZombieBattleground
                     {
                         _boardController.UpdateWholeBoard(null);
                     }
-
-                    completeCallback?.Invoke();
                 }
 
             }, Time.deltaTime * 60f / 2f);
@@ -774,7 +775,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 sizeOfCard = Vector3.one;
 
-            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.8f, .8f, .8f) : new Vector3(.4f, .4f, .4f);
+            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.55f, .5f, .4f) : new Vector3(.33f, .3f, .25f);
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
@@ -827,17 +828,17 @@ namespace Loom.ZombieBattleground
             IReadOnlyList<BoardCardView> boardCardViews = GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
 
             float handWidth = 0.0f;
-            float spacing = -1.5f;
-            float scaling = 0.25f;
-            Vector3 pivot = new Vector3(6f, -7.5f, 0f);
-            int twistPerCard = -5;
+            float spacing = -2.5f;
+            float scaling = 0.28f;
+            Vector3 pivot = new Vector3(4f, -7.5f, 0f);
+            int twistPerCard = -6;
 
             if (CardsZoomed)
             {
-                spacing = -2.6f;
-                scaling = 0.31f;
-                pivot = new Vector3(-1.3f, -6.5f, 0f);
-                twistPerCard = -3;
+                spacing = -5f;
+                scaling = 0.4f;
+                pivot = new Vector3(-1.3f, -6.0f, 0f);
+                twistPerCard = -2;
             }
 
             for (int i = 0; i < boardCardViews.Count; i++)
@@ -877,7 +878,7 @@ namespace Loom.ZombieBattleground
                 pivot.x += handWidth / boardCardViews.Count;
 
                 card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
-                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
+                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i * -1;
             }
         }
 

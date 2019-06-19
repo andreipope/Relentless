@@ -67,36 +67,37 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                    _uiManager.SetPage<MainMenuWithNavigationPage>(); 
+                    _uiManager.SetPage<MainMenuWithNavigationPage>();
                     break;
                 case Enumerators.AppState.OVERLORD_SELECTION:
                     _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                     HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
+                    // TODO : Not sure when to reach here
+                    //hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
                     break;
-                case Enumerators.AppState.HordeSelection:                
-                    _uiManager.SetPage<HordeSelectionWithNavigationPage>(); 
+                case Enumerators.AppState.HordeSelection:
+                    _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                     CheckIfPlayAgainOptionShouldBeAvailable();
-                    break;                    
+                    break;
                 case Enumerators.AppState.ARMY:
                     _uiManager.SetPage<ArmyWithNavigationPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeSelectionWithNavigationPage>();
-                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);                    
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                     break;
-                case Enumerators.AppState.SHOP:                    
+                case Enumerators.AppState.SHOP:
                     if (Constants.EnableShopPage)
                     {
                         if (string.IsNullOrEmpty(
                             _backendDataControlMediator.UserDataModel.AccessToken
                         ))
-                        {   
+                        {
                             LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
                             loginPopup.Show();
                             return;
                         }
-                        
+
                         _uiManager.SetPage<ShopWithNavigationPage>();
                     }
                     else

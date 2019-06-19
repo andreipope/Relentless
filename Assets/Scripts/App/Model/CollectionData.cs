@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public class CollectionData
     {
-        public List<CollectionCardData> Cards;
+        public List<CollectionCardData> Cards { get; } = new List<CollectionCardData>();
 
         public CollectionCardData GetCardData(CardKey cardKey)
         {

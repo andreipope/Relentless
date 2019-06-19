@@ -25,10 +25,9 @@ namespace Loom.ZombieBattleground.Data
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
         {
-            return new CollectionData
-            {
-                Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
-            };
+            CollectionData collectionData = new CollectionData();
+            collectionData.Cards.AddRange(getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList());
+            return collectionData;
         }
 
         public static DecksData FromProtobuf(this ListDecksResponse listDecksResponse)

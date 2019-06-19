@@ -48,6 +48,8 @@ namespace Loom.ZombieBattleground
 
         private int _normalSortingOrder;
 
+        private ActionsQueueController _actionsQueueController;
+
         public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
         {
             GameObject = selfObject;
@@ -59,6 +61,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -172,6 +176,7 @@ namespace Loom.ZombieBattleground
 
             bool playable = !_canceledPlay &&
                 CardModel.CanBeBuyed(OwnerPlayer) &&
+                _actionsQueueController.RootQueue.GetChildCount() <= 0 &&
                 (CardModel.Card.Prototype.Kind != Enumerators.CardKind.CREATURE ||
                     OwnerPlayer.CardsOnBoard.Count < OwnerPlayer.MaxCardsInPlay);
 

@@ -458,6 +458,7 @@ namespace Loom.ZombieBattleground
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
                                 item.Model.Owner.PlayerCardsController.AddCardToGraveyard(item.Model);
+                                item.GameObject.SetActive(false);
                                 _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -526,7 +527,7 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
 
-            }, Enumerators.QueueActionType.UnitCombat);
+            }, Enumerators.QueueActionType.InitUnitCombat);
         }
 
         private void GotActionUseCardAbility(UseCardAbilityModel model)

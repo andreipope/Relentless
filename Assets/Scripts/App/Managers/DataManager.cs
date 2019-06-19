@@ -503,10 +503,7 @@ namespace Loom.ZombieBattleground
 
         private void FillFullCollection()
         {
-            CachedCollectionData = new CollectionData
-            {
-                Cards = new List<CollectionCardData>()
-            };
+            CachedCollectionData = new CollectionData();
 
             foreach (Data.Faction set in CachedCardsLibraryData.Factions)
             {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Common
@@ -169,7 +170,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int PlasmaChainCallTimeout = 20000;
 
-        internal const float QueueActionTimeout = 60f;    
+        internal const float QueueActionTimeout = 60f;
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
@@ -179,7 +180,7 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
-        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
+        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.25f, 0.25f, 0.25f);
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
@@ -226,7 +227,7 @@ namespace Loom.ZombieBattleground.Common
         internal const int LastTutorialId = 8;
 
         internal const string MarketPlaceLink = "https://loom.games/en/purchase";
-        
+
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 
         internal const string SupportLink = "https://loom.freshdesk.com/support/home";
@@ -236,9 +237,32 @@ namespace Loom.ZombieBattleground.Common
         internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
 
         internal const string EnvironmentPointText = "%environment_point%";
-              
+
         internal const int MinimumMemorySize = 2048;
-        
+
         internal const float MinimumMemoryThresholdPercentage = 0.85f;
+
+        internal static Dictionary<Enumerators.Faction, Enumerators.Faction> FactionAgainstDictionary =
+            new Dictionary<Enumerators.Faction, Enumerators.Faction>
+            {
+                {
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
+                },
+                {
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
+                },
+                {
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
+                },
+                {
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
+                },
+                {
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
+                },
+                {
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
+                }
+            };
     }
 }
