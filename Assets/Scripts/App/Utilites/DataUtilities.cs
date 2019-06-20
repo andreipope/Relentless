@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -42,19 +43,6 @@ namespace Loom.ZombieBattleground
 
             string iconPath = skill.Prototype.IconPath;
             return loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
-        }
-
-        public static Sprite GetOverlordThumbnailSprite(OverlordId overlordId)
-        {
-            IDataManager dataManager = GameClient.Get<IDataManager>();
-            ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-
-            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
-            Enumerators.Faction faction = overlord.Prototype.Faction;
-
-            string path = "Images/UI/MyDecks/OverlordPortrait/";
-            path = path + "overlord_portrait_" + faction.ToString().ToLower();
-            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
         public static void PlayClickSound()
@@ -109,5 +97,55 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
+
+        public static Vector3 GetOverlordImagePositionInViewDeck(Enumerators.Faction faction)
+        {
+            switch (faction)
+            {
+                case Enumerators.Faction.FIRE:
+                    return new Vector3(116f, -379f, 0f);
+                case Enumerators.Faction.WATER:
+                    return new Vector3(11f, -389f, 0f);
+                case Enumerators.Faction.EARTH:
+                    return new Vector3(-3f, -325f, 0f);
+                case Enumerators.Faction.AIR:
+                    return new Vector3(-150f, -223f, 0f);
+                case Enumerators.Faction.LIFE:
+                    return new Vector3(-42f, -219f, 0f);
+                case Enumerators.Faction.TOXIC:
+                    return new Vector3(101f, -219f, 0f);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
+            }
+        }
+
+        public static Vector3 GetOverlordImageScaleInViewDeck(Enumerators.Faction faction)
+        {
+            switch (faction)
+            {
+                case Enumerators.Faction.FIRE:
+                    return Vector3.one * 1.4f;
+                case Enumerators.Faction.WATER:
+                    return Vector3.one * 1.2f;
+                case Enumerators.Faction.EARTH:
+                    return Vector3.one;
+                case Enumerators.Faction.AIR:
+                    return Vector3.one;
+                case Enumerators.Faction.LIFE:
+                    return Vector3.one * 1.2f;
+                case Enumerators.Faction.TOXIC:
+                    return Vector3.one;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
+            }
+        }
+
+        public static Sprite GetOverlordDeckIcon(Enumerators.Faction faction)
+        {
+            string path = "Images/UI/DeckIcons/";
+            path = path + "icon_" + faction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+        }
+
     }
 }
