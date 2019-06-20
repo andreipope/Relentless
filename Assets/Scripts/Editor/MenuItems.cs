@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Assets.Editor.BugReporting;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Loom.ZombieBattleground.Editor.Tools;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -243,6 +243,13 @@ namespace Loom.ZombieBattleground.Editor
         public static void BuildAssetBundles()
         {
             BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
+        }
+
+        [MenuItem("Utility/Build/Force DynamicLoad assets to 'main' AssetBundle")]
+        public static void CheckDynamicLoadAssetBundle()
+        {
+            List<AssetImporter> modified = AssetBundleFolderValidator.ForceAssetBundleInFolder("Assets/Assets/DynamicLoad", "main");
+            Debug.Log("Assets forced to 'main' bundle:\n" + String.Join("\n", modified.Select(a => a.assetPath)));
         }
 
         private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
