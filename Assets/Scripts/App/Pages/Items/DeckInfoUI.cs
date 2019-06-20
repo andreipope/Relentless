@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
@@ -39,7 +40,12 @@ namespace Loom.ZombieBattleground
         {
             _currentEditDeck = deck.Clone();
             _deckNameText.text = deck.Name;
-            _overlordImage.sprite = DataUtilities.GetOverlordThumbnailSprite(deck.OverlordId);
+
+            Enumerators.Faction faction = DataUtilities.GetOverlordDataFromDeck(deck.Id).Prototype.Faction;
+            _overlordImage.sprite = DataUtilities.GetOverlordImage(faction);
+            RectTransform rectTransform = _overlordImage.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = DataUtilities.GetOverlordImagePositionInViewDeck(faction);
+            rectTransform.localScale = DataUtilities.GetOverlordImageScaleInViewDeck(faction);
 
             RenamePopup.OnSaveNewDeckName += OnSaveNewDeckName;
         }

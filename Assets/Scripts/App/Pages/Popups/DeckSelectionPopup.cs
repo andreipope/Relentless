@@ -404,7 +404,7 @@ namespace Loom.ZombieBattleground
         public void Init(GameObject obj)
         {
             Self = obj;
-            OverlordImage = Self.transform.Find("Viewport/Image_Overlord").GetComponent<Image>();
+            OverlordImage = Self.GetComponent<Image>();
         }
 
         public void SetDeckIcon()
@@ -414,35 +414,13 @@ namespace Loom.ZombieBattleground
             if (DeckId != null)
             {
                 Enumerators.Faction faction = DataUtilities.GetOverlordDataFromDeck((DeckId) DeckId).Prototype.Faction;
-                OverlordImage.sprite = DataUtilities.GetOverlordImage(faction);
-                OverlordImage.GetComponent<RectTransform>().anchoredPosition = SetPosition(faction);
+                OverlordImage.sprite = DataUtilities.GetOverlordDeckIcon(faction);
             }
         }
 
         public GameObject GetGameObject()
         {
             return Self;
-        }
-
-        private Vector3 SetPosition(Enumerators.Faction faction)
-        {
-            switch (faction)
-            {
-                case Enumerators.Faction.FIRE:
-                    return new Vector3(46f, -144f, 0f);
-                case Enumerators.Faction.WATER:
-                    return new Vector3(19f, -172.8f, 0f);
-                case Enumerators.Faction.EARTH:
-                    return new Vector3(-3.5f, -182f, 0f);
-                case Enumerators.Faction.AIR:
-                    return new Vector3(-86f, -139f, 0f);
-                case Enumerators.Faction.LIFE:
-                    return new Vector3(-19f, -123f, 0f);
-                case Enumerators.Faction.TOXIC:
-                    return new Vector3(70f, -123f, 0f);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
-            }
         }
     }
 }
