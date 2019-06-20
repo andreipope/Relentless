@@ -2,7 +2,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Loom.ZombieBattleground
 {

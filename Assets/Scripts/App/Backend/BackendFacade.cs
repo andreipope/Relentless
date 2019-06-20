@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Numerics;
 using Loom.Client;
 using Loom.Google.Protobuf;

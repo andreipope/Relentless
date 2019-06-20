@@ -609,7 +609,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: FORCE_ENABLE_ALL_LOGS
+    1: 
     7: 
   platformArchitecture: {}
   scriptingBackend: {}

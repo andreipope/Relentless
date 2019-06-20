@@ -12,7 +12,6 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Card = Loom.ZombieBattleground.Data.Card;
-using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 

@@ -1,6 +1,4 @@
-﻿using Loom.ZombieBattleground.Common;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using TMPro;
 
 namespace Loom.ZombieBattleground

@@ -3,7 +3,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
-using Loom.ZombieBattleground.View;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;

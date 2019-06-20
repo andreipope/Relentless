@@ -1,30 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Loom.Client.Protobuf;
-using Loom.Google.Protobuf.Reflection;
-using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
-
 #if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Build.Reporting;
-using UnityEditor.SceneManagement;
+
 #endif
 
 namespace Loom.ZombieBattleground

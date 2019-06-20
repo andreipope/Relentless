@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using DG.Tweening;
 using log4net;
-using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -11,7 +10,6 @@ using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using UnityEngine;
-using Logger = log4net.Repository.Hierarchy.Logger;
 
 namespace Loom.ZombieBattleground
 {

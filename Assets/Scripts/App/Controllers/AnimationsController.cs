@@ -1,10 +1,8 @@
 using System;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {

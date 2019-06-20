@@ -3,13 +3,11 @@
 using UnityEngine;
 using System.IO;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
-using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
 using System.Linq;
 using UnityEditor;

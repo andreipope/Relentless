@@ -3,8 +3,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 

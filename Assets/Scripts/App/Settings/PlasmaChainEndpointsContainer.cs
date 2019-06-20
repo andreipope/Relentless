@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Loom.ZombieBattleground.BackendCommunication
+﻿namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class PlasmaChainEndpointsContainer
     {

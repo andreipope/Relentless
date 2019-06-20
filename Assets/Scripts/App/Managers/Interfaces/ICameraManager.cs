@@ -1,6 +1,5 @@
 using System;
 using Loom.ZombieBattleground.Common;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Gameplay
 {

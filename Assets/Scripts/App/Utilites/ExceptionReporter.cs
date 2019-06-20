@@ -1,6 +1,5 @@
 using System;
 using log4net;
-using Unity.Cloud.UserReporting.Plugin;
 
 namespace Loom.ZombieBattleground.Helpers
 {
