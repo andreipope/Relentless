@@ -28,12 +28,6 @@ namespace Loom.ZombieBattleground.Editor
 
         #region Bug Reporting
 
-        [MenuItem("Utility/Bug Reporting/Dev Log Window")]
-        public static void ShowWindow()
-        {
-            EditorWindow.GetWindow(typeof(DevLogWindow));
-        }
-
         [MenuItem("Utility/Bug Reporting/Throw Exception")]
         public static void ThrowException()
         {
