@@ -1,5 +1,6 @@
 using System;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -229,12 +230,18 @@ namespace Loom.ZombieBattleground
             if(_gameMode == GameMode.SOLO)
             {
                 GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
-                _textGameMode.text = "SOLO";
+                _textGameMode.text = LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.MainMenuBattleMode_Label_BattleMode_Solo
+                );
             }
             else if(_gameMode == GameMode.VS)
             {
                 GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
-                _textGameMode.text = "VS\nCASUAL";                 
+                _textGameMode.text = LocalizationUtil.GetLocalizedString
+                (
+                    LocalizationTerm.MainMenuBattleMode_Label_BattleMode_VS
+                );         
             }
         }
         
