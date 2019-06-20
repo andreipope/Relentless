@@ -865,7 +865,7 @@ namespace Loom.ZombieBattleground
             handCard.BoardZone = _cardsController.PlayerBoard;
             boardCardView.HandBoardCard = handCard;
             handCard.CheckStatusOfHighlight();
-            boardCardView.Transform.localScale = Vector3.one * .3f;
+            boardCardView.Transform.localScale = Vector3.one * .2f;
 
             _battlegroundController.RegisterCardView(boardCardView);
             _abilitiesController.CallAbilitiesInHand(cardModel);

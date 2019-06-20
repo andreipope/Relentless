@@ -34,70 +34,32 @@ SpriteAtlas:
       m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
-      padding: 4
+      padding: 8
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
+      enableRotation: 0
       enableTightPacking: 1
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 748a4014b57f6c64497078d809f770ed, type: 3}
-    totalSpriteSurfaceArea: 21304998
+    totalSpriteSurfaceArea: 5010432
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 5ec263c0d25404901a6cf1227d4ed9d9, type: 3}
-  - {fileID: 21300000, guid: 231ee1312c8604d9693741a5fd9aa592, type: 3}
-  - {fileID: 21300000, guid: 7943e3715448c478ba9ecf2c49a950ca, type: 3}
-  - {fileID: 21300000, guid: de27071249db546d581ae9f70d24ec5f, type: 3}
-  - {fileID: 21300000, guid: 60dcdfd29c2f143fdbc8a70bedb2bc20, type: 3}
-  - {fileID: 21300000, guid: 8c8d0b63f7bc747a6b2d7c49a97abae6, type: 3}
-  - {fileID: 21300000, guid: a3604e04f97c4478b9a4f1aa0217d89f, type: 3}
-  - {fileID: 21300000, guid: 677de454a8de04ed08961e5afe131235, type: 3}
-  - {fileID: 21300000, guid: bdfff3c45e7334208a7f00fbb2b046a5, type: 3}
-  - {fileID: 21300000, guid: 23bb9b95b28a240b5b8b9bbe223f200c, type: 3}
-  - {fileID: 21300000, guid: 369a3ed5bd2a64a4187f922aa5477544, type: 3}
-  - {fileID: 21300000, guid: 94eb0fe5a2de3417b805bf848f520edc, type: 3}
-  - {fileID: 21300000, guid: 82c8f9f5202ce4af481ed07be2c9e667, type: 3}
-  - {fileID: 21300000, guid: e6f1cf669f57cb345a58fc5346a76287, type: 3}
-  - {fileID: 21300000, guid: 47171167626074012a9b33639cea94a0, type: 3}
-  - {fileID: 21300000, guid: 806277e71fd4d4800a66d480e480fb4f, type: 3}
-  - {fileID: 21300000, guid: bb6b3f48e3fde4cd5898fb0b3c949960, type: 3}
-  - {fileID: 21300000, guid: 95f33f988601146a39563cae7ad43873, type: 3}
-  - {fileID: 21300000, guid: 54063e0916e5148cfa225ecdece48b5f, type: 3}
-  - {fileID: 21300000, guid: 5096d03985f1643d087221fc6038646f, type: 3}
-  - {fileID: 21300000, guid: cc3d91e94b1504630879229c3dd67ed6, type: 3}
-  - {fileID: 21300000, guid: bf9fc6f9f7c0e4661bf40c248dd2e12c, type: 3}
-  - {fileID: 21300000, guid: a2a2731b06fea4a01bf16df7eebda5ea, type: 3}
-  - {fileID: 21300000, guid: 18a629bd8b7cf4b77b18bf36fc456fbc, type: 3}
-  - {fileID: 21300000, guid: c8ffd8df4f3834969b5180a8b90cadd8, type: 3}
-  - {fileID: 21300000, guid: 85f6ccefc07e5463a9be363997f68f0c, type: 3}
+  - {fileID: 21300000, guid: 558cd940afaa24a8daca6e98bcd17134, type: 3}
+  - {fileID: 21300000, guid: a08548a02e74c4b71a80eefeb649de8f, type: 3}
+  - {fileID: 21300000, guid: ea5b9ab519d904c34a6a5e909b55d85e, type: 3}
+  - {fileID: 21300000, guid: df5fd2f611a1548cca222fe54ddab522, type: 3}
+  - {fileID: 21300000, guid: d7abd60cbb077476fbca71bb7f43e1da, type: 3}
+  - {fileID: 21300000, guid: 37cf3a8d56e074dfc95088f09b772d96, type: 3}
+  - {fileID: 21300000, guid: ed5496ddecf2a496fbf4c73f49dbaeb4, type: 3}
   m_PackedSpriteNamesToIndex:
-  - frame_earth_minion
-  - frame_toxic_general
-  - frame_water_minion
-  - frame_air_general
-  - frame_air_officer
-  - frame_life_general
-  - frame_air_minion
-  - frame_fire_officer
-  - frame_earth_officer
-  - frame_fire_general
-  - frame_earth_general
-  - frame_water_officer
-  - frame_fire_minion
-  - frame_item_minion
-  - frame_water_general
-  - frame_life_officer
-  - frame_others_minion
-  - frame_toxic_minion
-  - frame_water_commander
-  - frame_air_commander
-  - frame_toxic_commander
-  - frame_fire_commander
-  - frame_toxic_officer
-  - frame_life_commander
-  - frame_earth_commander
-  - frame_life_minion
+  - frame_toxic
+  - frame_air
+  - frame_item
+  - frame_life
+  - frame_fire
+  - frame_earth
+  - frame_water
   m_Tag: CardFrames_Atlas
   m_IsVariant: 0
