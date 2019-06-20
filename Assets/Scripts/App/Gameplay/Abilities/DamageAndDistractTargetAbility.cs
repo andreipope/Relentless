@@ -32,6 +32,7 @@ namespace Loom.ZombieBattleground
 
         private void SendAction()
         {
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeUseAbilityEvent(

@@ -43,10 +43,10 @@ namespace Loom.ZombieBattleground
         /// </summary>
         /// <param name="actionToDo">action to do, callback action</param>
         public GameplayActionQueueAction EnqueueAction(
-            GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool blockQueue = false)
+            GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool blockQueue = false, float startupTime = 0.1f)
         {
             Log.Debug($"{nameof(EnqueueAction)}(GameplayActionQueueAction.ExecutedActionDelegate actionToDo = {(actionToDo == null ? "null" : actionToDo.ToString())}, Enumerators.QueueActionType actionType = {actionType}, bool blockQueue = {blockQueue})");
-            GameplayActionQueueAction action = CreateAction(actionToDo, actionType, IsOnlyManualCompleteAction(actionType));
+            GameplayActionQueueAction action = CreateAction(actionToDo, actionType, IsOnlyManualCompleteAction(actionType), startupTime);
             if (IsUserInputAction(actionType))
             {
                 RootQueue.Enqueue(action);
@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
             Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction action = {action})");
         }
 
-        private GameplayActionQueueAction CreateAction(GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete = false)
+        private GameplayActionQueueAction CreateAction(GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete, float startupTime)
         {
             _nextActionId++;
 
@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
                                             actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
-            return new GameplayActionQueueAction(actionToDo, _nextActionId, actionType, onlyManualComplete);
+            return new GameplayActionQueueAction(actionToDo, _nextActionId, actionType, onlyManualComplete, startupTime);
         }
 
         /// <summary>
@@ -109,6 +109,7 @@ namespace Loom.ZombieBattleground
                 actionType == Enumerators.QueueActionType.StopTurnPart3Finish ||
                 actionType == Enumerators.QueueActionType.EndMatch ||
                 actionType == Enumerators.QueueActionType.CardPlay ||
+                actionType == Enumerators.QueueActionType.InitUnitCombat ||
                 actionType == Enumerators.QueueActionType.OverlordSkillUsage ||
                 actionType == Enumerators.QueueActionType.LeaveMatch;
         }

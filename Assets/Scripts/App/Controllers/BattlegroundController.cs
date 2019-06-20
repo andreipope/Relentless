@@ -97,6 +97,8 @@ namespace Loom.ZombieBattleground
 
         public float TurnTimer { get; private set; }
 
+        public bool IsOnShorterTime = false;
+
         public bool TurnWaitingForEnd { get; private set; }
 
         public IReadOnlyList<ICardView> CardViews => _cardViews;
@@ -116,7 +118,7 @@ namespace Loom.ZombieBattleground
                 _cardViews
                     .OfType<T>()
                     .Where(v => v.Model == cardModel)
-                    .SingleOrDefault();
+                    .FirstOrDefault();
 
             if (view == null)
             {
@@ -223,7 +225,7 @@ namespace Loom.ZombieBattleground
 
                         if (TurnTimer <= 0)
                         {
-                            StopTurn();
+                            StopTurn(turnEndTimeout:true);
                         }
                         else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnRingsAnimationGameObject.activeInHierarchy)
                         {
@@ -274,10 +276,12 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            Action completeCallback = () => { };
+            Action completeCallback = () => {};
 
             boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
                 boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
+
+            GameplayActionQueueAction DeathProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -290,6 +294,7 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
+                    DeathProcessingAction?.TriggerActionExternally();
                     boardUnitView.Dispose();
                     cardModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(cardModel);
                     cardModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(cardModel);
@@ -322,8 +327,6 @@ namespace Loom.ZombieBattleground
                     {
                         _boardController.UpdateWholeBoard(null);
                     }
-
-                    completeCallback?.Invoke();
                 }
 
             }, Time.deltaTime * 60f / 2f);
@@ -382,6 +385,7 @@ namespace Loom.ZombieBattleground
 
             TurnTimer = 0f;
             _turnTimerCounting = false;
+            IsOnShorterTime = false;
 
             _endTurnButtonAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
             _endTurnRingsAnimationGameObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
@@ -417,7 +421,14 @@ namespace Loom.ZombieBattleground
                 !_turnTimerCounting &&
                 _gameplayManager.CurrentTurnPlayer.IsLocalPlayer)
             {
-                TurnTimer = _gameplayManager.CurrentTurnPlayer.TurnTime;
+                if (IsOnShorterTime)
+                {
+                    TurnTimer = Constants.ShortTurnTime;
+                }
+                else
+                {
+                    TurnTimer = _gameplayManager.CurrentTurnPlayer.TurnTime;
+                }
                 _turnTimerCounting = true;
             }
 
@@ -563,10 +574,15 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer;
         }
 
-        public void StopTurn(GameState pvpControlGameState = null)
+        public void StopTurn(GameState pvpControlGameState = null, bool turnEndTimeout = false)
         {
             if (TurnWaitingForEnd)
                 return;
+            
+            if (turnEndTimeout)
+            {
+                IsOnShorterTime = true;
+            }
 
             TurnWaitingForEnd = true;
 
@@ -580,7 +596,7 @@ namespace Loom.ZombieBattleground
                         EndTurnPart1Prepare();
                         completeCallback.Invoke();
                     }, delay);
-                }, Enumerators.QueueActionType.StopTurnPart1Prepare);
+                }, Enumerators.QueueActionType.StopTurnPart1Prepare, startupTime:1f);
 
             _actionsQueueController.EnqueueAction(
                 completeCallback =>
@@ -620,7 +636,7 @@ namespace Loom.ZombieBattleground
                         StartTurn();
                         completeCallback?.Invoke();
                     }
-                }, Enumerators.QueueActionType.StopTurnPart3Finish);
+                }, Enumerators.QueueActionType.StopTurnPart3Finish, startupTime:1f);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(CardModel cardModel)
@@ -759,7 +775,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 sizeOfCard = Vector3.one;
 
-            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.8f, .8f, .8f) : new Vector3(.4f, .4f, .4f);
+            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.55f, .5f, .4f) : new Vector3(.33f, .3f, .25f);
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
@@ -812,17 +828,17 @@ namespace Loom.ZombieBattleground
             IReadOnlyList<BoardCardView> boardCardViews = GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
 
             float handWidth = 0.0f;
-            float spacing = -1.5f;
-            float scaling = 0.25f;
-            Vector3 pivot = new Vector3(6f, -7.5f, 0f);
-            int twistPerCard = -5;
+            float spacing = -2.5f;
+            float scaling = 0.28f;
+            Vector3 pivot = new Vector3(4f, -7.5f, 0f);
+            int twistPerCard = -6;
 
             if (CardsZoomed)
             {
-                spacing = -2.6f;
-                scaling = 0.31f;
-                pivot = new Vector3(-1.3f, -6.5f, 0f);
-                twistPerCard = -3;
+                spacing = -5f;
+                scaling = 0.4f;
+                pivot = new Vector3(-1.3f, -6.0f, 0f);
+                twistPerCard = -2;
             }
 
             for (int i = 0; i < boardCardViews.Count; i++)
@@ -862,7 +878,7 @@ namespace Loom.ZombieBattleground
                 pivot.x += handWidth / boardCardViews.Count;
 
                 card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
-                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
+                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i * -1;
             }
         }
 
@@ -1007,13 +1023,21 @@ namespace Loom.ZombieBattleground
             card.Distract();
         }
 
-        public void DeactivateAllAbilitiesOnUnit(CardModel card)
+        public void DeactivateAllAbilitiesOnUnit(CardModel card, bool cardReturnedToHand = false)
         {
+            List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(card);
+
+            if (cardReturnedToHand)
+            {
+                foreach (AbilityBase ability in abilities)
+                {
+                    ability.CardReturnedToHand();
+                }
+            }
+
             card.BuffsOnUnit.Clear();
 
             card.ClearEffectsOnUnit();
-
-            List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(card);
 
             foreach (AbilityBase ability in abilities)
             {

@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ChangeStatsOfPlayerAllyCards(-Defense, -Attack, false);
+                ResetAffectedUnits();
                 _affectedUnits.Clear();
             }
         }
@@ -161,22 +161,32 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            ResetAffectedUnits();
+            _affectedUnits.Clear();
+            ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
+        }
+
         private void ChangeStatsToItself()
         {
             int defense;
             int attack;
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay)
             {
-                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(
+                int count = GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard).ToList().FindAll(
                                 item => item != CardModel).Count +
-                            GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                            GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
             }
             else if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
             {
-                int count = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                int count = GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;

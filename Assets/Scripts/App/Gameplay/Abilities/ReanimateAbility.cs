@@ -60,7 +60,8 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.ResetToInitial();
 
             Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(AbilityUnitOwner.Card.Prototype.Name));
-            WorkingCard card = new WorkingCard(prototype, prototype, owner);
+            InstanceId updatedId = new InstanceId(AbilityUnitOwner.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.Reanimate);
+            WorkingCard card = new WorkingCard(prototype, prototype, owner, id: updatedId);
             CardModel reanimatedUnitModel = new CardModel(card);
             reanimatedUnitModel.IsReanimated = true;
 
@@ -98,6 +99,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense == 0 && !AbilityUnitOwner.IsReanimated)
             {
+                AbilityProcessingAction?.TriggerActionExternally();
                 AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
             }
         }

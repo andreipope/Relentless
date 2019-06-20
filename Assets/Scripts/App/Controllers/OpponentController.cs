@@ -458,6 +458,7 @@ namespace Loom.ZombieBattleground
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
                                 item.Model.Owner.PlayerCardsController.AddCardToGraveyard(item.Model);
+                                item.GameObject.SetActive(false);
                                 _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -486,7 +487,7 @@ namespace Loom.ZombieBattleground
                         completeCallback?.Invoke();
                     }
                 );
-            }, Enumerators.QueueActionType.CardPlay);
+            }, Enumerators.QueueActionType.CardPlay, startupTime:0f);
         }
 
         private void GotActionCardAttack(CardAttackModel model)
@@ -514,8 +515,8 @@ namespace Loom.ZombieBattleground
 
                     Action callback = () =>
                     {
-                        skillUsageAction.TriggerActionExternally();
                         attackerUnit.DoCombat(target);
+                        skillUsageAction.TriggerActionExternally();
                     };
                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
                 }
@@ -526,7 +527,7 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
 
-            }, Enumerators.QueueActionType.UnitCombat);
+            }, Enumerators.QueueActionType.InitUnitCombat);
         }
 
         private void GotActionUseCardAbility(UseCardAbilityModel model)
@@ -628,7 +629,7 @@ namespace Loom.ZombieBattleground
                 skill.UseSkillFromEvent(parametrizedAbilityObjects);
 
                 completeCallback();
-            }, Enumerators.QueueActionType.OverlordSkillUsage);
+            }, Enumerators.QueueActionType.OverlordSkillUsage, startupTime:0f);
         }
 
         private void GotActionRankBuff(InstanceId card, IList<Unit> targets)

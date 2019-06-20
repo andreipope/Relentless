@@ -68,6 +68,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
+        public bool CannotDie { get; private set; }
+
         public InstanceId InstanceId => Card.InstanceId;
 
         public Player OwnerPlayer => Card.Owner;
@@ -313,28 +315,37 @@ namespace Loom.ZombieBattleground
                     valueHistory[i].Enabled = false;
                 }
             }
-            UnitDefenseChanged?.Invoke(oldDefence, CurrentDefense);
-            UnitDamageChanged?.Invoke(oldDamage, CurrentDamage);
+            InvokeDefenseChanged(oldDefence, CurrentDefense);
+            InvokeDamageChanged(oldDamage, CurrentDamage);
         }
 
         public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentDamageHistory.Add(new ValueHistory(value, reason, forced: forced));
-            UnitDamageChanged?.Invoke(oldValue, CurrentDamage);
+            InvokeDamageChanged(oldValue, CurrentDamage);
         }
 
+        public void InvokeDamageChanged(int oldValue, int currentDamage)
+        {
+            UnitDamageChanged?.Invoke(oldValue, currentDamage);
+        }
 
         public void AddToCurrentCostHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentCostHistory.Add(new ValueHistory(value, reason, forced: forced));
         }
-        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason)
+        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDefense;
-            CurrentDefenseHistory.Add(new ValueHistory(value, reason));
-            UnitDefenseChanged?.Invoke(oldValue, CurrentDefense);
+            CurrentDefenseHistory.Add(new ValueHistory(value, reason, forced: forced));
+            InvokeDefenseChanged(oldValue, CurrentDefense);
+        }
+
+        public void InvokeDefenseChanged(int oldValue, int currentDefense)
+        {
+            UnitDefenseChanged?.Invoke(oldValue, currentDefense);
         }
 
         public void HandleDefenseBuffer(int damage)
@@ -348,6 +359,11 @@ namespace Loom.ZombieBattleground
         public void SetUnitActiveStatus(bool isActive)
         {
             IsUnitActive = isActive;
+        }
+
+        public void SetUnitCannotDie(bool cannotDie)
+        {
+            CannotDie = cannotDie;
         }
 
         public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true, bool isDead = true)
@@ -782,163 +798,175 @@ namespace Loom.ZombieBattleground
 
         public void DoCombat(IBoardObject target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-
             IsAttacking = true;
+            _actionsQueueController.EnqueueAction(
+                completeInitialCallback => 
+                {
+                    if (target == null)
+                    {
+                        Log.Warn("Target not found, DoCombat could not be completed.");
+                        IsAttacking = false;
+                        completeInitialCallback?.Invoke();
+                        return;
+                    }
 
-            switch (target)
-            {
-                case Player targetPlayer:
-                    IsPlayable = false;
-                    AttackedThisTurn = true;
+                    _battlegroundController.IsOnShorterTime = false;
 
-                    _actionsQueueController.EnqueueAction(
-                        completeCallback =>
-                        {
-                            if (targetPlayer.Defense <= 0 || !IsUnitActive)
-                            {
-                                IsPlayable = true;
-                                AttackedThisTurn = false;
-                                IsAttacking = false;
-                                completeCallback?.Invoke();
-                                return;
-                            }
+                    switch (target)
+                    {
+                        case Player targetPlayer:
+                            IsPlayable = false;
+                            AttackedThisTurn = true;
 
-
-                            if (_gameplayManager.IsTutorial &&
-                                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
-                                SpecificBattlegroundInfo.DisabledInitialization && OwnerPlayer.IsLocalPlayer)
-                            {
-                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
-                                 info.Target == Enumerators.SkillTarget.OPPONENT))
+                            _actionsQueueController.EnqueueAction(
+                                completeCallback =>
                                 {
-                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
-                                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
-                                    IsPlayable = true;
-                                    AttackedThisTurn = false;
-                                    IsAttacking = false;
-                                    completeCallback?.Invoke();
-                                    return;
-                                }
-                            }
-
-                            if (!AttackedBoardObjectsThisTurn.Contains(targetPlayer))
-                            {
-                                AttackedBoardObjectsThisTurn.Add(targetPlayer);
-                            }
-
-                            FightSequenceHandler.HandleAttackPlayer(
-                                completeCallback,
-                                targetPlayer,
-                                () =>
-                                {
-                                    if(!_pvpManager.UseBackendGameLogic)
-                                        _battleController.AttackPlayerByUnit(this, targetPlayer);
-                                },
-                                () =>
-                                {
-                                    IsAttacking = false;
-                                    UnitAttackedEnded?.Invoke();
-                                    _gameplayManager.GetController<BoardController>().UpdateWholeBoard(null);
-                                }
-                            );
-                        }, Enumerators.QueueActionType.UnitCombat);
-                    break;
-                case CardModel targetCardModel:
-
-                    IsPlayable = false;
-                    AttackedThisTurn = true;
-
-                    _actionsQueueController.EnqueueAction(
-                        completeCallback =>
-                        {
-                            targetCardModel.IsAttacking = true;
-
-                            if (targetCardModel.CurrentDefense <= 0 ||
-                                targetCardModel.IsDead ||
-                                !IsUnitActive ||
-                                !targetCardModel.IsUnitActive)
-                            {
-                                IsPlayable = true;
-                                AttackedThisTurn = false;
-                                IsAttacking = false;
-                                targetCardModel.IsAttacking = false;
-                                completeCallback?.Invoke();
-                                return;
-                            }
-
-                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
-                            {
-                                if (_tutorialManager.GetCurrentTurnInfo() != null &&
-                                    !_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
-                                     info.TutorialObjectId == TutorialObjectId &&
-                                     (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
-                                         info.TargetTutorialObjectId == 0 && info.Target != Enumerators.SkillTarget.OPPONENT)))
-                                {
-                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
-                                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
-                                    IsPlayable = true;
-                                    AttackedThisTurn = false;
-                                    IsAttacking = false;
-                                    targetCardModel.IsAttacking = false;
-                                    completeCallback?.Invoke();
-                                    return;
-                                }
-                            }
-
-                            ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-                            targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-
-                            if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
-                            {
-                                AttackedBoardObjectsThisTurn.Add(targetCardModel);
-                            }
-
-                            FightSequenceHandler.HandleAttackCard(
-                                completeCallback,
-                                targetCardModel,
-                                () =>
-                                {
-                                    _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
-
-                                    InvokeUnitAttackStateFinished();
-                                    targetCardModel.InvokeUnitAttackStateFinished();
-
-                                    if (HasSwing)
+                                    if (targetPlayer.Defense <= 0 || !IsUnitActive)
                                     {
-                                        List<CardModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+                                        IsPlayable = true;
+                                        AttackedThisTurn = false;
+                                        IsAttacking = false;
+                                        completeCallback?.Invoke();
+                                        return;
+                                    }
 
-                                        foreach (CardModel unit in adjacent)
+
+                                    if (_gameplayManager.IsTutorial &&
+                                        !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                        SpecificBattlegroundInfo.DisabledInitialization && OwnerPlayer.IsLocalPlayer)
+                                    {
+                                        if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
+                                        info.Target == Enumerators.SkillTarget.OPPONENT))
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit, AdditionalDamage, false);
-                                            unit.InvokeUnitAttackStateFinished();
-                                            unit.ResolveBuffShield();
+                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                            _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
+                                            IsPlayable = true;
+                                            AttackedThisTurn = false;
+                                            IsAttacking = false;
+                                            completeCallback?.Invoke();
+                                            return;
                                         }
                                     }
 
-                                    if (TakeFreezeToAttacked && targetCardModel.CurrentDefense > 0)
+                                    if (!AttackedBoardObjectsThisTurn.Contains(targetPlayer))
                                     {
-                                        targetCardModel.Stun(Enumerators.StunType.FREEZE, 1);
-                                        targetCardModel.HasUsedBuffShield = true;
+                                        AttackedBoardObjectsThisTurn.Add(targetPlayer);
                                     }
 
-                                    targetCardModel.ResolveBuffShield();
-                                    this.ResolveBuffShield();                                
-                                },
-                                () =>
+                                    FightSequenceHandler.HandleAttackPlayer(
+                                        completeCallback,
+                                        targetPlayer,
+                                        () =>
+                                        {
+                                            if(!_pvpManager.UseBackendGameLogic)
+                                                _battleController.AttackPlayerByUnit(this, targetPlayer);
+                                        },
+                                        () =>
+                                        {
+                                            IsAttacking = false;
+                                            UnitAttackedEnded?.Invoke();
+                                            _gameplayManager.GetController<BoardController>().UpdateWholeBoard(null);
+                                        }
+                                    );
+                                }, Enumerators.QueueActionType.UnitCombat);
+                            break;
+                        case CardModel targetCardModel:
+
+                            IsPlayable = false;
+                            AttackedThisTurn = true;
+
+                            _actionsQueueController.EnqueueAction(
+                                completeCallback =>
                                 {
-                                    targetCardModel.IsAttacking = false;
-                                    IsAttacking = false;
-                                    UnitAttackedEnded?.Invoke();
-                                    _gameplayManager.GetController<BoardController>().UpdateWholeBoard(null);
-                                }
-                                );
-                        }, Enumerators.QueueActionType.UnitCombat);
-                    break;
-                default:
-                    throw new NotSupportedException(target.GetType().ToString());
-            }
+                                    targetCardModel.IsAttacking = true;
+
+                                    if (targetCardModel.CurrentDefense <= 0 ||
+                                        targetCardModel.IsDead ||
+                                        !IsUnitActive ||
+                                        !targetCardModel.IsUnitActive)
+                                    {
+                                        IsPlayable = true;
+                                        AttackedThisTurn = false;
+                                        IsAttacking = false;
+                                        targetCardModel.IsAttacking = false;
+                                        completeCallback?.Invoke();
+                                        return;
+                                    }
+
+                                    if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                                    {
+                                        if (_tutorialManager.GetCurrentTurnInfo() != null &&
+                                            !_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
+                                            info.TutorialObjectId == TutorialObjectId &&
+                                            (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
+                                                info.TargetTutorialObjectId == 0 && info.Target != Enumerators.SkillTarget.OPPONENT)))
+                                        {
+                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                            _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
+                                            IsPlayable = true;
+                                            AttackedThisTurn = false;
+                                            IsAttacking = false;
+                                            targetCardModel.IsAttacking = false;
+                                            completeCallback?.Invoke();
+                                            return;
+                                        }
+                                    }
+
+                                    ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                                    targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+
+                                    if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
+                                    {
+                                        AttackedBoardObjectsThisTurn.Add(targetCardModel);
+                                    }
+
+                                    FightSequenceHandler.HandleAttackCard(
+                                        completeCallback,
+                                        targetCardModel,
+                                        () =>
+                                        {
+                                            _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
+
+                                            InvokeUnitAttackStateFinished();
+                                            targetCardModel.InvokeUnitAttackStateFinished();
+
+                                            if (HasSwing)
+                                            {
+                                                List<CardModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+
+                                                foreach (CardModel unit in adjacent)
+                                                {
+                                                    _battleController.AttackUnitByUnit(this, unit, AdditionalDamage, false);
+                                                    unit.InvokeUnitAttackStateFinished();
+                                                    unit.ResolveBuffShield();
+                                                }
+                                            }
+
+                                            if (TakeFreezeToAttacked && targetCardModel.CurrentDefense > 0)
+                                            {
+                                                targetCardModel.Stun(Enumerators.StunType.FREEZE, 1);
+                                                targetCardModel.HasUsedBuffShield = true;
+                                            }
+
+                                            targetCardModel.ResolveBuffShield();
+                                            this.ResolveBuffShield();                                
+                                        },
+                                        () =>
+                                        {
+                                            targetCardModel.IsAttacking = false;
+                                            IsAttacking = false;
+                                            UnitAttackedEnded?.Invoke();
+                                            _gameplayManager.GetController<BoardController>().UpdateWholeBoard(null);
+                                        }
+                                        );
+                                }, Enumerators.QueueActionType.UnitCombat);
+                            break;
+                        default:
+                            throw new NotSupportedException(target.GetType().ToString());
+                    }
+                    completeInitialCallback?.Invoke();
+                }, Enumerators.QueueActionType.InitUnitCombat
+            );
         }
 
         public bool UnitCanBeUsable()
@@ -1114,6 +1142,7 @@ namespace Loom.ZombieBattleground
             IsPlayable = false;
             IsAttacking = false;
             IsDead = false;
+            CannotDie = false;
             AttackAsFirst = false;
             IsUnitActive = true;
             CantAttackInThisTurnBlocker = false;

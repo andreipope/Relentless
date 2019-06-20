@@ -37,6 +37,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             _allies = new List<IBoardObject>();

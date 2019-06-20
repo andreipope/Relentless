@@ -775,7 +775,8 @@ namespace Loom.ZombieBattleground.Common
             StopTurnPart3Finish,
             EndMatch,
             UnitCombat,
-            LeaveMatch
+            LeaveMatch,
+            InitUnitCombat
         }
 
         public enum TooltipAlign
@@ -961,6 +962,22 @@ namespace Loom.ZombieBattleground.Common
             Attack,
             AbilityBuff,
             AbilityDamage
+        }
+
+        public enum ReasonForInstanceIdChange
+        {
+            Reanimate,
+            BackToDeck,
+            BackToHand,
+            BackFromGraveyard
+        }
+
+        public enum CardSetType
+        {
+            Basic,
+            KickStarter,
+            Season1,
+            Season2
         }
     }
 }
