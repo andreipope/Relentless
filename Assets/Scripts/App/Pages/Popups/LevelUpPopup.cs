@@ -93,8 +93,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             EndMatchResults endMatchResults = (EndMatchResults) data;
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LevelUpPopup"));
-            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LevelUpPopup"), _uiManager.Canvas3.transform, false);
 
             _buttonOk = Self.transform.Find("Pivot/levelup_panel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
