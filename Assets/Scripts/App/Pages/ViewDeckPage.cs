@@ -87,6 +87,8 @@ namespace Loom.ZombieBattleground
 
             // cards count
             UpdateCardsInDeckCountDisplay(deck);
+
+            _updatedDeck = deck;
         }
 
         private void OnPressAutoCompleteDeckHandler(Deck deck, CollectionData collectionData)
