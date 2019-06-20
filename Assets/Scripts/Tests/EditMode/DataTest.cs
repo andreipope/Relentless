@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground.Test
                 @"{""VerifyHash"":{""hash"":""0xf1a0b8586d04cf9fab76636aa859b575c8e8eae18bfc57f093d1c97703a3eca9"",""signature"":""0x59e2e78ae04a206aad5639f120df820fd971ff3242b7afc1ec6ab7ffdeb2f25716b2dc6e403046446118e41dea6ed0753a867272ca1600b160abb9185f1717141b""},""UserId"":1,""Booster"":1,""Air"":0,""Earth"":0,""Fire"":0,""Life"":0,""Toxic"":0,""Water"":0,""Super"":0,""Small"":0,""Minion"":0,""Binance"":0,""TxID"":170141183460469231731687303715884105729}";
 
             AuthFiatApiFacade.TransactionReceipt transactionReceipt = JsonConvert.DeserializeObject<AuthFiatApiFacade.TransactionReceipt>(json);
-            Assert.AreEqual(BigInteger.Parse("170141183460469231731687303715884105729"), transactionReceipt.TxID);
+            Assert.AreEqual(BigInteger.Parse("170141183460469231731687303715884105729"), transactionReceipt.TxId);
         }
 
         [Test]

@@ -143,7 +143,8 @@ namespace Loom.ZombieBattleground.Iap
 
             public uint Binance { get; }
 
-            public BigInteger TxID { get; }
+            [JsonProperty("TxID")]
+            public BigInteger TxId { get; }
 
             public TransactionReceipt(
                 VerifySignResult verifyHash,
@@ -174,17 +175,17 @@ namespace Loom.ZombieBattleground.Iap
                 Small = small;
                 Minion = minion;
                 Binance = binance;
-                TxID = txId;
+                TxId = txId;
             }
 
             public class VerifySignResult
             {
                 [JsonProperty("hash")]
-                [JsonConverter(typeof(ByteArrayToHexConverter))]
+                [JsonConverter(typeof(ByteArrayToHexConverterWithHexPrefix))]
                 public byte[] Hash { get; }
 
                 [JsonProperty("signature")]
-                [JsonConverter(typeof(ByteArrayToHexConverter))]
+                [JsonConverter(typeof(ByteArrayToHexConverterWithHexPrefix))]
                 public byte[] Signature { get; }
 
                 [JsonConstructor]

@@ -48,7 +48,8 @@ namespace Loom.ZombieBattleground
             }
 
             GetPendingMintingTransactionReceiptsResponse response = await _backendFacade.GetPendingMintingTransactionReceipts(userId);
-            Debug.Log("Result: \n" + JsonUtility.PrettyPrint(response.ToString()));
+            List<AuthFiatApiFacade.TransactionReceipt> receipts = response.ReceiptCollection.Receipts.Select(receipt => receipt.FromProtobuf()).ToList();
+            Debug.Log("Result: \n" + JsonConvert.SerializeObject(receipts, Formatting.Indented));
 
             string txIds = "Tx Ids:\n";
             foreach (MintingTransactionReceipt receipt in response.ReceiptCollection.Receipts)

@@ -126,9 +126,9 @@ namespace Loom.ZombieBattleground.Iap
             try
             {
                 List<AuthFiatApiFacade.TransactionReceipt> recordList = await _authFiatApiFacade.ListPendingTransactions();
-                recordList.Sort((resA, resB) => (int) (resB.TxID - resA.TxID));
-                Log.Debug($"{nameof(RequestFiatTransaction)}: received TxIDs " + Utilites.FormatCallLogList(recordList.Select(tr => tr.TxID)));
-                matchingTx = recordList.SingleOrDefault(record => record.TxID == txId);
+                recordList.Sort((resA, resB) => (int) (resB.TxId - resA.TxId));
+                Log.Debug($"{nameof(RequestFiatTransaction)}: received TxIDs " + Utilites.FormatCallLogList(recordList.Select(tr => tr.TxId)));
+                matchingTx = recordList.SingleOrDefault(record => record.TxId == txId);
                 if (matchingTx == null)
                     return IapPurchaseProcessingError.TxNotRegistered;
             }
@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground.Iap
         /// <returns></returns>
         private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestPack(AuthFiatApiFacade.TransactionReceipt record)
         {
-            Log.Debug($"{nameof(RequestPack)}(UserId: {record.UserId}, TxID: {record.TxID})");
+            Log.Debug($"{nameof(RequestPack)}(UserId: {record.UserId}, TxID: {record.TxId})");
             SetState(IapPurchaseState.RequestingPack, null);
 
             try
@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground.Iap
             }
 
             // Once pack is claimed on PlasmaChain, its record can be removed from Marketplace
-            return await AuthClaim(record.UserId, record.TxID);
+            return await AuthClaim(record.UserId, record.TxId);
         }
 
         /// <summary>

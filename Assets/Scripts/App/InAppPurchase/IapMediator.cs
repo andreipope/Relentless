@@ -178,14 +178,14 @@ namespace Loom.ZombieBattleground.Iap
 
                 using (plasmaChainClient)
                 {
-                    Log.Debug("Pending transaction TxIDs: " + Utilites.FormatCallLogList(transactions.Select(tx => tx.TxID)));
+                    Log.Debug("Pending transaction TxIDs: " + Utilites.FormatCallLogList(transactions.Select(tx => tx.TxId)));
                     foreach (AuthFiatApiFacade.TransactionReceipt transaction in transactions)
                     {
-                        Log.Debug("Claiming transaction with TxId " + transaction.TxID);
+                        Log.Debug("Claiming transaction with TxId " + transaction.TxId);
                         IapPurchaseProcessor iapPurchaseProcessor =
                             new IapPurchaseProcessor(_authFiatApiFacade, _plasmaChainBackendFacade, plasmaChainClient, SetState);
                         OneOf<Success, IapPurchaseProcessingError, IapException> requestFiatTransactionResult =
-                            await iapPurchaseProcessor.RequestFiatTransaction(transaction.TxID);
+                            await iapPurchaseProcessor.RequestFiatTransaction(transaction.TxId);
                         Log.Debug($"{nameof(iapPurchaseProcessor.RequestFiatTransaction)} result: " + requestFiatTransactionResult);
 
                         bool isFailed = false;

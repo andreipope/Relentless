@@ -118,6 +118,18 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
+        public static void ShowPackOpenerV1()
+        {
+            GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBar>();
+        }
+
+        [CommandHandler]
+        public static void ShowPackOpenerV2()
+        {
+            GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBarV2>();
+        }
+
+        [CommandHandler]
         public static async void DebugGetUserIdByAddress()
         {
             string userId = await _backendFacade.DebugGetUserIdByAddress(_backendDataControlMediator.UserDataModel.Address);

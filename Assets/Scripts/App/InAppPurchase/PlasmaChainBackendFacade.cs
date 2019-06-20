@@ -372,7 +372,7 @@ namespace Loom.ZombieBattleground.Iap
                     fiatReceipt.Minion,
                     fiatReceipt.Binance
                 },
-                TxID = fiatReceipt.TxID
+                TxID = fiatReceipt.TxId
             };
             return request;
         }
