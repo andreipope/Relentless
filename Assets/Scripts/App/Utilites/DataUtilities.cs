@@ -109,12 +109,5 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
-
-        public static Sprite GetDeckIconSprite(Enumerators.Faction faction)
-        {
-            string path = "Images/UI/MainMenu/DeckIcons/";
-            path = path + "icon_" + faction.ToString().ToLower();
-            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
-        }
     }
 }
