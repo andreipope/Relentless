@@ -32,6 +32,7 @@ namespace Loom.ZombieBattleground
             return index != -1 ? overlordUserInstance.Skills[index].Prototype.Skill : Enumerators.Skill.NONE;
         }
 
+
         public static Sprite GetAbilityIcon(OverlordSkillUserInstance skill)
         {
             ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -75,6 +76,24 @@ namespace Loom.ZombieBattleground
             int index = overlordUserInstance.Skills.FindIndex(skill => skill.Prototype.Skill == skillType);
             return overlordUserInstance.Skills[index].Prototype.Id;
         }
+
+        public static Sprite GetOverlordImage(OverlordId overlordId)
+        {
+            Enumerators.Faction faction = GetFaction(overlordId);
+
+            string path = "Images/UI/Overlord_Image/";
+            path = path + "champion_image_" + faction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+        }
+
+        public static Enumerators.Faction GetFaction(OverlordId overlordId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+
+            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            return overlord.Prototype.Faction;
+        }
+
 
         public static Sprite GetOverlordImage(Enumerators.Faction overlordFaction)
         {

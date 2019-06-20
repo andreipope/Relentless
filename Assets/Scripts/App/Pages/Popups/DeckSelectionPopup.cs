@@ -295,8 +295,6 @@ namespace Loom.ZombieBattleground
             GameObject deckIconObj = Object.Instantiate(_deckIconPrefab, _deckIconGroup, false);
             deckIconObj.transform.localScale = Vector3.one * DeckIconScaleNormal;
 
-            Sprite newDeckSprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_newdeck");
-
             DeckIcon deckIcon = new DeckIcon(null);
             deckIcon.Init(deckIconObj);
             deckIcon.SetDeckIcon();

@@ -41,8 +41,8 @@ namespace Loom.ZombieBattleground
             _currentEditDeck = deck.Clone();
             _deckNameText.text = deck.Name;
 
-            Enumerators.Faction faction = DataUtilities.GetOverlordDataFromDeck(deck.Id).Prototype.Faction;
-            _overlordImage.sprite = DataUtilities.GetOverlordImage(faction);
+            Enumerators.Faction faction = DataUtilities.GetFaction(deck.OverlordId);
+            _overlordImage.sprite = DataUtilities.GetOverlordImage(deck.OverlordId);
             RectTransform rectTransform = _overlordImage.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = DataUtilities.GetOverlordImagePositionInViewDeck(faction);
             rectTransform.localScale = DataUtilities.GetOverlordImageScaleInViewDeck(faction);
