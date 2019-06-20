@@ -50,25 +50,11 @@ namespace Loom.ZombieBattleground
             ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
-            string path = "Images/UI/MyDecks/OverlordPortrait";
+            Enumerators.Faction faction = overlord.Prototype.Faction;
 
-            switch(overlord.Prototype.Faction)
-            {
-                case Enumerators.Faction.AIR:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air");
-                case Enumerators.Faction.FIRE:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_fire");
-                case Enumerators.Faction.EARTH:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_earth");
-                case Enumerators.Faction.TOXIC:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_toxic");
-                case Enumerators.Faction.WATER:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_water");
-                case Enumerators.Faction.LIFE:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life");
-                default:
-                    return null;
-            }
+            string path = "Images/UI/MyDecks/OverlordPortrait/";
+            path = path + "overlord_portrait_" + faction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
         public static void PlayClickSound()
@@ -106,6 +92,28 @@ namespace Loom.ZombieBattleground
         {
             string path = "Images/UI/Overlord_Image/";
             path = path + "champion_image_" + overlordFaction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+        }
+
+        public static OverlordUserInstance GetOverlordDataFromDeck(Deck deck)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            return overlord;
+        }
+
+        public static OverlordUserInstance GetOverlordDataFromDeck(DeckId deckId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            Deck deck = dataManager.CachedDecksData.Decks.Find(cachedDeck => cachedDeck.Id == deckId);
+            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            return overlord;
+        }
+
+        public static Sprite GetDeckIconSprite(Enumerators.Faction faction)
+        {
+            string path = "Images/UI/MainMenu/DeckIcons/";
+            path = path + "icon_" + faction.ToString().ToLower();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
     }

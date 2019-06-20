@@ -395,12 +395,15 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _myDeckPage.SelectedDeckId = -1;
-
             PlayClickSound();
 
+            OpenOverlordSelectionPopup();
+        }
+
+        public void OpenOverlordSelectionPopup()
+        {
+            _myDeckPage.SelectedDeckId = -1;
             _uiManager.DrawPopup<OverlordSelectionPopup>();
-            //_myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
         }
 
         private void ButtonLeftArrowHandler()
