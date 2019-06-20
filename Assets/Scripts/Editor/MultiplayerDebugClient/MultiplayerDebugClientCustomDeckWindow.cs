@@ -50,7 +50,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
             }
 
             if (_cardKeyToDescription == null)
-            if (_cardKeyToDescription == null)
             {
                 _cardKeyToDescription = new Dictionary<CardKey, (string metaDescription, string cardText)>();
                 foreach (Card card in cardLibrary)

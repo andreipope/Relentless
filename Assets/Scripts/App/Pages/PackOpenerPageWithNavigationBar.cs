@@ -585,7 +585,6 @@ namespace Loom.ZombieBattleground
             {
                 IReadOnlyList<CardKey> cardKeys = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
                 List<Card> cards = _dataManager.CachedCardsLibraryData.GetCardsByCardKeys(cardKeys, true).ToList();
-                cards[2] = null;
                 for (int i = 0; i < cards.Count; i++)
                 {
                     Card card = cards[i];
