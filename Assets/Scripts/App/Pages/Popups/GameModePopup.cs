@@ -1,12 +1,9 @@
-﻿using System;
-using Loom.ZombieBattleground.BackendCommunication;
+﻿using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using UnityEngine.Experimental.PlayerLoop;
 
 namespace Loom.ZombieBattleground
 {

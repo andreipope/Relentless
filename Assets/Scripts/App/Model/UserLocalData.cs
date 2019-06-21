@@ -9,9 +9,6 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.Language AppLanguage;
 
         public bool Tutorial = true;
-
-        public bool TutorialRewardClaimed = false;
-
         public DeckId LastSelectedDeckId;
 
         public bool AgreedTerms = false;

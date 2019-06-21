@@ -23,12 +23,13 @@ namespace Loom.ZombieBattleground
             //change ability
             _buttonChange = obj.transform.Find("Button_Change").GetComponent<Button>();
             _buttonChange.onClick.AddListener(ButtonChangeAbilityHandler);
+
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += OnSaveSelectedSkill;
         }
 
         private void ButtonChangeAbilityHandler()
         {
             GameClient.Get<IUIManager>().DrawPopup<SelectOverlordAbilitiesPopup>(new object[] {_deck, false});
-            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += OnSaveSelectedSkill;
         }
 
         public void ShowAbilities(Deck deck)

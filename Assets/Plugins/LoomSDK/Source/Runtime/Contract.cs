@@ -29,10 +29,10 @@ namespace Loom.Client
         /// <param name="method">Smart contract method name.</param>
         /// <param name="args">Arguments object for the smart contract method.</param>
         /// <returns>Nothing.</returns>
-        public async Task CallAsync(string method, IMessage args)
+        public async Task<BroadcastTxResult> CallAsync(string method, IMessage args)
         {
             Transaction tx = this.CreateContractMethodCallTx(method, args);
-            await CallAsync(tx, new CallDescription(method, false));
+            return await CallAsync(tx, new CallDescription(method, false));
         }
 
         /// <summary>

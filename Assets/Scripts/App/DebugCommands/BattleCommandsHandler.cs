@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -41,6 +40,7 @@ static class BattleCommandsHandler
         _cardsController = _gameplayManager.GetController<CardsController>();
         _aiController = _gameplayManager.GetController<AIController>();
         _boardController = _gameplayManager.GetController<BoardController>();
+
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
@@ -226,7 +226,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
         player.PlayerCardsController.CreateNewCardAndAddToHand(card);
     }
 
@@ -274,7 +274,7 @@ static class BattleCommandsHandler
             return;
         }
 
-        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
         CardModel cardModel = opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
         _aiController.PlayCardOnBoard(cardModel, true);
     }

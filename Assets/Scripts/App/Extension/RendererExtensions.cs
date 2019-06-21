@@ -2,10 +2,11 @@
 
 public static class RendererExtensions
 {
+    private static Vector3[] _vector4Cache = new Vector3[4];
     private static int CountCornersVisibleFrom(this RectTransform rectTransform, Camera camera)
     {
         Rect screenBounds = new Rect(0f, 0f, Screen.width, Screen.height); // Screen space bounds (assumes camera renders across the entire screen)
-        Vector3[] objectCorners = new Vector3[4];
+        Vector3[] objectCorners = _vector4Cache;
         rectTransform.GetWorldCorners(objectCorners);
 
         int visibleCorners = 0;

@@ -6,20 +6,20 @@ namespace Loom.ZombieBattleground.Test
     {
         public string CardName { get; }
 
-        public MouldId MouldId { get; }
+        public CardKey CardKey { get; }
 
         public int Amount { get; }
 
         public TestCardData(string cardName, int amount)
         {
             CardName = cardName;
-            MouldId = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromName(cardName).MouldId;
+            CardKey = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardByName(cardName).CardKey;
             Amount = amount;
         }
 
         public DeckCardData ToDeckCardData()
         {
-            return new DeckCardData(MouldId, Amount);
+            return new DeckCardData(CardKey, Amount);
         }
     }
 }

@@ -1,17 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {

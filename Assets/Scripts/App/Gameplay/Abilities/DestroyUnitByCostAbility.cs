@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -97,7 +96,7 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                if(AbilityUnitOwner != null && AbilityUnitOwner.Prototype.MouldId == TorchCardId)
+                if(AbilityUnitOwner != null && AbilityUnitOwner.Prototype.CardKey.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }

@@ -1,9 +1,6 @@
 using System;
-using System.Threading.Tasks;
-using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.UI;
-using Loom.ZombieBattleground.BackendCommunication;
 using Object = UnityEngine.Object;
 using TMPro;
 using Loom.ZombieBattleground.Gameplay;

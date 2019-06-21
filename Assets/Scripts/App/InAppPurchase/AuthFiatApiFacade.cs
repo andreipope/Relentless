@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Newtonsoft.Json;
@@ -48,7 +49,7 @@ namespace Loom.ZombieBattleground.Iap
             return response;
         }
 
-        public async Task<List<TransactionResponse>> ListPendingTransactions()
+        public async Task<List<TransactionReceipt>> ListPendingTransactions()
         {
             Log.Info($"{nameof(ListPendingTransactions)}");
 
@@ -61,10 +62,10 @@ namespace Loom.ZombieBattleground.Iap
             Log.Debug(httpResponseMessage.ReadToEnd());
 
             string json = httpResponseMessage.ReadToEnd();
-            List<TransactionResponse> fiatResponseList = JsonConvert.DeserializeObject<List<TransactionResponse>>(json);
-            foreach (TransactionResponse response in fiatResponseList)
+            List<TransactionReceipt> fiatResponseList = JsonConvert.DeserializeObject<List<TransactionReceipt>>(json);
+            foreach (TransactionReceipt response in fiatResponseList)
             {
-                Log.Info("TransactionResponse hash: " + response.VerifyHash.hash);
+                Log.Info("TransactionResponse hash: " + response.VerifyHash.Hash);
             }
 
             return fiatResponseList;
@@ -80,14 +81,7 @@ namespace Loom.ZombieBattleground.Iap
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             StoresDataList apiProductList = JsonConvert.DeserializeObject<StoresDataList>(httpResponseMessage.ReadToEnd());
-            return apiProductList.products;
-        }
-
-        [Serializable]
-        public class FiatClaimRequestBody
-        {
-            public int user_id;
-            public int[] transaction_ids;
+            return apiProductList.Products;
         }
 
         /// <summary>
@@ -97,7 +91,7 @@ namespace Loom.ZombieBattleground.Iap
         /// <param name="transactionIds"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<bool> Claim(int userId, IReadOnlyList<int> transactionIds)
+        public async Task<bool> Claim(BigInteger userId, BigInteger[] transactionIds)
         {
             Log.Info($"{nameof(Claim)}(userId = {userId}, transactionIds = {Utilites.FormatCallLogList(transactionIds)})");
 
@@ -121,59 +115,183 @@ namespace Loom.ZombieBattleground.Iap
             return true;
         }
 
-        public class ValidationResponse
+        public class TransactionReceipt
         {
-            public string msg;
-            public string transactionId;
-            public bool success;
-            public int txId;
-        }
+            public VerifySignResult VerifyHash { get; }
 
-        public class TransactionResponse
-        {
-            public VerifyHash VerifyHash;
-            public int UserId;
-            public int Booster;
-            public int Super;
-            public int Air;
-            public int Earth;
-            public int Fire;
-            public int Life;
-            public int Toxic;
-            public int Water;
-            public int Small;
-            public int Minion;
-            public int Binance;
-            public int TxID;
-        }
+            public BigInteger UserId { get; }
 
-        public class VerifyHash
-        {
-            public string hash;
-            public string signature;
-        }
+            public uint Booster { get; }
 
-        public class StoresDataList
-        {
-            public StoreData[] products;
+            public uint Super { get; }
+
+            public uint Air { get; }
+
+            public uint Earth { get; }
+
+            public uint Fire { get; }
+
+            public uint Life { get; }
+
+            public uint Toxic { get; }
+
+            public uint Water { get; }
+
+            public uint Small { get; }
+
+            public uint Minion { get; }
+
+            public uint Binance { get; }
+
+            [JsonProperty("TxID")]
+            public BigInteger TxId { get; }
+
+            public TransactionReceipt(
+                VerifySignResult verifyHash,
+                BigInteger userId,
+                uint booster, 
+                uint super,
+                uint air,
+                uint earth,
+                uint fire,
+                uint life,
+                uint toxic,
+                uint water,
+                uint small,
+                uint minion,
+                uint binance,
+                BigInteger txId)
+            {
+                VerifyHash = verifyHash;
+                UserId = userId;
+                Booster = booster;
+                Super = super;
+                Air = air;
+                Earth = earth;
+                Fire = fire;
+                Life = life;
+                Toxic = toxic;
+                Water = water;
+                Small = small;
+                Minion = minion;
+                Binance = binance;
+                TxId = txId;
+            }
+
+            public class VerifySignResult
+            {
+                [JsonProperty("hash")]
+                [JsonConverter(typeof(ByteArrayToHexConverterWithHexPrefix))]
+                public byte[] Hash { get; }
+
+                [JsonProperty("signature")]
+                [JsonConverter(typeof(ByteArrayToHexConverterWithHexPrefix))]
+                public byte[] Signature { get; }
+
+                [JsonConstructor]
+                public VerifySignResult(byte[] hash, byte[] signature)
+                {
+                    Hash = hash;
+                    Signature = signature;
+                }
+            }
         }
 
         public class StoreData
         {
-            public string currency;
-            public string store;
-            public ProductData[] packs;
-            public int unit_percent;
+            [JsonProperty("currency")]
+            public string Currency { get; }
+            
+            [JsonProperty("store")]
+            public string Store { get; }
+            
+            [JsonProperty("packs")]
+            public IReadOnlyList<ProductData> Packs { get; }
+            
+            [JsonProperty("unit_percent")]
+            public int UnitPercent { get; }
+
+            [JsonConstructor]
+            public StoreData(string currency, string store, IReadOnlyList<ProductData> packs, int unitPercent)
+            {
+                Currency = currency;
+                Store = store;
+                Packs = packs;
+                UnitPercent = unitPercent;
+            }
         }
 
         public class ProductData
         {
-            public string uid;
-            public string display_name;
-            public string description;
-            public string store_id;
-            public int amount;
-            public int price;
+            [JsonProperty("uid")]
+            public string Uid { get; }
+            
+            [JsonProperty("display_name")]
+            
+            public string DisplayName { get; }
+            
+            [JsonProperty("description")]
+            public string Description { get; }
+            
+            [JsonProperty("store_id")]
+            public string StoreId { get; }
+            
+            [JsonProperty("amount")]
+            public int Amount { get; }
+            
+            [JsonProperty("price")]
+            public int Price { get; }
+
+            [JsonConstructor]
+            public ProductData(string uid, string displayName, string description, string storeId, int amount, int price)
+            {
+                Uid = uid;
+                DisplayName = displayName;
+                Description = description;
+                StoreId = storeId;
+                Amount = amount;
+                Price = price;
+            }
+        }
+
+        private class FiatClaimRequestBody
+        {
+            public BigInteger user_id;
+            public BigInteger[] transaction_ids;
+        }
+        
+        private class StoresDataList
+        {
+            [JsonProperty("products")]
+            public IReadOnlyList<StoreData> Products { get; }
+
+            public StoresDataList(IReadOnlyList<StoreData> products)
+            {
+                Products = products;
+            }
+        }
+    }
+
+    public class ValidationResponse
+    {
+        [JsonProperty("msg")]
+        public string Message { get; }
+
+        [JsonProperty("transactionId")]
+        public string TransactionId { get; }
+
+        [JsonProperty("success")]
+        public bool Success { get; }
+
+        [JsonProperty("txId")]
+        public uint TxId { get; }
+
+        public ValidationResponse(string message, string transactionId, bool success, uint txId)
+        {
+            Message = message;
+            TransactionId = transactionId;
+            Success = success;
+            TxId = txId;
         }
     }
 }

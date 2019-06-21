@@ -42,17 +42,15 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 4ef2958c8e5db47529b57a8c378b2e1a, type: 3}
-    totalSpriteSurfaceArea: 9819770
+    totalSpriteSurfaceArea: 9332924
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 62decff0d542444cd8b86695025ced9b, type: 3}
   - {fileID: 21300000, guid: 54b99912da7ab4dd1af3af657155c87a, type: 3}
   - {fileID: 21300000, guid: 9c300c22959c74cb7b575f1950bc2424, type: 3}
   - {fileID: 21300000, guid: e38e2ea2854144798a3bf83d96420ab0, type: 3}
   - {fileID: 21300000, guid: 2a2974f25103e4867b382898af446de9, type: 3}
   - {fileID: 21300000, guid: cc60eb036d91e4abb9738175a3b48939, type: 3}
-  - {fileID: 21300000, guid: 681af953f37d24a8094dcdffa54c9961, type: 3}
   - {fileID: 21300000, guid: e19ac393652234532aa8724a0a879232, type: 3}
   - {fileID: 21300000, guid: fdc8db749468241f49b6703e216fe68c, type: 3}
   - {fileID: 21300000, guid: 1d9181d4c315c4129a11917c1081272a, type: 3}
@@ -61,22 +59,18 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 4604ef65652bc4ac6981e20d846c78f9, type: 3}
   - {fileID: 21300000, guid: d2644df529d7445f7ac8656140cb3454, type: 3}
   - {fileID: 21300000, guid: 973d5c2611c6543859309bf7530fbed6, type: 3}
-  - {fileID: 21300000, guid: 2e914f365df5e4b8c9782e0a815d93b0, type: 3}
   - {fileID: 21300000, guid: e44f1c573b34145ec848abec011773b7, type: 3}
   - {fileID: 21300000, guid: af6dfc678945442b0a6a8fc953225bb9, type: 3}
   - {fileID: 21300000, guid: a30c4b97ba24743068edfa7e6f05e7e1, type: 3}
   - {fileID: 21300000, guid: 0a1d3f187e41c4787a22aa7dd2d458b4, type: 3}
-  - {fileID: 21300000, guid: a58747688b7374e3284773284d8e205a, type: 3}
   - {fileID: 21300000, guid: 21570c78c53f040e68c2c4f3ad7bd198, type: 3}
   - {fileID: 21300000, guid: 8d0aee98d508a433486de7c8be64224e, type: 3}
   - {fileID: 21300000, guid: cc7c5ff99c9e34b24bd13238fe07580d, type: 3}
   - {fileID: 21300000, guid: f17cb53aff7d84148be51fa406a7d24f, type: 3}
-  - {fileID: 21300000, guid: 204b2a7b29488494a9f5713b18463e31, type: 3}
   - {fileID: 21300000, guid: e18ede7ba471f44d1995d9a44881e879, type: 3}
   - {fileID: 21300000, guid: f19f219b499f547fcbbe320fd01b367d, type: 3}
   - {fileID: 21300000, guid: 21929deba794b4cdd8d0e474bc6807c7, type: 3}
   - {fileID: 21300000, guid: f483243c98caf42afa7ebf3470b39f22, type: 3}
-  - {fileID: 21300000, guid: 612c093c59d064f419a6b3889995a18f, type: 3}
   - {fileID: 21300000, guid: 12a8d55cb34cf4efea3716adaa293eea, type: 3}
   - {fileID: 21300000, guid: 3fb8cd8c7674c49edb192a549823415b, type: 3}
   - {fileID: 21300000, guid: 30f3590dd5d564dd38b2c1979c73136f, type: 3}
@@ -90,13 +84,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2d21657f1f3bb4dffa6f228958a14d11, type: 3}
   - {fileID: 21300000, guid: ce8fa5cf05ea7413ba2aa40e6e240716, type: 3}
   m_PackedSpriteNamesToIndex:
-  - abilities_button_earth
   - mydeck_cardindicator_on
   - deck_thumbnail_selected
   - champion_portrait_mask
   - deck_frame
   - overlord_portrait_air
-  - abilities_button_toxic
   - mydeck_card_illustration_mask
   - skill_empty
   - deck_info_scrollbar_bg
@@ -105,22 +97,18 @@ SpriteAtlas:
   - champion_frame_on
   - deck_thumbnail_life
   - deck_thumbnail_normal
-  - abilities_button_fire
   - overlord_portrait_life
   - overlord_portrait_water
   - deck_thumbnail_air
   - editdeck_cardcount
-  - abilities_button_life
   - deck_overlord_frame
   - page_normal
   - deck_thumbnail_toxic
   - mydeck_card_frame
-  - abilities_button_air
   - champion_frame_off
   - deck_rename_idle
   - select_champion_panel
   - champion_description_frame
-  - abilities_button_water
   - overlord_portrait_earth
   - mydeck_card_bg
   - overlord_portrait_fire

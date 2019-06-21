@@ -3,7 +3,6 @@ using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -120,7 +119,12 @@ namespace Loom.ZombieBattleground
             _selectedDeck = deck;
 
             _deckNameText.text = _selectedDeck.Name;
-            _overlordImage.sprite = DataUtilities.GetOverlordThumbnailSprite(deck.OverlordId);
+
+            Enumerators.Faction faction = DataUtilities.GetFaction(deck.OverlordId);
+            _overlordImage.sprite = DataUtilities.GetOverlordImage(deck.OverlordId);
+            RectTransform rectTransform = _overlordImage.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = DataUtilities.GetOverlordImagePositionInViewDeck(faction);
+            rectTransform.localScale = DataUtilities.GetOverlordImageScaleInViewDeck(faction);
 
             SetSkills();
 
@@ -129,16 +133,29 @@ namespace Loom.ZombieBattleground
             UpdateCardsInDeckCountDisplay();
         }
 
+        public void ChangeDeckName(string newName)
+        {
+            _deckNameText.text = newName;
+        }
+
+        public void ChangeAbilities(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            _selectedDeck.PrimarySkill = primarySkill;
+            _selectedDeck.SecondarySkill = secondarySkill;
+
+            SetSkills();
+        }
+
         private void SetCards()
         {
             for (int i = 0; i < _selectedDeck.Cards.Count; i++)
             {
                 DeckCardData deckCardData = _selectedDeck.Cards[i];
 
-                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.MouldId == deckCardData.MouldId);
+                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.CardKey == deckCardData.CardKey);
                 if (cardIndex == -1)
                 {
-                    Log.Error($"Card with MouldId {deckCardData.MouldId} not found.");
+                    Log.Error($"Card with MouldId {deckCardData.CardKey} not found.");
                     return;
                 }
 
@@ -167,10 +184,15 @@ namespace Loom.ZombieBattleground
             _deckCards.Add(deckCardUi);
         }
 
-        private void DragBeganEventHandler(PointerEventData arg1, GameObject obj)
+        private void DragBeganEventHandler(PointerEventData pointerEventData, GameObject obj)
         {
             if (_selectedDeckCard != null)
                 return;
+
+            if (pointerEventData.delta.normalized.y >= 0.5f || pointerEventData.delta.normalized.y <= -0.5f)
+            {
+                return;
+            }
 
             GameObject cardObj = Object.Instantiate(_deckCardPrefab, obj.transform, false);
             cardObj.transform.localScale = Vector3.one;
@@ -183,7 +205,7 @@ namespace Loom.ZombieBattleground
             _selectedDeckCard = deckCardUi;
         }
 
-        private void DragUpdatedEventHandler(PointerEventData arg1, GameObject arg2)
+        private void DragUpdatedEventHandler(PointerEventData pointerEventData, GameObject arg2)
         {
             if (_selectedDeckCard == null)
                 return;
@@ -216,7 +238,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveCard(Card card)
         {
-            DeckCardUI cardUi = _deckCards.Find(deckCard => deckCard.GetCardInterface().MouldId == card.MouldId);
+            DeckCardUI cardUi = _deckCards.Find(deckCard => deckCard.GetCardInterface().CardKey == card.CardKey);
             Object.Destroy(cardUi.GetGameObject());
 
             _deckCards.Remove(cardUi);
@@ -224,10 +246,10 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCard(Card card, int cardAmount)
         {
-            DeckCardUI deckCard = _deckCards.Find(cardInDeck => cardInDeck.GetCardInterface().MouldId == card.MouldId);
+            DeckCardUI deckCard = _deckCards.Find(cardInDeck => cardInDeck.GetCardInterface().CardKey == card.CardKey);
             if (deckCard == null)
             {
-                Log.Error($"Card with MouldId {card.MouldId} not found.");
+                Log.Error($"Card with MouldId {card.CardKey} not found.");
                 return;
             }
 
@@ -319,11 +341,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-            // TODO : Not sure, why this variable
-            deckPage.IsRenameWhileEditing = true;
-
-            _uiManager.DrawPopup<RenamePopup>(new object[] {_selectedDeck.Name, true});
+            
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_selectedDeck, false});
         }
 
         private void PlayClickSound()

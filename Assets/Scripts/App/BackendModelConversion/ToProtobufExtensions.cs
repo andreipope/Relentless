@@ -1,4 +1,7 @@
+using System;
 using System.Linq;
+using System.Numerics;
+using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 
@@ -6,12 +9,20 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
+        public static Protobuf.CardKey ToProtobuf(this CardKey cardKey)
+        {
+            return new Protobuf.CardKey
+            {
+                MouldId = cardKey.MouldId.Id,
+                Variant = (CardVariant.Types.Enum) cardKey.Variant
+            };
+        }
         public static DeckCard ToProtobuf(this DeckCardData deckCardData)
         {
             return new DeckCard
             {
-                Amount = deckCardData.Amount,
-                MouldId = deckCardData.MouldId.Id
+                CardKey = deckCardData.CardKey.ToProtobuf(),
+                Amount = deckCardData.Amount
             };
         }
 
@@ -127,7 +138,7 @@ namespace Loom.ZombieBattleground.Data
         {
             Protobuf.Card protoCard = new Protobuf.Card
             {
-                MouldId = card.MouldId.Id,
+                CardKey = card.CardKey.ToProtobuf(),
                 Name = card.Name,
                 Cost = card.Cost,
                 Description = card.Description,
@@ -214,6 +225,22 @@ namespace Loom.ZombieBattleground.Data
                 IgnoreGooRequirements = debugCheatsConfiguration.IgnoreGooRequirements,
 
                 SkipMulligan = debugCheatsConfiguration.SkipMulligan
+            };
+        }
+
+        public static Client.Protobuf.BigUInt ToProtobufUInt(this BigInteger bigInteger)
+        {
+            if (bigInteger.Sign < 0)
+                throw new ArgumentException("Expected non-negative value");
+
+            byte[] bytes = bigInteger.ToByteArray();
+
+            // Swap endianness
+            Array.Reverse(bytes, 0, bytes.Length);
+
+            return new Client.Protobuf.BigUInt
+            {
+                Value = ByteString.CopyFrom(bytes)
             };
         }
     }

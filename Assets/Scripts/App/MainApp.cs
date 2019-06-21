@@ -21,7 +21,9 @@ namespace Loom.ZombieBattleground
 
         public event Action FixedUpdateEvent;
 
+#if UNITY_EDITOR
         public event Action OnDrawGizmosCalled;
+#endif
 
         public event Action<Action<bool>> ApplicationWantsToQuit;
 

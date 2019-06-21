@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using DG.Tweening;
 using log4net;
-using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -11,7 +10,6 @@ using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using UnityEngine;
-using Logger = log4net.Repository.Hierarchy.Logger;
 
 namespace Loom.ZombieBattleground
 {
@@ -77,7 +75,6 @@ namespace Loom.ZombieBattleground
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
             AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade());
-            AddService<TutorialRewardManager>(new TutorialRewardManager());
         }
 
         public override void InitServices() {
@@ -119,12 +116,12 @@ namespace Loom.ZombieBattleground
 
         public static BackendPurpose GetDefaultBackendPurpose()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_DEVELOPMENT_BACKEND
             const BackendPurpose defaultBackend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose defaultBackend = BackendPurpose.Production;
-#elif USE_BRANCH_TESTING_BACKEND
-            const BackendPurpose defaultBackend = BackendPurpose.BranchTesting;
+#elif USE_DEVELOPMENT_BACKEND
+            const BackendPurpose defaultBackend = BackendPurpose.Development;
 #else
             const BackendPurpose defaultBackend = BackendPurpose.Staging;
 #endif

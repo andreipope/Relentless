@@ -2,6 +2,7 @@ namespace Loom.ZombieBattleground.Iap
 {
     public enum IapContractType
     {
+        ZbgCard,
         FiatPurchase,
         CardFaucet,
         BoosterPack,

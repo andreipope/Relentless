@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Loom.ZombieBattleground.BackendCommunication
+﻿namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class PlasmaChainEndpointsContainer
     {
@@ -31,6 +29,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public const string FiatProductsURL = "https://dev-auth.loom.games/fiat/products";
 #elif USE_PRODUCTION_BACKEND
         //PRODUCTION ENVIRONMENT
+        public const string ContractAddressZbgCard = "0xad94eae166f5f69167e5668f2c8dbfa8e690a120";
         public const string ContractAddressCardFaucet = "0x1621fbbede0e85fb1fafd4f29cc2faaebde62db0";
         public const string ContractAddressBoosterPack = "0x2fa54683d976c72806d2e54d1d61a476848e4da9";
         public const string ContractAddressSuperPack = "0x2b44d4f3b086d4b752d762ec2cf1ab7a0b3bfe44";
@@ -56,6 +55,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public const string FiatProductsURL = "https://auth.loom.games/fiat/products";
 #else
         //STAGING ENVIRONMENT
+        public const string ContractAddressZbgCard = "0x2658d8c94062227d17a4ba61adb166e152369de3";
         public const string ContractAddressCardFaucet = "0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41";
         public const string ContractAddressBoosterPack = "0xdc745ac9945c981a63748a6b46dc31c2909bc865";
         public const string ContractAddressSuperPack = "0xd05b46ffb3828218d5b7d9b1225575477c9e79d7";

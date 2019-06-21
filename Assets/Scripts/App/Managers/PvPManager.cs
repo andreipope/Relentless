@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -13,10 +11,6 @@ using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using SystemText = System.Text;
-using Loom.Google.Protobuf.Collections;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {

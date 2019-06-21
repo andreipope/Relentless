@@ -4,7 +4,6 @@ using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;

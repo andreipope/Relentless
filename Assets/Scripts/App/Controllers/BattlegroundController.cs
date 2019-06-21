@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using KellermanSoftware.CompareNetObjects;
@@ -1316,7 +1315,7 @@ namespace Loom.ZombieBattleground
                 cards
                     .Select(cardInfo =>
                     {
-                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
+                        Card card = _dataManager.CachedCardsLibraryData.GetCardByName(cardInfo.Name);
                         WorkingCard workingCard = new WorkingCard(card, card, player);
                         workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
                         return new CardModel(workingCard);

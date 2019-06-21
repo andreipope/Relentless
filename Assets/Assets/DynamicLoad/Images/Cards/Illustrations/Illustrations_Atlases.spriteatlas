@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: a34aba0a4a67744d38c7c5d5fd5b2634, type: 3}
-    totalSpriteSurfaceArea: 55245540
+    totalSpriteSurfaceArea: 55433077
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -89,6 +89,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 365ac5c3f513d6d45b69d1a8acdfa62a, type: 3}
   - {fileID: 21300000, guid: 1d0da6d3e4820c147af413afc9179952, type: 3}
   - {fileID: 21300000, guid: 458020e307a85df48926643ca68a90f1, type: 3}
+  - {fileID: 21300000, guid: c207d7e3a707ae646b393a4d873af895, type: 3}
   - {fileID: 21300000, guid: ba6c28f34015b494fb9839f85262292f, type: 3}
   - {fileID: 21300000, guid: 9e82fef31ec9c8148a389b614e07966f, type: 3}
   - {fileID: 21300000, guid: e0f8b4340442ef14bb2517a0f0b70ce9, type: 3}
@@ -272,6 +273,7 @@ SpriteAtlas:
   - 021
   - 243
   - 031
+  - embryo_pod
   - 044
   - 257
   - 068

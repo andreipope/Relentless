@@ -1,30 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Loom.Client.Protobuf;
-using Loom.Google.Protobuf.Reflection;
-using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
-
 #if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Build.Reporting;
-using UnityEditor.SceneManagement;
+
 #endif
 
 namespace Loom.ZombieBattleground
@@ -94,8 +82,6 @@ namespace Loom.ZombieBattleground
                     .ToArray();
         }
 
-
-
         public static string FormatCallLogList<T>(IList<T> list)
         {
             return $"[({list.Count} items) {String.Join(", ", list)}]";
@@ -104,6 +90,26 @@ namespace Loom.ZombieBattleground
         public static string FormatCallLogList<T>(IEnumerable<T> list)
         {
             return $"[({list.Count()} items) {String.Join(", ", list)}]";
+        }
+
+        public static bool SequenceEqual(this byte[] array1, byte[] array2)
+        {
+            if (array1 == null)
+                throw new ArgumentNullException(nameof(array1));
+
+            if (array2 == null)
+                throw new ArgumentNullException(nameof(array2));
+
+            if (array1.Length != array2.Length)
+                return false;
+
+            for (int i = 0; i < array1.Length; i++)
+            {
+                if (array1[i] != array2[i])
+                    return false;
+            }
+
+            return true;
         }
         
         /// <summary>
