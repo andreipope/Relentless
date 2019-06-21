@@ -121,27 +121,8 @@ namespace Loom.ZombieBattleground
         private void BackButtonHandler()
         {
             DataUtilities.PlayClickSound();
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
-
-        }
-
-        private void ConfirmSaveDeckHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
-
-            if (status)
-            {
-                HordeSelectionWithNavigationPage myDeckPage =
-                    GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
-                if (myDeckPage != null)
-                {
-                    myDeckPage.HordeEditTab.UpdateEditingTab(_updatedDeck, _updatedCollectionData);
-                    myDeckPage.HordeEditTab.SaveDeck(HordeSelectionWithNavigationPage.Tab.Editing);
-                }
-            }
-
             Dispose();
+
         }
 
         private void UpdatePageScaleToMatchResolution()
