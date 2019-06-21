@@ -398,6 +398,11 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
 
             OpenOverlordSelectionPopup();
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
+            }
         }
 
         public void OpenOverlordSelectionPopup()

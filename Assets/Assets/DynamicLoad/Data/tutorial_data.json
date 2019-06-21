@@ -1027,27 +1027,11 @@
           ]
         },
         {
-          "ActionToEndThisStep": "HordeTabChanged",
+          "ActionToEndThisStep": "ScreenChanged",
           "TutorialStepType": "MenuStep",
+          "OpenScreen": "SelectOverlordPopup",
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_RightArrow",
-            "Button_LeftArrow",
-            "Button_Auto",
-            "Image_ButtonBackTray",
-            "Button_DeckIcon_0",
-            "Button_DeckIcon_1",
-            "Button_DeckIcon_2",
-            "Button_DeckIcon_3",
-            "Button_DeckIcon_4",
-            "Button_DeckIcon_5"
+            "Button_Cancel"
           ],
           "HandPointers": [
             {
@@ -1059,7 +1043,7 @@
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Continue",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePopups"
             }
           ]
         },
