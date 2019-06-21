@@ -3,10 +3,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
     public enum BackendPurpose
     {
         Local,
-        PvP,
-        BranchTesting,
+        Development,
         Staging,
-        Production,
-        Rebalance
+        Production
     }
 }

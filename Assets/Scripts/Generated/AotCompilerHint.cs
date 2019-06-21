@@ -53,6 +53,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.BlockHeader>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.BlockID>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.PartSetHeader>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.BoosterPackRewardItem>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.BundlePlayerActionRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerAction>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.BundlePlayerActionResponse>();
@@ -69,6 +70,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.AbilityData>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UniqueAnimation.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardOverrides>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardKey>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAdditionalDamageToHeavyInAttack>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAttackOverlord>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityChangeStat>();
@@ -81,6 +83,9 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityReplaceUnitsWithTypeOnStrongerOnes>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityInstance.AbilityTypeOneofCase>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardInstance>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItem>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItem>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardChoosableAbility>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardCollectionCard>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardCollectionList>();
@@ -104,7 +109,11 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.BoolValue>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ClearNotificationsRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::System.Int32>>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ConfirmPendingMintingTransactionReceiptRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ContractConfiguration>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::System.UInt64>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.ContractMethodCall>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ContractState>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CreateDeckEvent>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CreateDeckRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CreateDeckResponse>();
@@ -115,6 +124,12 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CustomGameModeCustomUiElement.UiElementOneofCase>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DataIdOwner>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DebugCheatsConfiguration>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsResponse>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DebugGetUserIdByAddressRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptResponse>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.DeckCard>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.OverlordSkillType.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.DeckCard>();
@@ -130,7 +145,6 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.DeployResponseData>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.DeployTx>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.DepositRequest>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::System.UInt64>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.EditDeckEvent>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.EditDeckRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.EndMatchRequest>();
@@ -155,7 +169,6 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ExperienceActionType.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.FindMatchRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.FindMatchResponse>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GamechainState>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GameMode>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GameModeType>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GameModeList>();
@@ -176,13 +189,14 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetCollectionRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetContractBuildMetadataResponse>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetContractConfigurationResponse>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetContractStateResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.GetCurrentBlockResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CustomGameModeCustomUiElement>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetDeckRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetDeckResponse>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetGamechainStateResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetGameModeRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetGameStateRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetGameStateResponse>();
@@ -202,6 +216,9 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetOverlordUserInstanceRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetOverlordUserInstanceResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.OverlordUserInstance>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsResponse>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.HistoryCreateGame>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.Player>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.HistoryData>();
@@ -212,13 +229,11 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.HistoryData.DataOneofCase>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.Zone>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.OverlordPrototype>>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.InitGamechainStateRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.InitialPlayerState>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.InitRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.KeepAliveRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.LevelReward>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.OverlordSkillRewardItem>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UnitRewardItem>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.LevelReward.RewardOneofCase>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ListCardLibraryResponse>();
@@ -229,6 +244,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ListOverlordUserInstancesRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.ListOverlordUserInstancesResponse>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.OverlordUserInstance>>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.LoginRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.InitialPlayerState>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.Match.Types.Status>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerTimestamp>>();
@@ -238,6 +254,8 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfoList>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.MessageTx>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Types.VerifySignResult>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.NonceTx>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.Notification>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.NotificationType.Types.Enum>();
@@ -315,11 +333,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.Request>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.EncodingType>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.Response>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.RewardTutorialClaimed>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.RewardTutorialCompletedResponse>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.SetLastPlasmaBlockNumRequest>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.SetRewardContractVersionRequest>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.SetTutorialRewardAmountRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.SetLastPlasmaBlockNumberRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.SignedTx>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.StartGameAction>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse>();
@@ -337,11 +351,13 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.TransferGatewayWithdrawERC721Request>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.TxReceiptList>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.Client.Protobuf.EvmTxReceipt>>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateContractConfigurationRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateGameModeRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateInitRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateOracleRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpdateUserEloRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UserIdContainer>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Client.Protobuf.Validator>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::System.Single>();
 

@@ -1,6 +1,8 @@
 using System;
 using log4net;
+#if !UNITY_EDITOR
 using Unity.Cloud.UserReporting.Plugin;
+#endif
 
 namespace Loom.ZombieBattleground.Helpers
 {

@@ -4,12 +4,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -17,7 +15,6 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
 using CardList = Loom.ZombieBattleground.Data.CardList;
@@ -269,11 +266,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ConfirmDeleteDeckReceivedHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
-        }
-
         private void ShowLoadDataFailMessage(string msg)
         {
             // Crash fast on CI
@@ -503,10 +495,7 @@ namespace Loom.ZombieBattleground
 
         private void FillFullCollection()
         {
-            CachedCollectionData = new CollectionData
-            {
-                Cards = new List<CollectionCardData>()
-            };
+            CachedCollectionData = new CollectionData();
 
             foreach (Data.Faction set in CachedCardsLibraryData.Factions)
             {
@@ -515,7 +504,7 @@ namespace Loom.ZombieBattleground
                     CachedCollectionData.Cards.Add(
                         new CollectionCardData
                         (
-                            card.MouldId,
+                            card.CardKey,
                             (int) GetMaxCopiesValue(card, set.Name)
                         ));
                 }

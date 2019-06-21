@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {

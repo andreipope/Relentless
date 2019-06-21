@@ -75,7 +75,8 @@ namespace Loom.Client
 
         public async Task<List<EventLog<T>>> GetAllChanges<T>(NewFilterInput filterInput) where T : new()
         {
-            return DecodeAllEvents<T>(await GetAllChanges(filterInput));
+            FilterLog[] changes = await GetAllChanges(filterInput);
+            return DecodeAllEvents<T>(changes);
         }
 
         public bool IsLogForEvent(JToken log)
@@ -123,7 +124,7 @@ namespace Loom.Client
             return new FilterLog
             {
                 Address = Address.FromBytes(log.Address.ToByteArray()).LocalAddress,
-                Data = log.Data.ToBase64(),
+                Data = CryptoUtils.BytesToHexString(log.Data.ToByteArray()),
                 Removed = log.Removed,
                 Topics = log.Topics.Select(t => (object) t.ToStringUtf8()).ToArray(),
                 Type = "",

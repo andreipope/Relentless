@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = TestHelper.CreateTestUserName() + "@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
                 string password = "testing";
 
                 loginPopup.SetRegistrationFieldsData(email, password);
@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_ForgotPassword");
 
-                string email = TestHelper.CreateTestUserName() + "@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
 
                 PopulateLoginPopupTextField(email, "Forgot_Group/Email_BG/Email_InputField");
 
@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = TestHelper.CreateTestUserName() + "@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
                 string password = "testing";
 
                 loginPopup.SetRegistrationFieldsData(email, password);
@@ -165,7 +165,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = TestHelper.CreateTestUserName() + "@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
                 string password = "testing";
 
                 loginPopup.SetRegistrationFieldsData(email, password);

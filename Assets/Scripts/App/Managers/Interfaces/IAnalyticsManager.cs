@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
-using mixpanel;
 
 public interface IAnalyticsManager
 {

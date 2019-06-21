@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
             List<CollectionCardData> data = GameClient.Get<IDataManager>().CachedCollectionData.Cards;
             foreach (CollectionCardData card in data)
             {
-                CollectionCardData cardData = new CollectionCardData(card.MouldId, card.Amount);
+                CollectionCardData cardData = new CollectionCardData(card.CardKey, card.Amount);
                 collectionData.Cards.Add(cardData);
             }
 
@@ -76,8 +76,8 @@ namespace Loom.ZombieBattleground
 
             foreach(DeckCardData card in _currentEditDeck.Cards)
             {
-                Card fetchedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromMouldId(card.MouldId);
-                collectionData.GetCardData(fetchedCard.MouldId).Amount -= card.Amount;
+                Card fetchedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardByCardKey(card.CardKey);
+                collectionData.GetCardData(fetchedCard.CardKey).Amount -= card.Amount;
             }
 
             OnPressedAutoComplete?.Invoke(_currentEditDeck, collectionData);

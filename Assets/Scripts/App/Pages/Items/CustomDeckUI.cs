@@ -147,10 +147,10 @@ namespace Loom.ZombieBattleground
             {
                 DeckCardData deckCardData = _selectedDeck.Cards[i];
 
-                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.MouldId == deckCardData.MouldId);
+                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.CardKey == deckCardData.CardKey);
                 if (cardIndex == -1)
                 {
-                    Log.Error($"Card with MouldId {deckCardData.MouldId} not found.");
+                    Log.Error($"Card with MouldId {deckCardData.CardKey} not found.");
                     return;
                 }
 
@@ -233,7 +233,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveCard(Card card)
         {
-            DeckCardUI cardUi = _deckCards.Find(deckCard => deckCard.GetCardInterface().MouldId == card.MouldId);
+            DeckCardUI cardUi = _deckCards.Find(deckCard => deckCard.GetCardInterface().CardKey == card.CardKey);
             Object.Destroy(cardUi.GetGameObject());
 
             _deckCards.Remove(cardUi);
@@ -241,10 +241,10 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCard(Card card, int cardAmount)
         {
-            DeckCardUI deckCard = _deckCards.Find(cardInDeck => cardInDeck.GetCardInterface().MouldId == card.MouldId);
+            DeckCardUI deckCard = _deckCards.Find(cardInDeck => cardInDeck.GetCardInterface().CardKey == card.CardKey);
             if (deckCard == null)
             {
-                Log.Error($"Card with MouldId {card.MouldId} not found.");
+                Log.Error($"Card with MouldId {card.CardKey} not found.");
                 return;
             }
 

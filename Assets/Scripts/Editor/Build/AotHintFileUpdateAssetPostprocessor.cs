@@ -10,7 +10,10 @@ namespace Loom.ZombieBattleground.Editor
         private const string MustRegenerateAotHintKey = "ZB_MustRegenerateAotHint";
         private static readonly string[] TargetFileNames =
         {
-            "ZbCalls.cs", "ZbData.cs", "ZbEnums.cs"
+            "ZbCalls.cs",
+            "ZbData.cs",
+            "ZbEnums.cs",
+            "ZbCustombase.cs",
         };
 
         private static void OnPostprocessAllAssets(

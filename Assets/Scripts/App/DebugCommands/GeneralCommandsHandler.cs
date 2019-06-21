@@ -10,19 +10,23 @@ namespace Loom.ZombieBattleground
     public static class GeneralCommandsHandler
     {
         private static BackendDataControlMediator _backendDataControlMediator;
+        private static BackendFacade _backendFacade;
 
         public static void Initialize()
         {
             CommandHandlers.RegisterCommandHandlers(typeof(GeneralCommandsHandler));
 
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _backendFacade = GameClient.Get<BackendFacade>();
         }
 
         [CommandHandler(Description = "Logs in into the game with a fake random user")]
         private static async void FakeLogin()
         {
+            long userId = UnityEngine.Random.Range(100000, int.MaxValue);
             UserDataModel userDataModel = new UserDataModel(
-                "ZombieSlayer_Fake_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                "ZombieSlayer_Fake_" + userId,
+                userId,
                 CryptoUtils.GeneratePrivateKey()
             );
 
@@ -102,7 +106,7 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static void ShowYouWonYouLostPopup(bool win)
+        public static void ShowYouWonYouLostPopup(bool win = true)
         {
             GameClient.Get<IUIManager>().DrawPopup<YouWonYouLostPopup>(new object[] { win });
         }
@@ -111,6 +115,33 @@ namespace Loom.ZombieBattleground
         public static void HideYouWonYouLostPopup()
         {
             GameClient.Get<IUIManager>().HidePopup<YouWonYouLostPopup>();
+        }
+
+        [CommandHandler]
+        public static void ShowPackOpenerV1()
+        {
+            GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBar>();
+        }
+
+        [CommandHandler]
+        public static void ShowPackOpenerV2()
+        {
+            GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBarV2>();
+        }
+
+        [CommandHandler]
+        public static async void DebugGetUserIdByAddress()
+        {
+            string userId = await _backendFacade.DebugGetUserIdByAddress(_backendDataControlMediator.UserDataModel.Address);
+            Debug.Log("User Id: " + userId);
+        }
+
+        [CommandHandler]
+        public static async void DebugGetPendingCardAmountChangeItems()
+        {
+            DebugGetPendingCardAmountChangeItemsResponse response =
+                await _backendFacade.DebugGetPendingCardAmountChangeItems(_backendDataControlMediator.UserDataModel.Address);
+            Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
         }
     }
 }

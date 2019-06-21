@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;

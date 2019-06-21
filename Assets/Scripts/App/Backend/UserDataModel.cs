@@ -1,13 +1,21 @@
 ﻿using System;
+using System.Numerics;
+using Loom.Client;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
     [Serializable]
     public class UserDataModel
     {
-        public string UserId;
+        public string UserId { get; }
 
-        public byte[] PrivateKey;
+        public BigInteger UserIdNumber { get; }
+
+        public byte[] PrivateKey { get; }
+
+        public byte[] PublicKey { get; }
+
+        public Address Address { get; }
 
         public bool IsValid;
 
@@ -21,10 +29,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public string AccessToken;
 
-        public UserDataModel(string userId, byte[] privateKey)
+        public UserDataModel(string userId, BigInteger userIdNumber, byte[] privateKey)
         {
             UserId = userId;
+            UserIdNumber = userIdNumber;
             PrivateKey = privateKey;
+            PublicKey = CryptoUtils.PublicKeyFromPrivateKey(PrivateKey);
+            Address = Address.FromPublicKey(PublicKey);
         }
 
         public override string ToString()

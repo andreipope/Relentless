@@ -3,7 +3,6 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
 using log4net;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {

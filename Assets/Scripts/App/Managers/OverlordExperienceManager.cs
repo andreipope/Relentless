@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
-using OverlordSkillPrototype = Loom.ZombieBattleground.Data.OverlordSkillPrototype;
-using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground
 {

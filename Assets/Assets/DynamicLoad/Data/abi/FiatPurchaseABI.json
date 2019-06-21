@@ -1,0 +1,230 @@
+[
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "nonces",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "deployerAddr",
+          "type": "address"
+        },
+        {
+          "name": "gatewayKeyPubAddr",
+          "type": "address"
+        },
+        {
+          "name": "boosterPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "superPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "airPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "earthPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "firePackAddr",
+          "type": "address"
+        },
+        {
+          "name": "lifePackAddr",
+          "type": "address"
+        },
+        {
+          "name": "toxicPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "waterPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "smallPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "minionPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "binancePackAddr",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "txId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "userId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "hash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "name": "ecrecover",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "gatewayAddr",
+          "type": "address"
+        }
+      ],
+      "name": "PurchaseSent",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipRenounced",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "userID",
+          "type": "uint256"
+        },
+        {
+          "name": "r",
+          "type": "bytes32"
+        },
+        {
+          "name": "s",
+          "type": "bytes32"
+        },
+        {
+          "name": "v",
+          "type": "uint8"
+        },
+        {
+          "name": "hash",
+          "type": "bytes32"
+        },
+        {
+          "name": "amounts",
+          "type": "uint256[11]"
+        },
+        {
+          "name": "txID",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestPacks",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "stopContract",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]

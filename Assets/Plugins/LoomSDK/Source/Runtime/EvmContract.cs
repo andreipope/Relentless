@@ -64,11 +64,11 @@ namespace Loom.Client
         /// <param name="method">Smart contract method name.</param>
         /// <param name="functionInput">Arguments objects arrays for the smart contract method.</param>
         /// <returns>Nothing.</returns>
-        public async Task CallAsync(string method, params object[] functionInput)
+        public async Task<BroadcastTxResult> CallAsync(string method, params object[] functionInput)
         {
             FunctionBuilder function = this.contractBuilder.GetFunctionBuilder(method);
             CallInput callInput = function.CreateCallInput(functionInput);
-            await this.CallAsync(callInput.Data);
+            return await this.CallAsync(callInput.Data);
         }
 
         /// <summary>
@@ -78,11 +78,11 @@ namespace Loom.Client
         /// <param name="functionInput">Input Data Transfer Object for smart contract method.</param>
         /// <returns>Nothing.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        public async Task CallAsync<TInput>(TInput functionInput)
+        public async Task<BroadcastTxResult> CallAsync<TInput>(TInput functionInput)
         {
             FunctionBuilder<TInput> function = this.contractBuilder.GetFunctionBuilder<TInput>();
             CallInput callInput = function.CreateCallInput(functionInput);
-            await this.CallAsync(callInput.Data);
+            return await this.CallAsync(callInput.Data);
         }
 
         /// <summary>
@@ -447,9 +447,9 @@ namespace Loom.Client
             return await this.Client.CommitTxAsync(tx, new CallDescription("_evmCall", false));
         }
 
-        private async Task CallAsync(string callInput)
+        private async Task<BroadcastTxResult> CallAsync(string callInput)
         {
-            await this.CallAsyncBroadcastTxResult(callInput);
+            return await this.CallAsyncBroadcastTxResult(callInput);
         }
 
         private async Task<TReturn> CallAsync<TReturn>(string callInput, FunctionBuilderBase functionBuilder, Func<FunctionBuilderBase, string, TReturn> decodeFunc)

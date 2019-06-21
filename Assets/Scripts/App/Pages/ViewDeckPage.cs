@@ -184,10 +184,10 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < deck.Cards.Count; i++)
             {
                 DeckCardData deckCardData = deck.Cards[i];
-                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.MouldId == deckCardData.MouldId);
+                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.CardKey == deckCardData.CardKey);
                 if (cardIndex == -1)
                 {
-                    Log.Error($"Card with MouldId {deckCardData.MouldId} not found.");
+                    Log.Error($"Card with MouldId {deckCardData.CardKey} not found.");
                     return;
                 }
 
