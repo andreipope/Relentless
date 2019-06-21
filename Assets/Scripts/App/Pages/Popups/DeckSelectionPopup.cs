@@ -22,27 +22,23 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
-        private ISoundManager _soundManager;
-
         private IDataManager _dataManager;
 
         private ITutorialManager _tutorialManager;
 
         private TextMeshProUGUI _textDeckName;
 
-        private GameObject _glowBorderVFX;
-
         private Button _buttonLeft, _buttonRight;
 
         private GameObject _deckIconPrefab;
 
-        private List<GameObject> _createdDeckIconList;
+        private List<DeckIcon> _createdDeckIconList;
 
         private Transform _deckIconGroup;
 
-        private const float _deckIconScaleNormal = 0.7178f;
+        private const float DeckIconScaleNormal = 0.7178f;
 
-        private const float _deckIconScaleSelected = 1f;
+        private const float DeckIconScaleSelected = 1f;
 
         private List<Deck> _deckList;
 
@@ -56,7 +52,6 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
@@ -97,15 +92,14 @@ namespace Loom.ZombieBattleground
                 return;
 
             Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DeckSelectionPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DeckSelectionPopup"),
+                _uiManager.Canvas2.transform,
+                false);
 
             _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");
 
             _textDeckName = Self.transform.Find("Text_DeckName").GetComponent<TextMeshProUGUI>();
             _deckIconGroup = Self.transform.Find("Panel_DeckContent/Group");
-
-            _glowBorderVFX = Self.transform.Find("Image_DeckIcon_Glow").gameObject;
 
             _buttonRight = Self.transform.Find("Button_Right").GetComponent<Button>();
             _buttonLeft = Self.transform.Find("Button_Left").GetComponent<Button>();
@@ -135,7 +129,7 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-        public void ReloadDeckDataAndDisplay()
+        private void ReloadDeckDataAndDisplay()
         {
             LoadDefaultDeckData();
             LoadDeckObjects();
@@ -152,7 +146,6 @@ namespace Loom.ZombieBattleground
             {
                 selectedDeck = _dataManager.CachedDecksData.Decks[0];
             }
-
 
             _deckList = new List<Deck>();
             HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
@@ -219,18 +212,9 @@ namespace Loom.ZombieBattleground
             return _deckList;
         }
 
-        private OverlordUserInstance GetOverlordDataFromDeck(Deck deck)
-        {
-            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
-            return overlord;
-        }
-
         private void SetSelectedDeckIdByIndex(int newIndex)
         {
-            SaveLastSelectedDeckId
-            (
-                _deckList[newIndex]
-            );
+            SaveLastSelectedDeckId(_deckList[newIndex]);
             UpdateSelectedDeckDisplay();
 
             SelectDeckEvent?.Invoke(GetSelectedDeck());
@@ -266,24 +250,21 @@ namespace Loom.ZombieBattleground
         private void LoadDeckObjects()
         {
             DisposeCreatedObject();
-            _createdDeckIconList = new List<GameObject>();
+            _createdDeckIconList = new List<DeckIcon>();
 
             for (int i = 0; i < _deckList.Count; i++)
             {
-                GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
-                deckIcon.transform.SetParent(_deckIconGroup);
-                deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
+                GameObject deckIconObj = Object.Instantiate(_deckIconPrefab, _deckIconGroup, false);
+                deckIconObj.transform.localScale = Vector3.one * DeckIconScaleNormal;
 
-                Deck deck = _deckList[i];
-                deckIcon.GetComponent<Image>().sprite = GetDeckIconSprite
-                (
-                    GetOverlordDataFromDeck(deck).Prototype.Faction
-                );
+                DeckIcon deckIcon = new DeckIcon(_deckList[i].Id);
+                deckIcon.Init(deckIconObj);
+                deckIcon.SetDeckIcon();
 
                 _createdDeckIconList.Add(deckIcon);
 
+                MultiPointerClickHandler multiPointerClickHandler = deckIconObj.AddComponent<MultiPointerClickHandler>();
                 int index = i;
-                MultiPointerClickHandler multiPointerClickHandler = deckIcon.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.SingleClickReceived += ()=>
                 {
                     if (_tutorialManager.IsTutorial)
@@ -298,9 +279,10 @@ namespace Loom.ZombieBattleground
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    // TODO
-                    //hordeSelection.AssignSelectedDeck(deck);
-                    //hordeSelection.AssignCurrentEditDeck(deck);
+
+                    Deck selectedDeck = _deckList.Find(deck => deck.Id == deckIcon.DeckId);
+                    hordeSelection.SelectedDeckId = (int)selectedDeck.Id.Id;
+                    hordeSelection.CurrentEditDeck = selectedDeck;
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                 };
             }
@@ -310,18 +292,16 @@ namespace Loom.ZombieBattleground
 
         private void AddNewDeckButton()
         {
-            GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
-            deckIcon.transform.SetParent(_deckIconGroup);
-            deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
+            GameObject deckIconObj = Object.Instantiate(_deckIconPrefab, _deckIconGroup, false);
+            deckIconObj.transform.localScale = Vector3.one * DeckIconScaleNormal;
 
-            deckIcon.GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>
-            (
-                "Images/UI/MainMenu/DeckIcons/icon_newdeck"
-            );
+            DeckIcon deckIcon = new DeckIcon(null);
+            deckIcon.Init(deckIconObj);
+            deckIcon.SetDeckIcon();
 
             _createdDeckIconList.Add(deckIcon);
 
-            deckIcon.AddComponent<MultiPointerClickHandler>().SingleClickReceived += ()=>
+            deckIconObj.AddComponent<MultiPointerClickHandler>().SingleClickReceived += ()=>
             {
                 if (_tutorialManager.IsTutorial)
                     return;
@@ -333,7 +313,8 @@ namespace Loom.ZombieBattleground
                 }
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
-                //_uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
+                HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+                deckPage.HordeSelectDeckTab.OpenOverlordSelectionPopup();
             };
         }
 
@@ -342,7 +323,7 @@ namespace Loom.ZombieBattleground
             Deck selectedDeck = GetSelectedDeck();
             int deckIndex = GetSelectedDeckIndex();
             _textDeckName.text = selectedDeck.Name;
-            OverlordUserInstance selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
+            OverlordUserInstance selectedOverlord = DataUtilities.GetOverlordDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Prototype.Faction);
 
             int middleFrameIndex = _deckIconPositionList.Count / 2;
@@ -353,7 +334,7 @@ namespace Loom.ZombieBattleground
             float scale;
             for (int i = 0; i < _createdDeckIconList.Count; ++i)
             {
-                deckIcon = _createdDeckIconList[i];
+                deckIcon = _createdDeckIconList[i].GetGameObject();
                 frameIndex = i - shiftIndex;
                 if(frameIndex < 0 || frameIndex >= _deckIconPositionList.Count)
                 {
@@ -363,30 +344,9 @@ namespace Loom.ZombieBattleground
                 {
                     deckIcon.SetActive(true);
                     deckIcon.transform.position = _deckIconPositionList[frameIndex];
-                    scale = (i == deckIndex) ? _deckIconScaleSelected : _deckIconScaleNormal;
+                    scale = i == deckIndex ? DeckIconScaleSelected : DeckIconScaleNormal;
                     deckIcon.transform.localScale = Vector3.one * scale;
                 }
-            }
-        }
-
-        public Sprite GetDeckIconSprite(Enumerators.Faction faction)
-        {
-            switch(faction)
-            {
-                case Enumerators.Faction.AIR:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_air");
-                case Enumerators.Faction.EARTH:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_earth");
-                case Enumerators.Faction.FIRE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_fire");
-                case Enumerators.Faction.WATER:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_water");
-                case Enumerators.Faction.TOXIC:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_toxic");
-                case Enumerators.Faction.LIFE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_life");
-                default:
-                    return null;
             }
         }
 
@@ -394,9 +354,9 @@ namespace Loom.ZombieBattleground
         {
             if(_createdDeckIconList != null)
             {
-                foreach( GameObject icon in _createdDeckIconList)
+                for(int i =_createdDeckIconList.Count-1; i>=0; i--)
                 {
-                    Object.Destroy(icon);
+                    Object.Destroy(_createdDeckIconList[i].GetGameObject());
                 }
                 _createdDeckIconList.Clear();
                 _createdDeckIconList = null;
@@ -424,5 +384,41 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+    }
+
+
+    public class DeckIcon
+    {
+        public DeckId? DeckId;
+        public Image OverlordImage;
+
+        private GameObject Self;
+
+        public DeckIcon(DeckId? deckId)
+        {
+            DeckId = deckId;
+        }
+
+        public void Init(GameObject obj)
+        {
+            Self = obj;
+            OverlordImage = Self.GetComponent<Image>();
+        }
+
+        public void SetDeckIcon()
+        {
+            OverlordImage.gameObject.SetActive(DeckId != null);
+
+            if (DeckId != null)
+            {
+                Enumerators.Faction faction = DataUtilities.GetOverlordDataFromDeck((DeckId) DeckId).Prototype.Faction;
+                OverlordImage.sprite = DataUtilities.GetOverlordDeckIcon(faction);
+            }
+        }
+
+        public GameObject GetGameObject()
+        {
+            return Self;
+        }
     }
 }

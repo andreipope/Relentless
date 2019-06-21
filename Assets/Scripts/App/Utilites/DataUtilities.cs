@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace Loom.ZombieBattleground
             return index != -1 ? overlordUserInstance.Skills[index].Prototype.Skill : Enumerators.Skill.NONE;
         }
 
+
         public static Sprite GetAbilityIcon(OverlordSkillUserInstance skill)
         {
             ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -42,33 +44,6 @@ namespace Loom.ZombieBattleground
 
             string iconPath = skill.Prototype.IconPath;
             return loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
-        }
-
-        public static Sprite GetOverlordThumbnailSprite(OverlordId overlordId)
-        {
-            IDataManager dataManager = GameClient.Get<IDataManager>();
-            ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-
-            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
-            string path = "Images/UI/MyDecks/OverlordPortrait";
-
-            switch(overlord.Prototype.Faction)
-            {
-                case Enumerators.Faction.AIR:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air");
-                case Enumerators.Faction.FIRE:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_fire");
-                case Enumerators.Faction.EARTH:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_earth");
-                case Enumerators.Faction.TOXIC:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_toxic");
-                case Enumerators.Faction.WATER:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_water");
-                case Enumerators.Faction.LIFE:
-                    return loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life");
-                default:
-                    return null;
-            }
         }
 
         public static void PlayClickSound()
@@ -102,11 +77,94 @@ namespace Loom.ZombieBattleground
             return overlordUserInstance.Skills[index].Prototype.Id;
         }
 
+        public static Sprite GetOverlordImage(OverlordId overlordId)
+        {
+            Enumerators.Faction faction = GetFaction(overlordId);
+
+            string path = "Images/UI/Overlord_Image/";
+            path = path + "champion_image_" + faction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+        }
+
+        public static Enumerators.Faction GetFaction(OverlordId overlordId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+
+            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            return overlord.Prototype.Faction;
+        }
+
+
         public static Sprite GetOverlordImage(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/Overlord_Image/";
             path = path + "champion_image_" + overlordFaction.ToString().ToLower();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
+
+        public static OverlordUserInstance GetOverlordDataFromDeck(Deck deck)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            return overlord;
+        }
+
+        public static OverlordUserInstance GetOverlordDataFromDeck(DeckId deckId)
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            Deck deck = dataManager.CachedDecksData.Decks.Find(cachedDeck => cachedDeck.Id == deckId);
+            OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            return overlord;
+        }
+
+        public static Vector3 GetOverlordImagePositionInViewDeck(Enumerators.Faction faction)
+        {
+            switch (faction)
+            {
+                case Enumerators.Faction.FIRE:
+                    return new Vector3(116f, -379f, 0f);
+                case Enumerators.Faction.WATER:
+                    return new Vector3(11f, -389f, 0f);
+                case Enumerators.Faction.EARTH:
+                    return new Vector3(-3f, -325f, 0f);
+                case Enumerators.Faction.AIR:
+                    return new Vector3(-150f, -223f, 0f);
+                case Enumerators.Faction.LIFE:
+                    return new Vector3(-42f, -219f, 0f);
+                case Enumerators.Faction.TOXIC:
+                    return new Vector3(101f, -219f, 0f);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
+            }
+        }
+
+        public static Vector3 GetOverlordImageScaleInViewDeck(Enumerators.Faction faction)
+        {
+            switch (faction)
+            {
+                case Enumerators.Faction.FIRE:
+                    return Vector3.one * 1.4f;
+                case Enumerators.Faction.WATER:
+                    return Vector3.one * 1.2f;
+                case Enumerators.Faction.EARTH:
+                    return Vector3.one;
+                case Enumerators.Faction.AIR:
+                    return Vector3.one;
+                case Enumerators.Faction.LIFE:
+                    return Vector3.one * 1.2f;
+                case Enumerators.Faction.TOXIC:
+                    return Vector3.one;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
+            }
+        }
+
+        public static Sprite GetOverlordDeckIcon(Enumerators.Faction faction)
+        {
+            string path = "Images/UI/DeckIcons/";
+            path = path + "icon_" + faction.ToString().ToLower();
+            return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+        }
+
     }
 }
