@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.PACK_OPENER:
                     if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
-                        _uiManager.SetPage<PackOpenerPageWithNavigationBarV2>();
+                        _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
                     }
                     else
                     {

@@ -80,7 +80,6 @@ namespace Loom.ZombieBattleground.Data
                 }
             }
 
-            cards = cards.Where(card => card != null).ToList();
             return cards;
         }
 
