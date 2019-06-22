@@ -555,7 +555,7 @@ namespace Loom.ZombieBattleground
             _lastPackBalanceIdRequest = typeId;
             try
             {
-                _packBalanceAmounts[(int) typeId] = await _plasmaChainBackendFacade.GetPackTypeBalance(client, typeId);
+                _packBalanceAmounts[(int) typeId] = (int) await _plasmaChainBackendFacade.GetPackTypeBalance(client, typeId);
                 SetPackTypeButtonsAmount(typeId);
                 _retryPackBalanceRequestCount = 0;
             }
@@ -603,7 +603,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e}");
+                Log.Warn($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e}");
 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
