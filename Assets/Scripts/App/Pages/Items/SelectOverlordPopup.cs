@@ -10,9 +10,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class OverlordSelectionPopup : IUIPopup
+    public class SelectOverlordPopup : IUIPopup
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(OverlordSelectionPopup));
+        private static readonly ILog Log = Logging.GetLog(nameof(SelectOverlordPopup));
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordHandler()
         {
-            OverlordSelectionPopup.OnSelectOverlord?.Invoke(_overlordId);
+            SelectOverlordPopup.OnSelectOverlord?.Invoke(_overlordId);
         }
 
         public void SetOverlordId(OverlordId overlordId)

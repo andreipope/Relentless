@@ -71,6 +71,9 @@ namespace Loom.ZombieBattleground
             }
 
             SetName(_deck.Name);
+
+            // set the input field not intractable, if there is tutorial
+            _inputFieldRenameDeckName.interactable = !GameClient.Get<ITutorialManager>().IsTutorial;
         }
 
         public void Show(object data)
@@ -163,6 +166,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCancelHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonCancel.name))
+                return;
+
             DataUtilities.PlayClickSound();
             Hide();
         }

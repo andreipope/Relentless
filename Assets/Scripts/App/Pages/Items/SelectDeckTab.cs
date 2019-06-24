@@ -408,7 +408,7 @@ namespace Loom.ZombieBattleground
         public void OpenOverlordSelectionPopup()
         {
             _myDeckPage.SelectedDeckId = -1;
-            _uiManager.DrawPopup<OverlordSelectionPopup>();
+            _uiManager.DrawPopup<SelectOverlordPopup>();
         }
 
         private void ButtonLeftArrowHandler()
