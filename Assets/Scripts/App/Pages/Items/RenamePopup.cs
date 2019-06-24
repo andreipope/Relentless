@@ -29,7 +29,6 @@ namespace Loom.ZombieBattleground
         public static Action<string> OnSaveNewDeckName;
 
         private Deck _deck;
-        private bool _isCreatingNewDeck;
 
         public void Init()
         {
@@ -59,7 +58,7 @@ namespace Loom.ZombieBattleground
             _buttonCancel = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
-            if (_isCreatingNewDeck)
+            if (_deck.Id.Id == -1)
             {
                 _buttonSaveRenameDeck.gameObject.SetActive(false);
                 _buttonContinue.gameObject.SetActive(true);
@@ -75,11 +74,7 @@ namespace Loom.ZombieBattleground
 
         public void Show(object data)
         {
-            if(data is object[] param)
-            {
-                _deck = (Deck) param[0];
-                _isCreatingNewDeck = (bool) param[1];
-            }
+            _deck = (Deck) data;
             Show();
         }
 
