@@ -25,6 +25,18 @@ namespace Loom.ZombieBattleground
             _buttonChange.onClick.AddListener(ButtonChangeAbilityHandler);
 
             SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += OnSaveSelectedSkill;
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill += OnSelectOverlordSkill;
+        }
+
+        private void OnSelectOverlordSkill(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            if (_deck == null)
+                return;
+
+            _deck.PrimarySkill = primarySkill;
+            _deck.SecondarySkill = secondarySkill;
+
+            ShowAbilities(_deck);
         }
 
         private void ButtonChangeAbilityHandler()
@@ -53,6 +65,7 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
             SelectOverlordAbilitiesPopup.OnSaveSelectedSkill -= OnSaveSelectedSkill;
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill -= OnSelectOverlordSkill;
         }
     }
 }

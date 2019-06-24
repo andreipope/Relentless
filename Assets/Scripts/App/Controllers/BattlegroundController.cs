@@ -774,7 +774,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 sizeOfCard = Vector3.one;
 
-            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.55f, .5f, .4f) : new Vector3(.33f, .3f, .25f);
+            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.55f, .5f, .4f) : new Vector3(.5f, .5f, .25f);
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
