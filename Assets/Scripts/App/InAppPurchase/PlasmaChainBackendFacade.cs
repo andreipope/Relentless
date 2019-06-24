@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground.Iap
 
         private const string BalanceOfMethod = "balanceOf";
 
+        private const string TokensOwnedMethod = "tokensOwned";
+
         private const string ApproveMethod = "approve";
 
         private const string OpenPackMethod = "openBoosterPack";
@@ -101,6 +103,27 @@ namespace Loom.ZombieBattleground.Iap
 
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType}) returned {amount}");
             return amount;
+        }
+
+        public async Task<IReadOnlyList<CollectionCardData>> GetCardsOwned(DAppChainClient client)
+        {
+            Log.Info($"{nameof(GetCardsOwned)}()");
+
+            EvmContract packTypeContract = GetContract(client, IapContractType.ZbgCard);
+            TokensOwnedFunctionResult result =
+                await packTypeContract.StaticCallDtoTypeOutputAsync<TokensOwnedFunctionResult>(
+                    TokensOwnedMethod,
+                    UserPlasmaChainAddress.LocalAddress
+                );
+
+            CollectionCardData[] cards = new CollectionCardData[result.Indexes.Count];
+            for (int i = 0; i < result.Indexes.Count; i++)
+            {
+                cards[i] = new CollectionCardData(CardKey.FromCardTokenId((long) result.Indexes[i]), (int) result.Balances[i]);
+            }
+
+            Log.Info($"{nameof(GetPackTypeBalance)}() returned {Utilites.FormatCallLogList(cards)}");
+            return cards;
         }
 
         public async Task<IReadOnlyList<CardKey>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
@@ -396,6 +419,16 @@ namespace Loom.ZombieBattleground.Iap
                 base.Dispose();
                 Log.Debug("Disposing PlasmaChain client");
             }
+        }
+
+        [FunctionOutput]
+        public class TokensOwnedFunctionResult
+        {
+            [Parameter("uint256[]", "indexes")]
+            public List<BigInteger> Indexes { get; set; }
+
+            [Parameter("uint256[]", "balances")]
+            public List<BigInteger> Balances { get; set; }
         }
 
         [Event("GeneratedCard")]
