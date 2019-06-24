@@ -3,6 +3,9 @@ using TMPro;
 
 namespace Loom.ZombieBattleground
 {
+    /// <summary>
+    /// Very basic Skew modifier for TextMeshPro. Only useful with small values since the mesh is not tesselated enough.
+    /// </summary>
     [ExecuteInEditMode]
     [RequireComponent(typeof(TextMeshProUGUIWithEvents))]
     public class TextMeshProSkew : MonoBehaviour

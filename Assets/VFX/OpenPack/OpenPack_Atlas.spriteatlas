@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 7963212cddf4e4cd9978fea67107b34f, type: 3}
-    totalSpriteSurfaceArea: 9529524
+    totalSpriteSurfaceArea: 6246580
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -52,7 +52,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b38380415ad621345ad20ee806f6896b, type: 3}
   - {fileID: 21300000, guid: 887a446176b104745ab92d920ef94a0a, type: 3}
   - {fileID: 21300000, guid: 53142761c14a57d4f8c76e8561491765, type: 3}
-  - {fileID: 21300000, guid: 25f441818df9ad5459e92058bc128513, type: 3}
   - {fileID: 21300000, guid: 20161a12c001dd04989ed6376111182c, type: 3}
   - {fileID: 21300000, guid: 20b83803036d9aa48839f4a05407681f, type: 3}
   - {fileID: 21300000, guid: ff03f3f347040884aa9e924fcaf7e954, type: 3}
@@ -70,7 +69,6 @@ SpriteAtlas:
   - packopener_slot
   - packopener_panel
   - tube_left
-  - 078
   - tube_glow_right
   - packopener_arrow_idle
   - packopener_scrollbar
