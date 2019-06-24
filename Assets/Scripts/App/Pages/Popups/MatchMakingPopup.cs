@@ -1,10 +1,5 @@
 using System;
-<<<<<<< HEAD
-using System.Threading.Tasks;
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Localization;
-=======
->>>>>>> 1ece9f30c63d974e78231d00007dc6c319ded1a1
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
