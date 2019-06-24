@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
 
         public event Action Closing;
 
+        public event Action Closed;
+
         public event Action Opening;
 
         public event Action<BoardCardView> PreviewCardInstantiated;
@@ -152,6 +154,8 @@ namespace Loom.ZombieBattleground
                 {
                     ClearPreviewCard();
                     SetIsStateChanging(false);
+
+                    Closed?.Invoke();
                 });
         }
 

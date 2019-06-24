@@ -126,7 +126,7 @@ namespace Loom.ZombieBattleground
         [CommandHandler]
         public static void ShowPackOpenerV2()
         {
-            GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBarV2>();
+            GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBar>();
         }
 
         [CommandHandler]
