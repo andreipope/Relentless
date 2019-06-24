@@ -98,15 +98,15 @@ namespace Loom.ZombieBattleground
             Self.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonBattle = Self.transform.Find("Group/Button_Battle").GetComponent<Button>();
-            _buttonShop = Self.transform.Find("Group/Button_Shop").GetComponent<Button>();           
+            _buttonShop = Self.transform.Find("Group/Button_Shop").GetComponent<Button>();
             _buttonDeck = Self.transform.Find("Group/Button_MyDecks").GetComponent<Button>();
             _buttonPack = Self.transform.Find("Group/Button_MyPacks").GetComponent<Button>();
             _buttonCard = Self.transform.Find("Group/Button_MyCards").GetComponent<Button>();
-            
+
             _buttonBattle.onClick.AddListener(ButtonBattleHandler);
             _buttonShop.onClick.AddListener(ButtonShopHandler);
             _buttonDeck.onClick.AddListener(ButtonDeckHandler);
-            _buttonPack.onClick.AddListener(ButtonPackHander);
+            _buttonPack.onClick.AddListener(ButtonPackHandler);
             _buttonCard.onClick.AddListener(ButtonCardHandler);
 
             UpdateButtonSprite();
@@ -123,25 +123,25 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
+
         private void UpdateButtonSprite()
         {
             switch(_currentMenu)
             {
                 case MENU.BATTLE:
-                    _buttonBattle.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonBattle.transform.Find("Image").GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.SHOP:
-                    _buttonShop.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonShop.transform.Find("Image").GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.MY_DECKS:
-                    _buttonDeck.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonDeck.transform.Find("Image").GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.MY_PACKS:
-                    _buttonPack.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonPack.transform.Find("Image").GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.MY_CARDS:
-                    _buttonCard.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonCard.transform.Find("Image").GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
             }
         }
@@ -175,8 +175,8 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
-        
-        private void ButtonPackHander()
+
+        private void ButtonPackHandler()
         {
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonPack.name))
                 return;
