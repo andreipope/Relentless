@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using log4net;
@@ -30,23 +29,15 @@ namespace Loom.ZombieBattleground
 
         private GameObject[] _tabObjects;
 
-        private CardHighlightingVFXItem _highlightingVFXItem;
-
-        public event Action<Tab> EventChangeTab;
-
         #region Cache Data
 
         private Tab _tab;
 
         public int SelectDeckIndex;
-
-        public int _selectedDeckId;
-
+        public int SelectedDeckId;
         public Deck CurrentEditDeck;
 
         public bool IsEditingNewDeck;
-
-        public bool IsRenameWhileEditing;
 
         #endregion
 
@@ -82,9 +73,6 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_DECKS);
             _uiManager.DrawPopup<AreaBarPopup>();
 
-            _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
-            _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
-
             UpdatePageScaleToMatchResolution();
 
             GameObject selectDeckObj = _selfPage.transform.Find("Tab_SelectDeck").gameObject;
@@ -93,7 +81,7 @@ namespace Loom.ZombieBattleground
             HordeSelectDeckTab.Show(selectDeckObj);
             HordeEditTab.Load(editingTabObj);
 
-            _selectedDeckId = (int)_dataManager.CachedDecksData.Decks[0].Id.Id;
+            SelectedDeckId = (int)_dataManager.CachedDecksData.Decks[0].Id.Id;
 
             _tabObjects = new[]
             {
@@ -101,8 +89,10 @@ namespace Loom.ZombieBattleground
                 editingTabObj
             };
 
-            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill += SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += SaveOverlordAbilitiesHandler;
             RenamePopup.OnSelectDeckName += SelectDeckNameHandler;
+            RenamePopup.OnSaveNewDeckName += SaveNewDeckNameHandler;
 
             LoadTabs();
         }
@@ -118,13 +108,14 @@ namespace Loom.ZombieBattleground
             Object.Destroy(_selfPage);
             _selfPage = null;
 
-            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill -= SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill -= SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill -= SaveOverlordAbilitiesHandler;
+            RenamePopup.OnSelectDeckName -= SelectDeckNameHandler;
+            RenamePopup.OnSaveNewDeckName -= SaveNewDeckNameHandler;
 
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
         }
-
-
 
         public void Dispose()
         {
@@ -154,7 +145,7 @@ namespace Loom.ZombieBattleground
                 if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
-                    _selectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
+                    SelectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
                 }
                 return tutorialDeckList;
             }
@@ -188,7 +179,7 @@ namespace Loom.ZombieBattleground
 
         public void OpenDeckPage(int deckId)
         {
-            _selectedDeckId = deckId;
+            SelectedDeckId = deckId;
             AssignCurrentDeck();
         }
 
@@ -204,11 +195,25 @@ namespace Loom.ZombieBattleground
             CurrentEditDeck.SecondarySkill = secondarySkill;
         }
 
+        private void SaveOverlordAbilitiesHandler(Enumerators.Skill primarySkill, Enumerators.Skill secondarySkill)
+        {
+            CurrentEditDeck.PrimarySkill = primarySkill;
+            CurrentEditDeck.SecondarySkill = secondarySkill;
+
+            HordeEditTab.GetCustomDeck().ChangeAbilities(primarySkill, secondarySkill);
+        }
+
         private void SelectDeckNameHandler(string deckName)
         {
             CurrentEditDeck.Name = deckName;
-
             ChangeTab(Tab.Editing);
+        }
+
+        private void SaveNewDeckNameHandler(string deckName)
+        {
+            CurrentEditDeck.Name = deckName;
+            HordeSelectDeckTab.ChangeSelectedDeckName(deckName);
+            HordeEditTab.GetCustomDeck().ChangeDeckName(deckName);
         }
 
         private Deck CreateNewDeckData(OverlordId overlordId)
@@ -246,11 +251,9 @@ namespace Loom.ZombieBattleground
                     HordeSelectDeckTab.InputFieldApplyFilter();
                     break;
                 case Tab.Editing:
-                    HordeEditTab.Show(_selectedDeckId);
+                    HordeEditTab.Show(SelectedDeckId);
                     break;
             }
-
-            EventChangeTab?.Invoke(_tab);
 
             if (oldTabl != Tab.None && oldTabl != newTab)
             {

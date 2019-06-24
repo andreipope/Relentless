@@ -6,7 +6,6 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEditor;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -230,9 +229,9 @@ namespace Loom.ZombieBattleground
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
-                                            if (!customDeck.Cards.Any(deckCard => deckCard.MouldId == card.MouldId))
+                                            if (!customDeck.Cards.Any(deckCard => deckCard.CardKey == card.CardKey))
                                             {
-                                                DeckCardData deckCardData = new DeckCardData(card.MouldId, 0);
+                                                DeckCardData deckCardData = new DeckCardData(card.CardKey, 0);
                                                 customDeck.Cards.Add(deckCardData);
                                             }
                                         }
@@ -292,7 +291,7 @@ namespace Loom.ZombieBattleground
 
                 GUILayout.BeginHorizontal();
                 {
-                    string cardName = _cheatUI._dataManager.CachedCardsLibraryData.GetCardFromMouldId(deckCard.MouldId).Name;
+                    string cardName = _cheatUI._dataManager.CachedCardsLibraryData.GetCardByCardKey(deckCard.CardKey).Name;
                     if (!_cardNameToDescription.TryGetValue(cardName, out string cardDescription))
                     {
                         customDeck.Cards.Remove(deckCard);

@@ -8,10 +8,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -809,13 +807,13 @@ namespace Loom.ZombieBattleground
 
         public WorkingCard CreateWorkingCardFromCardName(string cardName, Player owner)
         {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardByName(cardName);
             return new WorkingCard(card, card, owner);
         }
 
-        public WorkingCard CreateWorkingCardFromCardMouldId(MouldId mouldId, Player owner)
+        public WorkingCard CreateWorkingCardFromCardMouldId(CardKey cardKey, Player owner)
         {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardByCardKey(cardKey);
             return new WorkingCard(card, card, owner);
         }
 

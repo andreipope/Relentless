@@ -881,7 +881,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 CardModel playerHotUnit = null;
                 CardModel playerHot2Unit = null;
                 CardModel playerHot3Unit = null;
-                CardModel playerAlphaUnit = null;
 
                 CardModel opponentHotUnit = null;
                 CardModel opponentHot2Unit = null;

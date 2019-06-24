@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Helpers;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground

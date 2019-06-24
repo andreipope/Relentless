@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -208,7 +206,7 @@ namespace Loom.ZombieBattleground
             {
                 CollectionCardData cardData = _dataManager.CachedCollectionData.Cards[i];
 
-                int index = _dataManager.CachedCardsLibraryData.Cards.FindIndex(libraryCard => libraryCard.MouldId == cardData.MouldId);
+                int index = _dataManager.CachedCardsLibraryData.Cards.FindIndex(libraryCard => libraryCard.CardKey == cardData.CardKey);
                 if (index == -1)
                     return;
 
@@ -309,10 +307,10 @@ namespace Loom.ZombieBattleground
                 Card cardInUi = _cardUIList[i].GetCard();
 
                 // get amount of card in collection data
-                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
                 int totalCardAmount = cardInCollection.Amount;
 
-                DeckCardData deckCardData = selectedDeck.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                DeckCardData deckCardData = selectedDeck.Cards.Find(card => card.CardKey == cardInUi.CardKey);
                 if (deckCardData == null)
                 {
                     _cardUIList[i].UpdateCardAmount(totalCardAmount);
@@ -334,10 +332,10 @@ namespace Loom.ZombieBattleground
                 Card cardInUi = _cardUIList[i].GetCard();
 
                 // get amount of card in collection data
-                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
                 int totalCardAmount = cardInCollection.Amount;
 
-                DeckCardData deckCardData = deck.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                DeckCardData deckCardData = deck.Cards.Find(card => card.CardKey == cardInUi.CardKey);
                 if (deckCardData == null)
                 {
                     _cardUIList[i].UpdateCardAmount(totalCardAmount);
@@ -358,7 +356,7 @@ namespace Loom.ZombieBattleground
                 Card cardInUi = _cardUIList[i].GetCard();
 
                 // get amount of card in collection data
-                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.MouldId == cardInUi.MouldId);
+                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
                 int totalCardAmount = cardInCollection.Amount;
                _cardUIList[i].UpdateCardAmount(totalCardAmount);
             }
@@ -366,7 +364,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCardAmountDisplay(IReadOnlyCard card, int amount)
         {
-            UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().MouldId == card.MouldId);
+            UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey == card.CardKey);
             if (unitCardUi == null)
                 return;
 
@@ -443,7 +441,7 @@ namespace Loom.ZombieBattleground
         private void DisplayCards(List<Card> cards)
         {
             List<UnitCardUI> cardUiList = _cardUIList.Where(uiCard =>
-                cards.Any(resultCard => uiCard.GetCard().MouldId == resultCard.MouldId)).ToList();
+                cards.Any(resultCard => uiCard.GetCard().CardKey == resultCard.CardKey)).ToList();
             for (int i = 0; i < cardUiList.Count; i++)
             {
                 cardUiList[i].EnableObject(true);
@@ -451,7 +449,7 @@ namespace Loom.ZombieBattleground
 
             cardUiList.Clear();
             cardUiList = _cardUIList.Where(uiCard =>
-                cards.All(resultCard => uiCard.GetCard().MouldId != resultCard.MouldId)).ToList();
+                cards.All(resultCard => uiCard.GetCard().CardKey != resultCard.CardKey)).ToList();
             for (int i = 0; i < cardUiList.Count; i++)
             {
                 cardUiList[i].EnableObject(false);

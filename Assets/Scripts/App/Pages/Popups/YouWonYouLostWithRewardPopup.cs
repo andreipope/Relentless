@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -7,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using UnityEngine.Experimental.PlayerLoop;
 using DG.Tweening;
 
 namespace Loom.ZombieBattleground
@@ -246,15 +243,11 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
-                    if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
-                    {
-                        await GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
-                    } 
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }

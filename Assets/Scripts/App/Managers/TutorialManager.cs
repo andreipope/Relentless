@@ -5,11 +5,8 @@ using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Newtonsoft.Json;
-using Object = UnityEngine.Object;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
-using System.Globalization;
-using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
@@ -1316,7 +1313,7 @@ namespace Loom.ZombieBattleground
             if(CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
             {
                 cards = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.CardName))
+                    .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardByName(cardInfo.CardName))
                     .ToList()
                     .FindAll(card => card.Faction == faction)
                     .OrderBy(sort => sort.Cost)
@@ -1342,7 +1339,7 @@ namespace Loom.ZombieBattleground
             if (_cardsForOpenPack == null || _cardsForOpenPack.Count == 0)
             {
                 _cardsForOpenPack = CurrentTutorial.TutorialContent.TutorialReward.CardPackReward
-                    .Select(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.Name))
+                    .Select(card => _dataManager.CachedCardsLibraryData.GetCardByName(card.Name))
                     .ToList();
             }
 
@@ -1461,9 +1458,9 @@ namespace Loom.ZombieBattleground
         {
             List<DeckCardData> cards =
                 _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Select(data => new DeckCardData(_dataManager.CachedCardsLibraryData.GetCardFromName(data.CardName).MouldId, data.Amount))
+                    .Select(data => new DeckCardData(_dataManager.CachedCardsLibraryData.GetCardByName(data.CardName).CardKey, data.Amount))
                     .ToList()
-                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromMouldId(card.MouldId).Faction != Enumerators.Faction.FIRE);
+                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardByCardKey(card.CardKey).Faction != Enumerators.Faction.FIRE);
 
             List<DeckCardData> filteredCards = new List<DeckCardData>();
             int countCards = 0;
@@ -1497,7 +1494,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (CardRewardInfo rewardCard in CurrentTutorial.TutorialContent.ToMenusContent().TutorialReward.CardPackReward)
                 {
-                    cardInDeck = deck.Cards.Find(card => card.MouldId == _dataManager.CachedCardsLibraryData.GetCardFromName(rewardCard.Name).MouldId);
+                    cardInDeck = deck.Cards.Find(card => card.CardKey == _dataManager.CachedCardsLibraryData.GetCardByName(rewardCard.Name).CardKey);
                     if (cardInDeck != null)
                     {
                         cardInDeck.Amount -= 1;

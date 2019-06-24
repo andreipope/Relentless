@@ -6,7 +6,6 @@ using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {

@@ -1,4 +1,3 @@
-using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Localization;
 using TMPro;
@@ -8,7 +7,6 @@ using DG.Tweening;
 using log4net;
 using Object = UnityEngine.Object;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {

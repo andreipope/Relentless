@@ -47,7 +47,7 @@ namespace Loom.Client
         /// Block height at which the Tx was committed.
         /// </summary>
         [JsonProperty("height")]
-        public string Height { get; set; }
+        public ulong Height { get; set; }
 
         [JsonProperty("check_tx")]
         public TxResult CheckTx { get; set; }

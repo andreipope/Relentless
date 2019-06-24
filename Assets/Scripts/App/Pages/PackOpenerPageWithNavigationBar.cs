@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,13 +9,18 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Iap;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
+using Card = Loom.ZombieBattleground.Data.Card;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using Object = UnityEngine.Object;
+using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
 
 namespace Loom.ZombieBattleground
 {
@@ -36,6 +40,8 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
+
+        private BackendFacade _backendFacade;
 
         private PlasmaChainBackendFacade _plasmaChainBackendFacade;
 
@@ -136,6 +142,7 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -269,7 +276,7 @@ namespace Loom.ZombieBattleground
             else
             {
 #pragma warning disable 4014
-                UpdateAllPackBalanceAmounts();
+                ClaimPacksAndUpdateAllPackBalanceAmounts();
 #pragma warning restore 4014
             }
 
@@ -374,6 +381,12 @@ namespace Loom.ZombieBattleground
                     {
                         ButtonPackTypeHandler(id);
                     });
+
+                // FIXME
+                if (packTypes[i] != Enumerators.MarketplaceCardPackType.Booster)
+                {
+                    buttonParent.gameObject.SetActive(false);
+                }
             }
 
             _selfPage.transform.Find("pack_holder_tray/PackContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1f;
@@ -484,16 +497,57 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public async Task UpdateAllPackBalanceAmounts()
+        public async Task ClaimPacksAndUpdateAllPackBalanceAmounts()
         {
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[]) Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
 
-            using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
+            try
             {
-                for (int i = 0; i < packTypes.Length; ++i)
+                _uiManager.DrawPopup<LoadingOverlayPopup>("Checking your packs...");
+                using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
                 {
-                    await UpdatePackBalanceAmount(client, (Enumerators.MarketplaceCardPackType) i);
+                    // Claim unclaimed packs
+                    Log.Debug("Call GetPendingMintingTransactionReceipts");
+                    GetPendingMintingTransactionReceiptsResponse mintingTransactionReceipts =
+                        await _backendFacade.GetPendingMintingTransactionReceipts(_backendDataControlMediator.UserDataModel.UserId);
+                    if (mintingTransactionReceipts.ReceiptCollection.Receipts.Count > 0)
+                    {
+                        _uiManager.DrawPopup<LoadingOverlayPopup>("Claiming packs...");
+                    }
+
+                    foreach (MintingTransactionReceipt receiptProtobuf in mintingTransactionReceipts.ReceiptCollection.Receipts)
+                    {
+                        AuthFiatApiFacade.TransactionReceipt receipt = receiptProtobuf.FromProtobuf();
+                        Log.Debug($"Claiming receipt with TxId {receipt.TxId}");
+                        try
+                        {
+                            await _plasmaChainBackendFacade.ClaimPacks(client, receipt);
+                            Log.Info($"Claimed receipt with TxId {receipt.TxId} successfully!!");
+                        }
+                        catch (TxCommitException e)
+                        {
+                            // Already claimed?
+                            Log.Warn("Already claimed? " + e);
+                        }
+
+                        Log.Debug($"Confirming receipt with TxId {receipt.TxId}");
+                        await _backendFacade.ConfirmPendingMintingTransactionReceipt(_backendDataControlMediator.UserDataModel.UserId, receipt.TxId);
+                    }
+
+                    if (mintingTransactionReceipts.ReceiptCollection.Receipts.Count > 0)
+                    {
+                        _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your packs...");
+                    }
+
+                    for (int i = 0; i < packTypes.Length; ++i)
+                    {
+                        await UpdatePackBalanceAmount(client, (Enumerators.MarketplaceCardPackType) i);
+                    }
                 }
+            }
+            finally
+            {
+                _uiManager.HidePopup<LoadingOverlayPopup>();
             }
         }
 
@@ -542,7 +596,17 @@ namespace Loom.ZombieBattleground
             );
             try
             {
-                IReadOnlyList<Card> cards = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
+                IReadOnlyList<CardKey> cardKeys = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
+                List<Card> cards = _dataManager.CachedCardsLibraryData.GetCardsByCardKeys(cardKeys, true).ToList();
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    Card card = cards[i];
+                    if (card == null)
+                    {
+                        card = CreateEmptyPodFakeCard(cardKeys[i]);
+                        cards[i] = card;
+                    }
+                }
 
                 _cardsToDisplayQueqe.Clear();
                 _cardsToDisplayQueqe.AddRange(cards);
@@ -552,7 +616,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e.Message}");
+                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e}");
 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
@@ -571,6 +635,29 @@ namespace Loom.ZombieBattleground
                     await RetrieveCardsFromPack(client, _lastOpenPackIdRequest);
                 }
             }
+        }
+
+        private Card CreateEmptyPodFakeCard(CardKey cardKey)
+        {
+            return new Card(
+                cardKey,
+                $"Card #{cardKey.MouldId.Id}",
+                0,
+                "",
+                "",
+                "embryo_pod",
+                0,
+                0,
+                Enumerators.Faction.AIR,
+                "",
+                Enumerators.CardKind.CREATURE,
+                Enumerators.CardRank.MINION,
+                Enumerators.CardType.UNDEFINED,
+                new List<AbilityData>(),
+                new PictureTransform(new FloatVector3(0), new FloatVector3(0.4f)),
+                Enumerators.UniqueAnimation.None,
+                true
+            );
         }
 
         private async Task SimulateRetriveTutorialCardsFromPack()
@@ -770,7 +857,19 @@ namespace Loom.ZombieBattleground
                     .SetEase(Ease.InCubic)
                     .OnComplete(
                         () => { }));
-            Transform cardFace = cardShirt.GetChild(0).GetChild(0);
+
+            Transform cardFace;
+            try
+            {
+                cardFace = cardShirt.GetChild(0).GetChild(0);
+            }
+            catch (UnityException e)
+            {
+                // FIXME
+                Log.Error(e);
+                return;
+            }
+
             cardFace.parent = null;
             cardFace.localEulerAngles = Vector3.up * 90f;
             sequence.Append(

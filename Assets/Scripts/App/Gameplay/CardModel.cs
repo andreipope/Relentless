@@ -5,7 +5,6 @@ using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground
 {

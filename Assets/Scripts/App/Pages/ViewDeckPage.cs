@@ -87,6 +87,8 @@ namespace Loom.ZombieBattleground
 
             // cards count
             UpdateCardsInDeckCountDisplay(deck);
+
+            _updatedDeck = deck;
         }
 
         private void OnPressAutoCompleteDeckHandler(Deck deck, CollectionData collectionData)
@@ -119,25 +121,11 @@ namespace Loom.ZombieBattleground
         private void BackButtonHandler()
         {
             DataUtilities.PlayClickSound();
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
+            
+            HordeSelectionWithNavigationPage myDeckPage =
+                GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
+            myDeckPage?.HordeEditTab.UpdateEditingTab(_updatedDeck, _updatedCollectionData);
 
-        }
-
-        private void ConfirmSaveDeckHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
-
-            if (status)
-            {
-                HordeSelectionWithNavigationPage myDeckPage =
-                    GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
-                if (myDeckPage != null)
-                {
-                    myDeckPage.HordeEditTab.UpdateEditingTab(_updatedDeck, _updatedCollectionData);
-                    myDeckPage.HordeEditTab.SaveDeck(HordeSelectionWithNavigationPage.Tab.Editing);
-                }
-            }
 
             Dispose();
         }
@@ -168,6 +156,8 @@ namespace Loom.ZombieBattleground
 
             Object.Destroy(_selfPage);
             _abilitiesInfoUi.Dispose();
+
+            _deckInfoUi.Dispose();
         }
 
         private void LoadAllCardsInDeck(Deck deck)
@@ -182,10 +172,10 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < deck.Cards.Count; i++)
             {
                 DeckCardData deckCardData = deck.Cards[i];
-                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.MouldId == deckCardData.MouldId);
+                int cardIndex = _dataManager.CachedCardsLibraryData.Cards.FindIndex(cachedCard => cachedCard.CardKey == deckCardData.CardKey);
                 if (cardIndex == -1)
                 {
-                    Log.Error($"Card with MouldId {deckCardData.MouldId} not found.");
+                    Log.Error($"Card with MouldId {deckCardData.CardKey} not found.");
                     return;
                 }
 

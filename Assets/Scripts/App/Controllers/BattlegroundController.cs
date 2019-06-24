@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using KellermanSoftware.CompareNetObjects;
@@ -775,7 +774,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 sizeOfCard = Vector3.one;
 
-            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.55f, .5f, .4f) : new Vector3(.33f, .3f, .25f);
+            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.55f, .5f, .4f) : new Vector3(.5f, .5f, .25f);
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
@@ -1316,7 +1315,7 @@ namespace Loom.ZombieBattleground
                 cards
                     .Select(cardInfo =>
                     {
-                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
+                        Card card = _dataManager.CachedCardsLibraryData.GetCardByName(cardInfo.Name);
                         WorkingCard workingCard = new WorkingCard(card, card, player);
                         workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
                         return new CardModel(workingCard);

@@ -1,6 +1,5 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 

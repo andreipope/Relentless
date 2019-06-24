@@ -11,7 +11,6 @@ using log4net;
 using log4net.Appender;
 using Loom.ZombieBattleground.Common;
 using SharpCompress.Archives.Zip;
-using SharpCompress.Common;
 using SharpCompress.Writers;
 using TMPro;
 using Unity.Cloud.UserReporting;

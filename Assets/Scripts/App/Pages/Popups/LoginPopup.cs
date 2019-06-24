@@ -461,16 +461,31 @@ namespace Loom.ZombieBattleground
             CreateVaultTokenData vaultTokenData = new CreateVaultTokenData();
             try
             {
+                UserDataModel userDataModel = _backendDataControlMediator.UserDataModel;
                 if (noOTP)
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(userDataModel.AccessToken);
                 }
                 else
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, userDataModel.AccessToken);
                 }
+
                 GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
-                _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
+                _backendDataControlMediator.UserDataModel =
+                    new UserDataModel(
+                        userDataModel.UserId,
+                        userDataModel.UserIdNumber,
+                        Convert.FromBase64String(vaultDataData.data.privatekey)
+                    )
+                    {
+                        IsValid = userDataModel.IsValid,
+                        IsRegistered = userDataModel.IsRegistered,
+                        Email = userDataModel.Email,
+                        Password = userDataModel.Password,
+                        GUID = userDataModel.GUID,
+                        AccessToken = userDataModel.AccessToken
+                    };
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
@@ -598,21 +613,24 @@ namespace Loom.ZombieBattleground
                         byte[] privateKey;
                         byte[] publicKey;
                         LoginData loginData;
-                        string userId;
+                        string fullUserId;
                         int authyId = 0;
                         string accessToken = "";
 
-                        string GUID = _lastGUID ?? Guid.NewGuid().ToString();
+                        string guid = _lastGUID ?? Guid.NewGuid().ToString();
 
+                        BigInteger userId;
                         if (isGuest)
                         {
-                            GenerateKeysAndUserFromGUID(GUID,
-                                out byte[] privateKeyFromGuID,
-                                out byte[] publicKeyFromGuID,
-                                out string userIDFromGuID);
-                            privateKey = privateKeyFromGuID;
-                            publicKey = publicKeyFromGuID;
-                            userId = userIDFromGuID;
+                            GenerateKeysAndUserFromGUID(guid,
+                                out byte[] privateKeyFromGuid,
+                                out byte[] publicKeyFromGuid,
+                                out string fullUserIdFromGuid,
+                                out BigInteger userIdFromGuid);
+                            privateKey = privateKeyFromGuid;
+                            publicKey = publicKeyFromGuid;
+                            fullUserId = fullUserIdFromGuid;
+                            userId = userIdFromGuid;
                         }
                         else
                         {
@@ -628,20 +646,21 @@ namespace Loom.ZombieBattleground
 
                             accessToken = loginData.accessToken;
 
-                            userId = "ZombieSlayer_" + accessTokenData.user_id;
-                            GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
+                            fullUserId = "ZombieSlayer_" + accessTokenData.user_id;
+                            GenerateKeysAndUserFromUserID(fullUserId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
 
                             privateKey = privateKeyFromUserId;
                             publicKey = publicKeyFromUserID;
+                            userId = accessTokenData.user_id;
                         }
 
-                        UserDataModel userDataModel = new UserDataModel(userId, privateKey)
+                        UserDataModel userDataModel = new UserDataModel(fullUserId, userId, privateKey)
                         {
                             IsValid = false,
                             IsRegistered = !isGuest,
                             Email = _emailFieldLogin.text,
                             Password = _passwordFieldLogin.text,
-                            GUID = GUID,
+                            GUID = guid,
                             AccessToken = accessToken
                         };
 
@@ -1058,22 +1077,21 @@ namespace Loom.ZombieBattleground
         }
 
         private void GenerateKeysAndUserFromGUID(
-            string guID, out byte[] privateKey, out byte[] publicKey, out string userId)
+            string guid, out byte[] privateKey, out byte[] publicKey, out string fullUserId, out BigInteger userId)
         {
             string guidKey =
                 CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID))) +
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guid))) +
                 CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID)));
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guid)));
 
             byte[] seedByte = CryptoUtils.HexStringToBytes(guidKey);
 
-            BigInteger userIdNumber = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
-            userIdNumber = BigInteger.Abs(userIdNumber);
-            userId = "ZombieSlayer_" + userIdNumber;
+            userId = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
+            userId = BigInteger.Abs(userId);
+            fullUserId = "ZombieSlayer_" + userId;
 
             privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
-
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }
 

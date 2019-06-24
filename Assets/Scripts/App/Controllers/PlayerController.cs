@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -145,7 +144,7 @@ namespace Loom.ZombieBattleground
                         {
                             for (int i = 0; i < card.Amount; i++)
                             {
-                                workingDeck.Add(_cardsController.CreateWorkingCardFromCardMouldId(card.MouldId, player));
+                                workingDeck.Add(_cardsController.CreateWorkingCardFromCardMouldId(card.CardKey, player));
                             }
                         }
 

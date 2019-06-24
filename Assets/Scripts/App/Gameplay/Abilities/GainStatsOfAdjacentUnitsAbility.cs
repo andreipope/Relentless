@@ -2,7 +2,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -122,7 +121,7 @@ namespace Loom.ZombieBattleground
             List<CardModel> units = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
             if (units.Count > 0)
             {
-                units = units.Where(x => x.Prototype.MouldId != AbilityUnitOwner.Prototype.MouldId).ToList();
+                units = units.Where(x => x.Prototype.CardKey != AbilityUnitOwner.Prototype.CardKey).ToList();
             }
 
             return units;

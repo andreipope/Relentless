@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Loom.Client;
 using Loom.Google.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication

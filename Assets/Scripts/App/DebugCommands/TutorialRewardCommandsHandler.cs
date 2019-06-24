@@ -1,6 +1,4 @@
-﻿using Loom.Client;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
+﻿using Loom.ZombieBattleground.Common;
 using Opencoding.CommandHandlerSystem;
 
 namespace Loom.ZombieBattleground

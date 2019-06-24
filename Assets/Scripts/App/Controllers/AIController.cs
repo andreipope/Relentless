@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -122,7 +121,7 @@ namespace Loom.ZombieBattleground
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        workingDeck.Add(_cardsController.CreateWorkingCardFromCardMouldId(card.MouldId, _gameplayManager.OpponentPlayer));
+                        workingDeck.Add(_cardsController.CreateWorkingCardFromCardMouldId(card.CardKey, _gameplayManager.OpponentPlayer));
                     }
                 }
 
@@ -1331,7 +1330,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardModel item in list)
             {
-                cards.Add(_dataManager.CachedCardsLibraryData.GetCardFromName(item.Prototype.Name));
+                cards.Add(_dataManager.CachedCardsLibraryData.GetCardByName(item.Prototype.Name));
             }
 
             cards = cards.OrderBy(x => x.Cost).ThenBy(y => y.Cost.ToString().Length).ToList();
@@ -1342,7 +1341,7 @@ namespace Loom.ZombieBattleground
 
             foreach (Card item in cards)
             {
-                sortedList.Add(list.First(x => x.Prototype.MouldId == item.MouldId && !sortedList.Contains(x)));
+                sortedList.Add(list.First(x => x.Prototype.CardKey == item.CardKey && !sortedList.Contains(x)));
             }
 
             return sortedList;

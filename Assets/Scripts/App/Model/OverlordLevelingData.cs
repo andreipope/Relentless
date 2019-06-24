@@ -44,16 +44,13 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
-    public class UnitRewardItem : LevelReward
+    public class BoosterPackRewardItem : LevelReward
     {
-        public Enumerators.CardRank Rank { get; }
+        public int Amount { get; }
 
-        public int Count { get; }
-
-        public UnitRewardItem(int level, Enumerators.CardRank rank, int count) : base(level)
+        public BoosterPackRewardItem(int level, int amount) : base(level)
         {
-            Rank = rank;
-            Count = count;
+            Amount = amount;
         }
     }
 

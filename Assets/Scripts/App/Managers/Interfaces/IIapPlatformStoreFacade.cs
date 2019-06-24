@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine.Purchasing;
 using OneOf;
 using OneOf.Types;
