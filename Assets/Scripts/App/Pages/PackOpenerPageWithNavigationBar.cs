@@ -266,7 +266,9 @@ namespace Loom.ZombieBattleground
 
             _openedPackPanelCloseButton.interactable = true;
             _openedPackPanelOpenNextPackButton.interactable = true;
-            _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
+
+            _openedPackPanelCloseButton.gameObject.SetActive(false);
+            _openedPackPanelOpenNextPackButton.gameObject.SetActive(false);
 
             IReadOnlyList<CardKey> cardKeys = result.AsT0;
             List<Card> cards = _dataManager.CachedCardsLibraryData.GetCardsByCardKeys(cardKeys, true).ToList();
@@ -300,6 +302,16 @@ namespace Loom.ZombieBattleground
                     if (!packCard.IsFlipped)
                     {
                         packCard.Flip();
+
+                        bool allFlipped = _openedCards.TrueForAll(c => c.IsFlipped);
+                        if (allFlipped)
+                        {
+                            _openedPackPanelCloseButton.gameObject.SetActive(true);
+                            _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
+
+                            _openedPackPanelCloseButton.image.DOColor(Color.white, 0.3f).ChangeStartValue(new Color(1, 1, 1, 0));
+                            _openedPackPanelOpenNextPackButton.image.DOColor(Color.white, 0.3f).ChangeStartValue(new Color(1, 1, 1, 0));
+                        }
                     }
                     else
                     {
@@ -637,7 +649,7 @@ namespace Loom.ZombieBattleground
 
             public override async Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
             {
-                _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
+                _uiManager.DrawPopup<LoadingOverlayPopup>("Opening the pack...");
                 try
                 {
                     using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())

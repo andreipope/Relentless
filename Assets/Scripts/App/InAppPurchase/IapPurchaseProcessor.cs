@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Iap
             {
 #if UNITY_ANDROID
                 GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: GooglePlayReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), GooglePlayReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
                 fiatValidationData =
                     new FiatValidationDataPlayStore(
                         googlePlayReceipt.productID,
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Iap
                     );
 #elif UNITY_IOS
                 AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
                 AppleInAppPurchaseReceipt matchingReceipt =
                     product == null ?
                         appleReceipt.inAppPurchaseReceipts[0] :

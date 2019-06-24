@@ -42,24 +42,18 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: ea173fb6158b841ff87d0f9a3f9623ca, type: 3}
-    totalSpriteSurfaceArea: 2061395
+    totalSpriteSurfaceArea: 737847
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 8eaf74d2370ea564fb9cebb699e3dd97, type: 3}
   - {fileID: 21300000, guid: 1b288c3355c30b74c850086740eae7a2, type: 3}
   - {fileID: 21300000, guid: 7cf10c18fc5e4ee4abd461dcf54f2d6f, type: 3}
-  - {fileID: 21300000, guid: a7d99e4affdc2f542a7f8dca417c1a2f, type: 3}
-  - {fileID: 21300000, guid: 2676e36c2fb8b5643bf4207f96a8b74b, type: 3}
   - {fileID: 21300000, guid: 6ee5409da82587e408c289560b2295ab, type: 3}
-  - {fileID: 21300000, guid: 3accd1ce7a3271c49807cba03671ccf8, type: 3}
   m_PackedSpriteNamesToIndex:
   - rewards_panel_top
   - rewards_light_bottom-opt
   - rewards_light_top-opt
-  - buttons
-  - congrats_ph
   - rewards_panel_bottom
-  - pack_reward_screen_ph
   m_Tag: PackReward_Atlas
   m_IsVariant: 0

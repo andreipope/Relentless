@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using log4net;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
@@ -65,7 +66,7 @@ namespace Loom.ZombieBattleground.Iap
             List<TransactionReceipt> fiatResponseList = JsonConvert.DeserializeObject<List<TransactionReceipt>>(json);
             foreach (TransactionReceipt response in fiatResponseList)
             {
-                Log.Info("TransactionResponse hash: " + response.VerifyHash.Hash);
+                Log.Info("TransactionResponse hash: " + CryptoUtils.BytesToHexString(response.VerifyHash.Hash));
             }
 
             return fiatResponseList;
@@ -110,7 +111,6 @@ namespace Loom.ZombieBattleground.Iap
 
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
-            Log.Debug(httpResponseMessage.ReadToEnd());
 
             return true;
         }

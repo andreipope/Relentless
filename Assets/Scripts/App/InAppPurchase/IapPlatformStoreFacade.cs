@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Purchasing;
 using log4net;
+using Loom.Org.BouncyCastle.Utilities;
 using OneOf;
 using OneOf.Types;
+using UnityEngine;
 using UnityEngine.Purchasing.Extension;
 
 namespace Loom.ZombieBattleground.Iap
@@ -44,7 +46,7 @@ namespace Loom.ZombieBattleground.Iap
 
             Log.Debug($"{nameof(InitiatePurchase)} (products = {Utilites.FormatCallLogList(products.Select(product => product.Definition.storeSpecificId))})");
             _initializationState = IapInitializationState.Initializing;
-#if UNITY_ANDROID || UNITY_IOS
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
             IPurchasingModule purchasingModule = StandardPurchasingModule.Instance();
 #else
             IPurchasingModule purchasingModule = new LoomWebMarketplacePurchasingModule(products);
@@ -68,7 +70,7 @@ namespace Loom.ZombieBattleground.Iap
             Product product = _storeController.products.WithStoreSpecificID(productId);
             if (product == null)
                 throw new InvalidOperationException($"Unknown product {productId}");
-            
+
             if (!product.availableToPurchase)
                 return new IapPlatformStorePurchaseError(product, PurchaseFailureReason.ProductUnavailable);
 
@@ -117,7 +119,6 @@ namespace Loom.ZombieBattleground.Iap
 
         void IService.Init()
         {
-
         }
 
         void IService.Update() { }
