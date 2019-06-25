@@ -31,5 +31,10 @@ namespace Loom.ZombieBattleground.Data
             CardKey = cardKey;
             Amount = amount;
         }
+
+        public override string ToString()
+        {
+            return $"({nameof(CardKey)}: {CardKey}, {nameof(Amount)}: {Amount})";
+        }
     }
 }

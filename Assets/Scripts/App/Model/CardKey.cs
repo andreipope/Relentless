@@ -9,8 +9,10 @@ namespace Loom.ZombieBattleground.Data
     /// </summary>
     public struct CardKey : IEquatable<CardKey>
     {
+        [JsonProperty("mouldId")]
         public MouldId MouldId { get; }
 
+        [JsonProperty("variant")]
         public Enumerators.CardVariant Variant { get; }
 
         [JsonConstructor]

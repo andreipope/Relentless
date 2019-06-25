@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ShopWithNavigationPage));
 
-        private const float IapInitializationTimeout = 10;
+        private const float IapInitializationTimeout = 12;
 
         private IUIManager _uiManager;
 
@@ -71,7 +71,6 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            _iapMediator.AllowProcessingPendingStorePurchase = true;
             bool claimingSuccess = await ClaimPendingPurchases();
             if (!claimingSuccess)
                 return;
@@ -87,8 +86,6 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
             _uiManager.HidePopup<LoadingOverlayPopup>();
-
-            _iapMediator.AllowProcessingPendingStorePurchase = false;
 
             if (_selfPage == null)
                 return;
@@ -115,9 +112,18 @@ namespace Loom.ZombieBattleground
 
         private void BuyButtonHandler(Product product)
         {
+            Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if UNITY_IOS || UNITY_ANDROID
             ChangeState(State.Purchasing);
             _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
+
+            async void OnIapMediatorOnPurchasingResultReceived(OneOf<PurchaseEventArgs, IapPlatformStorePurchaseError> oneOf)
+            {
+                _iapMediator.PurchasingResultReceived -= OnIapMediatorOnPurchasingResultReceived;
+                await _iapMediator.ClaimStorePurchases();
+            }
+
+            _iapMediator.PurchasingResultReceived += OnIapMediatorOnPurchasingResultReceived;
             OneOf<Success, IapPlatformStorePurchaseError> buyProductResult = _iapMediator.InitiatePurchase(product);
 #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
@@ -212,7 +218,7 @@ namespace Loom.ZombieBattleground
             Transform root = _selfPage.transform.Find("Panel_Content/Mask/Group_Packs");
             foreach (Product product in _iapMediator.Products)
             {
-                ShopItem shopItem = new ShopItem(root, _loadObjectsManager, product);
+                ShopItem shopItem = new ShopItem(root, _loadObjectsManager, _iapMediator, product);
                 shopItem.Button.onClick.AddListener(() =>
                 {
                     PlayClickSound();
@@ -374,6 +380,9 @@ namespace Loom.ZombieBattleground
                     {
                         switch (failure.Value.AsT0.FailureReason)
                         {
+                            case PurchaseFailureReason.Unknown:
+                                // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
+                                return;
                             case PurchaseFailureReason.UserCancelled:
                                 // Don't show error on user cancel
                                 return;
@@ -383,10 +392,9 @@ namespace Loom.ZombieBattleground
                             case PurchaseFailureReason.PaymentDeclined:
                                 OpenAlertDialog("Payment was declined.");
                                 return;
-                            case PurchaseFailureReason.Unknown:
-                                // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
-                                return;
                             case PurchaseFailureReason.PurchasingUnavailable:
+                                OpenAlertDialog("Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.");
+                                return;
                             case PurchaseFailureReason.ProductUnavailable:
                             case PurchaseFailureReason.SignatureInvalid:
                             case PurchaseFailureReason.DuplicateTransaction:
@@ -477,14 +485,14 @@ namespace Loom.ZombieBattleground
 
             public TextMeshProUGUI PriceText { get; }
 
-            public ShopItem(Transform parent, ILoadObjectsManager loadObjectsManager, Product product)
+            public ShopItem(Transform parent, ILoadObjectsManager loadObjectsManager, IapMediator iapMediator, Product product)
             {
                 GameObject = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Shop_Item_Pack"), parent);
                 NameText = GameObject.transform.Find("Text_PackName").GetComponent<TextMeshProUGUI>();
                 PriceText = GameObject.transform.Find("Text_Price").GetComponent<TextMeshProUGUI>();
-                Button = GameObject.transform.Find("Button_Pack").GetComponent<Button>();
+                Button = GameObject.transform.Find("Button").GetComponent<Button>();
 
-                NameText.text = product.metadata.localizedTitle;
+                NameText.text = iapMediator.ProcessProductTitle(product.metadata.localizedTitle);
 
                 // Pretty-format the price
                 CultureInfo currencyCulture = CurrencyUtility.GetCultureFromIsoCurrencyCode(product.metadata.isoCurrencyCode);

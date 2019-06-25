@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty]
         public int Cost { get; }
 
-        [JsonProperty]
+        [JsonProperty("targetCardKind")]
         public Enumerators.CardKind TargetKind { get; private set; }
 
         [JsonProperty]

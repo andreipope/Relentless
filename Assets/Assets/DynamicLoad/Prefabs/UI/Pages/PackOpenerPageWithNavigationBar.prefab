@@ -11293,6 +11293,7 @@ GameObject:
   - component: {fileID: 2852489417856935435}
   - component: {fileID: 5130096044625483948}
   - component: {fileID: 335765366049014386}
+  - component: {fileID: 4322991660058994232}
   m_Layer: 0
   m_Name: BottomButtons
   m_TagString: Untagged
@@ -11358,6 +11359,18 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
+--- !u!225 &4322991660058994232
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6091107691849328393}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6440701649734455954
 GameObject:
   m_ObjectHideFlags: 0
@@ -40259,7 +40272,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7356762267733607652}
   m_Layer: 9
-  m_Name: PackOpenerPageWithNavigationBarV3
+  m_Name: PackOpenerPageWithNavigationBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113498,7 +113511,7 @@ SpriteRenderer:
   m_Size: {x: 23.4, y: 29.88}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &7357651886749690839
