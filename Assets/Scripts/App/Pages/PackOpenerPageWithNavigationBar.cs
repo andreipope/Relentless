@@ -58,7 +58,9 @@ namespace Loom.ZombieBattleground
 
         private GameObject _openedPackPanel;
 
-        private Image _openedPackPanelDimBackground;
+        private CanvasGroup _openedPackPanelCanvasGroup;
+
+        private CanvasGroup _openedPackPanelBottomButtonsCanvasGroup;
 
         private Button _openedPackPanelCloseButton;
 
@@ -79,7 +81,6 @@ namespace Loom.ZombieBattleground
         private PackOpenerControllerBase _controller;
 
         private CardInfoPopupHandler _cardInfoPopupHandler;
-
 
         #region IUIElement
 
@@ -111,7 +112,8 @@ namespace Loom.ZombieBattleground
                 false);
 
             _openedPackPanel = _selfPage.transform.Find("OpenedPackPanel").gameObject;
-            _openedPackPanelDimBackground = _openedPackPanel.transform.Find("DimBackground").GetComponent<Image>();
+            _openedPackPanelCanvasGroup = _openedPackPanel.GetComponent<CanvasGroup>();
+            _openedPackPanelBottomButtonsCanvasGroup = _openedPackPanel.transform.Find("BottomButtons").GetComponent<CanvasGroup>();
             _openedPackPanelCloseButton = _openedPackPanel.transform.Find("BottomButtons/CloseButton").GetComponent<Button>();
             _openedPackPanelOpenNextPackButton = _openedPackPanel.transform.Find("BottomButtons/OpenNextPackButton").GetComponent<Button>();
 
@@ -139,6 +141,8 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
             _uiManager.DrawPopup<AreaBarPopup>();
             _openedPackPanel.transform.SetAsLastSibling();
+
+            UpdateOpenButtonState();
 
             OneOf<Success,Exception> result = await _controller.Start();
             if (result.IsT1)
@@ -201,11 +205,10 @@ namespace Loom.ZombieBattleground
             _openedPackPanelOpenNextPackButton.interactable = false;
 
             PlayCardsHideAnimation(ClearOpenedCards);
-            CanvasGroup openedPackCanvasGroup = _openedPackPanel.GetComponent<CanvasGroup>();
 
             Sequence sequence = DOTween.Sequence();
             sequence.AppendInterval(CardHideAnimationDuration);
-            sequence.Append(openedPackCanvasGroup.DOFade(0f, FadeDuration));
+            sequence.Append(_openedPackPanelCanvasGroup.DOFade(0f, FadeDuration));
             sequence.AppendCallback(() =>
             {
                 _openedPackPanel.SetActive(false);
@@ -283,8 +286,7 @@ namespace Loom.ZombieBattleground
             }
 
             _openedPackPanel.SetActive(true);
-            CanvasGroup openedPackCanvasGroup = _openedPackPanel.GetComponent<CanvasGroup>();
-            openedPackCanvasGroup.DOFade(1f, FadeDuration);
+            _openedPackPanelCanvasGroup.DOFade(1f, FadeDuration);
 
             CreateOpenedCards(cards);
         }
@@ -309,8 +311,7 @@ namespace Loom.ZombieBattleground
                             _openedPackPanelCloseButton.gameObject.SetActive(true);
                             _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
 
-                            _openedPackPanelCloseButton.image.DOColor(Color.white, 0.3f).ChangeStartValue(new Color(1, 1, 1, 0));
-                            _openedPackPanelOpenNextPackButton.image.DOColor(Color.white, 0.3f).ChangeStartValue(new Color(1, 1, 1, 0));
+                            _openedPackPanelBottomButtonsCanvasGroup.DOFade(1f, 0.3f).ChangeStartValue(0).SetDelay(0.5f);
                         }
                     }
                     else
@@ -649,7 +650,7 @@ namespace Loom.ZombieBattleground
 
             public override async Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
             {
-                _uiManager.DrawPopup<LoadingOverlayPopup>("Opening the pack...");
+                _uiManager.DrawPopup<LoadingOverlayPopup>("Opening your pack...");
                 try
                 {
                     using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())

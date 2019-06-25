@@ -380,6 +380,9 @@ namespace Loom.ZombieBattleground
                     {
                         switch (failure.Value.AsT0.FailureReason)
                         {
+                            case PurchaseFailureReason.Unknown:
+                                // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
+                                return;
                             case PurchaseFailureReason.UserCancelled:
                                 // Don't show error on user cancel
                                 return;
@@ -389,12 +392,9 @@ namespace Loom.ZombieBattleground
                             case PurchaseFailureReason.PaymentDeclined:
                                 OpenAlertDialog("Payment was declined.");
                                 return;
-                            case PurchaseFailureReason.Unknown:
-                                // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
-                                return;
                             case PurchaseFailureReason.PurchasingUnavailable:
-                                OpenAlertDialog("Purchasing not available. Check if you are using valid account and purchasing is allowed on your device.");
-                                break;
+                                OpenAlertDialog("Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.");
+                                return;
                             case PurchaseFailureReason.ProductUnavailable:
                             case PurchaseFailureReason.SignatureInvalid:
                             case PurchaseFailureReason.DuplicateTransaction:
