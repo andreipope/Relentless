@@ -117,6 +117,13 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HideAllPopups();
 
+            IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+            CardsController cardsController = gameplayManager.GetController<CardsController>();
+            cardsController.ResetChoosalbeCardsList();
+
+            BattlegroundController battlegroundController = gameplayManager.GetController<BattlegroundController>();
+            battlegroundController.DestroyCardPreview();
+
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopup"),
                 _uiManager.Canvas2.transform,
