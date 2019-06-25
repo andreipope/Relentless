@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground
         GameObject Canvas2 { get; set; }
 
         GameObject Canvas3 { get; set; }
+
+        List<IUIPopup> UiPopups { get; set; }
 
         void SetPage<T>(bool hideAll = false)
             where T : IUIElement;
