@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbilityView : AbilityViewBase<MassiveDamageAbility>
     {
-        private static readonly MouldId LawnmowerCardId = new MouldId(114);
+        private static readonly MouldId LawnmowerCardMouldId = new MouldId(114);
 
         private List<BoardUnitView> _unitsViews;
 

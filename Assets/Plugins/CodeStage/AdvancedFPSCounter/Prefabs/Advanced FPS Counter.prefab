@@ -105,7 +105,7 @@ MonoBehaviour:
   hotKeyAlt: 0
   keepAlive: 0
   operationMode: 1
-  forceFrameRate: 1
+  forceFrameRate: 0
   forcedFrameRate: 60
   background: 1
   backgroundColor: {r: 0, g: 0, b: 0, a: 0.5882353}

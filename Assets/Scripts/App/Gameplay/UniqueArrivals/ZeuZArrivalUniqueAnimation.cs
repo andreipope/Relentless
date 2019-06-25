@@ -3,7 +3,6 @@ using UnityEngine;
 using System;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
-using DG.Tweening;
 using System.Linq;
 using UnityEngine.Rendering;
 

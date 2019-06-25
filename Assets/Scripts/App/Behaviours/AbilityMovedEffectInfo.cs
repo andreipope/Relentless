@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground

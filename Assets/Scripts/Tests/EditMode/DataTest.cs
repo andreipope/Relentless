@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DeepEqual.Syntax;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Iap;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -12,6 +14,7 @@ using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -19,13 +22,32 @@ namespace Loom.ZombieBattleground.Test
     public class DataTest
     {
         [Test]
-        public void MouldIdSerialization()
+        public void TransactionResponseSerialization()
         {
-            MouldId original = new MouldId(long.MaxValue);
-            string serialized = JsonConvert.SerializeObject(original);
-            MouldId deserialized = JsonConvert.DeserializeObject<MouldId>(serialized);
+            string json =
+                @"{""VerifyHash"":{""hash"":""0xf1a0b8586d04cf9fab76636aa859b575c8e8eae18bfc57f093d1c97703a3eca9"",""signature"":""0x59e2e78ae04a206aad5639f120df820fd971ff3242b7afc1ec6ab7ffdeb2f25716b2dc6e403046446118e41dea6ed0753a867272ca1600b160abb9185f1717141b""},""UserId"":1,""Booster"":1,""Air"":0,""Earth"":0,""Fire"":0,""Life"":0,""Toxic"":0,""Water"":0,""Super"":0,""Small"":0,""Minion"":0,""Binance"":0,""TxID"":170141183460469231731687303715884105729}";
+
+            AuthFiatApiFacade.TransactionReceipt transactionReceipt = JsonConvert.DeserializeObject<AuthFiatApiFacade.TransactionReceipt>(json);
+            Assert.AreEqual(BigInteger.Parse("170141183460469231731687303715884105729"), transactionReceipt.TxId);
+        }
+
+        [Test]
+        public void BigIntegerSerialization()
+        {
+            BigInteger original = new BigInteger(long.MaxValue) * new BigInteger(long.MaxValue);
+            BigInteger deserialized = original.ToProtobufUInt().FromProtobuf();
             Assert.AreEqual(original, deserialized);
         }
+
+        [Test]
+        public void CardKeySerialization()
+        {
+            CardKey original = new CardKey(new MouldId(long.MaxValue), Enumerators.CardVariant.Limited);
+            string serialized = JsonConvert.SerializeObject(original);
+            CardKey deserialized = JsonConvert.DeserializeObject<CardKey>(serialized);
+            Assert.AreEqual(original, deserialized);
+        }
+
         [Test]
         public void DeckProtobufSerialization()
         {
@@ -35,8 +57,8 @@ namespace Loom.ZombieBattleground.Test
                 "deck name",
                 new List<DeckCardData>
                 {
-                    new DeckCardData(new MouldId(1), 3),
-                    new DeckCardData(new MouldId(2), 4)
+                    new DeckCardData(new CardKey(new MouldId(1), Enumerators.CardVariant.Standard), 3),
+                    new DeckCardData(new CardKey(new MouldId(2), Enumerators.CardVariant.Standard), 4)
                 },
                 Enumerators.Skill.HEALING_TOUCH,
                 Enumerators.Skill.MEND
@@ -50,7 +72,7 @@ namespace Loom.ZombieBattleground.Test
         public void CardProtobufSerialization()
         {
             Card card = new Card(
-                new MouldId(123),
+                new CardKey(new MouldId(123), Enumerators.CardVariant.Standard),
                 "Foo",
                 3,
                 "description",

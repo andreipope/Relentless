@@ -369,7 +369,9 @@ namespace Loom.ZombieBattleground.Common
         {
             UNDEFINED,
             CREATURE,
-            ITEM
+            ITEM,
+            [Obsolete("", true)]
+            SPELL = ITEM
         }
 
         public enum CardPackType
@@ -486,7 +488,9 @@ namespace Loom.ZombieBattleground.Common
 
         public enum Faction
         {
-            Undefined,
+            Undefined = 0,
+            [Obsolete("", true)]
+            NONE = 0,
             FIRE,
             WATER,
             EARTH,
@@ -776,7 +780,8 @@ namespace Loom.ZombieBattleground.Common
             EndMatch,
             UnitCombat,
             LeaveMatch,
-            InitUnitCombat
+            InitUnitCombat,
+            CardPlayBlocker
         }
 
         public enum TooltipAlign
@@ -971,13 +976,21 @@ namespace Loom.ZombieBattleground.Common
             BackToHand,
             BackFromGraveyard
         }
-
         public enum CardSetType
         {
             Basic,
             KickStarter,
             Season1,
             Season2
+        }
+
+        public enum CardVariant
+        {
+            Standard = 0,
+            Backer = 1,
+            Limited = 2,
+            Binance = 3,
+            Tron = 4
         }
     }
 }

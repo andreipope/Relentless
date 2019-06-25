@@ -12,11 +12,12 @@ public class DebugCommandsManager : IService
         GeneralCommandsHandler.Initialize();
         QuickPlayCommandsHandler.Initialize();
         BattleCommandsHandler.Initialize();
-        DecksCommandHandler.Initialize();
+        CollectionCommandHandler.Initialize();
         PvPCommandsHandler.Initialize();
         TutorialRewardCommandsHandler.Initialize();
         NetworkCommandsHandler.Initialize();
         IapCommandsHandler.Initialize();
+        RewardsCommandsHandler.Initialize();
 #endif
     }
 

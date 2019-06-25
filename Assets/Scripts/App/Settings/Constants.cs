@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int BackendCallTimeout = 10000;
 
-        internal const int PlasmachainCallTimeout = 20000;
+        internal const int PlasmaChainCallTimeout = 20000;
 
         internal const float QueueActionTimeout = 60f;
 
@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground.Common
 
         public static readonly bool RankSystemEnabled = false;
 
-        public const bool GameStateValidationEnabled =
+        public static readonly bool GameStateValidationEnabled =
 #if UNITY_EDITOR
             true;
 #else
@@ -217,12 +217,7 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage =
-#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
-            true;
-#else
-            false;
-#endif
+        internal static readonly bool EnableShopPage = true;
 
         internal const int LastTutorialId = 8;
 

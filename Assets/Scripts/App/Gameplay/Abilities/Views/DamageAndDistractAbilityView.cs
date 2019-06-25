@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 {
     public class DamageAndDistractAbilityView : AbilityViewBase<DamageAndDistractAbility>
     {
-        private readonly MouldId LawnmowerCardId = new MouldId(114);
+        private readonly MouldId _lawnmowerCardMouldId = new MouldId(114);
 
         private List<BoardUnitView> _unitsViews;
 
@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
 
                 Vector3 targetPosition = Vector3.zero;
 
-                if (Ability.CardModel != null && Ability.CardModel.Prototype.MouldId == LawnmowerCardId)
+                if (Ability.CardModel != null && Ability.CardModel.Prototype.CardKey.MouldId == _lawnmowerCardMouldId)
                 {
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
                     VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;

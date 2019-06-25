@@ -1,5 +1,4 @@
 using System;
-using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

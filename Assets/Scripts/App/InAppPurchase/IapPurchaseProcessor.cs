@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
 using OneOf;
 using OneOf.Types;
+using UnityEngine.Purchasing;
 
 #if UNITY_ANDROID || UNITY_IOS
 using Loom.Newtonsoft.Json;
@@ -16,7 +18,7 @@ using UnityEngine.Purchasing.Security;
 namespace Loom.ZombieBattleground.Iap
 {
     /// <summary>
-    /// Implements the part of purchase flow responsible for communication with Marketplace and Plasmachain.
+    /// Implements the part of purchase flow responsible for communication with Marketplace and PlasmaChain.
     /// </summary>
     public class IapPurchaseProcessor
     {
@@ -39,7 +41,7 @@ namespace Loom.ZombieBattleground.Iap
             _setStateAction = stateAction;
         }
 
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receipt)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receipt, Product product)
         {
 #if UNITY_ANDROID || UNITY_IOS
             FiatValidationData fiatValidationData;
@@ -47,8 +49,7 @@ namespace Loom.ZombieBattleground.Iap
             {
 #if UNITY_ANDROID
                 GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: GooglePlayReceipt:\n" +
-                    JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), GooglePlayReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
                 fiatValidationData =
                     new FiatValidationDataPlayStore(
                         googlePlayReceipt.productID,
@@ -57,13 +58,19 @@ namespace Loom.ZombieBattleground.Iap
                     );
 #elif UNITY_IOS
                 AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
-                Assert.AreEqual(1, appleReceipt.inAppPurchaseReceipts.Length);
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
+                AppleInAppPurchaseReceipt matchingReceipt =
+                    product == null ?
+                        appleReceipt.inAppPurchaseReceipts[0] :
+                        appleReceipt.inAppPurchaseReceipts.SingleOrDefault(r => r.transactionID == product.transactionID);
+
+                if (matchingReceipt == null)
+                    throw new KeyNotFoundException($"Receipt for transactionID {product?.transactionID ?? "null"} not found");
 
                 fiatValidationData =
                     new FiatValidationDataAppStore(
-                        appleReceipt.inAppPurchaseReceipts[0].productID,
-                        appleReceipt.inAppPurchaseReceipts[0].transactionID,
+                        matchingReceipt.productID,
+                        matchingReceipt.transactionID,
                         IapReceiptParser.ParseRawReceipt(receipt, "AppleAppStore").Payload
                     );
 #endif
@@ -91,18 +98,18 @@ namespace Loom.ZombieBattleground.Iap
             Log.Info($"{nameof(RequestFiatValidation)}");
             SetState(IapPurchaseState.RequestingFiatValidation, null);
 
-            AuthFiatApiFacade.ValidationResponse validationResponse;
+            ValidationResponse validationResponse;
             try
             {
                 validationResponse = await _authFiatApiFacade.RegisterTransactionAndValidate(fiatValidationData);
             }
             catch (Exception e)
             {
-                Log.Info($"{nameof(RequestFiatValidation)} failed: " + e);
+                Log.Warn($"{nameof(RequestFiatValidation)} failed: " + e);
                 return IapPurchaseProcessingError.ValidationFailed;
             }
 
-            return await RequestFiatTransaction(validationResponse.txId);
+            return await RequestFiatTransaction(validationResponse.TxId);
         }
 
         /// <summary>
@@ -110,17 +117,17 @@ namespace Loom.ZombieBattleground.Iap
         /// </summary>
         /// <param name="txId"></param>
         /// <returns></returns>
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestFiatTransaction(int txId)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestFiatTransaction(BigInteger txId)
         {
             Log.Info($"{nameof(RequestFiatTransaction)}(int txId = {txId})");
             SetState(IapPurchaseState.RequestingFiatTransaction, null);
-            AuthFiatApiFacade.TransactionResponse matchingTx;
+            AuthFiatApiFacade.TransactionReceipt matchingTx;
             try
             {
-                List<AuthFiatApiFacade.TransactionResponse> recordList = await _authFiatApiFacade.ListPendingTransactions();
-                recordList.Sort((resA, resB) => resB.TxID - resA.TxID);
-                Log.Debug($"{nameof(RequestFiatTransaction)}: received TxIDs " + Utilites.FormatCallLogList(recordList.Select(tr => tr.TxID)));
-                matchingTx = recordList.SingleOrDefault(record => record.TxID == txId);
+                List<AuthFiatApiFacade.TransactionReceipt> recordList = await _authFiatApiFacade.ListPendingTransactions();
+                recordList.Sort((resA, resB) => (int) (resB.TxId - resA.TxId));
+                Log.Debug($"{nameof(RequestFiatTransaction)}: received TxIDs " + Utilites.FormatCallLogList(recordList.Select(tr => tr.TxId)));
+                matchingTx = recordList.SingleOrDefault(record => record.TxId == txId);
                 if (matchingTx == null)
                     return IapPurchaseProcessingError.TxNotRegistered;
             }
@@ -134,18 +141,18 @@ namespace Loom.ZombieBattleground.Iap
         }
 
         /// <summary>
-        /// Checks the pack on Plasmachain, proceeds to the next step on success.
+        /// Checks the pack on PlasmaChain, proceeds to the next step on success.
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestPack(AuthFiatApiFacade.TransactionResponse record)
+        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> RequestPack(AuthFiatApiFacade.TransactionReceipt record)
         {
-            Log.Debug($"{nameof(RequestPack)}(UserId: {record.UserId}, TxID: {record.TxID})");
+            Log.Debug($"{nameof(RequestPack)}(UserId: {record.UserId}, TxID: {record.TxId})");
             SetState(IapPurchaseState.RequestingPack, null);
 
             try
             {
-                // Claim pack on Plasmachain
+                // Claim pack on PlasmaChain
                 await _plasmaChainBackendFacade.ClaimPacks(_plasmaChainClient, record);
             }
             catch (TxCommitException e)
@@ -163,8 +170,8 @@ namespace Loom.ZombieBattleground.Iap
                 return new IapException("Failed to request pack", e);
             }
 
-            // Once pack is claimed on Plasmachain, its record can be removed from Marketplace
-            return await AuthClaim(record.UserId, record.TxID);
+            // Once pack is claimed on PlasmaChain, its record can be removed from Marketplace
+            return await AuthClaim(record.UserId, record.TxId);
         }
 
         /// <summary>
@@ -173,13 +180,13 @@ namespace Loom.ZombieBattleground.Iap
         /// <param name="userId"></param>
         /// <param name="txId"></param>
         /// <returns></returns>
-        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> AuthClaim(int userId, int txId)
+        private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> AuthClaim(BigInteger userId, BigInteger txId)
         {
             Log.Debug($"{nameof(AuthClaim)}(userID = {userId}, txID = {txId})");
 
             try
             {
-                await _authFiatApiFacade.Claim(userId, new [] { txId });
+                await _authFiatApiFacade.Claim(userId, new[] { txId });
             }
             catch (Exception e)
             {

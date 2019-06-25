@@ -8,10 +8,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -102,8 +100,7 @@ namespace Loom.ZombieBattleground
             _ranksController = _gameplayManager.GetController<RanksController>();
             _boardController = _gameplayManager.GetController<BoardController>();
 
-            CreatureCardViewPrefab =
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+            CreatureCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             ItemCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             OpponentCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/OpponentCard");
 
@@ -726,29 +723,35 @@ namespace Loom.ZombieBattleground
 
         public void DrawCardInfo(CardModel cardModel)
         {
-            GameObject go;
+            BoardCardView boardCardView = CreateBoardCardViewByModel(cardModel);
+
+            boardCardView.GameObject.transform.position = new Vector3(-6, 0, 0);
+            boardCardView.GameObject.transform.localScale = Vector3.one * .3f;
+            boardCardView.SetHighlightingEnabled(false);
+
+            Object.Destroy(boardCardView.GameObject, 2f);
+        }
+
+        public BoardCardView CreateBoardCardViewByModel(CardModel cardModel)
+        {
             BoardCardView boardCardView;
+            GameObject go;
             switch (cardModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
-                    go = Object.Instantiate(
-                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
+                    go = Object.Instantiate(CreatureCardViewPrefab);
                     boardCardView = new UnitBoardCardView(go, cardModel);
                     break;
                 case Enumerators.CardKind.ITEM:
-                    go = Object.Instantiate(
-                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
+                    go = Object.Instantiate(ItemCardViewPrefab);
                     boardCardView = new ItemBoardCardView(go, cardModel);
                     break;
+                case Enumerators.CardKind.UNDEFINED:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            go.transform.position = new Vector3(-6, 0, 0);
-            go.transform.localScale = Vector3.one * .3f;
-            boardCardView.SetHighlightingEnabled(false);
-
-            Object.Destroy(go, 2f);
+            return boardCardView;
         }
 
         public CardModel LowGooCostOfCardInHand(Player player, CardModel cardModel, int value)
@@ -809,13 +812,13 @@ namespace Loom.ZombieBattleground
 
         public WorkingCard CreateWorkingCardFromCardName(string cardName, Player owner)
         {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardByName(cardName);
             return new WorkingCard(card, card, owner);
         }
 
-        public WorkingCard CreateWorkingCardFromCardMouldId(MouldId mouldId, Player owner)
+        public WorkingCard CreateWorkingCardFromCardMouldId(CardKey cardKey, Player owner)
         {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardByCardKey(cardKey);
             return new WorkingCard(card, card, owner);
         }
 

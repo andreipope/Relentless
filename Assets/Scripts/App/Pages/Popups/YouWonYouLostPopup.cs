@@ -115,14 +115,23 @@ namespace Loom.ZombieBattleground
             if (Self != null)
                 return;
 
+            foreach (IUIPopup popup in _uiManager.UiPopups)
+            {
+                if (!(popup is SideMenuPopup) && !(popup is AreaBarPopup) && !(popup is DeckSelectionPopup))
+                {
+                    popup.Hide();
+                }
+            }
+
             Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
-            
-            _groupYouWin = Self.transform.Find("Scaler/Image_Panel_Win").gameObject; 
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopup"),
+                _uiManager.Canvas2.transform,
+                false);
+
+            _groupYouWin = Self.transform.Find("Scaler/Image_Panel_Win").gameObject;
             _groupYouLost = Self.transform.Find("Scaler/Image_Panel_Lose").gameObject;
-            
-            _buttonPlayAgain = Self.transform.Find("Scaler/Group_Buttons/Button_PlayAgain").GetComponent<Button>();                        
+
+            _buttonPlayAgain = Self.transform.Find("Scaler/Group_Buttons/Button_PlayAgain").GetComponent<Button>();
             _buttonPlayAgain.onClick.AddListener(ButtonPlayAgainHandler);
             
             _buttonContinue = Self.transform.Find("Scaler/Group_Buttons/Button_Continue").GetComponent<Button>();

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.De
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using Object = UnityEngine.Object;
 using Random = System.Random;
+using Vector2 = UnityEngine.Vector2;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -159,14 +161,16 @@ namespace Loom.ZombieBattleground.Test
             return TestContext.CurrentContext.Test.Name;
         }
 
-        public string CreateTestUserName()
+        public (string userId, BigInteger userIdNumber) CreateTestUser()
         {
-            return "Test_" + GetTestName() + "_" + Guid.NewGuid();
+            Guid guid = Guid.NewGuid();
+            return ("Test_" + GetTestName() + "_" + guid, new BigInteger(guid.ToByteArray()));
         }
 
-        public string CreateOpponentTestUserName()
+        public (string userId, BigInteger userIdNumber) CreateOpponentTestUser()
         {
-            return "Test" + GetTestName() + "_Opponent_" + Guid.NewGuid();
+            Guid guid = Guid.NewGuid();
+            return ("Test_" + GetTestName() + "_Opponent_" + guid, new BigInteger(guid.ToByteArray()));
         }
 
         /// <summary>
@@ -180,7 +184,8 @@ namespace Loom.ZombieBattleground.Test
 
             Time.timeScale = TestTimeScale;
 
-            TestUserDataModel = new UserDataModel(CreateTestUserName(), CryptoUtils.GeneratePrivateKey()) {
+            (string userId, BigInteger userIdNumber) = CreateTestUser();
+            TestUserDataModel = new UserDataModel(userId, userIdNumber, CryptoUtils.GeneratePrivateKey()) {
                 IsRegistered = true
             };
 
@@ -2195,7 +2200,8 @@ namespace Loom.ZombieBattleground.Test
             owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
             OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();
 
-            MultiplayerDebugClient client = new MultiplayerDebugClient(CreateOpponentTestUserName());
+            (string userId, BigInteger userIdNumber) = CreateOpponentTestUser();
+            MultiplayerDebugClient client = new MultiplayerDebugClient(userId, userIdNumber);
 
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using UnityEngine;
@@ -12,10 +10,12 @@ using Loom.ZombieBattleground.BackendCommunication;
 using log4net;
 using log4netUnitySupport;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
+using Loom.Nethereum.Contracts;
+using Loom.Nethereum.Hex.HexTypes;
+using Loom.Nethereum.RPC.Eth.DTOs;
 using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
-using OneOf;
-using OneOf.Types;
+using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground.Iap
 {
@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground.Iap
         private const string RequestPacksMethod = "requestPacks";
 
         private const string BalanceOfMethod = "balanceOf";
+
+        private const string TokensOwnedMethod = "tokensOwned";
 
         private const string ApproveMethod = "approve";
 
@@ -44,9 +46,9 @@ namespace Loom.ZombieBattleground.Iap
 
         private byte[] UserPrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
 
-        public byte[] UserPublicKey => CryptoUtils.PublicKeyFromPrivateKey(UserPrivateKey);
+        public byte[] UserPublicKey => _backendDataControlMediator.UserDataModel.PublicKey;
 
-        public Address UserPlasmaChainAddress => Address.FromPublicKey(UserPublicKey, PlasmaChainEndpointsContainer.Chainid);
+        public Address UserPlasmaChainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, PlasmaChainEndpointsContainer.Chainid);
 
         public void Init()
         {
@@ -63,13 +65,10 @@ namespace Loom.ZombieBattleground.Iap
 
         public async Task<DAppChainClient> GetConnectedClient()
         {
-            RpcLog.Debug("Creating PlasmaChain client");
-
             DAppChainClient client = CreateClient();
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
-                new NonceTxMiddleware(UserPublicKey, client),
-                new SignedTxMiddleware(UserPrivateKey)
+                new NonceTxMiddleware(UserPublicKey, client), new SignedTxMiddleware(UserPrivateKey)
             });
 
             if (client.ReadClient.ConnectionState != RpcConnectionState.Connected)
@@ -85,28 +84,19 @@ namespace Loom.ZombieBattleground.Iap
             return client;
         }
 
-        public async Task<OneOf<Success, IapException>> ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionResponse fiatResponse)
+        public async Task ClaimPacks(DAppChainClient client, AuthFiatApiFacade.TransactionReceipt fiatReceipt)
         {
-            try
-            {
-                EvmContract evmContract = GetContract(client, IapContractType.FiatPurchase);
-                RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatResponse);
-                await CallRequestPacksContract(evmContract, requestPacksRequest);
-            }
-            catch (Exception e)
-            {
-                return new IapException($"{nameof(ClaimPacks)} failed", e);
-            }
-
-            return new Success();
+            EvmContract evmContract = GetContract(client, IapContractType.FiatPurchase);
+            RequestPacksRequest requestPacksRequest = CreateContractRequestFromTransactionResponse(fiatReceipt);
+            await CallRequestPacksContract(evmContract, requestPacksRequest);
         }
 
-        public async Task<int> GetPackTypeBalance(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
+        public async Task<uint> GetPackTypeBalance(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
 
             EvmContract packTypeContract = GetContract(client, GetPackContractTypeFromId(packType));
-            int amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<int>(
+            uint amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<uint>(
                 BalanceOfMethod,
                 UserPlasmaChainAddress.LocalAddress
             );
@@ -115,73 +105,97 @@ namespace Loom.ZombieBattleground.Iap
             return amount;
         }
 
-        [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
-        public async Task<IReadOnlyList<Card>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
+        public async Task<IReadOnlyList<CollectionCardData>> GetCardsOwned(DAppChainClient client)
+        {
+            Log.Info($"{nameof(GetCardsOwned)}()");
+
+            EvmContract packTypeContract = GetContract(client, IapContractType.ZbgCard);
+            TokensOwnedFunctionResult result =
+                await packTypeContract.StaticCallDtoTypeOutputAsync<TokensOwnedFunctionResult>(
+                    TokensOwnedMethod,
+                    UserPlasmaChainAddress.LocalAddress
+                );
+
+            CollectionCardData[] cards = new CollectionCardData[result.Indexes.Count];
+            for (int i = 0; i < result.Indexes.Count; i++)
+            {
+                cards[i] = new CollectionCardData(CardKey.FromCardTokenId((long) result.Indexes[i]), (int) result.Balances[i]);
+            }
+
+            Log.Info($"{nameof(GetPackTypeBalance)}() returned {Utilites.FormatCallLogList(cards)}");
+            return cards;
+        }
+
+        public async Task<IReadOnlyList<CardKey>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
-
+            EvmContract zbgCardContract = GetContract(client, IapContractType.ZbgCard);
             EvmContract cardFaucetContract = GetContract(client, IapContractType.CardFaucet);
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
 
-            List<Card> cards = new List<Card>();
-
-            void ContractEventReceived(object sender, EvmChainEventArgs e)
-            {
-                Log.Info($"{nameof(GetPackTypeBalance)}: Received event " + e.EventName);
-                GeneratedCardEvent generatedCardEvent = e.DecodeEventDto<GeneratedCardEvent>();
-                Log.Info(
-                    $"{nameof(GetPackTypeBalance)}: CardId = {generatedCardEvent.MouldId}, BoosterType = {generatedCardEvent.BoosterType}");
-
-                if (generatedCardEvent.MouldId % 10 != 0)
-                {
-                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with raw MouldId {generatedCardEvent.MouldId}");
-                    cards.Add(null);
-                    return;
-                }
-
-                MouldId mouldId = new MouldId((long) (generatedCardEvent.MouldId / 10));
-                (bool found, Card card) = _dataManager.CachedCardsLibraryData.TryGetCardFromMouldId(mouldId);
-                if (found)
-                {
-                    Log.Info($"{nameof(GetPackTypeBalance)}: Found matching card {card}");
-                    cards.Add(card);
-                }
-                else
-                {
-                    Log.Warn($"{nameof(GetPackTypeBalance)}: Unknown card with MouldId {mouldId}");
-                    cards.Add(null);
-                }
-            }
-
-            cardFaucetContract.EventReceived += ContractEventReceived;
-
-            await client.SubscribeToEvents();
-
             const int amountToApprove = 1;
             await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
-            await cardFaucetContract.CallAsync(OpenPackMethod, packType);
+            BroadcastTxResult openPackTxResult = await cardFaucetContract.CallAsync(OpenPackMethod, packType);
+            byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
 
-            const double timeout = 30;
-            bool timedOut = false;
-            double startTime = Utilites.GetTimestamp();
-
-            await new WaitUntil(() =>
+            async Task<List<EventLog<T>>> GetEvents<T>(string eventName) where T : new()
             {
-                if (Utilites.GetTimestamp() - startTime > timeout)
+                // Get all events since call to OpenPackMethod
+                EvmEvent<T> evmEvent = zbgCardContract.GetEvent<T>(eventName);
+                NewFilterInput filterInput =
+                    evmEvent.CreateFilterInput(
+                        new BlockParameter(new HexBigInteger(openPackTxResult.Height)),
+                        BlockParameter.CreatePending()
+                    );
+                List<EventLog<T>> changes;
+                try
                 {
-                    timedOut = true;
-                    return true;
+                    changes = await evmEvent.GetAllChanges(filterInput);
+                }
+                catch (RpcClientException e) when (e.Message.Contains("to block before end block"))
+                {
+                    return null;
                 }
 
-                return cards.Count == CardsPerPack;
-            });
+                // Filter out events not belonging to the call we just made
+                changes = changes.Where(log => openPackTxHash.SequenceEqual(CryptoUtils.HexStringToBytes(log.Log.TransactionHash))).ToList();
+                return changes;
+            }
 
-            if (timedOut)
-                throw new TimeoutException();
+            const int maxRetryCount = 10;
+            const int retryDelay = 1500;
 
-            cards = cards.Where(card => card != null).ToList();
-            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cards)}");
-            return cards;
+            // We only have the transaction hash at this point, but it might still be mining.
+            // Poll the result multiple times until we have one.
+            List<EventLog<TransferWithQuantityEvent>> transferWithQuantityEvents = null;
+            await Task.Delay(1500);
+            for (int i = 0; i < maxRetryCount; i++)
+            {
+                transferWithQuantityEvents = await GetEvents<TransferWithQuantityEvent>("TransferWithQuantity");
+                if (transferWithQuantityEvents != null && transferWithQuantityEvents.Count == CardsPerPack)
+                    break;
+
+                Log.Warn($"Retrying getting {nameof(TransferWithQuantityEvent)} events, attempt {i + 1}/{maxRetryCount}");
+                await Task.Delay(retryDelay);
+            }
+
+            Assert.IsNotNull(transferWithQuantityEvents);
+            if (transferWithQuantityEvents.Count == 0)
+                throw new Exception("Exhausted attempts to get generated cards");
+
+            Log.Debug($"{nameof(GetPackTypeBalance)}: transferEvents = {Utilites.FormatCallLogList(transferWithQuantityEvents.Select(e => e.Event))}");
+
+            // Get card keys
+            List<BigInteger> cardTokenIds = transferWithQuantityEvents.Select(evt => evt.Event.TokenId).ToList();
+            Log.Debug($"{nameof(GetPackTypeBalance)}: cardTokenIds = {Utilites.FormatCallLogList(cardTokenIds)}");
+
+            List<CardKey> cardKeys =
+                cardTokenIds
+                    .Select(cardTokenId => CardKey.FromCardTokenId((long) cardTokenId))
+                    .ToList();
+
+            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cardKeys)}");
+            return cardKeys;
         }
 
         private EvmContract GetContract(DAppChainClient client, IapContractType contractType)
@@ -198,6 +212,8 @@ namespace Loom.ZombieBattleground.Iap
 
         private DAppChainClient CreateClient()
         {
+            Log.Debug("Creating PlasmaChain client");
+
             ILogger logger = new UnityLoggerWrapper(RpcLog);
 
             IRpcClient writer = RpcClientFactory
@@ -215,46 +231,19 @@ namespace Loom.ZombieBattleground.Iap
             DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
             {
                 AutoReconnect = false,
-                CallTimeout = Constants.PlasmachainCallTimeout,
-                StaticCallTimeout = Constants.PlasmachainCallTimeout
+                CallTimeout = Constants.PlasmaChainCallTimeout,
+                StaticCallTimeout = Constants.PlasmaChainCallTimeout
             };
 
-            return new LoggingDAppChainClient(writer, reader, clientConfiguration)
+            return new LoggingDAppChainClient(
+                writer,
+                reader,
+                clientConfiguration,
+                new NotifyingDAppChainClientCallExecutor(clientConfiguration)
+            )
             {
                 Logger = logger
             };
-        }
-
-        private RequestPacksRequest CreateContractRequestFromTransactionResponse(AuthFiatApiFacade.TransactionResponse fiatResponse)
-        {
-            string r = fiatResponse.VerifyHash.signature.SubstringIndexed(2, 66);
-            string s = fiatResponse.VerifyHash.signature.SubstringIndexed(66, 130);
-            string v = fiatResponse.VerifyHash.signature.SubstringIndexed(130, 132);
-
-            RequestPacksRequest request = new RequestPacksRequest
-            {
-                UserId = fiatResponse.UserId,
-                R = CryptoUtils.HexStringToBytes(r),
-                S = CryptoUtils.HexStringToBytes(s),
-                V = (byte) Int32.Parse(v, NumberStyles.AllowHexSpecifier),
-                Hash = CryptoUtils.HexStringToBytes(fiatResponse.VerifyHash.hash),
-                Amount = new[]
-                {
-                    fiatResponse.Booster,
-                    fiatResponse.Super,
-                    fiatResponse.Air,
-                    fiatResponse.Earth,
-                    fiatResponse.Fire,
-                    fiatResponse.Life,
-                    fiatResponse.Toxic,
-                    fiatResponse.Water,
-                    fiatResponse.Small,
-                    fiatResponse.Minion,
-                    fiatResponse.Binance
-                },
-                TxID = fiatResponse.TxID
-            };
-            return request;
         }
 
         private async Task CallRequestPacksContract(EvmContract contract, RequestPacksRequest requestPacksRequest)
@@ -275,15 +264,22 @@ namespace Loom.ZombieBattleground.Iap
 
         private void InitAbiTextAssets()
         {
-            _abiDictionary = new Dictionary<IapContractType, TextAsset>
+            (IapContractType contractType, string path)[] contractTypeToPath =
             {
-                {
-                    IapContractType.FiatPurchase, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/FiatPurchaseABI")
-                },
-                {
-                    IapContractType.CardFaucet, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI")
-                }
+                (IapContractType.ZbgCard, "Data/abi/ZBGCardABI"),
+                (IapContractType.FiatPurchase, "Data/abi/FiatPurchaseABI"),
+                (IapContractType.CardFaucet, "Data/abi/CardFaucetABI")
             };
+
+            _abiDictionary = new Dictionary<IapContractType, TextAsset>();
+            foreach ((IapContractType contractType, string path) in contractTypeToPath)
+            {
+                TextAsset textAsset = _loadObjectsManager.GetObjectByPath<TextAsset>(path);
+                if (textAsset == null)
+                    throw new Exception("Unable to load ABI at path " + path);
+
+                _abiDictionary.Add(contractType, textAsset);
+            }
 
             (IapContractType contractType, Enumerators.MarketplaceCardPackType cardPackType)[] contractTypeToCardPackType =
             {
@@ -298,19 +294,24 @@ namespace Loom.ZombieBattleground.Iap
                 (IapContractType.SmallPack, Enumerators.MarketplaceCardPackType.Small),
                 (IapContractType.MinionPack, Enumerators.MarketplaceCardPackType.Minion)
             };
+
             for (int i = 0; i < contractTypeToCardPackType.Length; ++i)
             {
-                _abiDictionary.Add(
-                    contractTypeToCardPackType[i].contractType,
-                    _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{contractTypeToCardPackType[i].cardPackType.ToString()}PackABI")
-                );
+                string path = $"Data/abi/{contractTypeToCardPackType[i].cardPackType.ToString()}PackABI";
+                TextAsset textAsset = _loadObjectsManager.GetObjectByPath<TextAsset>(path);
+                if (textAsset == null)
+                    throw new Exception("Unable to load ABI at path " + path);
+
+                _abiDictionary.Add(contractTypeToCardPackType[i].contractType, textAsset);
             }
         }
 
-        private string GetContractAddress(IapContractType contractType)
+        private static string GetContractAddress(IapContractType contractType)
         {
             switch (contractType)
             {
+                case IapContractType.ZbgCard:
+                    return PlasmaChainEndpointsContainer.ContractAddressZbgCard;
                 case IapContractType.FiatPurchase:
                     return PlasmaChainEndpointsContainer.ContractAddressFiatPurchase;
                 case IapContractType.CardFaucet:
@@ -340,7 +341,7 @@ namespace Loom.ZombieBattleground.Iap
             }
         }
 
-        private IapContractType GetPackContractTypeFromId(Enumerators.MarketplaceCardPackType packId)
+        private static IapContractType GetPackContractTypeFromId(Enumerators.MarketplaceCardPackType packId)
         {
             switch (packId)
             {
@@ -369,6 +370,41 @@ namespace Loom.ZombieBattleground.Iap
             }
         }
 
+        private static RequestPacksRequest CreateContractRequestFromTransactionResponse(AuthFiatApiFacade.TransactionReceipt fiatReceipt)
+        {
+            byte[] signature = fiatReceipt.VerifyHash.Signature;
+            byte[] r = new byte[32];
+            Array.Copy(signature, 0, r, 0, 32);
+            byte[] s = new byte[32];
+            Array.Copy(signature, 32, s, 0, 32);
+            byte v = signature[signature.Length - 1];
+
+            RequestPacksRequest request = new RequestPacksRequest
+            {
+                UserId = fiatReceipt.UserId,
+                R = r,
+                S = s,
+                V = v,
+                Hash = fiatReceipt.VerifyHash.Hash,
+                Amount = new[]
+                {
+                    fiatReceipt.Booster,
+                    fiatReceipt.Super,
+                    fiatReceipt.Air,
+                    fiatReceipt.Earth,
+                    fiatReceipt.Fire,
+                    fiatReceipt.Life,
+                    fiatReceipt.Toxic,
+                    fiatReceipt.Water,
+                    fiatReceipt.Small,
+                    fiatReceipt.Minion,
+                    fiatReceipt.Binance
+                },
+                TxID = fiatReceipt.TxId
+            };
+            return request;
+        }
+
         private class LoggingDAppChainClient : DAppChainClient
         {
             public LoggingDAppChainClient(
@@ -381,29 +417,135 @@ namespace Loom.ZombieBattleground.Iap
             public override void Dispose()
             {
                 base.Dispose();
-                RpcLog.Debug("Disposing PlasmaChain client");
+                Log.Debug("Disposing PlasmaChain client");
             }
+        }
+
+        [FunctionOutput]
+        public class TokensOwnedFunctionResult
+        {
+            [Parameter("uint256[]", "indexes")]
+            public List<BigInteger> Indexes { get; set; }
+
+            [Parameter("uint256[]", "balances")]
+            public List<BigInteger> Balances { get; set; }
         }
 
         [Event("GeneratedCard")]
         private class GeneratedCardEvent
         {
             [Parameter("uint256", "cardId")]
-            public BigInteger MouldId { get; set; }
+            public BigInteger CardTokenId { get; set; }
 
             [Parameter("uint256", "boosterType", 2)]
             public BigInteger BoosterType { get; set; }
+
+            public override string ToString()
+            {
+                return $"{nameof(CardTokenId)}: {CardTokenId}, {nameof(BoosterType)}: {BoosterType}";
+            }
+        }
+
+        [Event("UpgradedCardToBE")]
+        private class UpgradedCardToBackerEditionEvent
+        {
+            [Parameter("uint256", "cardId")]
+            public BigInteger CardTokenId { get; set; }
+
+            public override string ToString()
+            {
+                return $"{nameof(CardTokenId)}: {CardTokenId}";
+            }
+        }
+
+        [Event("UpgradedCardToLE")]
+        private class UpgradedCardToLimitedEditionEvent
+        {
+            [Parameter("uint256", "cardId")]
+            public BigInteger CardTokenId { get; set; }
+
+            public override string ToString()
+            {
+                return $"{nameof(CardTokenId)}: {CardTokenId}";
+            }
+        }
+
+        // event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+        [Event("Transfer")]
+        private class TransferEvent
+        {
+            [Parameter("address", "from", 1, true)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, true)]
+            public string To { get; set; }
+
+            [Parameter("uint256", "tokenId", 3, true)]
+            public BigInteger TokenId { get; set; }
+
+            public override string ToString()
+            {
+                return $"({nameof(From)}: {From}, {nameof(To)}: {To}, {nameof(TokenId)}: {TokenId})";
+            }
+        }
+
+        // event BatchTransfer(address indexed from, address indexed to, uint256[] tokenTypes, uint256[] amounts);
+        [Event("BatchTransfer")]
+        private class BatchTransferEvent
+        {
+            [Parameter("address", "from", 1, true)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, true)]
+            public string To { get; set; }
+
+            [Parameter("uint256[]", "tokenTypes", 3, false)]
+            public BigInteger[] TokenTypes { get; set; }
+
+            [Parameter("uint256[]", "amounts", 4, false)]
+            public BigInteger[] Amounts { get; set; }
+
+            public override string ToString()
+            {
+                return
+                    $"({nameof(From)}: {From}, " +
+                    $"{nameof(To)}: {To}, " +
+                    $"{nameof(TokenTypes)}: {Utilites.FormatCallLogList(TokenTypes)}, " +
+                    $"{nameof(Amounts)}: {Utilites.FormatCallLogList(Amounts)})";
+            }
+        }
+
+        // event TransferWithQuantity(address indexed from, address indexed to, uint256 indexed tokenId, uint256 quantity);
+        [Event("TransferWithQuantity")]
+        private class TransferWithQuantityEvent
+        {
+            [Parameter("address", "from", 1, false)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, false)]
+            public string To { get; set; }
+
+            [Parameter("uint256", "tokenId", 3, true)]
+            public BigInteger TokenId { get; set; }
+
+            [Parameter("uint256", "amount", 4, false)]
+            public BigInteger Amount { get; set; }
+
+            public override string ToString()
+            {
+                return $"({nameof(From)}: {From}, {nameof(To)}: {To}, {nameof(TokenId)}: {TokenId}, {nameof(Amount)}: {Amount})";
+            }
         }
 
         private struct RequestPacksRequest
         {
-            public int UserId;
+            public BigInteger UserId;
             public byte[] R;
             public byte[] S;
             public byte V;
             public byte[] Hash;
-            public int[] Amount;
-            public int TxID;
+            public uint[] Amount;
+            public BigInteger TxID;
         }
     }
 }

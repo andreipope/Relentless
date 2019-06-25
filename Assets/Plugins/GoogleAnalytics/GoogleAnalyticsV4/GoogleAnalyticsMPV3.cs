@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+#pragma warning disable 618
 
 /*
   GoogleAnalyticsMPV3 handles building hits using the Measurement Protocol.

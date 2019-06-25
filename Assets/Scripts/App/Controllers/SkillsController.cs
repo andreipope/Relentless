@@ -3,7 +3,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
-using Loom.ZombieBattleground.View;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
@@ -1563,7 +1562,7 @@ namespace Loom.ZombieBattleground
                 owner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
                 cardModel.ResetToInitial();
 
-                Card prototype = new Card(GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromName(cardModel.Card.Prototype.Name));
+                Card prototype = new Card(GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardByName(cardModel.Card.Prototype.Name));
                 InstanceId updatedId = new InstanceId(cardModel.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.Reanimate);
                 WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer, id:updatedId);
                 CardModel reanimatedUnitModel = new CardModel(card);

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using log4net;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -109,6 +109,8 @@ namespace Loom.ZombieBattleground
         public Animator battleframeAnimator { get; private set; }
 
         public BattleBoardArrow FightTargetingArrow => _fightTargetingArrow;
+
+        private GameplayActionQueueAction ArrivalAnimationProcessingAction;
 
         public BoardUnitView(CardModel model, Transform parent)
         {
@@ -530,6 +532,9 @@ namespace Loom.ZombieBattleground
                 }
             };
 
+            ArrivalAnimationProcessingAction?.TriggerActionExternally();
+            ArrivalAnimationProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.CardPlayBlocker);
+
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model) && playUniqueAnimation)
             {
                 _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction, endArrivalCallback: ArrivalAnimationEventHandler);
@@ -542,6 +547,8 @@ namespace Loom.ZombieBattleground
 
         public void ArrivalAnimationEventHandler()
         {
+            ArrivalAnimationProcessingAction?.TriggerActionExternally();
+
             if (_unitContentObject == null || !_unitContentObject)
                 return;
 

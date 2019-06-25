@@ -20,7 +20,7 @@ namespace mixpanel.platform
                     return adInfo.Call<string>("getId"); // note: we're not using the id for advertising
                 }
             }
-            catch (AndroidJavaException e)
+            catch (AndroidJavaException)
             {
             }
             return null;

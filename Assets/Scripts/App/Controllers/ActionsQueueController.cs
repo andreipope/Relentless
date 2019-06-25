@@ -135,7 +135,6 @@ namespace Loom.ZombieBattleground
         {
             // StopTurnPart2InvokePlayerTurnEnded and StopTurnPart1Prepare are not here since we WANT actions to be added to it
             return
-                actionType == Enumerators.QueueActionType.StopTurnPart3Finish ||
                 actionType == Enumerators.QueueActionType.EndMatch ||
                 actionType == Enumerators.QueueActionType.LeaveMatch;
         }

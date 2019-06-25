@@ -61,12 +61,12 @@ namespace Loom.ZombieBattleground.Data
             SecondarySkill = secondarySkill;
         }
 
-        public void AddCard(MouldId mouldId)
+        public void AddCard(CardKey cardKey)
         {
             bool wasAdded = false;
             foreach (DeckCardData card in Cards)
             {
-                if (card.MouldId == mouldId)
+                if (card.CardKey == cardKey)
                 {
                     card.Amount++;
                     wasAdded = true;
@@ -75,16 +75,16 @@ namespace Loom.ZombieBattleground.Data
 
             if (!wasAdded)
             {
-                DeckCardData cardData = new DeckCardData(mouldId, 1);
+                DeckCardData cardData = new DeckCardData(cardKey, 1);
                 Cards.Add(cardData);
             }
         }
 
-        public void RemoveCard(MouldId mouldId)
+        public void RemoveCard(CardKey cardKey)
         {
             foreach (DeckCardData card in Cards)
             {
-                if (card.MouldId == mouldId)
+                if (card.CardKey == cardKey)
                 {
                     card.Amount--;
                     if (card.Amount < 1)
@@ -124,19 +124,19 @@ namespace Loom.ZombieBattleground.Data
 
     public class DeckCardData
     {
-        public MouldId MouldId { get; set; }
+        public CardKey CardKey { get; set; }
 
         public int Amount { get; set; }
 
-        public DeckCardData(MouldId mouldId, int amount)
+        public DeckCardData(CardKey cardKey, int amount)
         {
-            MouldId = mouldId;
+            CardKey = cardKey;
             Amount = amount;
         }
 
         public DeckCardData Clone()
         {
-            return new DeckCardData(MouldId, Amount);
+            return new DeckCardData(CardKey, Amount);
         }
     }
 }

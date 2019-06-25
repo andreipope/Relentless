@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
@@ -39,7 +40,24 @@ namespace Loom.ZombieBattleground
         {
             _currentEditDeck = deck.Clone();
             _deckNameText.text = deck.Name;
-            _overlordImage.sprite = DataUtilities.GetOverlordThumbnailSprite(deck.OverlordId);
+
+            Enumerators.Faction faction = DataUtilities.GetFaction(deck.OverlordId);
+            _overlordImage.sprite = DataUtilities.GetOverlordImage(deck.OverlordId);
+            RectTransform rectTransform = _overlordImage.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = DataUtilities.GetOverlordImagePositionInViewDeck(faction);
+            rectTransform.localScale = DataUtilities.GetOverlordImageScaleInViewDeck(faction);
+
+            RenamePopup.OnSaveNewDeckName += OnSaveNewDeckName;
+        }
+
+        public void Dispose()
+        {
+            RenamePopup.OnSaveNewDeckName -= OnSaveNewDeckName;
+        }
+
+        private void OnSaveNewDeckName(string name)
+        {
+            _deckNameText.text = name;
         }
 
         private void ButtonAutoCompleteHandler()
@@ -52,7 +70,7 @@ namespace Loom.ZombieBattleground
             List<CollectionCardData> data = GameClient.Get<IDataManager>().CachedCollectionData.Cards;
             foreach (CollectionCardData card in data)
             {
-                CollectionCardData cardData = new CollectionCardData(card.MouldId, card.Amount);
+                CollectionCardData cardData = new CollectionCardData(card.CardKey, card.Amount);
                 collectionData.Cards.Add(cardData);
             }
 
@@ -64,8 +82,8 @@ namespace Loom.ZombieBattleground
 
             foreach(DeckCardData card in _currentEditDeck.Cards)
             {
-                Card fetchedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromMouldId(card.MouldId);
-                collectionData.GetCardData(fetchedCard.MouldId).Amount -= card.Amount;
+                Card fetchedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardByCardKey(card.CardKey);
+                collectionData.GetCardData(fetchedCard.CardKey).Amount -= card.Amount;
             }
 
             OnPressedAutoComplete?.Invoke(_currentEditDeck, collectionData);
@@ -73,6 +91,8 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRenameHandler()
         {
+            IUIManager uiManager = GameClient.Get<IUIManager>();
+            uiManager.DrawPopup<RenamePopup>(_currentEditDeck);
 
         }
     }

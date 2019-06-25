@@ -9,7 +9,7 @@ namespace Opencoding.Console
 {
 	static class NativeMethods
 	{
-#if UNITY_IOS
+#if UNITY_IOS && false
 		[DllImport("__Internal")]
 		private static extern void _opencodingConsoleBeginEmail(string toAddress, string subject, string body, bool isHTML);
 
@@ -28,7 +28,7 @@ namespace Opencoding.Console
 
 		public static void SendEmail(Email email)
 		{
-#if UNITY_IOS && !UNITY_EDITOR
+#if UNITY_IOS && false && !UNITY_EDITOR
 			_opencodingConsoleBeginEmail(email.ToAddress, email.Subject, email.Message, email.IsHTML);
 			foreach (var attachment in email.Attachments)
 			{
@@ -68,7 +68,7 @@ namespace Opencoding.Console
 
 		public static void CopyTextToClipboard(string text)
 		{
-#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER && false
 #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0
             var textEditor = new TextEditor { content = new GUIContent(text) };
 #else
@@ -76,7 +76,7 @@ namespace Opencoding.Console
 #endif
             textEditor.SelectAll();
 			textEditor.Copy();
-#elif UNITY_IOS
+#elif UNITY_IOS && false
 			_opencodingConsoleCopyToClipboard(text);
 #elif UNITY_ANDROID
 			AndroidJavaClass androidJavaClass = new AndroidJavaClass("net.opencoding.console.NativeMethods");
@@ -88,7 +88,7 @@ namespace Opencoding.Console
 
 		public static float GetNativeScreenScaleFactor()
 		{
-#if UNITY_EDITOR || !UNITY_IOS
+#if UNITY_EDITOR || !(UNITY_IOS && false)
 			return 1.0f;
 #else
 			return Screen.width / (float)_opencodingConsoleGetNativeScreenWidth();

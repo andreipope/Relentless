@@ -1,4 +1,3 @@
-using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication

@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetGooMeter(List<DeckCardData> Cards)
+        public void SetGooMeter(List<DeckCardData> cards)
         {
             Dictionary<int, int> cardsGoo = new Dictionary<int, int>();
             for (int i = 0; i < 11; i++)
@@ -34,26 +34,27 @@ namespace Loom.ZombieBattleground
                 cardsGoo.Add(i, 0);
             }
 
-            for (int i = 0; i < Cards.Count; i++)
+            for (int i = 0; i < cards.Count; i++)
             {
+                int iTmp = i;
                 int index = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
-                    .FindIndex(card => card.MouldId.Equals(Cards[i].MouldId));
+                    .FindIndex(card => card.CardKey.Equals(cards[iTmp].CardKey));
                 int gooCost = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards[index].Cost;
 
                 if (gooCost > 10)
                 {
-                    cardsGoo[10] += Cards[i].Amount;
+                    cardsGoo[10] += cards[i].Amount;
                 }
                 else
                 {
-                    cardsGoo[gooCost] += Cards[i].Amount;
+                    cardsGoo[gooCost] += cards[i].Amount;
                 }
 
             }
 
             for (int i = 0; i < _gooGraphs.Count; i++)
             {
-                float value = (float)cardsGoo[i] / Cards.Count;
+                float value = (float)cardsGoo[i] / cards.Count;
                 _gooGraphs[i].SetMeterValue(value);
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using log4net;
 using log4net.Core;
@@ -114,12 +115,11 @@ namespace Loom.ZombieBattleground.Test
             set => _debugCheats = value;
         }
 
-        public MultiplayerDebugClient(string name = null)
+        public MultiplayerDebugClient(string name = null, BigInteger? userIdNumber = null)
         {
             UserDataModel = new UserDataModel(
-                "DebugClient_" +
-                (name != null ? name + "_" : "") +
-                Guid.NewGuid(),
+                "DebugClient_" + (name != null ? name + "_" : "") + userIdNumber,
+                userIdNumber ?? new BigInteger(Guid.NewGuid().ToByteArray()),
                 CryptoUtils.GeneratePrivateKey()
             );
         }

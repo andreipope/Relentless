@@ -6,7 +6,6 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -238,7 +237,7 @@ namespace Loom.ZombieBattleground
             {
                 int amount = GetCardsAmount
                 (
-                    card.MouldId,
+                    card.CardKey,
                     collectionData
                 );
 
@@ -254,7 +253,7 @@ namespace Loom.ZombieBattleground
             {
                 int amount = GetCardsAmount
                 (
-                    card.MouldId,
+                    card.CardKey,
                     collectionData
                 );
 
@@ -302,7 +301,7 @@ namespace Loom.ZombieBattleground
 
                 int randomIndex = Random.Range(0, availableCardList.Count);
                 Card card = availableCardList[randomIndex];
-                deck.AddCard(card.MouldId);
+                deck.AddCard(card.CardKey);
                 availableCardList.Remove(card);
 
                 amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
@@ -433,7 +432,7 @@ namespace Loom.ZombieBattleground
             cardsToAdd = cardsToAdd.OrderBy(x => x.Faction).ThenBy(x => x.Cost).ToList();
             foreach(Card card in cardsToAdd)
             {
-                deck.AddCard(card.MouldId);
+                deck.AddCard(card.CardKey);
             }
         }
 
@@ -443,8 +442,8 @@ namespace Loom.ZombieBattleground
             foreach(Card card in cards)
             {
                 CollectionCardData item = new CollectionCardData(
-                    card.MouldId,
-                    GetCardsAmount(card.MouldId, collectionData)
+                    card.CardKey,
+                    GetCardsAmount(card.CardKey, collectionData)
                 );
                 availableCardList.Add(item);
             }
@@ -456,9 +455,9 @@ namespace Loom.ZombieBattleground
             deck.Cards.Clear();
         }
 
-        private int GetCardsAmount(MouldId mouldId, CollectionData collectionData)
+        private int GetCardsAmount(CardKey cardKey, CollectionData collectionData)
         {
-            return collectionData.GetCardData(mouldId).Amount;
+            return collectionData.GetCardData(cardKey).Amount;
         }
 
         public void OpenAlertDialog(string msg)

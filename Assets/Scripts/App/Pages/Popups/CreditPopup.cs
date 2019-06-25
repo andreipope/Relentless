@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Loom.ZombieBattleground.BackendCommunication;
+﻿using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
 using TMPro;
-using DG.Tweening;
-using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
