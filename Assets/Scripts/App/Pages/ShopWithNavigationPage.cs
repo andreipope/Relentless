@@ -120,12 +120,13 @@ namespace Loom.ZombieBattleground
             async void OnIapMediatorOnPurchasingResultReceived(OneOf<PurchaseEventArgs, IapPlatformStorePurchaseError> oneOf)
             {
                 // Wait until we get a result for the product we are buying
-                bool mustReturn = false;
+                bool matchingProduct = false;
                 oneOf.Switch(
-                    args => mustReturn = args.purchasedProduct.Equals(product),
-                    error => mustReturn = error.Product.Equals(product)
+                    args => matchingProduct = args.purchasedProduct.Equals(product),
+                    error => matchingProduct = error.Product.Equals(product)
                     );
-                if (mustReturn)
+
+                if (!matchingProduct)
                     return;
 
                 _iapMediator.PurchasingResultReceived -= OnIapMediatorOnPurchasingResultReceived;
