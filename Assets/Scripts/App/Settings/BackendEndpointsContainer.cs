@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://battleground-testnet-asia2.dappchains.com:46658/queryws",
                         "ws://battleground-testnet-asia2.dappchains.com:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v22",
+                        "v23",
                         false,
                         false,
                         false

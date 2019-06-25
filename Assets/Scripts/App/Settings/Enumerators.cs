@@ -780,7 +780,8 @@ namespace Loom.ZombieBattleground.Common
             EndMatch,
             UnitCombat,
             LeaveMatch,
-            InitUnitCombat
+            InitUnitCombat,
+            CardPlayBlocker
         }
 
         public enum TooltipAlign
