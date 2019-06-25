@@ -47,8 +47,6 @@ namespace Loom.ZombieBattleground
 
         private TMP_InputField _inputFieldSearchName;
 
-        private bool _isDragging;
-
         private List<Enumerators.Faction> _availableFaction;
 
         private HordeSelectionWithNavigationPage.Tab _nextTab;
@@ -148,7 +146,6 @@ namespace Loom.ZombieBattleground
             {
                 Object.Destroy(_draggingObject);
                 _draggingObject = null;
-                _isDragging = false;
             }
         }
 

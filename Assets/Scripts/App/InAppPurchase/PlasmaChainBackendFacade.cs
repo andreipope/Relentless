@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground.Iap
 
         private const string BalanceOfMethod = "balanceOf";
 
+        private const string TokensOwnedMethod = "tokensOwned";
+
         private const string ApproveMethod = "approve";
 
         private const string OpenPackMethod = "openBoosterPack";
@@ -89,18 +91,39 @@ namespace Loom.ZombieBattleground.Iap
             await CallRequestPacksContract(evmContract, requestPacksRequest);
         }
 
-        public async Task<int> GetPackTypeBalance(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
+        public async Task<uint> GetPackTypeBalance(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
 
             EvmContract packTypeContract = GetContract(client, GetPackContractTypeFromId(packType));
-            int amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<int>(
+            uint amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<uint>(
                 BalanceOfMethod,
                 UserPlasmaChainAddress.LocalAddress
             );
 
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType}) returned {amount}");
             return amount;
+        }
+
+        public async Task<IReadOnlyList<CollectionCardData>> GetCardsOwned(DAppChainClient client)
+        {
+            Log.Info($"{nameof(GetCardsOwned)}()");
+
+            EvmContract packTypeContract = GetContract(client, IapContractType.ZbgCard);
+            TokensOwnedFunctionResult result =
+                await packTypeContract.StaticCallDtoTypeOutputAsync<TokensOwnedFunctionResult>(
+                    TokensOwnedMethod,
+                    UserPlasmaChainAddress.LocalAddress
+                );
+
+            CollectionCardData[] cards = new CollectionCardData[result.Indexes.Count];
+            for (int i = 0; i < result.Indexes.Count; i++)
+            {
+                cards[i] = new CollectionCardData(CardKey.FromCardTokenId((long) result.Indexes[i]), (int) result.Balances[i]);
+            }
+
+            Log.Info($"{nameof(GetPackTypeBalance)}() returned {Utilites.FormatCallLogList(cards)}");
+            return cards;
         }
 
         public async Task<IReadOnlyList<CardKey>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
@@ -241,18 +264,22 @@ namespace Loom.ZombieBattleground.Iap
 
         private void InitAbiTextAssets()
         {
-            _abiDictionary = new Dictionary<IapContractType, TextAsset>
+            (IapContractType contractType, string path)[] contractTypeToPath =
             {
-                {
-                    IapContractType.ZbgCard, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/ZBGCardABI")
-                },
-                {
-                    IapContractType.FiatPurchase, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/FiatPurchaseABI")
-                },
-                {
-                    IapContractType.CardFaucet, _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI")
-                }
+                (IapContractType.ZbgCard, "Data/abi/ZBGCardABI"),
+                (IapContractType.FiatPurchase, "Data/abi/FiatPurchaseABI"),
+                (IapContractType.CardFaucet, "Data/abi/CardFaucetABI")
             };
+
+            _abiDictionary = new Dictionary<IapContractType, TextAsset>();
+            foreach ((IapContractType contractType, string path) in contractTypeToPath)
+            {
+                TextAsset textAsset = _loadObjectsManager.GetObjectByPath<TextAsset>(path);
+                if (textAsset == null)
+                    throw new Exception("Unable to load ABI at path " + path);
+
+                _abiDictionary.Add(contractType, textAsset);
+            }
 
             (IapContractType contractType, Enumerators.MarketplaceCardPackType cardPackType)[] contractTypeToCardPackType =
             {
@@ -267,12 +294,15 @@ namespace Loom.ZombieBattleground.Iap
                 (IapContractType.SmallPack, Enumerators.MarketplaceCardPackType.Small),
                 (IapContractType.MinionPack, Enumerators.MarketplaceCardPackType.Minion)
             };
+
             for (int i = 0; i < contractTypeToCardPackType.Length; ++i)
             {
-                _abiDictionary.Add(
-                    contractTypeToCardPackType[i].contractType,
-                    _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{contractTypeToCardPackType[i].cardPackType.ToString()}PackABI")
-                );
+                string path = $"Data/abi/{contractTypeToCardPackType[i].cardPackType.ToString()}PackABI";
+                TextAsset textAsset = _loadObjectsManager.GetObjectByPath<TextAsset>(path);
+                if (textAsset == null)
+                    throw new Exception("Unable to load ABI at path " + path);
+
+                _abiDictionary.Add(contractTypeToCardPackType[i].contractType, textAsset);
             }
         }
 
@@ -389,6 +419,16 @@ namespace Loom.ZombieBattleground.Iap
                 base.Dispose();
                 Log.Debug("Disposing PlasmaChain client");
             }
+        }
+
+        [FunctionOutput]
+        public class TokensOwnedFunctionResult
+        {
+            [Parameter("uint256[]", "indexes")]
+            public List<BigInteger> Indexes { get; set; }
+
+            [Parameter("uint256[]", "balances")]
+            public List<BigInteger> Balances { get; set; }
         }
 
         [Event("GeneratedCard")]

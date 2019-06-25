@@ -84,6 +84,10 @@ namespace Loom.ZombieBattleground
             _amountAward.text = (5 * ((int) _card.Rank + 1)).ToString();
 
             CardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.CardKey);
+            if (CardData == null)
+            {
+                CardData = new CollectionCardData(_card.CardKey, 0);
+            }
             UpdateCardAmount();
         }
 

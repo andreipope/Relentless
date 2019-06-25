@@ -194,7 +194,7 @@ namespace Loom.ZombieBattleground.Common
 
         public static readonly bool RankSystemEnabled = false;
 
-        public const bool GameStateValidationEnabled =
+        public static readonly bool GameStateValidationEnabled =
 #if UNITY_EDITOR
             true;
 #else

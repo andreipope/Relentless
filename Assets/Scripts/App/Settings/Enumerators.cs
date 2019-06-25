@@ -369,7 +369,9 @@ namespace Loom.ZombieBattleground.Common
         {
             UNDEFINED,
             CREATURE,
-            ITEM
+            ITEM,
+            [Obsolete("", true)]
+            SPELL = ITEM
         }
 
         public enum CardPackType
@@ -486,7 +488,9 @@ namespace Loom.ZombieBattleground.Common
 
         public enum Faction
         {
-            Undefined,
+            Undefined = 0,
+            [Obsolete("", true)]
+            NONE = 0,
             FIRE,
             WATER,
             EARTH,

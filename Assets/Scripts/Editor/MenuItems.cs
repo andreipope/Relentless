@@ -361,6 +361,22 @@ namespace Loom.ZombieBattleground.Editor
             Selection.objects = selection.ToArray();
         }
 
+        [MenuItem("Utility/Editor/Apply Scale To Rect Transform")]
+        public static void ApplyScaleToRectTransforms()
+        {
+            RectTransform[] rectTransforms = Selection.transforms.OfType<RectTransform>().ToArray();
+            Undo.RecordObjects(rectTransforms, "Apply Scale To Rect Transform");
+            foreach (RectTransform rectTransform in rectTransforms)
+            {
+                Vector2 sizeDelta = rectTransform.sizeDelta;
+                sizeDelta.x *= rectTransform.localScale.x;
+                sizeDelta.y *= rectTransform.localScale.y;
+                rectTransform.sizeDelta = sizeDelta;
+
+                rectTransform.localScale = Vector3.one;
+            }
+        }
+
         #endregion scene hierarchy Utility
     }
 }

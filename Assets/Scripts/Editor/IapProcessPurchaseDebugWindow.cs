@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground.Editor
             {
                 EnqueueAsyncTask(async () =>
                 {
-                    await iapMediator.ExecutePostPurchaseProcessing(_receiptJson);
+                    await iapMediator.ExecutePostStorePurchaseProcessing(_receiptJson, null);
                 });
             }
         }
