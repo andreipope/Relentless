@@ -58,30 +58,15 @@ namespace Loom.ZombieBattleground.Iap
                     );
 #elif UNITY_IOS
                 AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receiptJson);
-                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonConvert.SerializeObject(appleReceipt, Formatting.Indented));
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
+                AppleInAppPurchaseReceipt matchingReceipt =
+                    product == null ?
+                        appleReceipt.inAppPurchaseReceipts[0] :
+                        appleReceipt.inAppPurchaseReceipts.SingleOrDefault(r => r.transactionID == product.transactionID);
 
-                // Marketplace wants the matching transaction to be the first in list, so reorder
-                if (product != null)
-                {
-                    bool matchReceiptFound = false;
-                    for (int i = 0; i < appleReceipt.inAppPurchaseReceipts.Length; i++)
-                    {
-                        AppleInAppPurchaseReceipt receipt = appleReceipt.inAppPurchaseReceipts[i];
-                        if (receipt.transactionID == product.transactionID)
-                        {
-                            matchReceiptFound = true;
-                            AppleInAppPurchaseReceipt tempReceipt = appleReceipt.inAppPurchaseReceipts[0];
-                            appleReceipt.inAppPurchaseReceipts[0] = appleReceipt.inAppPurchaseReceipts[i];
-                            appleReceipt.inAppPurchaseReceipts[i] = tempReceipt;
-                            break;
-                        }
-                    }
+                if (matchingReceipt == null)
+                    throw new KeyNotFoundException($"Receipt for transactionID {product?.transactionID ?? "null"} not found");
 
-                    if (!matchReceiptFound)
-                        throw new KeyNotFoundException($"Receipt for transactionID {product?.transactionID ?? "null"} not found");
-                }
-
-                AppleInAppPurchaseReceipt matchingReceipt = appleReceipt.inAppPurchaseReceipts[0];
                 fiatValidationData =
                     new FiatValidationDataAppStore(
                         matchingReceipt.productID,
