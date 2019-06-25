@@ -116,15 +116,6 @@ namespace Loom.ZombieBattleground
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if UNITY_IOS || UNITY_ANDROID
             ChangeState(State.Purchasing);
-<<<<<<< HEAD:Assets/Scripts/App/Pages/Shop/ShopWithNavigationPage.cs
-            _uiManager.DrawPopup<LoadingOverlayPopup>
-            (
-                LocalizationUtil.GetLocalizedString
-                (
-                    LocalizationTerm.Spinner_Shop_IAP
-                )
-            );
-=======
             _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
 
             async void OnIapMediatorOnPurchasingResultReceived(OneOf<PurchaseEventArgs, IapPlatformStorePurchaseError> oneOf)
@@ -134,7 +125,6 @@ namespace Loom.ZombieBattleground
             }
 
             _iapMediator.PurchasingResultReceived += OnIapMediatorOnPurchasingResultReceived;
->>>>>>> 7266fbc9502c50c023b9670a75e6f2109859cee2:Assets/Scripts/App/Pages/ShopWithNavigationPage.cs
             OneOf<Success, IapPlatformStorePurchaseError> buyProductResult = _iapMediator.InitiatePurchase(product);
 #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
@@ -498,8 +488,7 @@ namespace Loom.ZombieBattleground
                         exception => failureString = exception.Message
                     );
 
-<<<<<<< HEAD:Assets/Scripts/App/Pages/Shop/ShopWithNavigationPage.cs
-                    Log.Warn("Error while processing purchase: " + failure.Value);
+                    Log.Warn("Error while processing purchase: " + failureString);
                     OpenAlertDialog
                     (
                         LocalizationUtil.GetLocalizedString
@@ -507,9 +496,6 @@ namespace Loom.ZombieBattleground
                             LocalizationTerm.Warning_Shop_Purchasing_Failed
                         )
                     );
-=======
-                    OpenAlertDialog("Error while processing purchase: " + failureString);
->>>>>>> 7266fbc9502c50c023b9670a75e6f2109859cee2:Assets/Scripts/App/Pages/ShopWithNavigationPage.cs
                     break;
                 case IapPurchaseState.StorePurchaseInitiated:
                     ChangeState(State.InitiatedPurchase);

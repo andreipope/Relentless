@@ -349,72 +349,17 @@ namespace Loom.ZombieBattleground
                 if (_controller.GetPackTypeAmount(packType) == 0)
                     continue;
 
-<<<<<<< HEAD
-                _retryPackBalanceRequestCount++;
-                if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
-                {
-                    _retryPackBalanceRequestCount = 0;
-                    _uiManager.DrawPopup<WarningPopup>
-                    (
-                        LocalizationUtil.GetLocalizedString
-                        (
-                            LocalizationTerm.Warning_PackOpener_PackBalanceRequest_Error
-                        )
-                    );
-                }
-                else
-                {
-                    await UpdatePackBalanceAmount(client, typeId);
-                }
-=======
                 PackObject packObject = new PackObject(_packObjectsRoot.transform, _loadObjectsManager, packType);
                 _packObjects.Add(packObject);
->>>>>>> 7266fbc9502c50c023b9670a75e6f2109859cee2
             }
 
-<<<<<<< HEAD
-        private async Task RetrieveCardsFromPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
-        {
-            _lastOpenPackIdRequest = packType;
-            SetButtonInteractable(false);
-            _uiManager.DrawPopup<LoadingOverlayPopup>
-            (
-                LocalizationUtil.GetLocalizedString
-                (
-                    LocalizationTerm.Spinner_PackOpener_RetrievingCards
-                )
-            );
-            try
-=======
             if (_packObjects.Count > 0)
->>>>>>> 7266fbc9502c50c023b9670a75e6f2109859cee2
             {
                 SetSelectedPackType(_packObjects[0].PackType);
             }
             else
             {
-<<<<<<< HEAD
-                Log.Info($"{nameof(RetrieveCardsFromPack)} with packType {packType} failed: {e}");
-
-                _retryOpenPackRequestCount++;
-                if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
-                {
-                    _retryOpenPackRequestCount = 0;
-                    _uiManager.DrawPopup<WarningPopup>
-                    (
-                        LocalizationUtil.GetLocalizedString
-                        (
-                            LocalizationTerm.Warning_PackOpener_RetrievingCards_Error
-                        )
-                    );
-                }
-                else
-                {
-                    await RetrieveCardsFromPack(client, _lastOpenPackIdRequest);
-                }
-=======
                 SetSelectedPackType(null);
->>>>>>> 7266fbc9502c50c023b9670a75e6f2109859cee2
             }
         }
 
@@ -443,22 +388,8 @@ namespace Loom.ZombieBattleground
 
         private void UpdateOpenButtonState()
         {
-<<<<<<< HEAD
-            _uiManager.DrawPopup<LoadingOverlayPopup>
-            (
-                LocalizationUtil.GetLocalizedString
-                (
-                    LocalizationTerm.Spinner_PackOpener_RetrievingCards
-                )
-            );
-            _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
-            _uiManager.HidePopup<LoadingOverlayPopup>();
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            ChangeState(STATE.CARD_EMERGED);
-=======
             _openButton.interactable = _selectedPackType != null && _controller.GetPackTypeAmount(_selectedPackType.Value) > 0;
             _openButton.GetComponent<Image>().material = _openButton.interactable ? null : _grayScaleMaterial;
->>>>>>> 7266fbc9502c50c023b9670a75e6f2109859cee2
         }
 
         private void FailAndGoToMainMenu(string customMessage = null)
