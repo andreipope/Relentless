@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Iap
                     );
 #elif UNITY_IOS
                 AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receiptJson);
-                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonConvert.SerializeObject(googlePlayReceipt, Formatting.Indented));
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonConvert.SerializeObject(appleReceipt, Formatting.Indented));
 
                 // Marketplace wants the matching transaction to be the first in list, so reorder
                 if (product != null)

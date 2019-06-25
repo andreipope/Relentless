@@ -18,7 +18,7 @@ PlayerSettings:
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_ShowUnitySplashScreen: 1
-  m_ShowUnitySplashLogo: 0
+  m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 0
   m_SplashScreenLogoStyle: 1
@@ -609,8 +609,8 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: 
-    7: 
+    1: USE_DEVELOPMENT_BACKEND1;USE_STAGING_BACKEND
+    7: USE_DEVELOPMENT_BACKEND;IAP_PRINT_RECEIPT_AND_FAIL1;SKIP_ASSET_BUNDLE_LOAD
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
