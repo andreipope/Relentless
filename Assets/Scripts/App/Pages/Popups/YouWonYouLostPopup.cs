@@ -115,7 +115,13 @@ namespace Loom.ZombieBattleground
             if (Self != null)
                 return;
 
-            _uiManager.HideAllPopups();
+            foreach (IUIPopup popup in _uiManager.UiPopups)
+            {
+                if (!(popup is SideMenuPopup) && !(popup is AreaBarPopup) && !(popup is DeckSelectionPopup))
+                {
+                    popup.Hide();
+                }
+            }
 
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopup"),
