@@ -41,15 +41,15 @@ namespace Loom.ZombieBattleground.Iap
             _setStateAction = stateAction;
         }
 
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receipt, Product product)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receiptJson, Product product)
         {
 #if UNITY_ANDROID || UNITY_IOS
             FiatValidationData fiatValidationData;
             try
             {
 #if UNITY_ANDROID
-                GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), GooglePlayReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
+                GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receiptJson);
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), GooglePlayReceipt:\n" + JsonConvert.SerializeObject(googlePlayReceipt, Formatting.Indented));
                 fiatValidationData =
                     new FiatValidationDataPlayStore(
                         googlePlayReceipt.productID,
@@ -57,21 +57,36 @@ namespace Loom.ZombieBattleground.Iap
                         googlePlayReceipt.purchaseToken
                     );
 #elif UNITY_IOS
-                AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
-                AppleInAppPurchaseReceipt matchingReceipt =
-                    product == null ?
-                        appleReceipt.inAppPurchaseReceipts[0] :
-                        appleReceipt.inAppPurchaseReceipts.SingleOrDefault(r => r.transactionID == product.transactionID);
+                AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receiptJson);
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonConvert.SerializeObject(googlePlayReceipt, Formatting.Indented));
 
-                if (matchingReceipt == null)
-                    throw new KeyNotFoundException($"Receipt for transactionID {product?.transactionID ?? "null"} not found");
+                // Marketplace wants the matching transaction to be the first in list, so reorder
+                if (product != null)
+                {
+                    bool matchReceiptFound = false;
+                    for (int i = 0; i < appleReceipt.inAppPurchaseReceipts.Length; i++)
+                    {
+                        AppleInAppPurchaseReceipt receipt = appleReceipt.inAppPurchaseReceipts[i];
+                        if (receipt.transactionID == product.transactionID)
+                        {
+                            matchReceiptFound = true;
+                            AppleInAppPurchaseReceipt tempReceipt = appleReceipt.inAppPurchaseReceipts[0];
+                            appleReceipt.inAppPurchaseReceipts[0] = appleReceipt.inAppPurchaseReceipts[i];
+                            appleReceipt.inAppPurchaseReceipts[i] = tempReceipt;
+                            break;
+                        }
+                    }
 
+                    if (!matchReceiptFound)
+                        throw new KeyNotFoundException($"Receipt for transactionID {product?.transactionID ?? "null"} not found");
+                }
+
+                AppleInAppPurchaseReceipt matchingReceipt = appleReceipt.inAppPurchaseReceipts[0];
                 fiatValidationData =
                     new FiatValidationDataAppStore(
                         matchingReceipt.productID,
                         matchingReceipt.transactionID,
-                        IapReceiptParser.ParseRawReceipt(receipt, "AppleAppStore").Payload
+                        IapReceiptParser.ParseRawReceipt(receiptJson, "AppleAppStore").Payload
                     );
 #endif
             }
