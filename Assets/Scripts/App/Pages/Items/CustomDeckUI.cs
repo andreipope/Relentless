@@ -345,8 +345,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            
-            _uiManager.DrawPopup<RenamePopup>(new object[] {_selectedDeck, false});
+
+            _uiManager.DrawPopup<RenamePopup>(_selectedDeck);
         }
 
         private void PlayClickSound()

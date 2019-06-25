@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
             //Many devices won't report the memory size exactly, so we lower memory size threshold a bit
             return SystemInfo.systemMemorySize >= Mathf.CeilToInt
             (
-                Constants.MinimumMemorySize * Constants.MinimumMemoryThresholdPercentage
+                Common.Constants.MinimumMemorySize * Common.Constants.MinimumMemoryThresholdPercentage
             );
 #else
             return true;

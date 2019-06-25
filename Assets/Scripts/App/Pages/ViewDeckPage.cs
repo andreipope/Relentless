@@ -121,8 +121,13 @@ namespace Loom.ZombieBattleground
         private void BackButtonHandler()
         {
             DataUtilities.PlayClickSound();
-            Dispose();
+            
+            HordeSelectionWithNavigationPage myDeckPage =
+                GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
+            myDeckPage?.HordeEditTab.UpdateEditingTab(_updatedDeck, _updatedCollectionData);
 
+
+            Dispose();
         }
 
         private void UpdatePageScaleToMatchResolution()

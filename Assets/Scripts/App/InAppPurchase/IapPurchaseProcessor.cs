@@ -49,8 +49,7 @@ namespace Loom.ZombieBattleground.Iap
             {
 #if UNITY_ANDROID
                 GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: GooglePlayReceipt:\n" +
-                    JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
+                Log.Debug($"{nameof(ProcessPurchase)}: GooglePlayReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
                 fiatValidationData =
                     new FiatValidationDataPlayStore(
                         googlePlayReceipt.productID,
@@ -106,7 +105,7 @@ namespace Loom.ZombieBattleground.Iap
             }
             catch (Exception e)
             {
-                Log.Info($"{nameof(RequestFiatValidation)} failed: " + e);
+                Log.Warn($"{nameof(RequestFiatValidation)} failed: " + e);
                 return IapPurchaseProcessingError.ValidationFailed;
             }
 

@@ -42,14 +42,42 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 7963212cddf4e4cd9978fea67107b34f, type: 3}
-    totalSpriteSurfaceArea: 908826
+    totalSpriteSurfaceArea: 6246580
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: dd26e440e0937e8479188971be54bfe3, type: 3}
+  - {fileID: 21300000, guid: e0f999a01f388884ab38a52feed74ca5, type: 3}
+  - {fileID: 21300000, guid: 51238eb06f34ea34581e1f3b5e8e124b, type: 3}
+  - {fileID: 21300000, guid: b38380415ad621345ad20ee806f6896b, type: 3}
+  - {fileID: 21300000, guid: 887a446176b104745ab92d920ef94a0a, type: 3}
+  - {fileID: 21300000, guid: 53142761c14a57d4f8c76e8561491765, type: 3}
+  - {fileID: 21300000, guid: 20161a12c001dd04989ed6376111182c, type: 3}
+  - {fileID: 21300000, guid: 20b83803036d9aa48839f4a05407681f, type: 3}
+  - {fileID: 21300000, guid: ff03f3f347040884aa9e924fcaf7e954, type: 3}
+  - {fileID: 21300000, guid: f6d2ead4c22671c4eb540de1b4ab823d, type: 3}
+  - {fileID: 21300000, guid: cee76d65567eed848849d2128fc2ee94, type: 3}
   - {fileID: 21300000, guid: f410f53646df13642a1a4d156bb14bc4, type: 3}
   - {fileID: 21300000, guid: e0814b365cb302941a584fcbcc7e25af, type: 3}
+  - {fileID: 21300000, guid: 94648c57350da5d4dafcddeb31ac0128, type: 3}
+  - {fileID: 21300000, guid: cdd4cd2ad872d2847986e0ddba150040, type: 3}
+  - {fileID: 21300000, guid: 62a014dce14f8844fb183eb1667615f4, type: 3}
   m_PackedSpriteNamesToIndex:
+  - packopener_packsample
+  - packopener_openbtn_idle
+  - packopener_base
+  - packopener_slot
+  - packopener_panel
+  - tube_left
+  - tube_glow_right
+  - packopener_arrow_idle
+  - packopener_scrollbar
+  - packopener_openbtn_pressed
+  - packopener_morepacks_btnframe
   - CZB_2D_Pack_F2
   - CZB_Card_Back_Normal
+  - packopener_scrollbar_bg
+  - tube_glow_left
+  - tube_right
   m_Tag: OpenPack_Atlas
   m_IsVariant: 0

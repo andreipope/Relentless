@@ -30,14 +30,13 @@ namespace Loom.ZombieBattleground
         private RectTransform _allAbilitiesContent;
 
         private Deck _deck;
+        private bool _openRenamePopup;
 
         private List<AbilityBarUI> _abilitiesBar;
 
         public static Action<SkillId> OnSelectSkill;
         public static Action<Enumerators.Skill, Enumerators.Skill> OnSelectOverlordSkill;
         public static Action<Enumerators.Skill, Enumerators.Skill> OnSaveSelectedSkill;
-
-        private bool _isCreatingNewDeck;
 
         public GameObject Self { get; private set; }
 
@@ -52,11 +51,12 @@ namespace Loom.ZombieBattleground
         {
             if (data is object[] param)
             {
-                Deck deck = (Deck)param[0];
-                _isCreatingNewDeck = (bool) param[1];
+                Deck deck = (Deck) param[0];
                 _deck = deck.Clone();
 
+                _openRenamePopup = (bool) param[1];
             }
+
 
             Show();
         }
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             _buttonSave = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Save").GetComponent<Button>();
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
 
-            if (_isCreatingNewDeck)
+            if (_deck.Id.Id == -1)
             {
                 _buttonSave.gameObject.SetActive(false);
                 _buttonContinue.gameObject.SetActive(true);
@@ -210,7 +210,8 @@ namespace Loom.ZombieBattleground
             GetSelectedAbilities(false);
             Hide();
 
-            _uiManager.DrawPopup<RenamePopup>(new object[] {_deck, true});
+            if(_openRenamePopup)
+                _uiManager.DrawPopup<RenamePopup>(_deck);
         }
 
         private void ButtonCancelHandler()

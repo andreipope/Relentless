@@ -138,6 +138,9 @@ namespace Loom.ZombieBattleground
 
         public void ChangeSelectedDeckName(string newDeckName)
         {
+            if (_myDeckPage.CurrentEditDeck.Id.Id == -1)
+                return;
+
             DeckInfoObject deckUI = _deckInfoObjectList.Find(deckObj => deckObj.DeckId == _myDeckPage.CurrentEditDeck.Id);
             deckUI.TextDeckName.text = newDeckName;
         }
@@ -621,7 +624,7 @@ namespace Loom.ZombieBattleground
 
             PlayClickSound();
 
-            _uiManager.DrawPopup<RenamePopup>(new object[] { _myDeckPage.CurrentEditDeck, false});
+            _uiManager.DrawPopup<RenamePopup>(_myDeckPage.CurrentEditDeck);
         }
 
         private void PlayClickSound()

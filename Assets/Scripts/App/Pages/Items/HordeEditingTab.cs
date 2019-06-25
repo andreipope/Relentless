@@ -150,7 +150,6 @@ namespace Loom.ZombieBattleground
             {
                 Object.Destroy(_draggingObject);
                 _draggingObject = null;
-                _isDragging = false;
             }
         }
 
