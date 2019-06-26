@@ -10,9 +10,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class OverlordSelectionPopup : IUIPopup
+    public class SelectOverlordPopup : IUIPopup
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(OverlordSelectionPopup));
+        private static readonly ILog Log = Logging.GetLog(nameof(SelectOverlordPopup));
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -120,18 +120,29 @@ namespace Loom.ZombieBattleground
                 _overlordCards.Add(overlordCard);
             }
 
-            SelectOverlord(new OverlordId(0));
 
-            // TODO : tutorial related stuffs
-            /*int index = 0;
             if (_tutorialManager.IsTutorial)
             {
-                index = _dataManager.CachedOverlordData.Overlords.FindIndex(overlord => overlord.Prototype.Faction == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+                OverlordId overlordId = _dataManager.CachedOverlordData.Overlords.
+                    Find(overlord => overlord.Prototype.Faction == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet).Prototype.Id;
+                SelectOverlordCard(overlordId);
             }
-            ChangeOverlordIndex(index);*/
+            else
+            {
+                SelectOverlord(new OverlordId(0));
+            }
+
         }
 
         private void SelectOverlord(OverlordId overlordId)
+        {
+            if (_tutorialManager.IsTutorial)
+                return;
+
+            SelectOverlordCard(overlordId);
+        }
+
+        private void SelectOverlordCard(OverlordId overlordId)
         {
             for (int i = 0; i < _overlordCards.Count; i++)
             {
@@ -160,6 +171,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCancelHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonCancel.name))
+                return;
+
             Hide();
         }
 
@@ -231,7 +245,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordHandler()
         {
-            OverlordSelectionPopup.OnSelectOverlord?.Invoke(_overlordId);
+            SelectOverlordPopup.OnSelectOverlord?.Invoke(_overlordId);
         }
 
         public void SetOverlordId(OverlordId overlordId)

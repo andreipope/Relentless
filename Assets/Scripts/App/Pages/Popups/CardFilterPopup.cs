@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground
         public GameObject Self { get; private set; }
 
         private IUIManager _uiManager;
+        private ITutorialManager _tutorialManager;
 
         private Button _buttonElement;
         private Button _buttonGooCost;
@@ -71,6 +72,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
             _buttonElementsDictionary = new Dictionary<Enumerators.Faction, Button>();
             _buttonRankDictionary = new Dictionary<Enumerators.CardRank, Button>();
 
@@ -201,6 +203,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonElementIconHandler(Enumerators.Faction faction)
         {
+            if (_tutorialManager.IsTutorial)
+                return;
+
             PlayClickSound();
 
             if (FilterData.FactionDictionary[faction] && FilterData.GetActiveElementFilterCount() <= 1)
@@ -230,18 +235,27 @@ namespace Loom.ZombieBattleground
 
         private void ButtonElementHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonElement.name))
+                return;
+
             PlayClickSound();
             ChangeTab(Tab.Element);
         }
 
         private void ButtonRankHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonRank.name))
+                return;
+
             PlayClickSound();
             ChangeTab(Tab.Rank);
         }
 
         private void ButtonGooCostHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonGooCost.name))
+                return;
+
             PlayClickSound();
             ChangeTab(Tab.GooCost);
         }
@@ -380,7 +394,7 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-        public void PlayClickSound()
+        private void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
