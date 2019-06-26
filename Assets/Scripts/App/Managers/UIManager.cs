@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
             UiPopups.Add(new YouWonYouLostWithRewardPopup());
             UiPopups.Add(new InternetConnectionPopup());
             UiPopups.Add(new SelectOverlordAbilitiesPopup());
-            UiPopups.Add(new OverlordSelectionPopup());
+            UiPopups.Add(new SelectOverlordPopup());
             UiPopups.Add(new RenamePopup());
 
             foreach (IUIPopup popup in UiPopups)
