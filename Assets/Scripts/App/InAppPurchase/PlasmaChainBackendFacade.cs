@@ -137,6 +137,7 @@ namespace Loom.ZombieBattleground.Iap
             await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
             BroadcastTxResult openPackTxResult = await cardFaucetContract.CallAsync(OpenPackMethod, packType);
             byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
+            Log.Debug($"{nameof(CallOpenPack)}: openPackTxHash = {CryptoUtils.BytesToHexString(openPackTxHash)}");
 
             async Task<List<EventLog<T>>> GetEvents<T>(string eventName) where T : new()
             {
@@ -154,6 +155,7 @@ namespace Loom.ZombieBattleground.Iap
                 }
                 catch (RpcClientException e) when (e.Message.Contains("to block before end block"))
                 {
+                    Log.Debug($"{nameof(CallOpenPack)}: got 'to block before end block', will retry");
                     return null;
                 }
 
@@ -168,33 +170,33 @@ namespace Loom.ZombieBattleground.Iap
             // We only have the transaction hash at this point, but it might still be mining.
             // Poll the result multiple times until we have one.
             List<EventLog<TransferWithQuantityEvent>> transferWithQuantityEvents = null;
-            await Task.Delay(1500);
             for (int i = 0; i < maxRetryCount; i++)
             {
                 transferWithQuantityEvents = await GetEvents<TransferWithQuantityEvent>("TransferWithQuantity");
                 if (transferWithQuantityEvents != null && transferWithQuantityEvents.Count == CardsPerPack)
                     break;
 
-                Log.Warn($"Retrying getting {nameof(TransferWithQuantityEvent)} events, attempt {i + 1}/{maxRetryCount}");
+                Log.Warn(
+                    $"{nameof(CallOpenPack)}: Retrying getting {nameof(TransferWithQuantityEvent)} events " +
+                    $"(got {Utilites.FormatCallLogList(transferWithQuantityEvents)}), attempt {i + 1}/{maxRetryCount}");
                 await Task.Delay(retryDelay);
             }
 
-            Assert.IsNotNull(transferWithQuantityEvents);
-            if (transferWithQuantityEvents.Count == 0)
+            if (transferWithQuantityEvents == null || transferWithQuantityEvents.Count == 0)
                 throw new Exception("Exhausted attempts to get generated cards");
 
-            Log.Debug($"{nameof(GetPackTypeBalance)}: transferEvents = {Utilites.FormatCallLogList(transferWithQuantityEvents.Select(e => e.Event))}");
+            Log.Debug($"{nameof(CallOpenPack)}: transferEvents = {Utilites.FormatCallLogList(transferWithQuantityEvents.Select(e => e.Event))}");
 
             // Get card keys
             List<BigInteger> cardTokenIds = transferWithQuantityEvents.Select(evt => evt.Event.TokenId).ToList();
-            Log.Debug($"{nameof(GetPackTypeBalance)}: cardTokenIds = {Utilites.FormatCallLogList(cardTokenIds)}");
+            Log.Debug($"{nameof(CallOpenPack)}: cardTokenIds = {Utilites.FormatCallLogList(cardTokenIds)}");
 
             List<CardKey> cardKeys =
                 cardTokenIds
                     .Select(cardTokenId => CardKey.FromCardTokenId((long) cardTokenId))
                     .ToList();
 
-            Log.Info($"{nameof(GetPackTypeBalance)} returned {Utilites.FormatCallLogList(cardKeys)}");
+            Log.Info($"{nameof(CallOpenPack)}: returned {Utilites.FormatCallLogList(cardKeys)}");
             return cardKeys;
         }
 
@@ -203,9 +205,11 @@ namespace Loom.ZombieBattleground.Iap
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
 
+            Log.Debug($"Using {contractType} contract at {GetContractAddress(contractType)}");
+            Address contractAddress = Address.FromString(GetContractAddress(contractType), PlasmaChainEndpointsContainer.Chainid);
             return new EvmContract(
                 client,
-                Address.FromString(GetContractAddress(contractType), PlasmaChainEndpointsContainer.Chainid),
+                contractAddress,
                 UserPlasmaChainAddress,
                 _abiDictionary[contractType].text);
         }
@@ -220,12 +224,14 @@ namespace Loom.ZombieBattleground.Iap
                 .Configure()
                 .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
+                //.WithHttp(PlasmaChainEndpointsContainer.HttpRpc)
                 .Create();
 
             IRpcClient reader = RpcClientFactory
                 .Configure()
                 .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
+                //.WithHttp(PlasmaChainEndpointsContainer.HttpQuery)
                 .Create();
 
             DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
