@@ -377,8 +377,6 @@ namespace Loom.ZombieBattleground
 
             _customDeckUi.UpdateCardsInDeckCountDisplay();
 
-            Debug.LogWarning("current edit deck = " + _myDeckPage.CurrentEditDeck.GetNumCards());
-            Debug.LogWarning("current tutorial deck size = " + _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount);
             if (_tutorialManager.IsTutorial && _myDeckPage.CurrentEditDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
