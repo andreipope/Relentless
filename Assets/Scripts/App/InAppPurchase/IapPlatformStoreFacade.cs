@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground.Iap
             if (_initializationState == IapInitializationState.Initializing)
                 throw new InvalidOperationException("Initialization already in progress");
 
-            Log.Debug($"{nameof(InitiatePurchase)} (products = {Utilites.FormatCallLogList(products.Select(product => product.Definition.storeSpecificId))})");
+            Log.Debug($"{nameof(BeginInitialization)} (products = {Utilites.FormatCallLogList(products.Select(product => product.Definition.storeSpecificId))})");
             _initializationState = IapInitializationState.Initializing;
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
             IPurchasingModule purchasingModule = StandardPurchasingModule.Instance();
