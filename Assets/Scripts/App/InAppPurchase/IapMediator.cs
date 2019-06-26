@@ -97,8 +97,7 @@ namespace Loom.ZombieBattleground.Iap
 
             Log.Debug($"{nameof(InitiatePurchase)} ({product.definition.storeSpecificId})");
             SetState(IapPurchaseState.StorePurchaseInitiated, null);
-            OneOf<Success, IapPlatformStorePurchaseError> initiatePurchaseResult =
-                _iapPlatformStoreFacade.InitiatePurchase(product.definition.id);
+            OneOf<Success, IapPlatformStorePurchaseError> initiatePurchaseResult = _iapPlatformStoreFacade.InitiatePurchase(product.definition.id);
             OneOf<IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException>? stateFailure = null;
             OneOf<Success, IapPlatformStorePurchaseError> result = new Success();
             initiatePurchaseResult.Switch(

@@ -231,7 +231,9 @@ namespace Loom.ZombieBattleground
         public void UpdateEditingTab(Deck deck, CollectionData collectionData)
         {
             _myDeckPage.CurrentEditDeck = deck;
-            _collectionData = collectionData;
+
+            if(collectionData != null)
+                _collectionData = collectionData;
 
             _customDeckUi.ShowDeck(_myDeckPage.CurrentEditDeck);
             _uiCardCollections.UpdateCardsAmountDisplay(_myDeckPage.CurrentEditDeck);
