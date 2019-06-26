@@ -106,6 +106,9 @@ namespace Loom.ZombieBattleground
 
         private void SelectSkill(SkillId skillId)
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+                return;
+
             AbilityBarUI abilityBarUi = _abilitiesBar.Find(abilityBar => abilityBar.SkillId == skillId);
 
             bool isSkillUnLocked = DataUtilities.IsSkillLocked(_deck.OverlordId, skillId);
@@ -213,6 +216,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCancelHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonCancel.name))
+                return;
+
             DataUtilities.PlayClickSound();
             Hide();
         }
