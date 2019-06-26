@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
 
         #region UI Handler
 
-        private void BuyButtonHandler(Product product)
+        private async void BuyButtonHandler(Product product)
         {
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if UNITY_IOS || UNITY_ANDROID
@@ -134,7 +134,8 @@ namespace Loom.ZombieBattleground
             }
 
             _iapMediator.PurchasingResultReceived += OnIapMediatorOnPurchasingResultReceived;
-            OneOf<Success, IapPlatformStorePurchaseError> buyProductResult = _iapMediator.InitiatePurchase(product);
+            OneOf<Success, IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException> buyProductResult =
+                await _iapMediator.InitiatePurchase(product);
 #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
             _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?");

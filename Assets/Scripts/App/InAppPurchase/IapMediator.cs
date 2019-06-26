@@ -23,6 +23,7 @@ namespace Loom.ZombieBattleground.Iap
 
         private AuthFiatApiFacade.StoreData _dataData;
 
+        // TODO: store between game restarts
         private UniqueList<Product> _storePendingPurchases = new UniqueList<Product>();
 
         private IapInitializationState _initializationState;
@@ -87,7 +88,7 @@ namespace Loom.ZombieBattleground.Iap
         /// <param name="product"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public OneOf<Success, IapPlatformStorePurchaseError> InitiatePurchase(Product product)
+        public async Task<OneOf<Success, IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException>> InitiatePurchase(Product product)
         {
             if (_initializationState == IapInitializationState.Initializing)
                 throw new InvalidOperationException("Initialization in progress");
@@ -97,17 +98,42 @@ namespace Loom.ZombieBattleground.Iap
 
             Log.Debug($"{nameof(InitiatePurchase)} ({product.definition.storeSpecificId})");
             SetState(IapPurchaseState.StorePurchaseInitiated, null);
-            OneOf<Success, IapPlatformStorePurchaseError> initiatePurchaseResult = _iapPlatformStoreFacade.InitiatePurchase(product.definition.id);
+
+            // Check if we are trying to initiate a purchase for a product that already has a pending purchase,
+            // in which case, just go to claiming
+            OneOf<Success, IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException> result = new Success();
             OneOf<IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException>? stateFailure = null;
-            OneOf<Success, IapPlatformStorePurchaseError> result = new Success();
-            initiatePurchaseResult.Switch(
-                success => { },
-                error =>
-                {
-                    stateFailure = error;
-                    result = error;
-                }
-            );
+            if (!_storePendingPurchases.Contains(product))
+            {
+                OneOf<Success, IapPlatformStorePurchaseError> initiatePurchaseResult =
+                    _iapPlatformStoreFacade.InitiatePurchase(product.definition.id);
+                initiatePurchaseResult.Switch(
+                    success => { },
+                    error =>
+                    {
+                        stateFailure = error;
+                        result = error;
+                    }
+                );
+            }
+            else
+            {
+                OneOf<Success, IapPurchaseProcessingError, IapException> claimStorePurchasesResult = await ClaimStorePurchases();
+                claimStorePurchasesResult.Switch(
+                    success => { },
+                    error =>
+                    {
+                        stateFailure = error;
+                        result = error;
+                    },
+                    exception =>
+                    {
+                        stateFailure = exception;
+                        result = exception;
+                    }
+                );
+            }
+
             if (stateFailure != null)
             {
                 SetState(IapPurchaseState.Failed, stateFailure);
