@@ -48,14 +48,21 @@ namespace Loom.ZombieBattleground
             rectTransform.localScale = DataUtilities.GetOverlordImageScaleInViewDeck(faction);
 
             RenamePopup.OnSaveNewDeckName += OnSaveNewDeckName;
+            RenamePopup.OnSelectDeckName += OnSelectNewDeckName;
         }
 
         public void Dispose()
         {
             RenamePopup.OnSaveNewDeckName -= OnSaveNewDeckName;
+            RenamePopup.OnSelectDeckName -= OnSelectNewDeckName;
         }
 
         private void OnSaveNewDeckName(string name)
+        {
+            _deckNameText.text = name;
+        }
+
+        private void OnSelectNewDeckName(string name)
         {
             _deckNameText.text = name;
         }
