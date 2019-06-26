@@ -1109,6 +1109,33 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "quantity",
+          "type": "uint256"
+        }
+      ],
+      "name": "TransferToken",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": false,
           "name": "validator",
           "type": "address"

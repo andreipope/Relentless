@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground.Iap
             byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
             Log.Debug($"{nameof(CallOpenPack)}: openPackTxHash = {CryptoUtils.BytesToHexString(openPackTxHash)}");
 
-            async Task<List<EventLog<T>>> GetEvents<T>(string eventName) where T : new()
+            async Task<IReadOnlyList<EventLog<T>>> GetEvents<T>(string eventName) where T : new()
             {
                 // Get all events since call to OpenPackMethod
                 EvmEvent<T> evmEvent = zbgCardContract.GetEvent<T>(eventName);
@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground.Iap
                 catch (RpcClientException e) when (e.Message.Contains("to block before end block"))
                 {
                     Log.Debug($"{nameof(CallOpenPack)}: got 'to block before end block', will retry");
-                    return null;
+                    return Array.Empty<EventLog<T>>();
                 }
 
                 // Filter out events not belonging to the call we just made
@@ -169,11 +169,21 @@ namespace Loom.ZombieBattleground.Iap
 
             // We only have the transaction hash at this point, but it might still be mining.
             // Poll the result multiple times until we have one.
-            List<EventLog<TransferWithQuantityEvent>> transferWithQuantityEvents = null;
+            IReadOnlyList<EventLog<TransferWithQuantityEvent>> transferWithQuantityEvents = null;
             for (int i = 0; i < maxRetryCount; i++)
             {
                 transferWithQuantityEvents = await GetEvents<TransferWithQuantityEvent>("TransferWithQuantity");
-                if (transferWithQuantityEvents != null && transferWithQuantityEvents.Count == CardsPerPack)
+                if (transferWithQuantityEvents.Count == 0)
+                {
+                    // HACK: event renamed on prod plasmachain, so get TransferToken events and convert them
+                    IReadOnlyList<EventLog<TransferTokenEvent>> transferTokenEvents = await GetEvents<TransferTokenEvent>("TransferToken");
+                    transferWithQuantityEvents =
+                        transferTokenEvents
+                            .Select(t => new EventLog<TransferWithQuantityEvent>(t.Event.ConvertToTransferWithQuantityEvent(), t.Log))
+                            .ToList();
+                }
+
+                if (transferWithQuantityEvents.Count == CardsPerPack)
                     break;
 
                 Log.Warn(
@@ -536,6 +546,39 @@ namespace Loom.ZombieBattleground.Iap
 
             [Parameter("uint256", "amount", 4, false)]
             public BigInteger Amount { get; set; }
+
+            public override string ToString()
+            {
+                return $"({nameof(From)}: {From}, {nameof(To)}: {To}, {nameof(TokenId)}: {TokenId}, {nameof(Amount)}: {Amount})";
+            }
+        }
+
+        // event TransferToken(indexed address from, indexed address to, uint256 indexed tokenId, uint256 amount);
+        [Event("TransferToken")]
+        private class TransferTokenEvent
+        {
+            [Parameter("address", "from", 1, true)]
+            public string From { get; set; }
+
+            [Parameter("address", "to", 2, true)]
+            public string To { get; set; }
+
+            [Parameter("uint256", "tokenId", 3, true)]
+            public BigInteger TokenId { get; set; }
+
+            [Parameter("uint256", "amount", 4, false)]
+            public BigInteger Amount { get; set; }
+
+            public TransferWithQuantityEvent ConvertToTransferWithQuantityEvent()
+            {
+                return new TransferWithQuantityEvent
+                {
+                    From = From,
+                    To = To,
+                    TokenId = TokenId,
+                    Amount = Amount
+                };
+            }
 
             public override string ToString()
             {
