@@ -17,10 +17,9 @@ namespace Loom.ZombieBattleground
     public class UICardCollections
     {
         private IUIManager _uiManager;
-
         private IDataManager _dataManager;
-
         private ILoadObjectsManager _loadObjectsManager;
+        private ITutorialManager _tutorialManager;
 
         private GameObject _selfPage;
 
@@ -55,6 +54,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/CreatureCard_UI");
 
@@ -81,8 +81,10 @@ namespace Loom.ZombieBattleground
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
-            _allCardsContent = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View")
-                .GetComponent<ScrollRect>().content;
+            ScrollRect scrollRect = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View")
+                .GetComponent<ScrollRect>();
+            _allCardsContent = scrollRect.content;
+            Scrollbar cardCollectionScrollbar = scrollRect.horizontalScrollbar;
 
             switch (pageType)
             {
@@ -91,7 +93,10 @@ namespace Loom.ZombieBattleground
                     break;
                 case PageType.DeckEditing:
                     _deckScrollRect = _selfPage.transform.Find("Deck_Content/Cards/Scroll View").gameObject;
-                    LoadUserOwnedCards();
+                    if(_tutorialManager.IsTutorial)
+                        LoadTutorialCards();
+                    else
+                        LoadUserOwnedCards();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pageType), pageType, null);
@@ -103,6 +108,18 @@ namespace Loom.ZombieBattleground
             _cardFilter.Show(_selfPage.transform.Find("Panel_Frame/Lower_Items/Filters").gameObject);
 
             _selectedUnitCard = null;
+
+            // interactive in tutorial
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                _inputFieldSearchName.interactable = false;
+                cardCollectionScrollbar.interactable = false;
+            }
+            else
+            {
+                _inputFieldSearchName.interactable = true;
+                cardCollectionScrollbar.interactable = true;
+            }
         }
 
         private void UpdateCardsUiList()
@@ -215,6 +232,27 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void LoadTutorialCards()
+        {
+            _cardUIList = new List<UnitCardUI>();
+
+            // get cards from open packer
+            List<CollectionCardData> tutorialCardCollectionData = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                .Select(card => card.ToCollectionCardData(_dataManager))
+                .ToList();
+
+            for (int i = 0; i < tutorialCardCollectionData.Count; i++)
+            {
+                CollectionCardData cardData = tutorialCardCollectionData[i];
+                int index = _dataManager.CachedCardsLibraryData.Cards.FindIndex(libraryCard => libraryCard.CardKey == cardData.CardKey);
+                if (index == -1)
+                    return;
+
+                Card card = _dataManager.CachedCardsLibraryData.Cards[index];
+                InstantiateCard(card);
+            }
+        }
+
         private void InstantiateCard(Card card)
         {
             GameObject go = Object.Instantiate(_cardCreaturePrefab, _allCardsContent, false);
@@ -225,14 +263,17 @@ namespace Loom.ZombieBattleground
             _cardUIList.Add(unitCard);
 
             MultiPointerClickHandler multiPointerClickHandler = go.AddComponent<MultiPointerClickHandler>();
-            multiPointerClickHandler.SingleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
 
             if (_pageType == PageType.Army)
             {
+                multiPointerClickHandler.SingleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
                 multiPointerClickHandler.DoubleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
             }
             else if (_pageType == PageType.DeckEditing)
             {
+                if(!_tutorialManager.IsTutorial)
+                    multiPointerClickHandler.SingleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
+
                 multiPointerClickHandler.DoubleClickReceived += () => { BoardCardDoubleClickHandler(unitCard.GetCard()); };
 
                 // add drag / drop
@@ -288,13 +329,20 @@ namespace Loom.ZombieBattleground
                 if (hit.collider.gameObject == _deckScrollRect)
                 {
                     AddCardToDeck(_selectedUnitCard.GetCard());
+
+                    if (_tutorialManager.IsTutorial)
+                    {
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
+                        if (_deckScrollRect != null)
+                            _deckScrollRect.GetComponent<BoxCollider2D>().enabled = false;
+                    }
                 }
             }
 
             Object.Destroy(_selectedUnitCard.GetGameObject());
             _selectedUnitCard = null;
         }
-        
+
 
         public void UpdateCardsAmountDisplay(int deckId)
         {
@@ -359,6 +407,23 @@ namespace Loom.ZombieBattleground
                 CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
                 int totalCardAmount = cardInCollection.Amount;
                _cardUIList[i].UpdateCardAmount(totalCardAmount);
+            }
+        }
+
+        public void UpdateCardsAmountDisplayTutorial()
+        {
+            for (int i = 0; i < _cardUIList.Count; i++)
+            {
+                Card cardInUi = _cardUIList[i].GetCard();
+
+                List<CollectionCardData> tutorialCardCollectionData = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Select(card => card.ToCollectionCardData(_dataManager))
+                    .ToList();
+
+                // get amount of card in collection data
+                CollectionCardData cardInCollection = tutorialCardCollectionData.Find(card => card.CardKey == cardInUi.CardKey);
+                int totalCardAmount = cardInCollection.Amount;
+                _cardUIList[i].UpdateCardAmount(totalCardAmount);
             }
         }
 
@@ -488,7 +553,16 @@ namespace Loom.ZombieBattleground
 
         private void BoardCardDoubleClickHandler(Card selectedCard)
         {
+            if (_tutorialManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                 !_tutorialManager.CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
+                return;
+
             AddCardToDeck(selectedCard);
+
+            if (_tutorialManager.IsTutorial)
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
         }
 
         private void AddCardToDeck(Card selectedCard)

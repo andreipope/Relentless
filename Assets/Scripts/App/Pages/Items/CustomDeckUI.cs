@@ -169,7 +169,8 @@ namespace Loom.ZombieBattleground
             GameObject deckCard = Object.Instantiate(_deckCardPrefab, _allCardsContent);
 
             MultiPointerClickHandler multiPointerClickHandler = deckCard.AddComponent<MultiPointerClickHandler>();
-            multiPointerClickHandler.SingleClickReceived += () => { OnSingleClickDeckCard(card); };
+            if(!_tutorialManager.IsTutorial)
+                multiPointerClickHandler.SingleClickReceived += () => { OnSingleClickDeckCard(card); };
             multiPointerClickHandler.DoubleClickReceived += () => { OnMultiClickDeckCard(card); };
 
             // add drag / drop
@@ -332,6 +333,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonViewDeckHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonViewDeck.name))
+                return;
+
             _viewDeckPage.Show(_selectedDeck);
         }
 

@@ -41,15 +41,15 @@ namespace Loom.ZombieBattleground.Iap
             _setStateAction = stateAction;
         }
 
-        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receipt, Product product)
+        public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receiptJson, Product product)
         {
 #if UNITY_ANDROID || UNITY_IOS
             FiatValidationData fiatValidationData;
             try
             {
 #if UNITY_ANDROID
-                GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receipt);
-                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), GooglePlayReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(googlePlayReceipt)));
+                GooglePlayReceipt googlePlayReceipt = IapReceiptParser.ParseGooglePlayReceipt(receiptJson);
+                Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), GooglePlayReceipt:\n" + JsonConvert.SerializeObject(googlePlayReceipt, Formatting.Indented));
                 fiatValidationData =
                     new FiatValidationDataPlayStore(
                         googlePlayReceipt.productID,
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground.Iap
                         googlePlayReceipt.purchaseToken
                     );
 #elif UNITY_IOS
-                AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receipt);
+                AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receiptJson);
                 Log.Debug($"{nameof(ProcessPurchase)}: Product = ({product}), AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
                 AppleInAppPurchaseReceipt matchingReceipt =
                     product == null ?
@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground.Iap
                     new FiatValidationDataAppStore(
                         matchingReceipt.productID,
                         matchingReceipt.transactionID,
-                        IapReceiptParser.ParseRawReceipt(receipt, "AppleAppStore").Payload
+                        IapReceiptParser.ParseRawReceipt(receiptJson, "AppleAppStore").Payload
                     );
 #endif
             }

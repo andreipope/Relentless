@@ -401,12 +401,17 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
 
             OpenOverlordSelectionPopup();
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
+            }
         }
 
         public void OpenOverlordSelectionPopup()
         {
             _myDeckPage.SelectedDeckId = -1;
-            _uiManager.DrawPopup<OverlordSelectionPopup>();
+            _uiManager.DrawPopup<SelectOverlordPopup>();
         }
 
         private void ButtonLeftArrowHandler()
@@ -467,11 +472,6 @@ namespace Loom.ZombieBattleground
             if(CheckAvailableDeckExist())
             {
                 ApplyDeckFilter();
-            }
-            else
-            {
-                _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
-                _uiManager.DrawPopup<ElementFilterPopup>();
             }
 
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();

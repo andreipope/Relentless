@@ -27,6 +27,32 @@
         public const string FiatTransactionURL = "https://dev-auth.loom.games/fiat/transaction";
         public const string FiatClaimURL = "https://dev-auth.loom.games/fiat/claim-orders";
         public const string FiatProductsURL = "https://dev-auth.loom.games/fiat/products";
+#elif USE_PLASMA_STAGE_ENVIRONMENT
+        //STAGING ENVIRONMENT
+        public const string ContractAddressZbgCard = "0x2658d8c94062227d17a4ba61adb166e152369de3";
+        public const string ContractAddressCardFaucet = "0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41";
+        public const string ContractAddressBoosterPack = "0xdc745ac9945c981a63748a6b46dc31c2909bc865";
+        public const string ContractAddressSuperPack = "0xd05b46ffb3828218d5b7d9b1225575477c9e79d7";
+        public const string ContractAddressAirPack = "0x4408927c62a6c8013612c11d630c222c130fd4f8";
+        public const string ContractAddressEarthPack = "0x2926196ef74fe0611c474ba822c3b41b8796373e";
+        public const string ContractAddressFirePack = "0x5a1a9d8d8cb5ce2e1f664133effb1ba0c9597074";
+        public const string ContractAddressLifePack = "0xcc8450ab3f874e741d187d897602ec5a72c4a0be";
+        public const string ContractAddressToxicPack = "0x750ffb9928d9fb1dd3b8b7eda47c130b410dde72";
+        public const string ContractAddressWaterPack = "0x4f5b70188f14b6d80e8bf0002eca2ab2863ece5e";
+        public const string ContractAddressSmallPack = "0x0049493999a5ecc90654b5f0678d50a8952b9c3d";
+        public const string ContractAddressMinionPack = "0x63c43b64f40b8115c2c9970e559405fd16377a57";
+        public const string ContractAddressBinancePack = "0x837da2498b31d1654d51c1871b10fc4e3d192f02";
+        public const string ContractAddressFiatPurchase = "0xaff6212ab34f4066ee46f4b20429b2c74726eb67";
+        public const string ContractAddressTutorialReward = "0xaad4debc20cc04b2b749bda12734fc9f2552e751";
+
+        public const string Chainid = "default";
+        public const string WebSocket = "wss://test-z-us1.dappchains.com/websocket";
+        public const string QueryWS = "wss://test-z-us1.dappchains.com/queryws";
+
+        public const string FiatValidationURL = "https://stage-auth.loom.games/fiat/validate";
+        public const string FiatTransactionURL = "https://stage-auth.loom.games/fiat/transaction";
+        public const string FiatClaimURL = "https://stage-auth.loom.games/fiat/claim-orders";
+        public const string FiatProductsURL = "https://stage-auth.loom.games/fiat/products";
 #elif USE_PRODUCTION_BACKEND
         //PRODUCTION ENVIRONMENT
         public const string ContractAddressZbgCard = "0xad94eae166f5f69167e5668f2c8dbfa8e690a120";
