@@ -468,11 +468,6 @@ namespace Loom.ZombieBattleground
             {
                 ApplyDeckFilter();
             }
-            else
-            {
-                _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
-                _uiManager.DrawPopup<ElementFilterPopup>();
-            }
 
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
