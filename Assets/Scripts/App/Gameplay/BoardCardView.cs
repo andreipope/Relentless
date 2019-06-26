@@ -682,7 +682,8 @@ namespace Loom.ZombieBattleground
 
         private void PictureUpdatedEvent()
         {
-            PictureSprite.sprite = Model.CardPicture;
+            if(PictureSprite != null)
+                PictureSprite.sprite = Model.CardPicture;
         }
 
         public override string ToString()
