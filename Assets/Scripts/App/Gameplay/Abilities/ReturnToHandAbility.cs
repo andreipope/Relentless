@@ -75,11 +75,16 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
             {
-                unit.AddToCurrentCostHistory((currentCost - unit.CurrentCost) + Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+                BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
 
-                if (PlayerCallerOfAbility.IsLocalPlayer)
+                if (cardView != null)
                 {
-                    BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel).UpdateCardCost();
+                    unit.AddToCurrentCostHistory((currentCost - unit.CurrentCost) + Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+
+                    if (PlayerCallerOfAbility.IsLocalPlayer)
+                    {
+                        cardView.UpdateCardCost();
+                    }
                 }
             }
 

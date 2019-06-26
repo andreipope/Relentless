@@ -110,7 +110,6 @@ namespace Loom.ZombieBattleground
             {
                 Log.Warn("GetCardViewByModel: Input cardModel == null, returning null");
                 return default(T);
-                //throw new ArgumentNullException(nameof(cardModel));
             }
 
             T view =
@@ -122,7 +121,6 @@ namespace Loom.ZombieBattleground
             if (view == null)
             {
                 Log.Warn($"GetCardViewByModel: View of type {typeof(T).Name} not found for model {cardModel}");
-                //throw new Exception($"No view found for model {cardModel}");
             }
 
 
