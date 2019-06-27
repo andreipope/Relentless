@@ -137,6 +137,15 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
 
+            for (int i = _affectedUnits.Count-1; i >= 0; i--)
+            {
+                if (_affectedUnits[i].CardModel.OwnerPlayer != AbilityUnitOwner.OwnerPlayer)
+                {
+                    RemoveBuffFromUnit(_affectedUnits[i].ModifiedDamage, _affectedUnits[i].ModifiedDefense, _affectedUnits[i]);
+                    _affectedUnits.Remove(_affectedUnits[i]);
+                }
+            }
+
             ChangeStatsOfPlayerAllyCards(Defense, Attack, false, _affectedUnits);
         }
 

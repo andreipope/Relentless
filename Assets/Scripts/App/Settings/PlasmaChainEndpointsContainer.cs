@@ -17,7 +17,6 @@
         public const string ContractAddressMinionPack = "0x637845034f92c3fe58d4b43447815dab7b880f9d";
         public const string ContractAddressBinancePack = "0x8240905f778ab546939957bf9f57a369c368a296";
         public const string ContractAddressFiatPurchase = "0xe385465fc42c0898b743282b71ae8d74922a525a";
-        public const string ContractAddressTutorialReward = "0x2668524145c2f05f2e9de4f6d4a0171535df733a";
 
         public const string Chainid = "asia1";
         public const string WebSocket = "wss://test-z-asia1.dappchains.com/websocket";
@@ -56,7 +55,7 @@
 #elif USE_PRODUCTION_BACKEND
         //PRODUCTION ENVIRONMENT
         public const string ContractAddressZbgCard = "0xad94eae166f5f69167e5668f2c8dbfa8e690a120";
-        public const string ContractAddressCardFaucet = "0x1621fbbede0e85fb1fafd4f29cc2faaebde62db0";
+        public const string ContractAddressCardFaucet = "0x9d5dd04317a58a16a33b7730e0c02673039148af";
         public const string ContractAddressBoosterPack = "0x2fa54683d976c72806d2e54d1d61a476848e4da9";
         public const string ContractAddressSuperPack = "0x2b44d4f3b086d4b752d762ec2cf1ab7a0b3bfe44";
         public const string ContractAddressAirPack = "0xcfaef1552a11acc7794088ea2434c23af8434ced";
@@ -68,12 +67,14 @@
         public const string ContractAddressSmallPack = "0xd28138eb47f20314a60714f95f55d5f3dc39da60";
         public const string ContractAddressMinionPack = "0x01d78e15525f4500dc2a7e1fe0ec997dfc3a982e";
         public const string ContractAddressBinancePack = "0x554e93eca9f192a07d5e1337b0d85a12abceb803";
-        public const string ContractAddressFiatPurchase = "0x4e6da4b0bc7450a1ab5ff2e3812726a722a38a8b";
-        public const string ContractAddressTutorialReward = "0xaad4debc20cc04b2b749bda12734fc9f2552e751";
+        public const string ContractAddressFiatPurchase = "0x90df68c6745ee7664ac35eae18d98bd0cf930cfb";
 
         public const string Chainid = "default";
         public const string WebSocket = "wss://plasma.dappchains.com/websocket";
         public const string QueryWS = "wss://plasma.dappchains.com/queryws";
+
+        public const string HttpRpc = "http://plasma.dappchains.com/rpc";
+        public const string HttpQuery = "http://plasma.dappchains.com/query";
 
         public const string FiatValidationURL = "https://auth.loom.games/fiat/validate";
         public const string FiatTransactionURL = "https://auth.loom.games/fiat/transaction";
@@ -95,7 +96,6 @@
         public const string ContractAddressMinionPack = "0x63c43b64f40b8115c2c9970e559405fd16377a57";
         public const string ContractAddressBinancePack = "0x837da2498b31d1654d51c1871b10fc4e3d192f02";
         public const string ContractAddressFiatPurchase = "0xaff6212ab34f4066ee46f4b20429b2c74726eb67";
-        public const string ContractAddressTutorialReward = "0xaad4debc20cc04b2b749bda12734fc9f2552e751";
 
         public const string Chainid = "default";
         public const string WebSocket = "wss://test-z-us1.dappchains.com/websocket";

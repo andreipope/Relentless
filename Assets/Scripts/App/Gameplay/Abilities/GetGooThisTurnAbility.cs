@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
 
         private void AddGooOnThisTurn()
         {
-            PlayerCallerOfAbility.CurrentGoo = Mathf.Clamp(PlayerCallerOfAbility.CurrentGoo + Count, 0, Constants.MaximumPlayerGoo);
+            PlayerCallerOfAbility.CurrentGoo = PlayerCallerOfAbility.CurrentGoo + Count;
         }
     }
 }

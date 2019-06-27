@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -41,10 +42,10 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static void IapMediatorInitiatePurchase(string productId = "booster_pack_1")
+        public static async void IapMediatorInitiatePurchase(string productId = "booster_pack_1")
         {
             Product product = _iapMediator.Products.Single(p => p.definition.storeSpecificId == productId);
-            OneOf<Success, IapPlatformStorePurchaseError> result = _iapMediator.InitiatePurchase(product);
+            OneOf<Success, IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException> result = await _iapMediator.InitiatePurchase(product);
             Debug.Log("Result: " + result);
         }
 

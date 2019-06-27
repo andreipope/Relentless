@@ -1851,8 +1851,12 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.CreateVfx(prefabFreeze, targetPosition, true, 6);
 
+                GameplayActionQueueAction SkillProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker);
+
                 InternalTools.DoActionDelayed(() =>
                 {
+                    SkillProcessingAction?.TriggerActionExternally();
+                    
                     unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
