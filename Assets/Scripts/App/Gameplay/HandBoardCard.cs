@@ -161,12 +161,14 @@ namespace Loom.ZombieBattleground
 
             if (!StartedDrag)
                 return;
+            
 
-            if (_gameplayManager.IsGameEnded)
+            if (_gameplayManager.IsGameEnded || _gameplayManager.GetController<CardsController>().BlockPlayFromHand)
+            {
+                _canceledPlay = false;
+                ReturnToHandAnim();
                 return;
-
-            if (_gameplayManager.GetController<CardsController>().BlockPlayFromHand)
-                return;
+            }
             
             _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
