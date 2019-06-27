@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Editor
@@ -41,6 +42,7 @@ namespace Loom.ZombieBattleground.Editor
             }
         }
 
+        [JsonConstructor]
         public MarketplacePlasmachainContractAddressesNetworks(
             MarketplacePlasmachainNetworkContractAddresses development,
             MarketplacePlasmachainNetworkContractAddresses staging,

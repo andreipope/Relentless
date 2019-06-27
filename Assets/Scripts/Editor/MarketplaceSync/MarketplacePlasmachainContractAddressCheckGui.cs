@@ -77,7 +77,9 @@ namespace Loom.ZombieBattleground
                     "No Way."
                 ))
                 {
-                    MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks = _contractAddressesNetworks;
+                    MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks =
+                        JsonConvert.DeserializeObject<MarketplacePlasmachainContractAddressesNetworks>(JsonConvert.SerializeObject(_contractAddressesNetworks));
+                    EditorUtility.SetDirty(MarketplacePlasmachainContractAddressesPersistentContainer.Instance);
                     _ownerWindow.ShowNotification(new GUIContent("Approved!"));
                 }
             }

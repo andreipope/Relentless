@@ -34,7 +34,7 @@ MonoBehaviour:
       _zbgCardContractAddress: 0x2658d8c94062227d17a4ba61adb166e152369de3
       _cardFaucetContractAddress: 0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41
       _boosterPackContractAddress: 0xdc745ac9945c981a63748a6b46dc31c2909bc865
-      _superPackContractAddress: 0xd05b46ffb3828218d5b7d9b1225575477c9e79d3
+      _superPackContractAddress: 0xd05b46ffb3828218d5b7d9b1225575477c9e79d7
       _airPackContractAddress: 0x4408927c62a6c8013612c11d630c222c130fd4f8
       _earthPackContractAddress: 0x2926196ef74fe0611c474ba822c3b41b8796373e
       _firePackContractAddress: 0x5a1a9d8d8cb5ce2e1f664133effb1ba0c9597074
@@ -44,7 +44,7 @@ MonoBehaviour:
       _smallPackContractAddress: 0x0049493999a5ecc90654b5f0678d50a8952b9c3d
       _minionPackContractAddress: 0x63c43b64f40b8115c2c9970e559405fd16377a57
       _binancePackContractAddress: 0x837da2498b31d1654d51c1871b10fc4e3d192f02
-      _fiatPurchaseContractAddress: 0xaff6212ab34f4066ee46f4b20429b2c74726eb62
+      _fiatPurchaseContractAddress: 0xaff6212ab34f4066ee46f4b20429b2c74726eb67
       _openLotteryContractAddress: 0x808a1b867d2061d7bab4c610b6f98da9b65e42cf
       _tronLotteryContractAddress: 0x4d608125767b951758fa23d9767791b683345a1a
     _production:
@@ -56,7 +56,7 @@ MonoBehaviour:
       _earthPackContractAddress: 0x413db2a16de5d2bd6b4a48be7a772d739932ded1
       _firePackContractAddress: 0x6c73a3d880ec475d69576a44705ae24aa5dfaf06
       _lifePackContractAddress: 0x3f2147aac990e11f0b20ca01a1347b41d52739ae
-      _toxicPackContractAddress: 
+      _toxicPackContractAddress: 0x7aef265be0f7aac7c2fe0343d328afbc4c1253c2
       _waterPackContractAddress: 0xb8357e4deb282fb20bc6da6a18f21f2da546149b
       _smallPackContractAddress: 0xd28138eb47f20314a60714f95f55d5f3dc39da60
       _minionPackContractAddress: 0x01d78e15525f4500dc2a7e1fe0ec997dfc3a982e
