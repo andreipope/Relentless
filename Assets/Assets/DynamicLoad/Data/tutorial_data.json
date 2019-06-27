@@ -933,7 +933,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialUIElementOwnerName": "Button_OpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 2.5
@@ -951,11 +951,45 @@
             "Button_MyPacks",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
             "Button_Login",
-            "PackContent"
+            "PackContent",
+            "Button_OpenNextPack"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardOpenerCloseOpenedCardsScreen",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_OpenNextPack"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 3,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_ClosePackOpener",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
           ]
         },
         {
@@ -967,7 +1001,7 @@
             "Button_Shop",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_MyPacks",
             "Button_Setting",
@@ -2194,7 +2228,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialUIElementOwnerName": "Button_OpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 9.5
@@ -2212,11 +2246,45 @@
             "Button_MyPacks",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
             "Button_Login",
-            "PackContent"
+            "PackContent",
+            "Button_OpenNextPack"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardOpenerCloseOpenedCardsScreen",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_OpenNextPack"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 3,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_ClosePackOpener",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
           ]
         },
         {
@@ -2228,7 +2296,7 @@
             "Button_Shop",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_MyPacks",
             "Button_Setting",

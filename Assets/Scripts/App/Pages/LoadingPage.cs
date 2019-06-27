@@ -84,18 +84,7 @@ namespace Loom.ZombieBattleground
             {
                 _dataLoading = true;
 
-                try
-                {
-                    if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
-                    {
-                        _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Info(e.Message);
-                    _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
-                }
+                await _backendDataControlMediator.UpdateEndpointsFromZbVersion();
 
                 try
                 {

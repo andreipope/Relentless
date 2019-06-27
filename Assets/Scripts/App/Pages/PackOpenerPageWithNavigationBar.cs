@@ -100,8 +100,15 @@ namespace Loom.ZombieBattleground
         public async void Show()
         {
             _selectedPackType = null;
-            _controller = new NormalPackOpenerController();
-            //_controller = new TutorialPackOpenerController();
+
+            if (!_tutorialManager.IsTutorial)
+            {
+                _controller = new NormalPackOpenerController();
+            }
+            else
+            {
+                _controller = new TutorialPackOpenerController();
+            }
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -114,13 +121,13 @@ namespace Loom.ZombieBattleground
             _openedPackPanel = _selfPage.transform.Find("OpenedPackPanel").gameObject;
             _openedPackPanelCanvasGroup = _openedPackPanel.GetComponent<CanvasGroup>();
             _openedPackPanelBottomButtonsCanvasGroup = _openedPackPanel.transform.Find("BottomButtons").GetComponent<CanvasGroup>();
-            _openedPackPanelCloseButton = _openedPackPanel.transform.Find("BottomButtons/CloseButton").GetComponent<Button>();
-            _openedPackPanelOpenNextPackButton = _openedPackPanel.transform.Find("BottomButtons/OpenNextPackButton").GetComponent<Button>();
+            _openedPackPanelCloseButton = _openedPackPanel.transform.Find("BottomButtons/Button_ClosePackOpener").GetComponent<Button>();
+            _openedPackPanelOpenNextPackButton = _openedPackPanel.transform.Find("BottomButtons/Button_OpenNextPack").GetComponent<Button>();
 
             _packObjectsRoot = _selfPage.transform.Find("PackOpener/Packs/Layout/PacksRoot").gameObject;
             _currentPackTypeText = _selfPage.transform.Find("PackOpener/CurrentPackTypeText").GetComponent<TextMeshProUGUI>();
             _currentPackTypeAmountText = _selfPage.transform.Find("PackOpener/CurrentPackTypeAmountText").GetComponent<TextMeshProUGUI>();
-            _openButton = _selfPage.transform.Find("PackOpener/OpenButton").GetComponent<Button>();
+            _openButton = _selfPage.transform.Find("PackOpener/Button_OpenPacks").GetComponent<Button>();
             _cardPositions =
                 _selfPage.transform.Find("PackOpener/CardPositionsList")
                     .gameObject
@@ -189,6 +196,9 @@ namespace Loom.ZombieBattleground
 
         private void OpenedPackPanelOpenNextPackHandler()
         {
+            if (_tutorialManager.BlockAndReport(_openedPackPanelOpenNextPackButton.name))
+                return;
+
             _openedPackPanelCloseButton.interactable = false;
             _openedPackPanelOpenNextPackButton.interactable = false;
 
@@ -201,6 +211,11 @@ namespace Loom.ZombieBattleground
 
         private void OpenedPackPanelCloseButtonHandler()
         {
+            if (_tutorialManager.BlockAndReport(_openedPackPanelCloseButton.name))
+                return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerCloseOpenedCardsScreen);
+
             _openedPackPanelCloseButton.interactable = false;
             _openedPackPanelOpenNextPackButton.interactable = false;
 
@@ -218,6 +233,10 @@ namespace Loom.ZombieBattleground
 
         private async void OpenButtonHandler()
         {
+            if (_tutorialManager.BlockAndReport(_openButton.name))
+                return;
+
+            PlayClickSound();
             await OpenSelectedPack();
         }
 
@@ -311,6 +330,8 @@ namespace Loom.ZombieBattleground
                             _openedPackPanelCloseButton.gameObject.SetActive(true);
                             _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
                             _openedPackPanelBottomButtonsCanvasGroup.DOFade(1f, 0.3f).ChangeStartValue(0).SetDelay(0.5f);
+
+                            _controller.OnPackCollected();
                         }
                     }
                     else
@@ -351,37 +372,7 @@ namespace Loom.ZombieBattleground
                 _packObjects.Add(packObject);
             }
 
-            if (_packObjects.Count > 0)
-            {
-                SetSelectedPackType(_packObjects[0].PackType);
-            }
-            else
-            {
-                SetSelectedPackType(null);
-            }
-        }
-
-        private static Card CreateEmptyPodFakeCard(CardKey cardKey)
-        {
-            return new Card(
-                cardKey,
-                $"Card #{cardKey.MouldId.Id}",
-                0,
-                "",
-                "",
-                "embryo_pod",
-                0,
-                0,
-                Enumerators.Faction.AIR,
-                "",
-                Enumerators.CardKind.CREATURE,
-                Enumerators.CardRank.MINION,
-                Enumerators.CardType.UNDEFINED,
-                new List<AbilityData>(),
-                new PictureTransform(new FloatVector3(0), new FloatVector3(0.4f)),
-                Enumerators.UniqueAnimation.None,
-                true
-            );
+            SetSelectedPackType(_packObjects?.Count > 0 ? _packObjects?[0].PackType : null);
         }
 
         private void UpdateOpenButtonState()
@@ -419,12 +410,12 @@ namespace Loom.ZombieBattleground
 
         #region Util
 
-        public void PlayClickSound()
+        private void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
-        public void OpenAlertDialog(string msg)
+        private void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CHANGE_SCREEN,
@@ -433,6 +424,29 @@ namespace Loom.ZombieBattleground
                     false,
                     true);
             _uiManager.DrawPopup<WarningPopup>(msg);
+        }
+
+        private static Card CreateEmptyPodFakeCard(CardKey cardKey)
+        {
+            return new Card(
+                cardKey,
+                $"Card #{cardKey.MouldId.Id}",
+                0,
+                "",
+                "",
+                "embryo_pod",
+                0,
+                0,
+                Enumerators.Faction.AIR,
+                "",
+                Enumerators.CardKind.CREATURE,
+                Enumerators.CardRank.MINION,
+                Enumerators.CardType.UNDEFINED,
+                new List<AbilityData>(),
+                new PictureTransform(new FloatVector3(0), new FloatVector3(0.4f)),
+                Enumerators.UniqueAnimation.None,
+                true
+            );
         }
 
         #endregion
@@ -524,41 +538,12 @@ namespace Loom.ZombieBattleground
             public abstract Task<OneOf<Success, Exception>> Start();
 
             public abstract Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType);
+
+            public abstract void OnPackCollected();
         }
 
         private class TutorialPackOpenerController : PackOpenerControllerBase
         {
-            public override IReadOnlyList<Enumerators.MarketplaceCardPackType> ShownPackTypes { get; } =
-                (Enumerators.MarketplaceCardPackType[]) Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-
-            public override uint GetPackTypeAmount(Enumerators.MarketplaceCardPackType packType)
-            {
-                return 1;
-            }
-
-            public override Task<OneOf<Success, Exception>> Start()
-            {
-                return Task.FromResult((OneOf<Success, Exception>) new Success());
-            }
-
-            public override Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
-            {
-                // TODO: Load cards from tutorial here
-                List<CardKey> cards = new List<CardKey>
-                {
-                    CardKey.FromCardTokenId(500),
-                    CardKey.FromCardTokenId(500),
-                    CardKey.FromCardTokenId(500),
-                    CardKey.FromCardTokenId(500),
-                    CardKey.FromCardTokenId(500)
-                };
-                return Task.FromResult((OneOf<IReadOnlyList<CardKey>, Exception>) cards);
-            }
-        }
-
-        private class NormalPackOpenerController : PackOpenerControllerBase
-        {
-            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
             private readonly IUIManager _uiManager;
             private readonly ILoadObjectsManager _loadObjectsManager;
             private readonly PlasmaChainBackendFacade _plasmaChainBackendFacade;
@@ -566,6 +551,67 @@ namespace Loom.ZombieBattleground
             private readonly ITutorialManager _tutorialManager;
             private readonly IDataManager _dataManager;
             private readonly BackendFacade _backendFacade;
+
+            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
+
+            public TutorialPackOpenerController()
+            {
+                _uiManager = GameClient.Get<IUIManager>();
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+                _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+                _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+                _tutorialManager = GameClient.Get<ITutorialManager>();
+                _dataManager = GameClient.Get<IDataManager>();
+                _backendFacade = GameClient.Get<BackendFacade>();
+            }
+
+            public override IReadOnlyList<Enumerators.MarketplaceCardPackType> ShownPackTypes { get; } = new[]
+            {
+                Enumerators.MarketplaceCardPackType.Booster
+            };
+
+            public override uint GetPackTypeAmount(Enumerators.MarketplaceCardPackType packType)
+            {
+                _packTypeToPackAmount.TryGetValue(packType, out uint amount);
+                return amount;
+            }
+
+            public override Task<OneOf<Success, Exception>> Start()
+            {
+                _packTypeToPackAmount[Enumerators.MarketplaceCardPackType.Booster] =
+                    (uint) _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackCount;
+                return Task.FromResult((OneOf<Success, Exception>) new Success());
+            }
+
+            public override Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
+                IReadOnlyList<CardKey> cards =
+                    _tutorialManager
+                        .GetCardForCardPack(5)
+                        .Select(card => card.CardKey)
+                        .ToArray();
+                _packTypeToPackAmount[packType]--;
+                return Task.FromResult(OneOf<IReadOnlyList<CardKey>, Exception>.FromT0(cards));
+            }
+
+            public override void OnPackCollected()
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);
+            }
+        }
+
+        private class NormalPackOpenerController : PackOpenerControllerBase
+        {
+            private readonly IUIManager _uiManager;
+            private readonly ILoadObjectsManager _loadObjectsManager;
+            private readonly PlasmaChainBackendFacade _plasmaChainBackendFacade;
+            private readonly BackendDataControlMediator _backendDataControlMediator;
+            private readonly ITutorialManager _tutorialManager;
+            private readonly IDataManager _dataManager;
+            private readonly BackendFacade _backendFacade;
+
+            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
 
             public NormalPackOpenerController()
             {
@@ -667,6 +713,10 @@ namespace Loom.ZombieBattleground
                 {
                     _uiManager.HidePopup<LoadingOverlayPopup>();
                 }
+            }
+
+            public override void OnPackCollected()
+            {
             }
 
             private async Task UpdatePackBalanceAmount(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
