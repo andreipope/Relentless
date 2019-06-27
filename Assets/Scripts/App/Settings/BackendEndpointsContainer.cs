@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         false,
-                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Local]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Local]
                     )
                 },
                 {
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         false,
-                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Development]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Development]
                     )
                 },
                 {
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         false,
-                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         true,
-                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Production]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Production]
                     )
                 }
             };

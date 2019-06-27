@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
             AddService<AuthFiatApiFacade>(new AuthFiatApiFacade(backendEndpoint.AuthHost));
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
-            AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade(backendEndpoint.PlasmaChainEndpointsConfiguration));
+            AddService<PlasmachainBackendFacade>(new PlasmachainBackendFacade(backendEndpoint.PlasmachainEndpointsConfiguration));
         }
 
         public override void InitServices() {

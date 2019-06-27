@@ -18,20 +18,20 @@ using UnityEngine.Purchasing.Security;
 namespace Loom.ZombieBattleground.Iap
 {
     /// <summary>
-    /// Implements the part of purchase flow responsible for communication with Marketplace and PlasmaChain.
+    /// Implements the part of purchase flow responsible for communication with Marketplace and Plasmachain.
     /// </summary>
     public class IapPurchaseProcessor
     {
         private static readonly ILog Log = Logging.GetLog(nameof(IapPurchaseProcessor));
 
         private readonly AuthFiatApiFacade _authFiatApiFacade;
-        private readonly PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
         private readonly DAppChainClient _plasmaChainClient;
         private readonly PurchaseStateChangedHandler _setStateAction;
 
         public IapPurchaseProcessor(
             AuthFiatApiFacade authFiatApiFacade,
-            PlasmaChainBackendFacade plasmaChainBackendFacade,
+            PlasmachainBackendFacade plasmaChainBackendFacade,
             DAppChainClient plasmaChainClient,
             PurchaseStateChangedHandler stateAction)
         {
@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground.Iap
         }
 
         /// <summary>
-        /// Checks the pack on PlasmaChain, proceeds to the next step on success.
+        /// Checks the pack on Plasmachain, proceeds to the next step on success.
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Iap
 
             try
             {
-                // Claim pack on PlasmaChain
+                // Claim pack on Plasmachain
                 await _plasmaChainBackendFacade.ClaimPacks(_plasmaChainClient, record);
             }
             catch (TxCommitException e)
@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground.Iap
                 return new IapException("Failed to request pack", e);
             }
 
-            // Once pack is claimed on PlasmaChain, its record can be removed from Marketplace
+            // Once pack is claimed on Plasmachain, its record can be removed from Marketplace
             return await AuthClaim(record.UserId, record.TxId);
         }
 

@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             bool isMaintenanceMode,
             bool isForceUpdate,
             bool isConnectionImpossible,
-            PlasmaChainEndpointsConfiguration plasmaChainEndpointsConfiguration)
+            PlasmachainEndpointsConfiguration plasmaChainEndpointsConfiguration)
         {
             AuthHost = authHost;
             ReaderHost = readerHost;
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             IsMaintenanceMode = isMaintenanceMode;
             IsForceUpdate = isForceUpdate;
             IsConnectionImpossible = isConnectionImpossible;
-            PlasmaChainEndpointsConfiguration =
+            PlasmachainEndpointsConfiguration =
                 plasmaChainEndpointsConfiguration ?? throw new ArgumentNullException(nameof(plasmaChainEndpointsConfiguration));
         }
 
@@ -45,6 +45,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool IsConnectionImpossible { get; }
 
-        public PlasmaChainEndpointsConfiguration PlasmaChainEndpointsConfiguration { get; }
+        public PlasmachainEndpointsConfiguration PlasmachainEndpointsConfiguration { get; }
     }
 }

@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private PlasmachainBackendFacade _plasmaChainBackendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _dataManager = GameClient.Get<IDataManager>();
@@ -546,7 +546,7 @@ namespace Loom.ZombieBattleground
         {
             private readonly IUIManager _uiManager;
             private readonly ILoadObjectsManager _loadObjectsManager;
-            private readonly PlasmaChainBackendFacade _plasmaChainBackendFacade;
+            private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
             private readonly BackendDataControlMediator _backendDataControlMediator;
             private readonly ITutorialManager _tutorialManager;
             private readonly IDataManager _dataManager;
@@ -558,7 +558,7 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager = GameClient.Get<IUIManager>();
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-                _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+                _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _tutorialManager = GameClient.Get<ITutorialManager>();
                 _dataManager = GameClient.Get<IDataManager>();
@@ -605,7 +605,7 @@ namespace Loom.ZombieBattleground
         {
             private readonly IUIManager _uiManager;
             private readonly ILoadObjectsManager _loadObjectsManager;
-            private readonly PlasmaChainBackendFacade _plasmaChainBackendFacade;
+            private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
             private readonly BackendDataControlMediator _backendDataControlMediator;
             private readonly ITutorialManager _tutorialManager;
             private readonly IDataManager _dataManager;
@@ -617,7 +617,7 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager = GameClient.Get<IUIManager>();
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-                _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+                _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _tutorialManager = GameClient.Get<ITutorialManager>();
                 _dataManager = GameClient.Get<IDataManager>();

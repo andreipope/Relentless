@@ -19,10 +19,10 @@ using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground.Iap
 {
-    public class PlasmaChainBackendFacade : IService
+    public class PlasmachainBackendFacade : IService
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(PlasmaChainBackendFacade));
-        private static readonly ILog RpcLog = Logging.GetLog(nameof(PlasmaChainBackendFacade) + "Rpc");
+        private static readonly ILog Log = Logging.GetLog(nameof(PlasmachainBackendFacade));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(PlasmachainBackendFacade) + "Rpc");
 
         private const int CardsPerPack = 5;
 
@@ -48,11 +48,11 @@ namespace Loom.ZombieBattleground.Iap
 
         private byte[] UserPublicKey => _backendDataControlMediator.UserDataModel.PublicKey;
 
-        private Address UserPlasmaChainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, EndpointsConfiguration.ChainId);
+        private Address UserPlasmachainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, EndpointsConfiguration.ChainId);
 
-        public PlasmaChainEndpointsConfiguration EndpointsConfiguration { get; set; }
+        public PlasmachainEndpointsConfiguration EndpointsConfiguration { get; set; }
 
-        public PlasmaChainBackendFacade(PlasmaChainEndpointsConfiguration endpointsConfiguration)
+        public PlasmachainBackendFacade(PlasmachainEndpointsConfiguration endpointsConfiguration)
         {
             EndpointsConfiguration = endpointsConfiguration ?? throw new ArgumentNullException(nameof(endpointsConfiguration));
         }
@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground.Iap
             EvmContract packTypeContract = GetContract(client, GetPackContractTypeFromId(packType));
             uint amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<uint>(
                 BalanceOfMethod,
-                UserPlasmaChainAddress.LocalAddress
+                UserPlasmachainAddress.LocalAddress
             );
 
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType}) returned {amount}");
@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground.Iap
             TokensOwnedFunctionResult result =
                 await packTypeContract.StaticCallDtoTypeOutputAsync<TokensOwnedFunctionResult>(
                     TokensOwnedMethod,
-                    UserPlasmaChainAddress.LocalAddress
+                    UserPlasmachainAddress.LocalAddress
                 );
 
             CollectionCardData[] cards = new CollectionCardData[result.Indexes.Count];
@@ -226,7 +226,7 @@ namespace Loom.ZombieBattleground.Iap
             return new EvmContract(
                 client,
                 GetContractAddress(contractType),
-                UserPlasmaChainAddress,
+                UserPlasmachainAddress,
                 _abiDictionary[contractType].text);
         }
 
@@ -240,21 +240,21 @@ namespace Loom.ZombieBattleground.Iap
                 .Configure()
                 .WithLogger(logger)
                 .WithWebSocket(EndpointsConfiguration.WriterHost)
-                //.WithHttp(PlasmaChainEndpointsContainer.HttpRpc)
+                //.WithHttp(PlasmachainEndpointsContainer.HttpRpc)
                 .Create();
 
             IRpcClient reader = RpcClientFactory
                 .Configure()
                 .WithLogger(logger)
                 .WithWebSocket(EndpointsConfiguration.ReaderHost)
-                //.WithHttp(PlasmaChainEndpointsContainer.HttpQuery)
+                //.WithHttp(PlasmachainEndpointsContainer.HttpQuery)
                 .Create();
 
             DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
             {
                 AutoReconnect = false,
-                CallTimeout = Constants.PlasmaChainCallTimeout,
-                StaticCallTimeout = Constants.PlasmaChainCallTimeout
+                CallTimeout = Constants.PlasmachainCallTimeout,
+                StaticCallTimeout = Constants.PlasmachainCallTimeout
             };
 
             return new LoggingDAppChainClient(

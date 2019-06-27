@@ -6,10 +6,10 @@ using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public class PlasmaChainEndpointsConfiguration
+    public class PlasmachainEndpointsConfiguration
     {
         [JsonConstructor]
-        public PlasmaChainEndpointsConfiguration(
+        public PlasmachainEndpointsConfiguration(
             string chainId,
             string readerHost,
             string writerHost,
@@ -60,51 +60,67 @@ namespace Loom.ZombieBattleground.BackendCommunication
         [JsonProperty("plasmachain_writer_host")]
         public string WriterHost { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_zbgcard_contract_address")]
         public Address ZbgCardContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_cardfaucet_contract_address")]
         public Address CardFaucetContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_boosterpack_contract_address")]
         public Address BoosterPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_superpack_contract_address")]
         public Address SuperPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_airpack_contract_address")]
         public Address AirPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_earthpack_contract_address")]
         public Address EarthPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_firepack_contract_address")]
         public Address FirePackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_lifepack_contract_address")]
         public Address LifePackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_toxicpack_contract_address")]
         public Address ToxicPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_waterpack_contract_address")]
         public Address WaterPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_smallpack_contract_address")]
         public Address SmallPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_minionpack_contract_address")]
         public Address MinionPackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_binancepack_contract_address")]
         public Address BinancePackContractAddress { get; }
 
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_fiatpurchase_contract_address")]
         public Address FiatPurchaseContractAddress { get; }
-        
+
+                [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_openlottery_contract_address")]
         public Address OpenLotteryContractAddress { get; }
-        
+
+                [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_tronlottery_contract_address")]
         public Address TronLotteryContractAddress { get; }
     }

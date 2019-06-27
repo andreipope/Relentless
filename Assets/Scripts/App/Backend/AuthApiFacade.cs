@@ -232,7 +232,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
-        public async Task<BackendEndpoint> GetBackendEndpointFromZbVersion(PlasmaChainEndpointsConfiguration fallbackPlasmaChainEndpointsConfiguration)
+        public async Task<BackendEndpoint> GetBackendEndpointFromZbVersion(PlasmachainEndpointsConfiguration fallbackPlasmachainEndpointsConfiguration)
         {
             const string queryURLsEndPoint = "/zbversion";
 
@@ -249,16 +249,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 httpResponseMessage.ReadToEnd()
             );
 
-            PlasmaChainEndpointsConfiguration plasmaChainEndpointsConfiguration;
+            PlasmachainEndpointsConfiguration plasmaChainEndpointsConfiguration;
             if (String.IsNullOrEmpty(serverInfo.version.plasmachain_chain_id) ||
                 String.IsNullOrEmpty(serverInfo.version.plasmachain_reader_host))
             {
                 // Until prod auth is updated
-                plasmaChainEndpointsConfiguration = fallbackPlasmaChainEndpointsConfiguration;
+                plasmaChainEndpointsConfiguration = fallbackPlasmachainEndpointsConfiguration;
             }
             else
             {
-                plasmaChainEndpointsConfiguration = new PlasmaChainEndpointsConfiguration(
+                plasmaChainEndpointsConfiguration = new PlasmachainEndpointsConfiguration(
                     serverInfo.version.plasmachain_chain_id,
                     serverInfo.version.plasmachain_reader_host,
                     serverInfo.version.plasmachain_writer_host,

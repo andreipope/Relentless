@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private BackendFacade _backendFacade;
         private AuthApiFacade _authApiFacade;
         private AuthFiatApiFacade _authFiatApiFacade;
-        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private PlasmachainBackendFacade _plasmaChainBackendFacade;
 
         protected string UserDataFilePath => Path.Combine(Application.persistentDataPath, UserDataFileName);
 
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _backendFacade = GameClient.Get<BackendFacade>();
             _authApiFacade = GameClient.Get<AuthApiFacade>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
         }
 
         public void Update()
@@ -111,9 +111,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
                 {
-                    BackendEndpoint backendEndpoint = await _authApiFacade.GetBackendEndpointFromZbVersion(_backendFacade.BackendEndpoint.PlasmaChainEndpointsConfiguration);
+                    BackendEndpoint backendEndpoint =
+                        await _authApiFacade.GetBackendEndpointFromZbVersion(_backendFacade.BackendEndpoint.PlasmachainEndpointsConfiguration);
                     _backendFacade.BackendEndpoint = backendEndpoint;
-                    _plasmaChainBackendFacade.EndpointsConfiguration = backendEndpoint.PlasmaChainEndpointsConfiguration;
+                    _plasmaChainBackendFacade.EndpointsConfiguration = backendEndpoint.PlasmachainEndpointsConfiguration;
                     _authApiFacade.AuthApiHost = backendEndpoint.AuthHost;
                     _authApiFacade.VaultApiHost = backendEndpoint.VaultHost;
                     _authFiatApiFacade.AuthApiHost = backendEndpoint.AuthHost;

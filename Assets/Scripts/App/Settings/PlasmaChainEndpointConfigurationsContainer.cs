@@ -2,10 +2,10 @@
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public static class PlasmaChainEndpointConfigurationsContainer
+    public static class PlasmachainEndpointConfigurationsContainer
     {
-        private static readonly PlasmaChainEndpointsConfiguration DevelopmentConfiguration =
-            new PlasmaChainEndpointsConfiguration(
+        private static readonly PlasmachainEndpointsConfiguration DevelopmentConfiguration =
+            new PlasmachainEndpointsConfiguration(
 
                 // FIXME: those addresses are likely outdated
                 "asia1",
@@ -29,8 +29,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 ""
             );
 
-        private static readonly PlasmaChainEndpointsConfiguration StagingConfiguration =
-            new PlasmaChainEndpointsConfiguration(
+        private static readonly PlasmachainEndpointsConfiguration StagingConfiguration =
+            new PlasmachainEndpointsConfiguration(
                 "default",
                 "wss://test-z-us1.dappchains.com/queryws",
                 "wss://test-z-us1.dappchains.com/websocket",
@@ -52,8 +52,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 ""
             );
 
-        private static readonly PlasmaChainEndpointsConfiguration ProductionConfiguration =
-            new PlasmaChainEndpointsConfiguration(
+        private static readonly PlasmachainEndpointsConfiguration ProductionConfiguration =
+            new PlasmachainEndpointsConfiguration(
                 "default",
                 "wss://plasma.dappchains.com/queryws",
                 "wss://plasma.dappchains.com/websocket",
@@ -75,8 +75,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 ""
             );
 
-        public static readonly IReadOnlyDictionary<BackendPurpose, PlasmaChainEndpointsConfiguration> EndpointConfigurations =
-            new Dictionary<BackendPurpose, PlasmaChainEndpointsConfiguration>
+        public static readonly IReadOnlyDictionary<BackendPurpose, PlasmachainEndpointsConfiguration> EndpointConfigurations =
+            new Dictionary<BackendPurpose, PlasmachainEndpointsConfiguration>
             {
                 {
                     BackendPurpose.Local,
