@@ -71,10 +71,11 @@ namespace Loom.ZombieBattleground
             AddService<INetworkActionManager>(new NetworkActionManager());
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
-            AddService<AuthFiatApiFacade>(new AuthFiatApiFacade());
+            AddService<AuthApiFacade>(new AuthApiFacade(backendEndpoint.AuthHost, backendEndpoint.VaultHost));
+            AddService<AuthFiatApiFacade>(new AuthFiatApiFacade(backendEndpoint.AuthHost));
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
-            AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade());
+            AddService<PlasmaChainBackendFacade>(new PlasmaChainBackendFacade(backendEndpoint.PlasmaChainEndpointsConfiguration));
         }
 
         public override void InitServices() {

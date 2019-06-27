@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class BackendEndpointsContainer
     {
-        public static readonly Dictionary<BackendPurpose, BackendEndpoint> Endpoints =
+        public static readonly IReadOnlyDictionary<BackendPurpose, BackendEndpoint> Endpoints =
             new Dictionary<BackendPurpose, BackendEndpoint>
             {
                 {
@@ -14,10 +14,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://127.0.0.1:46658/queryws",
                         "ws://127.0.0.1:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v22",
+                        "v23",
                         false,
                         false,
-                        false
+                        false,
+                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Local]
                     )
                 },
                 {
@@ -30,7 +31,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "v23",
                         false,
                         false,
-                        false
+                        false,
+                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Development]
                     )
                 },
                 {
@@ -43,7 +45,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "v22",
                         false,
                         false,
-                        false
+                        false,
+                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {
@@ -56,9 +59,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "v7",
                         false,
                         false,
-                        true
+                        true,
+                        PlasmaChainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Production]
                     )
-                },
+                }
             };
     }
 }

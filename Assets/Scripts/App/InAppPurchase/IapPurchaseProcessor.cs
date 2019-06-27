@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground.Iap
             Log.Info($"{nameof(RequestFiatValidation)}");
             SetState(IapPurchaseState.RequestingFiatValidation, null);
 
-            ValidationResponse validationResponse;
+            AuthFiatApiFacade.ValidationResponse validationResponse;
             try
             {
                 validationResponse = await _authFiatApiFacade.RegisterTransactionAndValidate(fiatValidationData);
@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground.Iap
 
             try
             {
-                await _authFiatApiFacade.Claim(userId, new[] { txId });
+                await _authFiatApiFacade.ClaimTransaction(userId, new[] { txId });
             }
             catch (Exception e)
             {
