@@ -10868,7 +10868,6 @@ MonoBehaviour:
     GoogleUpdateDelay: 0
     Assets:
     - {fileID: 11400000, guid: bb3a0fbb5b75c49e18c7bacd468a8a1e, type: 2}
-    - {fileID: 11400000, guid: 8f2a52014057249f098ca489a86165a2, type: 2}
     - {fileID: 11400000, guid: c07fbd81c2009462d91ed3fe2f63a828, type: 2}
     - {fileID: 11400000, guid: 4933e7700805b4be9a38e270015cc1dc, type: 2}
     - {fileID: 11400000, guid: 078c2b6ecb04142f8b042bb157faf368, type: 2}
@@ -10876,6 +10875,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: f22cc3bc8889745d5b5b006f7fc68c00, type: 2}
     - {fileID: 11400000, guid: 2e4465fe489724f83800d7c788346655, type: 2}
     - {fileID: 11400000, guid: f4f94c6618a364aff9c2c6352ed70946, type: 2}
+    - {fileID: 11400000, guid: 8cf7c50e537814b8581f60d75c98776e, type: 2}
     Spreadsheet_LocalFileName: Assets/DynamicLoad/Data/localization_data.csv
     Spreadsheet_LocalCSVSeparator: ','
     Spreadsheet_LocalCSVEncoding: utf-8
