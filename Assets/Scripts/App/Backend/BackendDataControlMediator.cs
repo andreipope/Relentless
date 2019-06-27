@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
                 {
-                    BackendEndpoint backendEndpoint = await _authApiFacade.GetBackendEndpointFromZbVersion();
+                    BackendEndpoint backendEndpoint = await _authApiFacade.GetBackendEndpointFromZbVersion(_backendFacade.BackendEndpoint.PlasmaChainEndpointsConfiguration);
                     _backendFacade.BackendEndpoint = backendEndpoint;
                     _plasmaChainBackendFacade.EndpointsConfiguration = backendEndpoint.PlasmaChainEndpointsConfiguration;
                     _authApiFacade.AuthApiHost = backendEndpoint.AuthHost;

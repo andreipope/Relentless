@@ -980,8 +980,8 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -0.5,
-                "Y": 1.4,
+                "X": 0,
+                "Y": 3,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -2275,8 +2275,8 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -0.5,
-                "Y": 6.4,
+                "X": 0,
+                "Y": 3,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",

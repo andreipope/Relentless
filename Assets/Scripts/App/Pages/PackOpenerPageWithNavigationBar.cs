@@ -196,6 +196,9 @@ namespace Loom.ZombieBattleground
 
         private void OpenedPackPanelOpenNextPackHandler()
         {
+            if (_tutorialManager.BlockAndReport(_openedPackPanelOpenNextPackButton.name))
+                return;
+
             _openedPackPanelCloseButton.interactable = false;
             _openedPackPanelOpenNextPackButton.interactable = false;
 
@@ -208,6 +211,11 @@ namespace Loom.ZombieBattleground
 
         private void OpenedPackPanelCloseButtonHandler()
         {
+            if (_tutorialManager.BlockAndReport(_openedPackPanelCloseButton.name))
+                return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerCloseOpenedCardsScreen);
+
             _openedPackPanelCloseButton.interactable = false;
             _openedPackPanelOpenNextPackButton.interactable = false;
 
@@ -220,8 +228,6 @@ namespace Loom.ZombieBattleground
             {
                 _openedPackPanel.SetActive(false);
                 CreatePackObjects();
-
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerCloseOpenedCardsScreen);
             });
         }
 

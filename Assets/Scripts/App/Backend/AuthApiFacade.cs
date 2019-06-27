@@ -232,7 +232,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
-        public async Task<BackendEndpoint> GetBackendEndpointFromZbVersion()
+        public async Task<BackendEndpoint> GetBackendEndpointFromZbVersion(PlasmaChainEndpointsConfiguration fallbackPlasmaChainEndpointsConfiguration)
         {
             const string queryURLsEndPoint = "/zbversion";
 
@@ -249,16 +249,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 httpResponseMessage.ReadToEnd()
             );
 
-            return new BackendEndpoint(
-                serverInfo.version.auth_url,
-                serverInfo.version.read_url,
-                serverInfo.version.write_url,
-                serverInfo.version.vault_url,
-                serverInfo.version.data_version,
-                serverInfo.version.is_maintenace_mode,
-                serverInfo.version.is_force_update,
-                false,
-                new PlasmaChainEndpointsConfiguration(
+            PlasmaChainEndpointsConfiguration plasmaChainEndpointsConfiguration;
+            if (String.IsNullOrEmpty(serverInfo.version.plasmachain_chain_id) ||
+                String.IsNullOrEmpty(serverInfo.version.plasmachain_reader_host))
+            {
+                // Until prod auth is updated
+                plasmaChainEndpointsConfiguration = fallbackPlasmaChainEndpointsConfiguration;
+            }
+            else
+            {
+                plasmaChainEndpointsConfiguration = new PlasmaChainEndpointsConfiguration(
                     serverInfo.version.plasmachain_chain_id,
                     serverInfo.version.plasmachain_reader_host,
                     serverInfo.version.plasmachain_writer_host,
@@ -278,7 +278,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     serverInfo.version.plasmachain_fiatpurchase_contract_address,
                     serverInfo.version.plasmachain_openlottery_contract_address,
                     serverInfo.version.plasmachain_tronlottery_contract_address
-                )
+                );
+            }
+
+            return new BackendEndpoint(
+                serverInfo.version.auth_url,
+                serverInfo.version.read_url,
+                serverInfo.version.write_url,
+                serverInfo.version.vault_url,
+                serverInfo.version.data_version,
+                serverInfo.version.is_maintenace_mode,
+                serverInfo.version.is_force_update,
+                false,
+                plasmaChainEndpointsConfiguration
             );
         }
 

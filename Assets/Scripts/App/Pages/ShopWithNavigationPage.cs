@@ -110,7 +110,9 @@ namespace Loom.ZombieBattleground
 
         #region UI Handler
 
+#pragma warning disable 1998
         private async void BuyButtonHandler(Product product)
+#pragma warning restore 1998
         {
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if UNITY_IOS || UNITY_ANDROID
