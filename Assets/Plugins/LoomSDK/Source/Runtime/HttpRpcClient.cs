@@ -78,15 +78,16 @@ namespace Loom.Client
         {
             if (r.isNetworkError)
             {
-                throw new RpcClientException(String.Format("HTTP '{0}' request to '{1}' failed", r.method, r.url), r.responseCode, this);
+                throw new RpcClientException(String.Format("HTTP '{0}' request to '{1}' failed due to network error: {2}", r.method, r.error), r.responseCode, this);
             }
             else if (r.isHttpError)
             {
+                string errorMessage = "";
                 if (r.downloadHandler != null && !String.IsNullOrEmpty(r.downloadHandler.text))
                 {
-                    // TODO: extract error message if any
+                    errorMessage = r.downloadHandler.text;
                 }
-                throw new RpcClientException(String.Format("HTTP Error {0}", r.responseCode), r.responseCode, this);
+                throw new RpcClientException(String.Format("HTTP Error {0}: {1}", r.error, errorMessage), r.responseCode, this);
             }
         }
     }

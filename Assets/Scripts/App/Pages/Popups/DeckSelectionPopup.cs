@@ -61,6 +61,7 @@ namespace Loom.ZombieBattleground
                 if (Self != null)
                 {
                     ReloadDeckDataAndDisplay();
+                    SelectDeckEvent?.Invoke(GetSelectedDeck());
                 }
             };
 

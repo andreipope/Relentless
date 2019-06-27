@@ -411,8 +411,12 @@ namespace Loom.ZombieBattleground
             cardModel.InvokeUnitPrepairingToDie();
             cardModel.SetUnitActiveStatus(false);
 
+            GameplayActionQueueAction AbilityProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
             InternalTools.DoActionDelayed(() =>
             {
+                AbilityProcessingAction?.TriggerActionExternally();
+
                 cardModel.Die(true);
 
                 _battlegroundController.UnregisterCardView(boardUnitView);
@@ -963,6 +967,7 @@ namespace Loom.ZombieBattleground
             SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName),
                                             parent,
                                             false);
+            SelfObject.transform.localScale = Vector3.one * 0.3f;
 
             _picture = SelfObject.transform.Find("Image_Picture").GetComponent<SpriteRenderer>();
             _frame = SelfObject.transform.Find("Image_Frame").GetComponent<SpriteRenderer>();
@@ -976,7 +981,7 @@ namespace Loom.ZombieBattleground
 
             string setName = cardModel.Prototype.Faction.ToString();
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), cardModel.Prototype.Rank);
-            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
 
             if (!string.IsNullOrEmpty(cardModel.Prototype.Frame))
             {

@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
 
         #region UI Handler
 
-        private void BuyButtonHandler(Product product)
+        private async void BuyButtonHandler(Product product)
         {
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if UNITY_IOS || UNITY_ANDROID
@@ -120,12 +120,23 @@ namespace Loom.ZombieBattleground
 
             async void OnIapMediatorOnPurchasingResultReceived(OneOf<PurchaseEventArgs, IapPlatformStorePurchaseError> oneOf)
             {
+                // Wait until we get a result for the product we are buying
+                bool matchingProduct = false;
+                oneOf.Switch(
+                    args => matchingProduct = args.purchasedProduct.Equals(product),
+                    error => matchingProduct = error.Product.Equals(product)
+                    );
+
+                if (!matchingProduct)
+                    return;
+
                 _iapMediator.PurchasingResultReceived -= OnIapMediatorOnPurchasingResultReceived;
                 await _iapMediator.ClaimStorePurchases();
             }
 
             _iapMediator.PurchasingResultReceived += OnIapMediatorOnPurchasingResultReceived;
-            OneOf<Success, IapPlatformStorePurchaseError> buyProductResult = _iapMediator.InitiatePurchase(product);
+            OneOf<Success, IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException> buyProductResult =
+                await _iapMediator.InitiatePurchase(product);
 #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
             _uiManager.DrawPopup<QuestionPopup>
@@ -306,12 +317,12 @@ namespace Loom.ZombieBattleground
             _iapMediator.Initialized += IapMediatorOnInitialized;
             _iapMediator.InitializationFailed += IapMediatorOnInitializationFailed;
 
-            // If initialization was started successfully, we need to wait for an event to get the results of initialization.
+            // If initialization did start successfully, we need to wait for an event to get the results of initialization.
             // Initialization is asynchronous and will only fail due to misconfiguration.
             // This means that in case of, for example, missing internet connectivity, no event will fire,
             // and the initialization will remain in "Initializing state".
             // We handle this by giving the IAP platform a timeout to initialize, and if timeout ends,
-            // propose the user to try again later (when IAP might already initialize itself).
+            // propose the user to try again later (when IAP might already initialize itself by then).
 
             bool gotInitializationResult = false;
             OneOf<InitializationFailureReason, IapException> failure = default;

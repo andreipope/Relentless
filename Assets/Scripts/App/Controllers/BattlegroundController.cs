@@ -110,7 +110,6 @@ namespace Loom.ZombieBattleground
             {
                 Log.Warn("GetCardViewByModel: Input cardModel == null, returning null");
                 return default(T);
-                //throw new ArgumentNullException(nameof(cardModel));
             }
 
             T view =
@@ -122,7 +121,6 @@ namespace Loom.ZombieBattleground
             if (view == null)
             {
                 Log.Warn($"GetCardViewByModel: View of type {typeof(T).Name} not found for model {cardModel}");
-                //throw new Exception($"No view found for model {cardModel}");
             }
 
 
@@ -827,17 +825,17 @@ namespace Loom.ZombieBattleground
             IReadOnlyList<BoardCardView> boardCardViews = GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
 
             float handWidth = 0.0f;
-            float spacing = -2.5f;
-            float scaling = 0.28f;
-            Vector3 pivot = new Vector3(4f, -7.5f, 0f);
-            int twistPerCard = -6;
+            float spacing = -1.5f;
+            float scaling = 0.24f;
+            Vector3 pivot = new Vector3(6f, -7f, 0f);
+            int twistPerCard = -5;
 
             if (CardsZoomed)
             {
-                spacing = -5f;
-                scaling = 0.4f;
+                spacing = -2.6f;
+                scaling = 0.3f;
                 pivot = new Vector3(-1.3f, -6.0f, 0f);
-                twistPerCard = -2;
+                twistPerCard = -3;
             }
 
             for (int i = 0; i < boardCardViews.Count; i++)

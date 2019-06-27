@@ -311,7 +311,6 @@ namespace Loom.ZombieBattleground
                         {
                             _openedPackPanelCloseButton.gameObject.SetActive(true);
                             _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
-
                             _openedPackPanelBottomButtonsCanvasGroup.DOFade(1f, 0.3f).ChangeStartValue(0).SetDelay(0.5f);
                         }
                     }

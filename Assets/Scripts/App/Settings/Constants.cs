@@ -211,12 +211,7 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage =
-#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
-            true;
-#else
-            false;
-#endif
+        internal static readonly bool EnableShopPage = true;
 
         internal const int LastTutorialId = 8;
 

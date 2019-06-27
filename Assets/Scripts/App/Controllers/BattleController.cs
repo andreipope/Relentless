@@ -105,24 +105,26 @@ namespace Loom.ZombieBattleground
 
                 damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
 
-                if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
+                finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackingUnitModel.MaximumDamageFromAnySource, 0));
+
+                if (finalDamageAttacked > 0 && attackingUnitModel.HasBuffShield)
                 {
                     damageAttacked = 0;
                     attackingUnitModel.HasUsedBuffShield = true;
                 }
 
-                finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackingUnitModel.MaximumDamageFromAnySource, 0));
-
                 damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
-                if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
+                finalDamageAttacking = Mathf.Min(damageAttacking, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
+                
+                if (finalDamageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damageAttacking = 0;
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
-                finalDamageAttacking = Mathf.Min(damageAttacking, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
+                
                 attackedUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacking,
                     Enumerators.ReasonForValueChange.Attack);
 
@@ -193,7 +195,7 @@ namespace Loom.ZombieBattleground
             {
                 int damage = damageOverride != -1 ? damageOverride : skill.Skill.Value + modifier;
 
-                if (damage > 0 && attackedUnitModel.HasBuffShield)
+                if (Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)) > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
                     attackedUnitModel.HasUsedBuffShield = true;
@@ -253,7 +255,7 @@ namespace Loom.ZombieBattleground
 
             if (attackedUnitModel != null)
             {
-                if (damage > 0 && attackedUnitModel.HasBuffShield)
+                if (Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)) > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
                     attackedUnitModel.HasUsedBuffShield = true;
