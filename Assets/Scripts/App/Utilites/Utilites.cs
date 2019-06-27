@@ -84,11 +84,21 @@ namespace Loom.ZombieBattleground
 
         public static string FormatCallLogList<T>(IList<T> list)
         {
+            if (list == null)
+            {
+                return "[list is null]";
+            }
+
             return $"[({list.Count} items) {String.Join(", ", list)}]";
         }
 
         public static string FormatCallLogList<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                return "[list is null]";
+            }
+
             return $"[({list.Count()} items) {String.Join(", ", list)}]";
         }
 

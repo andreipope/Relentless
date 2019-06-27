@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
         protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker || !AbilityUnitOwner.IsAlive())
                 return;
 
             AbilityProcessingAction?.TriggerActionExternally();

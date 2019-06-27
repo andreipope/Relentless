@@ -411,8 +411,12 @@ namespace Loom.ZombieBattleground
             cardModel.InvokeUnitPrepairingToDie();
             cardModel.SetUnitActiveStatus(false);
 
+            GameplayActionQueueAction AbilityProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
             InternalTools.DoActionDelayed(() =>
             {
+                AbilityProcessingAction?.TriggerActionExternally();
+
                 cardModel.Die(true);
 
                 _battlegroundController.UnregisterCardView(boardUnitView);
