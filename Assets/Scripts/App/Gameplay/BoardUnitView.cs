@@ -899,7 +899,7 @@ namespace Loom.ZombieBattleground
         public void HandleAttackCard(Action completeCallback, CardModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
             BoardUnitView targetCardView = _battlegroundController.GetCardViewByModel<BoardUnitView>(targetCard);
-
+            
             if (targetCardView == null || targetCardView.GameObject == null || GameObject == null)
             {
                 _actionsQueueController.ForceContinueAction(Model.ActionForDying);
@@ -908,7 +908,7 @@ namespace Loom.ZombieBattleground
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();
 
-                ExceptionReporter.LogExceptionAsWarning(Log, new Exception("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
+                Log.Warn(Log, new Exception("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
                     " | targetCardView.GameObject: " + targetCardView?.GameObject));
                 return;
             }

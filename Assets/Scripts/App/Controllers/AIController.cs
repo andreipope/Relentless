@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
 
                     await LetsWaitForQueue(cancellationToken);
 
-                    while (UnitCanBeUsable(unit))
+                    if (UnitCanBeUsable(unit))
                     {
                         CardModel attackedUnit = GetTargetOpponentUnit();
                         if (attackedUnit != null)
@@ -558,12 +558,7 @@ namespace Loom.ZombieBattleground
                             alreadyUsedUnits.Add(unit);
 
                             await LetsThink(cancellationToken);
-                            if (!OpponentHasHeavyUnits())
-                            {
-                                break;
-                            }
                         }
-                        else break;
                     }
                 }
             }
@@ -590,7 +585,7 @@ namespace Loom.ZombieBattleground
                         await LetsWaitForQueue(cancellationToken);
                     }
 
-                    while (UnitCanBeUsable(unit))
+                    if (UnitCanBeUsable(unit))
                     {
                         unit.DoCombat(_gameplayManager.CurrentPlayer);
                         await LetsThink(cancellationToken);
@@ -609,7 +604,7 @@ namespace Loom.ZombieBattleground
                         await LetsWaitForQueue(cancellationToken);
                     }
 
-                    while (UnitCanBeUsable(unit))
+                    if (UnitCanBeUsable(unit))
                     {
                         if (GetPlayerAttackingValue() > GetOpponentAttackingValue() &&
                             !unit.HasBuffRush &&
@@ -630,10 +625,10 @@ namespace Loom.ZombieBattleground
                             else
                             {
                                 if (unit.HasBuffRush)
-                                    break;
+                                    continue;
 
                                 if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT))
-                                    break;
+                                    continue;
 
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
