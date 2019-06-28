@@ -544,25 +544,13 @@ namespace Loom.ZombieBattleground
 
         private class TutorialPackOpenerController : PackOpenerControllerBase
         {
-            private readonly IUIManager _uiManager;
-            private readonly ILoadObjectsManager _loadObjectsManager;
-            private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
-            private readonly BackendDataControlMediator _backendDataControlMediator;
             private readonly ITutorialManager _tutorialManager;
-            private readonly IDataManager _dataManager;
-            private readonly BackendFacade _backendFacade;
 
             private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
 
             public TutorialPackOpenerController()
             {
-                _uiManager = GameClient.Get<IUIManager>();
-                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-                _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
-                _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _tutorialManager = GameClient.Get<ITutorialManager>();
-                _dataManager = GameClient.Get<IDataManager>();
-                _backendFacade = GameClient.Get<BackendFacade>();
             }
 
             public override IReadOnlyList<Enumerators.MarketplaceCardPackType> ShownPackTypes { get; } = new[]
@@ -604,11 +592,8 @@ namespace Loom.ZombieBattleground
         private class NormalPackOpenerController : PackOpenerControllerBase
         {
             private readonly IUIManager _uiManager;
-            private readonly ILoadObjectsManager _loadObjectsManager;
             private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
             private readonly BackendDataControlMediator _backendDataControlMediator;
-            private readonly ITutorialManager _tutorialManager;
-            private readonly IDataManager _dataManager;
             private readonly BackendFacade _backendFacade;
 
             private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
@@ -616,11 +601,8 @@ namespace Loom.ZombieBattleground
             public NormalPackOpenerController()
             {
                 _uiManager = GameClient.Get<IUIManager>();
-                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-                _tutorialManager = GameClient.Get<ITutorialManager>();
-                _dataManager = GameClient.Get<IDataManager>();
                 _backendFacade = GameClient.Get<BackendFacade>();
             }
 
