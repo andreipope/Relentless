@@ -513,12 +513,7 @@ namespace Loom.ZombieBattleground
 
         public async Task LoadZbVersionData()
         {
-            string zbVersionParsedLink = Constants.ZbVersionLink.Replace(Constants.EnvironmentPointText,
-                        BackendEndpointsContainer.Endpoints.FirstOrDefault(point => point.Value == GameClient.GetDefaultBackendEndpoint()).
-                        Key.ToString().ToLowerInvariant());
-
-            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(
-                $"{GameClient.GetDefaultBackendEndpoint().AuthHost}{zbVersionParsedLink}", Log, JsonSerializerSettings);
+            ZbVersion = await GameClient.Get<AuthApiFacade>().GetZbVersionData(GameClient.GetDefaultBackendPurpose());
         }
     }
 }

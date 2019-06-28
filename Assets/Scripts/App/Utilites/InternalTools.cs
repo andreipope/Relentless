@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Helpers
@@ -166,7 +167,7 @@ namespace Loom.ZombieBattleground.Helpers
         public static async global::System.Threading.Tasks.Task<T> GetJsonFromLink<T>(
             string uri,
             log4net.ILog log,
-            global::Newtonsoft.Json.JsonSerializerSettings jsonSerializerSettings)
+            JsonSerializerSettings jsonSerializerSettings)
         {
             T result = default(T);
 
@@ -179,7 +180,14 @@ namespace Loom.ZombieBattleground.Helpers
             {
                 try
                 {
-                    result = global::Newtonsoft.Json.JsonConvert.DeserializeObject<T>(request.downloadHandler.text, jsonSerializerSettings);
+                    if (jsonSerializerSettings != null)
+                    {
+                        result = JsonConvert.DeserializeObject<T>(request.downloadHandler.text, jsonSerializerSettings);
+                    }
+                    else
+                    {
+                        result = JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
+                    }
                 }
                 catch (Exception e)
                 {

@@ -229,10 +229,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
 
-        internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
-
-        internal const string EnvironmentPointText = "%environment_point%";
-
         internal const int MinimumMemorySize = 2048;
 
         internal const float MinimumMemoryThresholdPercentage = 0.85f;

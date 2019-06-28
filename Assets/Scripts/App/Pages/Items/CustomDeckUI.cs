@@ -190,6 +190,11 @@ namespace Loom.ZombieBattleground
             if (_selectedDeckCard != null)
                 return;
 
+            if (_tutorialManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
+                return;
+
             if (pointerEventData.delta.normalized.y >= 0.5f || pointerEventData.delta.normalized.y <= -0.5f)
             {
                 return;
@@ -270,6 +275,11 @@ namespace Loom.ZombieBattleground
             if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;
 
+            if (_tutorialManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
+                return;
+
             List<IReadOnlyCard> cardList = _deckCards.Select(card => card.GetCardInterface()).ToList();
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
@@ -281,6 +291,11 @@ namespace Loom.ZombieBattleground
 
         private void OnMultiClickDeckCard(Card selectedCard)
         {
+            if (_tutorialManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
+                return;
+
             RemoveCardFromDeck(selectedCard);
         }
 

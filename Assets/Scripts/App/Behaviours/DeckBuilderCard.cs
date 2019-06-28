@@ -14,6 +14,7 @@ namespace Loom.ZombieBattleground
         public bool IsHordeItem;
 
         private MultiPointerClickHandler _multiPointerClickHandler;
+        private ITutorialManager _tutorialManager;
 
         public void OnScroll(PointerEventData eventData)
         {
@@ -22,6 +23,7 @@ namespace Loom.ZombieBattleground
 
         private void Awake()
         {
+            _tutorialManager = GameClient.Get<ITutorialManager>();
             _multiPointerClickHandler = gameObject.AddComponent<MultiPointerClickHandler>();
             _multiPointerClickHandler.SingleClickReceived += SingleClickAction;
             _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;
@@ -34,10 +36,10 @@ namespace Loom.ZombieBattleground
 
         private void DoubleClickAction()
         {
-            if (GameClient.Get<ITutorialManager>().IsTutorial &&
-                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
-                (GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
-                !GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
+            if (_tutorialManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                 !_tutorialManager.CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
                 return;
 
             if (!IsHordeItem)
