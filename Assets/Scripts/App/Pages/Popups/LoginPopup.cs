@@ -853,7 +853,7 @@ namespace Loom.ZombieBattleground
 #elif UNITY_STANDALONE_OSX
                     Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlMac);
 #elif UNITY_STANDALONE_WIN
-                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPC);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPc);
 #else
                     Log.Warn("Version Mismatched");
 #endif
