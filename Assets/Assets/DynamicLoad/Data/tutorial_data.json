@@ -1094,6 +1094,7 @@
             "Button_Edit",
             "Button_Delete",
             "Button_Rename",
+            "Button_ViewDeck",
             "Button_LeftArrow",
             "Button_RightArrow",
             "Image_ButtonBackTray"
@@ -1359,7 +1360,9 @@
             "Button_AutoComplete",
             "Button_Element",
             "Button_GooCost",
-            "Button_Rarity"
+            "Button_Rarity",
+            "Button_Rename",
+            "Button_ViewDeck"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -1392,6 +1395,7 @@
             "Button_Login",
             "Button_Delete",
             "Button_Rename",
+            "Button_ViewDeck",
             "Button_Edit",
             "Button_BuildNewDeck",
             "Button_Filter",
@@ -2443,10 +2447,13 @@
             "InputText_SearchDeckName",
             "Button_Delete",
             "Button_Rename",
+            "Button_ViewDeck",
             "Button_LeftArrow",
             "Button_RightArrow",
             "Image_ButtonBackTray",
-            "Button_BuildNewDeck"
+            "Button_BuildNewDeck",
+            "Button_Rename",
+            "Button_ViewDeck"
           ],
           "HandPointers": [
             {
@@ -2479,7 +2486,9 @@
             "Button_Auto",
             "Button_SaveDeck",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Rename",
+            "Button_ViewDeck"
           ],
           "ConnectedActivities": [
             1
@@ -2508,7 +2517,9 @@
             "Button_AutoComplete",
             "Button_Element",
             "Button_GooCost",
-            "Button_Rarity"
+            "Button_Rarity",
+            "Button_Rename",
+            "Button_ViewDeck"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -2542,6 +2553,7 @@
             "Button_Login",
             "Button_Delete",
             "Button_Rename",
+            "Button_ViewDeck",
             "Button_Edit",
             "Button_BuildNewDeck",
             "Button_Filter",
