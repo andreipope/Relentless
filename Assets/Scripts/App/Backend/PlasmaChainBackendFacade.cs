@@ -50,11 +50,17 @@ namespace Loom.ZombieBattleground.Iap
 
         private Address UserPlasmachainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, EndpointsConfiguration.ChainId);
 
-        public PlasmachainEndpointsConfiguration EndpointsConfiguration { get; set; }
+        public PlasmachainEndpointsConfiguration EndpointsConfiguration { get; private set; }
 
         public PlasmachainBackendFacade(PlasmachainEndpointsConfiguration endpointsConfiguration)
         {
+            SetEndpoints(endpointsConfiguration);
+        }
+
+        public void SetEndpoints(PlasmachainEndpointsConfiguration endpointsConfiguration)
+        {
             EndpointsConfiguration = endpointsConfiguration ?? throw new ArgumentNullException(nameof(endpointsConfiguration));
+            Log.Info("Endpoints: " + JsonConvert.SerializeObject(EndpointsConfiguration, Formatting.Indented));
         }
 
         public void Init()
@@ -288,7 +294,7 @@ namespace Loom.ZombieBattleground.Iap
         {
             (IapContractType contractType, string path)[] contractTypeToPath =
             {
-                (IapContractType.ZbgCard, "Data/abi/ZBGCardABI"),
+                (IapContractType.ZbgCard, "Data/abi/MigratedZBGCardABI"),
                 (IapContractType.FiatPurchase, "Data/abi/FiatPurchaseABI"),
                 (IapContractType.CardFaucet, "Data/abi/CardFaucetABI")
             };

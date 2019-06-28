@@ -471,7 +471,7 @@ namespace Loom.ZombieBattleground.Iap
 
         #region IService
 
-        async void IService.Init()
+        void IService.Init()
         {
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
@@ -485,12 +485,6 @@ namespace Loom.ZombieBattleground.Iap
             _iapPlatformStoreFacade.PurchaseFailed += IapPlatformStoreFacadeOnPurchaseFailedOrCanceled;
             _iapPlatformStoreFacade.Initialized += IapPlatformStoreFacadeOnInitialized;
             _iapPlatformStoreFacade.InitializationFailed += IapPlatformStoreFacadeOnInitializationFailed;
-
-            OneOf<Success,IapException> beginInitialization = await BeginInitialization();
-            if (!beginInitialization.IsT0)
-            {
-                Log.Warn("IAP initialization failed, it'll be retried next time. Failure: " + beginInitialization.Value);
-            }
         }
 
         void IService.Update() { }

@@ -298,6 +298,11 @@ namespace Loom.ZombieBattleground
             if (_selectedUnitCard != null)
                 return;
 
+            if (_tutorialManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
+                return;
+
             GameObject cardObj = Object.Instantiate(_cardCreaturePrefab, obj.transform, false);
             cardObj.transform.localScale = Vector3.one;
 
@@ -555,8 +560,7 @@ namespace Loom.ZombieBattleground
         {
             if (_tutorialManager.IsTutorial &&
                 !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
-                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
-                 !_tutorialManager.CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
+                (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
                 return;
 
             AddCardToDeck(selectedCard);

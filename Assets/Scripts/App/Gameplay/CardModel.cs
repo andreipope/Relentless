@@ -911,8 +911,8 @@ namespace Loom.ZombieBattleground
                                         }
                                     }
 
-                                    ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-                                    targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                                   //ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                                   //targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                                     if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
                                     {

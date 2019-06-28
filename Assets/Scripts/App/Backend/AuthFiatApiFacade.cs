@@ -21,11 +21,17 @@ namespace Loom.ZombieBattleground.Iap
         private BackendDataControlMediator _backendDataControlMediator;
         private BackendFacade _backendFacade;
         
-        public string AuthApiHost { get; set; }
+        public string AuthApiHost { get; private set; }
 
         public AuthFiatApiFacade(string authApiHost)
         {
+            SetEndpoints(authApiHost);
+        }
+
+        public void SetEndpoints(string authApiHost)
+        {
             AuthApiHost = authApiHost;
+            Log.Info("Auth Host:" + AuthApiHost);
         }
         
         #region IService

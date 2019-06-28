@@ -111,13 +111,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
                 {
+                    ZbVersion zbVersion = await _authApiFacade.GetZbVersionData(BackendPurpose.Production);
                     BackendEndpoint backendEndpoint =
-                        await _authApiFacade.GetBackendEndpointFromZbVersion(_backendFacade.BackendEndpoint.PlasmachainEndpointsConfiguration);
-                    _backendFacade.BackendEndpoint = backendEndpoint;
-                    _plasmaChainBackendFacade.EndpointsConfiguration = backendEndpoint.PlasmachainEndpointsConfiguration;
-                    _authApiFacade.AuthApiHost = backendEndpoint.AuthHost;
-                    _authApiFacade.VaultApiHost = backendEndpoint.VaultHost;
-                    _authFiatApiFacade.AuthApiHost = backendEndpoint.AuthHost;
+                        _authApiFacade.GetProductionBackendEndpointFromZbVersion(zbVersion, _backendFacade.BackendEndpoint.PlasmachainEndpointsConfiguration);
+                    _backendFacade.SetBackendEndpoint(backendEndpoint);
+                    _plasmaChainBackendFacade.SetEndpoints(backendEndpoint.PlasmachainEndpointsConfiguration);
+                    _authApiFacade.SetEndpoints(backendEndpoint.AuthHost, backendEndpoint.VaultHost);
+                    _authFiatApiFacade.SetEndpoints(backendEndpoint.AuthHost);
                 }
             }
             catch (Exception e)

@@ -16,19 +16,26 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class AuthApiFacade : IService
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(AuthFiatApiFacade));
+        private static readonly ILog Log = Logging.GetLog(nameof(AuthApiFacade));
 
         private BackendDataControlMediator _backendDataControlMediator;
         private BackendFacade _backendFacade;
         
-        public string AuthApiHost { get; set; }
+        public string AuthApiHost { get; private set; }
         
-        public string VaultApiHost { get; set; }
+        public string VaultApiHost { get; private set; }
 
         public AuthApiFacade(string authApiHost, string vaultApiHost)
         {
+            SetEndpoints(authApiHost, vaultApiHost);
+        }
+
+        public void SetEndpoints(string authApiHost, string vaultApiHost)
+        {
             AuthApiHost = authApiHost;
             VaultApiHost = vaultApiHost;
+            Log.Info("Auth Host: " + AuthApiHost);
+            Log.Info("Vault Host: " + VaultApiHost);
         }
         
         #region IService
@@ -232,12 +239,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
-        public async Task<BackendEndpoint> GetBackendEndpointFromZbVersion(PlasmachainEndpointsConfiguration fallbackPlasmachainEndpointsConfiguration)
+        public async Task<ZbVersion> GetZbVersionData(BackendPurpose backendPurpose)
         {
-            const string queryURLsEndPoint = "/zbversion";
-
+            string environmentName = backendPurpose.ToString().ToLowerInvariant();
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = "https://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
+            webrequestCreationInfo.Url =
+                $"{AuthApiHost}/zbversion?version={Constants.CurrentVersionBase}&environment={environmentName}";
 
             Log.Debug(webrequestCreationInfo.Url);
 
@@ -245,13 +252,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
 
-            ServerUrlsResponse serverInfo = JsonConvert.DeserializeObject<ServerUrlsResponse>(
-                httpResponseMessage.ReadToEnd()
-            );
+            ZbVersion version = JsonConvert.DeserializeObject<ZbVersion>(httpResponseMessage.ReadToEnd());
+            return version;
+        }
+
+        public BackendEndpoint GetProductionBackendEndpointFromZbVersion(ZbVersion zbVersion, PlasmachainEndpointsConfiguration fallbackPlasmachainEndpointsConfiguration)
+        {
+            ZbVersion.ZbVersionData versionData = zbVersion.Version;
 
             PlasmachainEndpointsConfiguration plasmaChainEndpointsConfiguration;
-            if (String.IsNullOrEmpty(serverInfo.version.plasmachain_chain_id) ||
-                String.IsNullOrEmpty(serverInfo.version.plasmachain_reader_host))
+            if (String.IsNullOrEmpty(versionData.PlasmachainChainId) ||
+                String.IsNullOrEmpty(versionData.PlasmachainReaderHost))
             {
                 // Until prod auth is updated
                 plasmaChainEndpointsConfiguration = fallbackPlasmachainEndpointsConfiguration;
@@ -259,80 +270,39 @@ namespace Loom.ZombieBattleground.BackendCommunication
             else
             {
                 plasmaChainEndpointsConfiguration = new PlasmachainEndpointsConfiguration(
-                    serverInfo.version.plasmachain_chain_id,
-                    serverInfo.version.plasmachain_reader_host,
-                    serverInfo.version.plasmachain_writer_host,
-                    serverInfo.version.plasmachain_zbgcard_contract_address,
-                    serverInfo.version.plasmachain_cardfaucet_contract_address,
-                    serverInfo.version.plasmachain_boosterpack_contract_address,
-                    serverInfo.version.plasmachain_superpack_contract_address,
-                    serverInfo.version.plasmachain_airpack_contract_address,
-                    serverInfo.version.plasmachain_earthpack_contract_address,
-                    serverInfo.version.plasmachain_firepack_contract_address,
-                    serverInfo.version.plasmachain_lifepack_contract_address,
-                    serverInfo.version.plasmachain_toxicpack_contract_address,
-                    serverInfo.version.plasmachain_waterpack_contract_address,
-                    serverInfo.version.plasmachain_smallpack_contract_address,
-                    serverInfo.version.plasmachain_minionpack_contract_address,
-                    serverInfo.version.plasmachain_binancepack_contract_address,
-                    serverInfo.version.plasmachain_fiatpurchase_contract_address,
-                    serverInfo.version.plasmachain_openlottery_contract_address,
-                    serverInfo.version.plasmachain_tronlottery_contract_address
+                    versionData.PlasmachainChainId,
+                    versionData.PlasmachainReaderHost,
+                    versionData.PlasmachainWriterHost,
+                    versionData.PlasmachainZbgCardContractAddress,
+                    versionData.PlasmachainCardFaucetContractAddress,
+                    versionData.PlasmachainBoosterPackContractAddress,
+                    versionData.PlasmachainSuperPackContractAddress,
+                    versionData.PlasmachainAirPackContractAddress,
+                    versionData.PlasmachainEarthPackContractAddress,
+                    versionData.PlasmachainFirePackContractAddress,
+                    versionData.PlasmachainLifePackContractAddress,
+                    versionData.PlasmachainToxicPackContractAddress,
+                    versionData.PlasmachainWaterPackContractAddress,
+                    versionData.PlasmachainSmallPackContractAddress,
+                    versionData.PlasmachainMinionPackContractAddress,
+                    versionData.PlasmachainBinancePackContractAddress,
+                    versionData.PlasmachainFiatPurchaseContractAddress,
+                    versionData.PlasmachainOpenLotteryContractAddress,
+                    versionData.PlasmachainTronLotteryContractAddress
                 );
             }
 
             return new BackendEndpoint(
-                serverInfo.version.auth_url,
-                serverInfo.version.read_url,
-                serverInfo.version.write_url,
-                serverInfo.version.vault_url,
-                serverInfo.version.data_version,
-                serverInfo.version.is_maintenace_mode,
-                serverInfo.version.is_force_update,
+                versionData.AuthUrl,
+                versionData.ReadUrl,
+                versionData.WriteUrl,
+                versionData.VaultUrl,
+                versionData.DataVersion,
+                versionData.IsMaintenanceMode,
+                versionData.IsForceUpdate,
                 false,
                 plasmaChainEndpointsConfiguration
             );
-        }
-
-        private struct ServerUrlsResponse
-        {
-            public ServerUrlsData version;
-        }
-
-        private struct ServerUrlsData
-        {
-            public int id;
-            public int major;
-            public int minor;
-            public int patch;
-            public string environment;
-            public string auth_url;
-            public string read_url;
-            public string write_url;
-            public string vault_url;
-            public string data_version;
-            public bool is_maintenace_mode;
-            public bool is_force_update;
-
-            public string plasmachain_chain_id;
-            public string plasmachain_reader_host;
-            public string plasmachain_writer_host;
-            public string plasmachain_zbgcard_contract_address;
-            public string plasmachain_cardfaucet_contract_address;
-            public string plasmachain_boosterpack_contract_address;
-            public string plasmachain_superpack_contract_address;
-            public string plasmachain_airpack_contract_address;
-            public string plasmachain_earthpack_contract_address;
-            public string plasmachain_firepack_contract_address;
-            public string plasmachain_lifepack_contract_address;
-            public string plasmachain_toxicpack_contract_address;
-            public string plasmachain_waterpack_contract_address;
-            public string plasmachain_smallpack_contract_address;
-            public string plasmachain_minionpack_contract_address;
-            public string plasmachain_binancepack_contract_address;
-            public string plasmachain_fiatpurchase_contract_address;
-            public string plasmachain_openlottery_contract_address;
-            public string plasmachain_tronlottery_contract_address;
         }
 
         private struct LoginRequest
