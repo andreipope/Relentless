@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
             }
 
             AbilityProcessingAction?.TriggerActionExternally();
-            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
 
             InvokeActionTriggered(_targets);
         }

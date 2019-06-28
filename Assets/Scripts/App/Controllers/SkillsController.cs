@@ -1224,16 +1224,17 @@ namespace Loom.ZombieBattleground
                             unitAttacks.Remove(unit);
                         }
                     };
-
-                    if (boardSkill.IsLocal)
-                    {
-                        _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
-                            new ParametrizedAbilityParameters()
-                            {
-                                CardName = opponentUnitModel.InstanceId.Id.ToString()
-                            }));
-                    }
                 }
+
+                if (boardSkill.IsLocal)
+                {
+                    _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = unitModel.InstanceId.Id.ToString()
+                        }));
+                }
+
                 EpidemicUnit(owner, boardSkill, skill, unitModel, opponentUnitModel, callback);
             }
 
