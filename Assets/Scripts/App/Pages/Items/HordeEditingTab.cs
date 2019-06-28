@@ -32,8 +32,6 @@ namespace Loom.ZombieBattleground
 
         private CollectionData _collectionData;
 
-        private GameObject _draggingObject;
-
         private Button _buttonAutoComplete;
         private Button _buttonBack;
 
@@ -44,8 +42,6 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
-
-        private bool _isDragging;
 
         private List<Enumerators.Faction> _availableFaction;
 
@@ -145,12 +141,6 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
             _uiCardCollections.Hide();
-
-            if (_draggingObject != null)
-            {
-                Object.Destroy(_draggingObject);
-                _draggingObject = null;
-            }
         }
 
         #region Button Handlers

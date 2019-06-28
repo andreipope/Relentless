@@ -87,34 +87,27 @@ namespace Loom.ZombieBattleground
                     _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                     break;
                 case Enumerators.AppState.SHOP:
-                    if (Constants.EnableShopPage)
+                    if (String.IsNullOrEmpty(_backendDataControlMediator.UserDataModel.AccessToken))
                     {
-                        if (string.IsNullOrEmpty(
-                            _backendDataControlMediator.UserDataModel.AccessToken
-                        ))
-                        {
-                            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
-                            loginPopup.Show();
-                            return;
-                        }
+                        LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                        loginPopup.Show();
+                        return;
+                    }
 
-                        _uiManager.SetPage<ShopWithNavigationPage>();
-                    }
-                    else
-                    {
-                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    }
+                    _uiManager.SetPage<ShopWithNavigationPage>();
                     break;
                 case Enumerators.AppState.PACK_OPENER:
-                    if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
+                    if (GameClient.Get<ITutorialManager>().IsTutorial || !String.IsNullOrEmpty(_backendDataControlMediator.UserDataModel.AccessToken))
                     {
                         _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
                     }
                     else
                     {
-                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                        loginPopup.Show();
                         return;
                     }
+
                     break;
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();

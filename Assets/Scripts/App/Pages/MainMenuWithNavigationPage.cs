@@ -141,7 +141,12 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            StartMatch();        
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                SetGameMode(GameMode.SOLO);
+            }
+
+            StartMatch();
         }
 
         private void ButtonChangeModeHandler()
