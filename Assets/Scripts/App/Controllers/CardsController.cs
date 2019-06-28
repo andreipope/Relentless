@@ -408,7 +408,6 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel, true);
 
-            cardModel.InvokeUnitPrepairingToDie();
             cardModel.SetUnitActiveStatus(false);
 
             GameplayActionQueueAction AbilityProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);

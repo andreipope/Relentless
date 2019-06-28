@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
+            Transform boardParent = unitView.GameObject.transform.parent;
+
             unitView.GameObject.SetActive(false);
 
             unitView.GameObject.transform.Find("Other").gameObject?.SetActive(true);
@@ -55,8 +57,8 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    
-                    unitView.Transform.SetParent(null, true);
+
+                    unitView.Transform.SetParent(boardParent, true);
                     Object.Destroy(animationVFX);
 
                     foreach (GameObject child in allUnitObj)

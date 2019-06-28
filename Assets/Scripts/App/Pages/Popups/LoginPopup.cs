@@ -46,6 +46,8 @@ namespace Loom.ZombieBattleground
 
         private BackendFacade _backendFacade;
 
+        private AuthApiFacade _authApiFacade;
+
         private BackendDataControlMediator _backendDataControlMediator;
 
         private Transform _backgroundGroup;
@@ -125,6 +127,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _authApiFacade = GameClient.Get<AuthApiFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
@@ -409,14 +412,14 @@ namespace Loom.ZombieBattleground
                 UserDataModel userDataModel = _backendDataControlMediator.UserDataModel;
                 if (noOTP)
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(userDataModel.AccessToken);
+                    vaultTokenData = await _authApiFacade.CreateVaultTokenForNon2FAUsers(userDataModel.AccessToken);
                 }
                 else
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, userDataModel.AccessToken);
+                    vaultTokenData = await _authApiFacade.CreateVaultToken(_OTPFieldOTP.text, userDataModel.AccessToken);
                 }
 
-                GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
+                GetVaultDataResponse vaultDataData = await _authApiFacade.GetVaultData(vaultTokenData.auth.client_token);
                 _backendDataControlMediator.UserDataModel =
                     new UserDataModel(
                         userDataModel.UserId,
@@ -463,13 +466,13 @@ namespace Loom.ZombieBattleground
                 CreateVaultTokenData vaultTokenData;
                 if (noOTP)
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _authApiFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
                 }
                 else
                 {
                     vaultTokenData = vaultPreviousData;
                 }
-                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
+                bool setVaultTokenResponse = await _authApiFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
@@ -486,7 +489,7 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                await _backendFacade.InitiateForgottenPassword(_emailFieldForgot.text);
+                await _authApiFacade.InitiateForgottenPassword(_emailFieldForgot.text);
 
                 SetUIState(LoginState.SuccessForgotPassword);
             }
@@ -503,7 +506,7 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                RegisterData registerData = await _backendFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
+                RegisterData registerData = await _authApiFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
 
                 SetLoginFieldsData(_emailFieldRegister.text, _passwordFieldRegister.text);
 
@@ -566,7 +569,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
+                            loginData = await _authApiFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
 
                             string payload = loginData.accessToken.Split('.')[1];
 
@@ -942,22 +945,9 @@ namespace Loom.ZombieBattleground
         private async void WarningPopupClosedOnAutomatedLogin()
         {
             _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupClosedOnAutomatedLogin;
-            try
-            {
-                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
-                {
-                    _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Info(e.Message);
-                _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
-            }
-            finally
-            {
-                SetUIState(_lastPopupState);
-            }
+
+            await _backendDataControlMediator.UpdateEndpointsFromZbVersion();
+            SetUIState(_lastPopupState);
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)

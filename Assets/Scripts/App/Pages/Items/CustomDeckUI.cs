@@ -9,7 +9,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {

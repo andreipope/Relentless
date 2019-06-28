@@ -530,6 +530,10 @@ namespace Loom.ZombieBattleground
                 {
                     InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, delay);
                 }
+                else
+                {
+                    ArrivalAnimationProcessingAction?.TriggerActionExternally();
+                }
             };
 
             ArrivalAnimationProcessingAction?.TriggerActionExternally();

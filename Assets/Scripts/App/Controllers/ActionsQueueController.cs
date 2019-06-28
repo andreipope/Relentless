@@ -80,6 +80,7 @@ namespace Loom.ZombieBattleground
         {
             // FIXME: Does nothing now?
             Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction action = {action})");
+            action?.TriggerActionExternally();
         }
 
         private GameplayActionQueueAction CreateAction(GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete, float startupTime)
@@ -123,6 +124,8 @@ namespace Loom.ZombieBattleground
         {
             return
                 actionType == Enumerators.QueueActionType.AbilityUsageBlocker ||
+                actionType == Enumerators.QueueActionType.CardPlayBlocker ||
+                actionType == Enumerators.QueueActionType.UnitDeath ||
                 actionType == Enumerators.QueueActionType.AbilityTargetingBlocker;
         }
 

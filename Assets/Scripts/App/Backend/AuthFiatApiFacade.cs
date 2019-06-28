@@ -7,6 +7,8 @@ using System.Numerics;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 
@@ -17,6 +19,16 @@ namespace Loom.ZombieBattleground.Iap
         private static readonly ILog Log = Logging.GetLog(nameof(AuthFiatApiFacade));
 
         private BackendDataControlMediator _backendDataControlMediator;
+        private BackendFacade _backendFacade;
+        
+        public string AuthApiHost { get; set; }
+
+        public AuthFiatApiFacade(string authApiHost)
+        {
+            AuthApiHost = authApiHost;
+        }
+        
+        #region IService
 
         public void Init()
         {
@@ -27,13 +39,15 @@ namespace Loom.ZombieBattleground.Iap
 
         public void Dispose() { }
 
+        #endregion
+
         public async Task<ValidationResponse> RegisterTransactionAndValidate(FiatValidationData fiatValidationData)
         {
             Log.Info($"{nameof(RegisterTransactionAndValidate)}");
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
+            webrequestCreationInfo.Url = AuthApiHost + "/fiat/validate";
             webrequestCreationInfo.ContentType = "application/json";
 
             string fiatValidationDataJson = JsonConvert.SerializeObject(fiatValidationData);
@@ -55,7 +69,7 @@ namespace Loom.ZombieBattleground.Iap
             Log.Info($"{nameof(ListPendingTransactions)}");
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatTransactionURL;
+            webrequestCreationInfo.Url = AuthApiHost + "/fiat/transaction";
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
 
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
@@ -76,7 +90,7 @@ namespace Loom.ZombieBattleground.Iap
         {
             Log.Info($"{nameof(GetProducts)}");
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatProductsURL;
+            webrequestCreationInfo.Url = AuthApiHost + "/fiat/products";
 
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
@@ -86,19 +100,19 @@ namespace Loom.ZombieBattleground.Iap
         }
 
         /// <summary>
-        /// Removes the transactions from the database.
+        /// Removes purchase transactions from the database.
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="transactionIds"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<bool> Claim(BigInteger userId, BigInteger[] transactionIds)
+        public async Task<bool> ClaimTransaction(BigInteger userId, BigInteger[] transactionIds)
         {
-            Log.Info($"{nameof(Claim)}(userId = {userId}, transactionIds = {Utilites.FormatCallLogList(transactionIds)})");
+            Log.Info($"{nameof(ClaimTransaction)}(userId = {userId}, transactionIds = {Utilites.FormatCallLogList(transactionIds)})");
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatClaimURL;
+            webrequestCreationInfo.Url = AuthApiHost + "/fiat/claim-orders";
             webrequestCreationInfo.ContentType = "application/json";
 
             FiatClaimRequestBody body = new FiatClaimRequestBody();
@@ -254,6 +268,29 @@ namespace Loom.ZombieBattleground.Iap
             }
         }
 
+        public class ValidationResponse
+        {
+            [JsonProperty("msg")]
+            public string Message { get; }
+
+            [JsonProperty("transactionId")]
+            public string TransactionId { get; }
+
+            [JsonProperty("success")]
+            public bool Success { get; }
+
+            [JsonProperty("txId")]
+            public uint TxId { get; }
+
+            public ValidationResponse(string message, string transactionId, bool success, uint txId)
+            {
+                Message = message;
+                TransactionId = transactionId;
+                Success = success;
+                TxId = txId;
+            }
+        }
+
         private class FiatClaimRequestBody
         {
             public BigInteger user_id;
@@ -269,29 +306,6 @@ namespace Loom.ZombieBattleground.Iap
             {
                 Products = products;
             }
-        }
-    }
-
-    public class ValidationResponse
-    {
-        [JsonProperty("msg")]
-        public string Message { get; }
-
-        [JsonProperty("transactionId")]
-        public string TransactionId { get; }
-
-        [JsonProperty("success")]
-        public bool Success { get; }
-
-        [JsonProperty("txId")]
-        public uint TxId { get; }
-
-        public ValidationResponse(string message, string transactionId, bool success, uint txId)
-        {
-            Message = message;
-            TransactionId = transactionId;
-            Success = success;
-            TxId = txId;
         }
     }
 }

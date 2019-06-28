@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.BackendCommunication
@@ -5,7 +6,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
     public class BackendEndpoint
     {
         [JsonConstructor]
-        public BackendEndpoint(string authHost, string readerHost, string writerHost, string vaultHost, string dataVersion, bool isMaintenanceMode, bool isForceUpdate, bool isConnectionImpossible)
+        public BackendEndpoint(
+            string authHost,
+            string readerHost,
+            string writerHost,
+            string vaultHost,
+            string dataVersion,
+            bool isMaintenanceMode,
+            bool isForceUpdate,
+            bool isConnectionImpossible,
+            PlasmachainEndpointsConfiguration plasmaChainEndpointsConfiguration)
         {
             AuthHost = authHost;
             ReaderHost = readerHost;
@@ -15,34 +25,26 @@ namespace Loom.ZombieBattleground.BackendCommunication
             IsMaintenanceMode = isMaintenanceMode;
             IsForceUpdate = isForceUpdate;
             IsConnectionImpossible = isConnectionImpossible;
+            PlasmachainEndpointsConfiguration =
+                plasmaChainEndpointsConfiguration ?? throw new ArgumentNullException(nameof(plasmaChainEndpointsConfiguration));
         }
 
-        public string AuthHost { get; set; }
+        public string AuthHost { get; }
 
-        public string ReaderHost { get; set; }
+        public string ReaderHost { get; }
 
-        public string WriterHost { get; set; }
+        public string WriterHost { get; }
 
-        public string VaultHost { get; set; }
+        public string VaultHost { get; }
 
-        public string DataVersion { get; set; }
+        public string DataVersion { get; }
 
-        public bool IsMaintenanceMode { get; set; }
+        public bool IsMaintenanceMode { get; }
 
-        public bool IsForceUpdate { get; set; }
+        public bool IsForceUpdate { get; }
 
-        public bool IsConnectionImpossible { get; set; }
+        public bool IsConnectionImpossible { get; }
 
-        public BackendEndpoint(BackendEndpoint source)
-        {
-            AuthHost = source.AuthHost;
-            ReaderHost = source.ReaderHost;
-            WriterHost = source.WriterHost;
-            VaultHost = source.VaultHost;
-            DataVersion = source.DataVersion;
-            IsMaintenanceMode = source.IsMaintenanceMode;
-            IsForceUpdate = source.IsForceUpdate;
-            IsConnectionImpossible = source.IsConnectionImpossible;
-        }
+        public PlasmachainEndpointsConfiguration PlasmachainEndpointsConfiguration { get; }
     }
 }

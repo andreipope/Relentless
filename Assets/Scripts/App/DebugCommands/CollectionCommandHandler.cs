@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Iap;
 using Opencoding.CommandHandlerSystem;
@@ -11,17 +12,28 @@ namespace Loom.ZombieBattleground
 {
     public static class CollectionCommandHandler
     {
-        private static PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private static BackendDataControlMediator _backendDataControlMediator;
+        private static PlasmachainBackendFacade _plasmaChainBackendFacade;
+        private static BackendFacade _backendFacade;
 
         public static void Initialize()
         {
             CommandHandlers.RegisterCommandHandlers(typeof(CollectionCommandHandler));
 
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         [CommandHandler]
-        public static async void PlasmaChainGetOwnerCards()
+        public static async void RequestUserFullCardCollectionSync()
+        {
+            await _backendFacade.RequestUserFullCardCollectionSync(_backendDataControlMediator.UserDataModel.UserId);
+            Debug.Log("Added request for full card sync");
+        }
+
+        [CommandHandler]
+        public static async void PlasmachainGetOwnerCards()
         {
             using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
             {

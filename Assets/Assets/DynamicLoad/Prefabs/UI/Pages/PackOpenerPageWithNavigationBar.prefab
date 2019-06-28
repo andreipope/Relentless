@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8430683011783250213}
   - component: {fileID: 7068653608152535367}
   m_Layer: 0
-  m_Name: CloseButton
+  m_Name: Button_ClosePackOpener
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93483,7 +93483,7 @@ GameObject:
   - component: {fileID: 7357114470605880992}
   - component: {fileID: 7357114470605880993}
   m_Layer: 9
-  m_Name: OpenButton
+  m_Name: Button_OpenPacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133034,7 +133034,7 @@ GameObject:
   - component: {fileID: 5761713740804474420}
   - component: {fileID: 7193604735041909302}
   m_Layer: 0
-  m_Name: OpenNextPackButton
+  m_Name: Button_OpenNextPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
