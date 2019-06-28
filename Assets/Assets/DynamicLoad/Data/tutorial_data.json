@@ -1094,6 +1094,8 @@
             "Button_Edit",
             "Button_Delete",
             "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck",
             "Button_LeftArrow",
             "Button_RightArrow",
             "Image_ButtonBackTray"
@@ -1197,6 +1199,7 @@
             "Image_ButtonBackTray",
             "Button_Rename",
             "Button_ViewDeck",
+            "Button_AutoComplete",
             "Button_SaveDeck",
             "InputText_Search"
           ],
@@ -1245,6 +1248,7 @@
             "Image_ButtonBackTray",
             "Button_Rename",
             "Button_ViewDeck",
+            "Button_AutoComplete",
             "Button_SaveDeck",
             "InputText_Search"
           ],
@@ -1288,6 +1292,7 @@
             "Image_ButtonBackTray",
             "Button_Rename",
             "Button_ViewDeck",
+            "Button_AutoComplete",
             "Button_SaveDeck",
             "InputText_Search"
           ],
@@ -1356,10 +1361,12 @@
             "Text_DeckName",
             "Button_OverlordAbilities",
             "Button_Filter",
-            "Button_AutoComplete",
             "Button_Element",
             "Button_GooCost",
-            "Button_Rarity"
+            "Button_Rarity",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -1392,6 +1399,8 @@
             "Button_Login",
             "Button_Delete",
             "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck",
             "Button_Edit",
             "Button_BuildNewDeck",
             "Button_Filter",
@@ -2442,11 +2451,13 @@
             "Button_Filter",
             "InputText_SearchDeckName",
             "Button_Delete",
-            "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
             "Image_ButtonBackTray",
-            "Button_BuildNewDeck"
+            "Button_BuildNewDeck",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "HandPointers": [
             {
@@ -2479,7 +2490,10 @@
             "Button_Auto",
             "Button_SaveDeck",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "ConnectedActivities": [
             1
@@ -2505,10 +2519,12 @@
             "Text_DeckName",
             "Button_OverlordAbilities",
             "Button_Filter",
-            "Button_AutoComplete",
             "Button_Element",
             "Button_GooCost",
-            "Button_Rarity"
+            "Button_Rarity",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -2542,6 +2558,8 @@
             "Button_Login",
             "Button_Delete",
             "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck",
             "Button_Edit",
             "Button_BuildNewDeck",
             "Button_Filter",

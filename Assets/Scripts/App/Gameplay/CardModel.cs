@@ -367,6 +367,9 @@ namespace Loom.ZombieBattleground
 
         public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true, bool isDead = true)
         {
+            if (IsDead)
+                return;
+
             UnitDying?.Invoke();
 
             IsDead = isDead;
@@ -911,8 +914,8 @@ namespace Loom.ZombieBattleground
                                         }
                                     }
 
-                                   //ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-                                   //targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                                   ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                                   targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                                     if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
                                     {
