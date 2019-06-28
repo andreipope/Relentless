@@ -110,6 +110,7 @@ namespace Loom.ZombieBattleground
                 if (finalDamageAttacked > 0 && attackingUnitModel.HasBuffShield)
                 {
                     damageAttacked = 0;
+                    finalDamageAttacked = 0;
                     attackingUnitModel.HasUsedBuffShield = true;
                 }
 
@@ -120,6 +121,7 @@ namespace Loom.ZombieBattleground
                 if (finalDamageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damageAttacking = 0;
+                    finalDamageAttacking = 0;
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 

@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int BackendCallTimeout = 10000;
 
-        internal const int PlasmaChainCallTimeout = 20000;
+        internal const int PlasmachainCallTimeout = 20000;
 
         internal const float QueueActionTimeout = 60f;
 

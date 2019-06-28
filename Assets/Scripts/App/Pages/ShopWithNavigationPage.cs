@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private FiatValidationData _fiatValidationData;
 
-        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private PlasmachainBackendFacade _plasmaChainBackendFacade;
 
         private IapMediator _iapMediator;
 
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
 
             _iapMediator = GameClient.Get<IapMediator>();
         }
@@ -110,7 +110,9 @@ namespace Loom.ZombieBattleground
 
         #region UI Handler
 
+#pragma warning disable 1998
         private async void BuyButtonHandler(Product product)
+#pragma warning restore 1998
         {
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if UNITY_IOS || UNITY_ANDROID

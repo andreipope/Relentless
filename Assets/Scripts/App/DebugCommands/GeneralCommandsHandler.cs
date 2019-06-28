@@ -133,7 +133,8 @@ namespace Loom.ZombieBattleground
         public static async void DebugGetUserIdByAddress()
         {
             string userId = await _backendFacade.DebugGetUserIdByAddress(_backendDataControlMediator.UserDataModel.Address);
-            Debug.Log("User Id: " + userId);
+            Debug.Log("Address: " + _backendDataControlMediator.UserDataModel.Address);
+            Debug.Log("Mapped User Id: " + userId);
         }
 
         [CommandHandler]

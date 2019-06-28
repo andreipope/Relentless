@@ -19,10 +19,10 @@ using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground.Iap
 {
-    public class PlasmaChainBackendFacade : IService
+    public class PlasmachainBackendFacade : IService
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(PlasmaChainBackendFacade));
-        private static readonly ILog RpcLog = Logging.GetLog(nameof(PlasmaChainBackendFacade) + "Rpc");
+        private static readonly ILog Log = Logging.GetLog(nameof(PlasmachainBackendFacade));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(PlasmachainBackendFacade) + "Rpc");
 
         private const int CardsPerPack = 5;
 
@@ -46,9 +46,16 @@ namespace Loom.ZombieBattleground.Iap
 
         private byte[] UserPrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
 
-        public byte[] UserPublicKey => _backendDataControlMediator.UserDataModel.PublicKey;
+        private byte[] UserPublicKey => _backendDataControlMediator.UserDataModel.PublicKey;
 
-        public Address UserPlasmaChainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, PlasmaChainEndpointsContainer.Chainid);
+        private Address UserPlasmachainAddress => new Address(_backendDataControlMediator.UserDataModel.Address.LocalAddress, EndpointsConfiguration.ChainId);
+
+        public PlasmachainEndpointsConfiguration EndpointsConfiguration { get; set; }
+
+        public PlasmachainBackendFacade(PlasmachainEndpointsConfiguration endpointsConfiguration)
+        {
+            EndpointsConfiguration = endpointsConfiguration ?? throw new ArgumentNullException(nameof(endpointsConfiguration));
+        }
 
         public void Init()
         {
@@ -98,7 +105,7 @@ namespace Loom.ZombieBattleground.Iap
             EvmContract packTypeContract = GetContract(client, GetPackContractTypeFromId(packType));
             uint amount = await packTypeContract.StaticCallSimpleTypeOutputAsync<uint>(
                 BalanceOfMethod,
-                UserPlasmaChainAddress.LocalAddress
+                UserPlasmachainAddress.LocalAddress
             );
 
             Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType}) returned {amount}");
@@ -113,7 +120,7 @@ namespace Loom.ZombieBattleground.Iap
             TokensOwnedFunctionResult result =
                 await packTypeContract.StaticCallDtoTypeOutputAsync<TokensOwnedFunctionResult>(
                     TokensOwnedMethod,
-                    UserPlasmaChainAddress.LocalAddress
+                    UserPlasmachainAddress.LocalAddress
                 );
 
             CollectionCardData[] cards = new CollectionCardData[result.Indexes.Count];
@@ -134,7 +141,7 @@ namespace Loom.ZombieBattleground.Iap
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
 
             const int amountToApprove = 1;
-            await packContract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet, amountToApprove);
+            await packContract.CallAsync(ApproveMethod, EndpointsConfiguration.CardFaucetContractAddress.LocalAddress, amountToApprove);
             BroadcastTxResult openPackTxResult = await cardFaucetContract.CallAsync(OpenPackMethod, packType);
             byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
             Log.Debug($"{nameof(CallOpenPack)}: openPackTxHash = {CryptoUtils.BytesToHexString(openPackTxHash)}");
@@ -216,11 +223,10 @@ namespace Loom.ZombieBattleground.Iap
                 throw new ArgumentNullException(nameof(client));
 
             Log.Debug($"Using {contractType} contract at {GetContractAddress(contractType)}");
-            Address contractAddress = Address.FromString(GetContractAddress(contractType), PlasmaChainEndpointsContainer.Chainid);
             return new EvmContract(
                 client,
-                contractAddress,
-                UserPlasmaChainAddress,
+                GetContractAddress(contractType),
+                UserPlasmachainAddress,
                 _abiDictionary[contractType].text);
         }
 
@@ -233,22 +239,22 @@ namespace Loom.ZombieBattleground.Iap
             IRpcClient writer = RpcClientFactory
                 .Configure()
                 .WithLogger(logger)
-                .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
-                //.WithHttp(PlasmaChainEndpointsContainer.HttpRpc)
+                .WithWebSocket(EndpointsConfiguration.WriterHost)
+                //.WithHttp(PlasmachainEndpointsContainer.HttpRpc)
                 .Create();
 
             IRpcClient reader = RpcClientFactory
                 .Configure()
                 .WithLogger(logger)
-                .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
-                //.WithHttp(PlasmaChainEndpointsContainer.HttpQuery)
+                .WithWebSocket(EndpointsConfiguration.ReaderHost)
+                //.WithHttp(PlasmachainEndpointsContainer.HttpQuery)
                 .Create();
 
             DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
             {
                 AutoReconnect = false,
-                CallTimeout = Constants.PlasmaChainCallTimeout,
-                StaticCallTimeout = Constants.PlasmaChainCallTimeout
+                CallTimeout = Constants.PlasmachainCallTimeout,
+                StaticCallTimeout = Constants.PlasmachainCallTimeout
             };
 
             return new LoggingDAppChainClient(
@@ -322,36 +328,36 @@ namespace Loom.ZombieBattleground.Iap
             }
         }
 
-        private static string GetContractAddress(IapContractType contractType)
+        private Address GetContractAddress(IapContractType contractType)
         {
             switch (contractType)
             {
                 case IapContractType.ZbgCard:
-                    return PlasmaChainEndpointsContainer.ContractAddressZbgCard;
+                    return EndpointsConfiguration.ZbgCardContractAddress;
                 case IapContractType.FiatPurchase:
-                    return PlasmaChainEndpointsContainer.ContractAddressFiatPurchase;
+                    return EndpointsConfiguration.FiatPurchaseContractAddress;
                 case IapContractType.CardFaucet:
-                    return PlasmaChainEndpointsContainer.ContractAddressCardFaucet;
+                    return EndpointsConfiguration.CardFaucetContractAddress;
                 case IapContractType.BoosterPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressBoosterPack;
+                    return EndpointsConfiguration.BoosterPackContractAddress;
                 case IapContractType.SuperPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressSuperPack;
+                    return EndpointsConfiguration.SuperPackContractAddress;
                 case IapContractType.AirPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressAirPack;
+                    return EndpointsConfiguration.AirPackContractAddress;
                 case IapContractType.EarthPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressEarthPack;
+                    return EndpointsConfiguration.EarthPackContractAddress;
                 case IapContractType.FirePack:
-                    return PlasmaChainEndpointsContainer.ContractAddressFirePack;
+                    return EndpointsConfiguration.FirePackContractAddress;
                 case IapContractType.LifePack:
-                    return PlasmaChainEndpointsContainer.ContractAddressLifePack;
+                    return EndpointsConfiguration.LifePackContractAddress;
                 case IapContractType.ToxicPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressToxicPack;
+                    return EndpointsConfiguration.ToxicPackContractAddress;
                 case IapContractType.WaterPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressWaterPack;
+                    return EndpointsConfiguration.WaterPackContractAddress;
                 case IapContractType.SmallPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressSmallPack;
+                    return EndpointsConfiguration.SmallPackContractAddress;
                 case IapContractType.MinionPack:
-                    return PlasmaChainEndpointsContainer.ContractAddressMinionPack;
+                    return EndpointsConfiguration.MinionPackContractAddress;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(contractType), contractType, null);
             }

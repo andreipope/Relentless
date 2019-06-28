@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                throw new Exception("Attack overlord should apply only on Player Overlord");
+                throw new Exception("Attack champion should apply only on Player Champion");
             }
         }
     }
