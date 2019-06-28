@@ -609,7 +609,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: USE_DEVELOPMENT_BACKEND
+    1: 
     7: 
   platformArchitecture: {}
   scriptingBackend: {}
