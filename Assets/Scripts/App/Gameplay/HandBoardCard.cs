@@ -93,12 +93,6 @@ namespace Loom.ZombieBattleground
                 newPos.z = 0;
                 Transform.position = newPos;
 
-                if (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape))
-                {
-                    _canceledPlay = true;
-                    MouseUp(null);
-                }
-
                 if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
                 {
                     _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, BoardCardView);
@@ -106,6 +100,11 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     _cardsController.ResetPlayerCardsOnBattlegroundPosition();
+                }
+
+                if (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape))
+                {
+                    MouseUp(null);
                 }
             }
         }
