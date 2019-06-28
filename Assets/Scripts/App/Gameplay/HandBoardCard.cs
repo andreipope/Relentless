@@ -93,7 +93,8 @@ namespace Loom.ZombieBattleground
                 newPos.z = 0;
                 Transform.position = newPos;
 
-                if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+                Debug.LogWarning(Input.GetMouseButton(0));
+                if (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape))
                 {
                     _canceledPlay = true;
                     MouseUp(null);
