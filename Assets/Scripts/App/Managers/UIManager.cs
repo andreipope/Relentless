@@ -32,7 +32,6 @@ namespace Loom.ZombieBattleground
             CanvasScaler = Canvas.GetComponent<CanvasScaler>();
 
             Pages = new List<IUIElement>();
-            Pages.Add(new LoadingPage());          
             Pages.Add(new GameplayPage());
             Pages.Add(new PvPSelectionPage());
             Pages.Add(new CustomGameModeListPage());

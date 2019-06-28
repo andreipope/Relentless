@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public event ContractCreatedEventHandler ContractCreated;
 
-        public BackendEndpoint BackendEndpoint { get; set; }
+        public BackendEndpoint BackendEndpoint { get; private set; }
 
         public RawChainEventContract Contract { get; private set; }
 
@@ -43,19 +43,24 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public BackendFacade(BackendEndpoint backendEndpoint, Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
         {
-            BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
-            _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
             Log = log ?? throw new ArgumentNullException(nameof(log));
             RpcLog = rpcLog ?? throw new ArgumentNullException(nameof(rpcLog));
+            SetBackendEndpoint(backendEndpoint);
+            _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
+        }
+
+        public void SetBackendEndpoint(BackendEndpoint backendEndpoint)
+        {
+            BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
+            Log.Info("Reader Host: " + BackendEndpoint.ReaderHost);
+            Log.Info("Writer Host: " + BackendEndpoint.WriterHost);
+            Log.Info("Auth Host: " + BackendEndpoint.AuthHost);
+            Log.Info("Vault Host: " + BackendEndpoint.VaultHost);
+            Log.Info("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Init()
         {
-            Log.Info("Auth Host: " + BackendEndpoint.AuthHost);
-            Log.Info("Reader Host: " + BackendEndpoint.ReaderHost);
-            Log.Info("Writer Host: " + BackendEndpoint.WriterHost);
-            Log.Info("Vault Host: " + BackendEndpoint.VaultHost);
-            Log.Info("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()

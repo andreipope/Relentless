@@ -101,16 +101,6 @@ namespace Loom.ZombieBattleground
             }
 
             BackendPurpose backend = GetDefaultBackendPurpose();
-
-#if UNITY_EDITOR
-            const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
-            string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpointName);
-            if (!String.IsNullOrEmpty(backendString))
-            {
-                backend = (BackendPurpose) Enum.Parse(typeof(BackendPurpose), backendString);
-            }
-#endif
-
             BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
             return backendEndpoint;
         }
@@ -127,6 +117,16 @@ namespace Loom.ZombieBattleground
             const BackendPurpose defaultBackend = BackendPurpose.Staging;
 #endif
             BackendPurpose backend = defaultBackend;
+
+#if UNITY_EDITOR
+            const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
+            string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpointName);
+            if (!String.IsNullOrEmpty(backendString))
+            {
+                backend = (BackendPurpose) Enum.Parse(typeof(BackendPurpose), backendString);
+            }
+#endif
+
             return backend;
         }
 

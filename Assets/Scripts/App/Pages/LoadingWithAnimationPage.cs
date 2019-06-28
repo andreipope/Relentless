@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Iap;
+using OneOf;
+using OneOf.Types;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +15,7 @@ namespace Loom.ZombieBattleground
 {
     public class LoadingWithAnimationPage : IUIElement
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(LoadingPage));
+        private static readonly ILog Log = Logging.GetLog(nameof(LoadingWithAnimationPage));
 
         private IUIManager _uiManager;
 
@@ -98,6 +101,12 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     Log.Info(e.Message);
+                }
+
+                OneOf<Success, IapException> beginInitialization = await GameClient.Get<IapMediator>().BeginInitialization();
+                if (!beginInitialization.IsT0)
+                {
+                    Log.Warn("IAP initialization failed, it'll be retried next time. Failure: " + beginInitialization.Value);
                 }
 
                 if (_backendDataControlMediator.UserDataModel != null)

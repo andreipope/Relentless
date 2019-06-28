@@ -47,8 +47,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             MinionPackContractAddress = Address.FromString(minionPackContractAddress, ChainId);
             BinancePackContractAddress = Address.FromString(binancePackContractAddress, ChainId);
             FiatPurchaseContractAddress = Address.FromString(fiatPurchaseContractAddress, ChainId);
-            OpenLotteryContractAddress = !String.IsNullOrWhiteSpace(openLotteryContractAddress) ? Address.FromString(openLotteryContractAddress, ChainId) : new Address();
-            TronLotteryContractAddress = !String.IsNullOrWhiteSpace(tronLotteryContractAddress) ? Address.FromString(tronLotteryContractAddress, ChainId) : new Address();
+            OpenLotteryContractAddress = !String.IsNullOrWhiteSpace(openLotteryContractAddress) ?
+                Address.FromString(openLotteryContractAddress, ChainId) :
+                new Address();
+            TronLotteryContractAddress = !String.IsNullOrWhiteSpace(tronLotteryContractAddress) ?
+                Address.FromString(tronLotteryContractAddress, ChainId) :
+                new Address();
         }
 
         [JsonProperty("plasmachain_chain_id")]
@@ -116,11 +120,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         [JsonProperty("plasmachain_fiatpurchase_contract_address")]
         public Address FiatPurchaseContractAddress { get; }
 
-                [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_openlottery_contract_address")]
         public Address OpenLotteryContractAddress { get; }
 
-                [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_tronlottery_contract_address")]
         public Address TronLotteryContractAddress { get; }
     }
