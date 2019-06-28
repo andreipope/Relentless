@@ -327,7 +327,7 @@ namespace Loom.ZombieBattleground
             if (Constants.FactionAgainstDictionary[overlordData.Prototype.Faction] == card.Faction)
             {
                 OpenAlertDialog(
-                    "Cannot add from the faction your Overlord is weak against.");
+                    "Cannot add from the faction your Champion is weak against.");
                 return;
             }
 

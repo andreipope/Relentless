@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
         protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker || !AbilityUnitOwner.IsAlive())
                 return;
 
             AbilityProcessingAction?.TriggerActionExternally();
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                throw new Exception("Attack overlord should apply only on Player Overlord");
+                throw new Exception("Attack champion should apply only on Player Champion");
             }
         }
     }

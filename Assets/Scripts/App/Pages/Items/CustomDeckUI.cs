@@ -187,16 +187,14 @@ namespace Loom.ZombieBattleground
 
         private void DragBeganEventHandler(PointerEventData pointerEventData, GameObject obj)
         {
-            if (_selectedDeckCard != null)
-                return;
-
             if (_tutorialManager.IsTutorial &&
                 !_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
                 (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
                 return;
 
-            if (pointerEventData.delta.normalized.y >= 0.5f || pointerEventData.delta.normalized.y <= -0.5f)
+            if (_selectedDeckCard != null || pointerEventData.delta.normalized.y >= 0.5f || pointerEventData.delta.normalized.y <= -0.5f)
             {
+                obj.GetComponentInParent<ScrollRect>().OnBeginDrag(pointerEventData);
                 return;
             }
 
@@ -214,7 +212,10 @@ namespace Loom.ZombieBattleground
         private void DragUpdatedEventHandler(PointerEventData pointerEventData, GameObject arg2)
         {
             if (_selectedDeckCard == null)
+            {
+                arg2.GetComponentInParent<ScrollRect>().OnDrag(pointerEventData);
                 return;
+            }
 
             _selectedDeckCard.GetGameObject().transform.SetParent(_uiManager.Canvas.transform);
             Vector3 position = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -224,7 +225,10 @@ namespace Loom.ZombieBattleground
         private void DragEndedEventHandler(PointerEventData arg1, GameObject arg2)
         {
             if (_selectedDeckCard == null)
+            {
+                arg2.GetComponentInParent<ScrollRect>().OnEndDrag(arg1);
                 return;
+            }
 
             Vector3 point = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
@@ -272,7 +276,7 @@ namespace Loom.ZombieBattleground
 
         private void OnSingleClickDeckCard(Card selectedCard)
         {
-            if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
+            if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null || _selectedDeckCard != null)
                 return;
 
             if (_tutorialManager.IsTutorial &&

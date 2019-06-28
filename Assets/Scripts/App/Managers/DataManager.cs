@@ -314,7 +314,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Overlords Data");
+                        ShowLoadDataFailMessage("Issue with Loading Champions Data");
                         throw;
                     }
                     break;
@@ -388,7 +388,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Overlord Leveling Data");
+                        ShowLoadDataFailMessage("Issue with Loading Champions Leveling Data");
                         throw;
                     }
                     break;

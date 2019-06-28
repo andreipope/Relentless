@@ -1224,16 +1224,17 @@ namespace Loom.ZombieBattleground
                             unitAttacks.Remove(unit);
                         }
                     };
-
-                    if (boardSkill.IsLocal)
-                    {
-                        _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
-                            new ParametrizedAbilityParameters()
-                            {
-                                CardName = opponentUnitModel.InstanceId.Id.ToString()
-                            }));
-                    }
                 }
+
+                if (boardSkill.IsLocal)
+                {
+                    _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = unitModel.InstanceId.Id.ToString()
+                        }));
+                }
+
                 EpidemicUnit(owner, boardSkill, skill, unitModel, opponentUnitModel, callback);
             }
 
@@ -1851,8 +1852,12 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.CreateVfx(prefabFreeze, targetPosition, true, 6);
 
+                GameplayActionQueueAction SkillProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker);
+
                 InternalTools.DoActionDelayed(() =>
                 {
+                    SkillProcessingAction?.TriggerActionExternally();
+                    
                     unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()

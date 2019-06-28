@@ -532,7 +532,7 @@ namespace Loom.ZombieBattleground
 
         protected virtual void PrepairingToDieHandler(IBoardObject from)
         {
-            AbilitiesController.DeactivateAbility(ActivityId);
+            
         }
 
         public void CardReturnedToHand()

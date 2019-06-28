@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
                 newPos.z = 0;
                 Transform.position = newPos;
 
-                if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+                if (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape))
                 {
                     _canceledPlay = true;
                     MouseUp(null);
@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
             if (!Enabled)
                 return;
 
-            if (_playerController.IsActive && CardModel.CanBePlayed(OwnerPlayer) && !IsReturnToHand && !_alreadySelected &&
+            if (_playerController.IsActive && !_playerController.IsCardSelected && CardModel.CanBePlayed(OwnerPlayer) && !IsReturnToHand && !_alreadySelected &&
                 Enabled)
             {
 
@@ -156,18 +156,9 @@ namespace Loom.ZombieBattleground
 
         public void MouseUp(GameObject obj)
         {
-            if (!Enabled)
+            if (!StartedDrag || _gameplayManager.IsGameEnded)
                 return;
 
-            if (!StartedDrag)
-                return;
-
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            if (_gameplayManager.GetController<CardsController>().BlockPlayFromHand)
-                return;
-            
             _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
             _alreadySelected = false;
@@ -177,6 +168,8 @@ namespace Loom.ZombieBattleground
             bool playable = !_canceledPlay &&
                 CardModel.CanBeBuyed(OwnerPlayer) &&
                 _actionsQueueController.RootQueue.GetChildCount() <= 0 &&
+                !_gameplayManager.GetController<CardsController>().BlockPlayFromHand &&
+                Enabled &&
                 (CardModel.Card.Prototype.Kind != Enumerators.CardKind.CREATURE ||
                     OwnerPlayer.CardsOnBoard.Count < OwnerPlayer.MaxCardsInPlay);
 
