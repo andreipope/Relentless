@@ -880,7 +880,7 @@ namespace Loom.ZombieBattleground.Common
 
             CardPackOpened,
             CardPackCollected,
-            CardOpenerCloseOpenedCardsScreen,
+            CardOpenerClosedOpenCardsScreen,
 
             CardDragged,
             CardRemoved,

@@ -33,8 +33,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 "default",
                 "wss://test-z-us1.dappchains.com/queryws",
                 "wss://test-z-us1.dappchains.com/websocket",
-                "0x2658d8c94062227d17a4ba61adb166e152369de3",
-                "0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41",
+                "0x3fc83db9ad1513c181e9a7345a28f62c0844abbb",
+                "0x9a58ed778699abc07a9f0eee91659d7ab43f1e16",
                 "0xdc745ac9945c981a63748a6b46dc31c2909bc865",
                 "0xd05b46ffb3828218d5b7d9b1225575477c9e79d7",
                 "0x4408927c62a6c8013612c11d630c222c130fd4f8",
@@ -47,8 +47,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 "0x63c43b64f40b8115c2c9970e559405fd16377a57",
                 "0x837da2498b31d1654d51c1871b10fc4e3d192f02",
                 "0xaff6212ab34f4066ee46f4b20429b2c74726eb67",
-                "0x808a1b867d2061d7bab4c610b6f98da9b65e42cf",
-                "0x4d608125767b951758fa23d9767791b683345a1a"
+                "0xdf9decad71af1850544ae4352728c5d00c3b4371",
+                "0xeca0c956bf5f2b5cf2b08a813fce68cba42a4f24"
             );
 
         private static readonly PlasmachainEndpointsConfiguration ProductionConfiguration =

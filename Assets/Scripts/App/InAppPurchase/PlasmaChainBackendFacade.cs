@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground.Iap
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
 
             const int amountToApprove = 1;
-            await packContract.CallAsync(ApproveMethod, EndpointsConfiguration.CardFaucetContractAddress, amountToApprove);
+            await packContract.CallAsync(ApproveMethod, EndpointsConfiguration.CardFaucetContractAddress.LocalAddress, amountToApprove);
             BroadcastTxResult openPackTxResult = await cardFaucetContract.CallAsync(OpenPackMethod, packType);
             byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
             Log.Debug($"{nameof(CallOpenPack)}: openPackTxHash = {CryptoUtils.BytesToHexString(openPackTxHash)}");

@@ -214,7 +214,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_openedPackPanelCloseButton.name))
                 return;
 
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerCloseOpenedCardsScreen);
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerClosedOpenCardsScreen);
 
             _openedPackPanelCloseButton.interactable = false;
             _openedPackPanelOpenNextPackButton.interactable = false;

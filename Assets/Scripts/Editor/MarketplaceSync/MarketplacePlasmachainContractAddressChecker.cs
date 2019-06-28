@@ -93,7 +93,8 @@ namespace Loom.ZombieBattleground.Editor
             Dictionary<MarketplacePlasmachainNetwork, string> networkToContractAddress = new Dictionary<MarketplacePlasmachainNetwork, string>();
             foreach (MarketplacePlasmachainNetwork network in Networks)
             {
-                string address = contract["networks"][GetPlasmachainNetworkInternalName(network)].Value<string>("address");
+                string address =
+                    contract["networks"][GetPlasmachainNetworkInternalName(network)]?.Value<string>("address") ?? "NONE";
                 networkToContractAddress[network] = address.ToLowerInvariant();
             }
 

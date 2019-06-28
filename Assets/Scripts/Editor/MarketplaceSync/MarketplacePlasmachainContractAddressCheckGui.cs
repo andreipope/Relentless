@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         private string _battlegroundMarketplaceSrcContractsPath;
 
         [NonSerialized]
-        private MarketplacePlasmachainContractAddressesNetworks _contractAddressesNetworks;
+        private MarketplacePlasmachainContractAddressesNetworks _fetchedContractAddressesNetworks;
 
         public MarketplacePlasmachainContractAddressCheckGui() { }
 
@@ -62,10 +62,10 @@ namespace Loom.ZombieBattleground
             {
                 MarketplacePlasmachainContractAddressChecker checker =
                     new MarketplacePlasmachainContractAddressChecker(_battlegroundMarketplaceSrcContractsPath);
-                _contractAddressesNetworks = checker.GetContractAddressesOnAllNetworks();
+                _fetchedContractAddressesNetworks = checker.GetContractAddressesOnAllNetworks();
             }
 
-            if (_contractAddressesNetworks == null)
+            if (_fetchedContractAddressesNetworks == null)
                 return;
 
             if (GUILayout.Button("Approve Fetched Addresses"))
@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
                 ))
                 {
                     MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks =
-                        JsonConvert.DeserializeObject<MarketplacePlasmachainContractAddressesNetworks>(JsonConvert.SerializeObject(_contractAddressesNetworks));
+                        JsonConvert.DeserializeObject<MarketplacePlasmachainContractAddressesNetworks>(JsonConvert.SerializeObject(_fetchedContractAddressesNetworks));
                     EditorUtility.SetDirty(MarketplacePlasmachainContractAddressesPersistentContainer.Instance);
                     _ownerWindow.ShowNotification(new GUIContent("Approved!"));
                 }
@@ -90,20 +90,20 @@ namespace Loom.ZombieBattleground
             {
                 EditorGUILayout.BeginVertical(GUI.skin.box);
                 {
-                    EditorGUILayout.LabelField("Stored Addresses", EditorStyles.helpBox);
+                    EditorGUILayout.LabelField("Stored Addresses", GUI.skin.box, GUILayout.ExpandWidth(true));
                     DrawContractAddressesNetworks(
-                        _contractAddressesNetworks,
-                        MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks
+                        MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks,
+                        _fetchedContractAddressesNetworks
                     );
                 }
                 EditorGUILayout.EndVertical();
 
                 EditorGUILayout.BeginVertical(GUI.skin.box);
                 {
-                    EditorGUILayout.LabelField("Fetched Addresses", EditorStyles.helpBox);
+                    EditorGUILayout.LabelField("Fetched Addresses", GUI.skin.box, GUILayout.ExpandWidth(true));
                     DrawContractAddressesNetworks(
-                        MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks,
-                        _contractAddressesNetworks
+                        _fetchedContractAddressesNetworks,
+                        MarketplacePlasmachainContractAddressesPersistentContainer.Instance.ContractAddressesNetworks
                     );
                 }
                 EditorGUILayout.EndVertical();
