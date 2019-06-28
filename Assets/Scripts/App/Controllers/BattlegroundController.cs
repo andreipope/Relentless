@@ -273,12 +273,14 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            Action completeCallback = () => {};
-
             boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
                 boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
 
             GameplayActionQueueAction DeathProcessingAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+
+            Action completeCallback = () => {
+                DeathProcessingAction?.TriggerActionExternally();
+            };
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -291,7 +293,6 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
-                    DeathProcessingAction?.TriggerActionExternally();
                     boardUnitView.Dispose();
                     cardModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(cardModel);
                     cardModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(cardModel);
@@ -319,6 +320,7 @@ namespace Loom.ZombieBattleground
                 {
                     endOfDestroyAnimationCallback();
                     endOfAnimationCallback();
+                    completeCallback();
 
                     if (updateBoard)
                     {

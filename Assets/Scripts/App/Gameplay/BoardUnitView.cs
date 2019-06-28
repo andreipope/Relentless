@@ -900,7 +900,7 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView targetCardView = _battlegroundController.GetCardViewByModel<BoardUnitView>(targetCard);
 
-            if (targetCardView == null || targetCardView.GameObject == null)
+            if (targetCardView == null || targetCardView.GameObject == null || GameObject == null)
             {
                 _actionsQueueController.ForceContinueAction(Model.ActionForDying);
                 _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);

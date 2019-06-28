@@ -367,6 +367,9 @@ namespace Loom.ZombieBattleground
 
         public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true, bool isDead = true)
         {
+            if (IsDead)
+                return;
+                
             UnitDying?.Invoke();
 
             IsDead = isDead;
