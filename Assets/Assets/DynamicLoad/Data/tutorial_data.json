@@ -1355,7 +1355,11 @@
             "Button_Auto",
             "Text_DeckName",
             "Button_OverlordAbilities",
-            "Button_Filter"
+            "Button_Filter",
+            "Button_AutoComplete",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -2497,9 +2501,14 @@
             "Button_Back",
             "Button_Save",
             "Button_Auto",
+            "Button_Filter",
             "Text_DeckName",
             "Button_OverlordAbilities",
-            "Button_Filter"
+            "Button_Filter",
+            "Button_AutoComplete",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [

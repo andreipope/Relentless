@@ -159,10 +159,26 @@ namespace Loom.ZombieBattleground
                 EditorGUILayout.LabelField(niceNetworkName, EditorStyles.boldLabel, GUILayout.Width(350));
                 if (GUILayout.Button("Copy zbversion Template", GUILayout.ExpandWidth(false)))
                 {
+                    BackendPurpose matchingPurpose;
+                    switch (network)
+                    {
+                        case MarketplacePlasmachainNetwork.Development:
+                            matchingPurpose = BackendPurpose.Development;
+                            break;
+                        case MarketplacePlasmachainNetwork.Staging:
+                            matchingPurpose = BackendPurpose.Staging;
+                            break;
+                        case MarketplacePlasmachainNetwork.Production:
+                            matchingPurpose = BackendPurpose.Production;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     PlasmachainEndpointsConfiguration endpointsConfiguration = new PlasmachainEndpointsConfiguration(
-                        "DUMMMY",
-                        "DUMMMY",
-                        "DUMMMY",
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[matchingPurpose].ChainId,
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[matchingPurpose].ReaderHost,
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[matchingPurpose].WriterHost,
                         addresses.ZbgCardContractAddress,
                         addresses.CardFaucetContractAddress,
                         addresses.BoosterPackContractAddress,

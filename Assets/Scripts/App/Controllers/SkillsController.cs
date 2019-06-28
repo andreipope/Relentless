@@ -1197,7 +1197,7 @@ namespace Loom.ZombieBattleground
                     Target = unitModel
                 });
 
-                if (opponentUnitModel != null && !(opponentUnitModel is default(CardModel)))
+                if (opponentUnitModel != null)
                 {
                     if (unitAttacks.ContainsKey(opponentUnitModel))
                     {
@@ -1224,15 +1224,26 @@ namespace Loom.ZombieBattleground
                             unitAttacks.Remove(unit);
                         }
                     };
-                }
 
-                if (boardSkill.IsLocal)
+                    if (boardSkill.IsLocal)
+                    {
+                        _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
+                            new ParametrizedAbilityParameters()
+                            {
+                                CardName = opponentUnitModel.InstanceId.Id.ToString()
+                            }));
+                    }
+                }
+                else
                 {
-                    _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
-                        new ParametrizedAbilityParameters()
-                        {
-                            CardName = unitModel.InstanceId.Id.ToString()
-                        }));
+                    if (boardSkill.IsLocal)
+                    {
+                        _targets.Add(new ParametrizedAbilityBoardObject(unitModel,
+                            new ParametrizedAbilityParameters()
+                            {
+                                CardName = unitModel.InstanceId.Id.ToString()
+                            }));
+                    }
                 }
 
                 EpidemicUnit(owner, boardSkill, skill, unitModel, opponentUnitModel, callback);
