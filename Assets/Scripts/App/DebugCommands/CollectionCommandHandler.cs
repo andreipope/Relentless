@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
     public static class CollectionCommandHandler
     {
         private static BackendDataControlMediator _backendDataControlMediator;
-        private static PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private static PlasmachainBackendFacade _plasmaChainBackendFacade;
         private static BackendFacade _backendFacade;
 
         public static void Initialize()
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
             CommandHandlers.RegisterCommandHandlers(typeof(CollectionCommandHandler));
 
             _backendFacade = GameClient.Get<BackendFacade>();
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static async void PlasmaChainGetOwnerCards()
+        public static async void PlasmachainGetOwnerCards()
         {
             using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
             {

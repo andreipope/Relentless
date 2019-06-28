@@ -7,36 +7,39 @@ using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
-using JsonConvert = Newtonsoft.Json.JsonConvert;
-using JsonConverter = Newtonsoft.Json.JsonConverter;
-using JsonReader = Newtonsoft.Json.JsonReader;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
-using JsonSerializerSettings = Newtonsoft.Json.JsonSerializerSettings;
-using JsonWriter = Newtonsoft.Json.JsonWriter;
 
 namespace Loom.ZombieBattleground.Editor
 {
-    public class MarketplaceCardLibrarySyncWindow : EditorWindow
+    [Serializable]
+    public class MarketplaceCardLibrarySyncGui
     {
         private const string CardFaucetCardDetailJsonFilePathPrefsKey = "MarketplaceCardLibrarySyncWindow_cardFaucetCardDetailJsonFilePath";
-        private const string CardFaucetCardDetailTronJsonFilePathPrefsKey = "MarketplaceCardLibrarySyncWindow_cardFaucetCardDetailTronJsonFilePath";
-        private const string CardFaucetCardDetailBinanceJsonFilePathPrefsKey = "MarketplaceCardLibrarySyncWindow_cardFaucetCardDetailBinanceJsonFilePath";
+        private const string CardFaucetCardDetailTronJsonFilePathPrefsKey =
+            "MarketplaceCardLibrarySyncWindow_cardFaucetCardDetailTronJsonFilePath";
+        private const string CardFaucetCardDetailBinanceJsonFilePathPrefsKey =
+            "MarketplaceCardLibrarySyncWindow_cardFaucetCardDetailBinanceJsonFilePath";
         private const string GamechainCardLibraryJsonFilePathPrefsKey = "MarketplaceCardLibrarySyncWindow_gamechainCardLibraryJsonFilePath";
 
         private readonly JsonSerializerSettings _jsonSerializerSettings =
             JsonUtility.CreateStrictSerializerSettings((sender, args) => Debug.LogException(args.ErrorContext.Error));
 
-        private readonly long[] IgnoredCardMouldIds = {
+        private readonly long[] IgnoredCardMouldIds =
+        {
             //900,
             //9001
         };
+
+        [SerializeField]
+        private EditorWindow _ownerWindow;
+
+        [SerializeField]
+        private bool _onlyShowStandardEdition;
 
         private string _cardFaucetCardDetailJsonFilePath;
         private string _cardFaucetCardDetailTronJsonFilePath;
         private string _cardFaucetCardDetailBinanceJsonFilePath;
         private string _gamechainCardLibraryJsonFilePath;
 
-        private Vector2 _scrollPosition;
         private ComparisonResult _comparisonResult;
 
         [NonSerialized]
@@ -51,46 +54,50 @@ namespace Loom.ZombieBattleground.Editor
         [NonSerialized]
         private List<CardKey> _cardFaucetBinanceCardKeys;
 
-        private void OnGUI()
+        public MarketplaceCardLibrarySyncGui()
         {
-            using (EditorGUILayout.ScrollViewScope scrollScope = new EditorGUILayout.ScrollViewScope(_scrollPosition))
-            {
-                _scrollPosition = scrollScope.scrollPosition;
-                DrawMainGui();
-            }
         }
 
-        private void DrawMainGui()
+        public MarketplaceCardLibrarySyncGui(EditorWindow ownerWindow)
+        {
+            _ownerWindow = ownerWindow;
+        }
+
+        public void Draw()
         {
             _cardFaucetCardDetailJsonFilePath =
-                HandleJsonFileField(
+                EditorSpecialGuiUtility.DrawPersistentFilePathField(
                     _cardFaucetCardDetailJsonFilePath,
                     "CardFaucet 'cardDetail.json' File Path: ",
                     "Select CardFaucet 'cardDetail.json' File",
+                    "json",
                     CardFaucetCardDetailJsonFilePathPrefsKey
                 );
-            
+
             _cardFaucetCardDetailTronJsonFilePath =
-                HandleJsonFileField(
+                EditorSpecialGuiUtility.DrawPersistentFilePathField(
                     _cardFaucetCardDetailTronJsonFilePath,
                     "CardFaucet Tron 'cardDetailTron.json' File Path: ",
                     "Select CardFaucet Tron 'cardDetail.json' File",
+                    "json",
                     CardFaucetCardDetailTronJsonFilePathPrefsKey
                 );
-            
+
             _cardFaucetCardDetailBinanceJsonFilePath =
-                HandleJsonFileField(
+                EditorSpecialGuiUtility.DrawPersistentFilePathField(
                     _cardFaucetCardDetailBinanceJsonFilePath,
                     "CardFaucet Binance 'cardDetailBinance.json' File Path: ",
                     "Select CardFaucet Binance 'cardDetail.json' File",
+                    "json",
                     CardFaucetCardDetailBinanceJsonFilePathPrefsKey
                 );
 
             _gamechainCardLibraryJsonFilePath =
-                HandleJsonFileField(
+                EditorSpecialGuiUtility.DrawPersistentFilePathField(
                     _gamechainCardLibraryJsonFilePath,
                     "zb_card_meta_data 'card_library.json' File Path: ",
                     "Select zb_card_meta_data 'card_library.json' File",
+                    "json",
                     GamechainCardLibraryJsonFilePathPrefsKey
                 );
 
@@ -107,9 +114,6 @@ namespace Loom.ZombieBattleground.Editor
 
         private void DrawComparisonGui()
         {
-            GUIStyle boldTextStyle = new GUIStyle(GUI.skin.label);
-            boldTextStyle.fontStyle = FontStyle.Bold;
-
             GUILayout.Space(15);
 
             if (GUILayout.Button("Copy Cards Missing in zb_card_meta_data 'card_library.json' to Clipboard"))
@@ -124,22 +128,38 @@ namespace Loom.ZombieBattleground.Editor
 
                 string deltaJson = JsonConvert.SerializeObject(dummyCards, Formatting.Indented, _jsonSerializerSettings);
                 EditorGUIUtility.systemCopyBuffer = deltaJson;
-                ShowNotification(new GUIContent("Done!"));
+                _ownerWindow.ShowNotification(new GUIContent("Done!"));
             }
 
-            EditorGUILayout.LabelField($"Cards Missing in zb_card_meta_data 'card_library.json' ({_comparisonResult.CardsMissingOnGamechain.Count})", boldTextStyle);
+            _onlyShowStandardEdition = EditorGUILayout.ToggleLeft("Hide non-Standard edition cards", _onlyShowStandardEdition);
+
+            EditorGUILayout.LabelField(
+                $"Cards Missing in zb_card_meta_data 'card_library.json' ({_comparisonResult.CardsMissingOnGamechain.Count})",
+                EditorStyles.boldLabel);
+
+            int counter = 1;
             for (int i = 0; i < _comparisonResult.CardsMissingOnGamechain.Count; i++)
             {
                 CardKey missingCardKey = _comparisonResult.CardsMissingOnGamechain[i];
-                EditorGUILayout.LabelField($"{i + 1,3}. " + missingCardKey);
+                if (_onlyShowStandardEdition && missingCardKey.Variant != Enumerators.CardVariant.Standard)
+                    continue;
+
+                EditorGUILayout.LabelField($"{counter,3}. " + missingCardKey);
+                counter++;
             }
 
             GUILayout.Space(15);
-            EditorGUILayout.LabelField($"Cards Missing in Marketplace card lists ({_comparisonResult.CardsMissingOnGamechain.Count})", boldTextStyle);
-            for (int i = 0; i < _comparisonResult.CardsMissingOnGamechain.Count; i++)
+            EditorGUILayout.LabelField($"Cards Missing in Marketplace card lists ({_comparisonResult.CardsMissingOnGamechain.Count})", EditorStyles.boldLabel);
+
+            counter = 1;
+            for (int i = 0; i < _comparisonResult.CardsMissingOnMarketplace.Count; i++)
             {
                 CardKey missingCardKey = _comparisonResult.CardsMissingOnMarketplace[i];
-                EditorGUILayout.LabelField($"{i + 1,3}. " + missingCardKey);
+                if (_onlyShowStandardEdition && missingCardKey.Variant != Enumerators.CardVariant.Standard)
+                    continue;
+
+                EditorGUILayout.LabelField($"{counter,3}. " + missingCardKey);
+                counter++;
             }
         }
 
@@ -152,7 +172,8 @@ namespace Loom.ZombieBattleground.Editor
                 string cardFaucetCardDetailBinanceJson = File.ReadAllText(_cardFaucetCardDetailBinanceJsonFilePath);
                 string gamechainCardLibraryJson = File.ReadAllText(_gamechainCardLibraryJsonFilePath);
 
-                _gamechainCardLibrary = JsonConvert.DeserializeObject<GamechainCardLibraryRoot>(gamechainCardLibraryJson, _jsonSerializerSettings);
+                _gamechainCardLibrary =
+                    JsonConvert.DeserializeObject<GamechainCardLibraryRoot>(gamechainCardLibraryJson, _jsonSerializerSettings);
                 _cardFaucetCardKeys = ParseCardFaucetCardDetails(cardFaucetCardDetailJson);
                 _cardFaucetTronCardKeys = ParseCardFaucetCardDetails(cardFaucetCardDetailTronJson);
                 _cardFaucetBinanceCardKeys = ParseCardFaucetCardDetails(cardFaucetCardDetailBinanceJson);
@@ -187,44 +208,15 @@ namespace Loom.ZombieBattleground.Editor
             {
                 Debug.LogError(e);
                 Debug.LogError(e.Message);
-                ShowNotification(new GUIContent("Error: " + e.Message));
+                _ownerWindow.ShowNotification(new GUIContent("Error: " + e.Message));
             }
-        }
-
-        private string HandleJsonFileField(string path, string label, string openFileTitle, string prefsKey)
-        {
-            string originalPath = path;
-            
-            if (String.IsNullOrEmpty(path))
-            {
-                path = EditorPrefs.GetString(prefsKey);
-            }
-            
-            EditorGUIUtility.labelWidth = 330;
-
-            EditorGUILayout.BeginHorizontal();
-            {
-                path = EditorGUILayout.TextField(label, path);
-                if (GUILayout.Button("Select...", GUILayout.Width(100)))
-                {
-                    path = UnityEditor.EditorUtility.OpenFilePanel(openFileTitle, Application.dataPath, "json");
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUIUtility.labelWidth = 0;
-            if (path != originalPath)
-            {
-                EditorPrefs.SetString(prefsKey, path);
-            }
-
-            return path;
         }
 
         private List<CardKey> ParseCardFaucetCardDetails(string json)
         {
             List<CardKey> cardKeys = new List<CardKey>();
-            Dictionary<string, CardFaucetCard> cards = JsonConvert.DeserializeObject<Dictionary<string, CardFaucetCard>>(json, _jsonSerializerSettings);
+            Dictionary<string, CardFaucetCard> cards =
+                JsonConvert.DeserializeObject<Dictionary<string, CardFaucetCard>>(json, _jsonSerializerSettings);
             foreach (CardFaucetCard card in cards.Values)
             {
                 cardKeys.Add(new CardKey(new MouldId(card.MouldId), card.Variant));
@@ -344,13 +336,6 @@ namespace Loom.ZombieBattleground.Editor
             {
                 return objectType == typeof(Enumerators.CardVariant);
             }
-        }
-
-        [MenuItem("Utility/Data/Open Marketplace Card Library Sync Window")]
-        private static void ShowWindow()
-        {
-            MarketplaceCardLibrarySyncWindow window = GetWindow<MarketplaceCardLibrarySyncWindow>();
-            window.titleContent = new GUIContent("Marketplace Card Library Sync");
         }
     }
 }

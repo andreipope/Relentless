@@ -609,8 +609,8 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: 
-    7: 
+    1: USE_DEVELOPMENT_BACKEND1;USE_STAGING_BACKEND1;USE_PRODUCTION_BACKEND
+    7: USE_DEVELOPMENT_BACKEND1;IAP_PRINT_RECEIPT_AND_FAIL1;SKIP_ASSET_BUNDLE_LOAD;USE_STAGING_BACKEND
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

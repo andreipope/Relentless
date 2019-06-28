@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground.Editor
 
         private void DrawRequestPack()
         {
-            PlasmaChainBackendFacade plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            PlasmachainBackendFacade plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
 
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField)
             {
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground.Editor
         {
             IapMediator iapMediator = GameClient.Get<IapMediator>();
             AuthFiatApiFacade authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
-            PlasmaChainBackendFacade plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            PlasmachainBackendFacade plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
 
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField)
             {

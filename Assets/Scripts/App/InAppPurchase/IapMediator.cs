@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground.Iap
 
         private AuthFiatApiFacade _authFiatApiFacade;
 
-        private PlasmaChainBackendFacade _plasmaChainBackendFacade;
+        private PlasmachainBackendFacade _plasmaChainBackendFacade;
 
         private IIapPlatformStoreFacade _iapPlatformStoreFacade;
 
@@ -474,7 +474,7 @@ namespace Loom.ZombieBattleground.Iap
         async void IService.Init()
         {
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
-            _plasmaChainBackendFacade = GameClient.Get<PlasmaChainBackendFacade>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
 
             ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             string removedStringsText = loadObjectsManager.GetObjectByPath<TextAsset>("Data/iap_titles_strings_to_remove").text;
