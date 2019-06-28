@@ -53,10 +53,22 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense <= 0)
             {
-                PrepareTargets();
-                AbilityProcessingAction?.TriggerActionExternally();
-                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+                PrepareTargetsBeforeDeath();
             }
+        }
+
+        protected override void PrepairingToDieHandler(IBoardObject from)
+        {
+            base.PrepairingToDieHandler(from);
+
+            PrepareTargetsBeforeDeath();
+        }
+
+        private void PrepareTargetsBeforeDeath()
+        {
+            PrepareTargets();
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
         }
 
         public override void Action(object info = null)
