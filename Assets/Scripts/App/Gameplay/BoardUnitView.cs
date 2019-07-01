@@ -498,10 +498,18 @@ namespace Loom.ZombieBattleground
                 GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
-                _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
-                _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
-                Transform spriteContainerTransform =
-                    _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+                //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
+                //_arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
+                Transform spriteContainerTransform = _battleframeObject.transform.Find("Battleframe/SpriteContainer");
+
+                // TODO : Remove the code after changing all vfx to new one
+                if (spriteContainerTransform == null)
+                {
+                    spriteContainerTransform =
+                        _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+
+                }
+
                 Vector3 scale = spriteContainerTransform.transform.localScale;
                 scale.x *= -1;
                 spriteContainerTransform.transform.localScale = scale;
@@ -665,7 +673,7 @@ namespace Loom.ZombieBattleground
         public void ChangeModelVisibility(bool state)
         {
             _unitContentObject.SetActive(state);
-            _arrivalModelObject.SetActive(state);
+            //_arrivalModelObject.SetActive(state);
             _arrivaVfxObject.SetActive(state);
         }
 
