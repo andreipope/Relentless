@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
 #pragma warning restore 1998
         {
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
-#if UNITY_IOS || UNITY_ANDROID
+#if (UNITY_IOS || UNITY_ANDROID) && !USE_WEB_MARKETPLACE
             ChangeState(State.Purchasing);
             _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
 

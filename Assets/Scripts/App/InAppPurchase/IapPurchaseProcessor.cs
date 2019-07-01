@@ -9,7 +9,7 @@ using OneOf;
 using OneOf.Types;
 using UnityEngine.Purchasing;
 
-#if UNITY_ANDROID || UNITY_IOS
+#if (UNITY_ANDROID || UNITY_IOS) && !USE_WEB_MARKETPLACE
 using Loom.Newtonsoft.Json;
 using UnityEngine.Assertions;
 using UnityEngine.Purchasing.Security;
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground.Iap
 
         public async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ProcessPurchase(string receiptJson, Product product)
         {
-#if UNITY_ANDROID || UNITY_IOS
+#if (UNITY_ANDROID || UNITY_IOS) && !USE_WEB_MARKETPLACE
             FiatValidationData fiatValidationData;
             try
             {
