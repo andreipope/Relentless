@@ -495,7 +495,16 @@ namespace Loom.ZombieBattleground
                 if (_battleframeObject != null)
                     Object.Destroy(_battleframeObject);
 
-                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>
+                (
+                    "Prefabs/Gameplay/" +
+                    (
+                        Model.InitialUnitType == Enumerators.CardType.HEAVY ? 
+                            Model.InitialUnitType.ToString() : 
+                            "Normal"
+                    ) +
+                    "_Arrival_VFX"
+                );
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
@@ -530,7 +539,7 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.CardType.WALKER:
                     default:
-                        delay = Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f;
+                        delay = 1.3f;
                         break;
                 }
 
