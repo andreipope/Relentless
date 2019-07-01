@@ -260,7 +260,7 @@ namespace Loom.ZombieBattleground
                                     false, false, true);
                         }, .6f);
 
-                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, 1.3f);
                         break;
                 }
             }
@@ -370,7 +370,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CardType.WALKER:
-                    ChangeTypeFrame(1.3f, 0.3f);
+                    ChangeTypeFrame(1.3f, 1.3f);
                     break;
                 case Enumerators.CardType.FERAL:
                     ChangeTypeFrame(2.7f, 1.7f);
@@ -536,7 +536,7 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.CardType.WALKER:
                     default:
-                        delay = Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f;
+                        delay = 1.3f;
                         break;
                 }
 
