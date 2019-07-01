@@ -62,8 +62,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         true,
-                        // FIXME: revert back to prod Plasmachain once auth version check is added
-                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Production]
                     )
                 }
             };

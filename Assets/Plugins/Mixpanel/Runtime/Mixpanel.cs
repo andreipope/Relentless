@@ -670,7 +670,10 @@ namespace mixpanel
             tracking_enabled = false;
             Debug.LogWarning("Your Unity version does not support native plaugins. Disabling Mixpanel.");
             #endif
+        }
 
+        void OnEnable()
+        {
             if (tracking_enabled && mp_interface == null) {
                 mp_interface = new mixpanel.detail.Mixpanel(
                     #if DEBUG || UNITY_EDITOR
