@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class BackendEndpointsContainer
     {
-        public static readonly string CurrentStagingDataVersion = "v23";
+        public static readonly string CurrentStagingDataVersion = "v25";
 
         public static readonly IReadOnlyDictionary<BackendPurpose, BackendEndpoint> Endpoints =
             new Dictionary<BackendPurpose, BackendEndpoint>
