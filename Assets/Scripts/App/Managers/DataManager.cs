@@ -98,9 +98,6 @@ namespace Loom.ZombieBattleground
                 await LoadCachedData((Enumerators.CacheDataType) i);
             }
 
-            // FIXME: remove next line after fetching collection from backend is implemented
-            FillFullCollection();
-
             _localizationManager.ApplyLocalization();
 
             if (Constants.DevModeEnabled)
@@ -197,38 +194,6 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private uint GetMaxCopiesValue(Data.Card card, Enumerators.Faction setName)
-        {
-            Enumerators.CardRank rank = card.Rank;
-            uint maxCopies;
-
-            if (setName == Enumerators.Faction.ITEM)
-            {
-                maxCopies = Constants.CardItemMaxCopies;
-                return maxCopies;
-            }
-
-            switch (rank)
-            {
-                case Enumerators.CardRank.MINION:
-                    maxCopies = Constants.CardMinionMaxCopies;
-                    break;
-                case Enumerators.CardRank.OFFICER:
-                    maxCopies = Constants.CardOfficerMaxCopies;
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    maxCopies = Constants.CardCommanderMaxCopies;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    maxCopies = Constants.CardGeneralMaxCopies;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return maxCopies;
-        }
-
         private void CheckVersion()
         {
             FileInfo[] files = _dir.GetFiles();
@@ -321,27 +286,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
-                        bool isLoadedFromFile = false;
-                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
-                        {
-                            try
-                            {
-                                CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
-                                isLoadedFromFile = true;
-                            }
-                            catch (JsonSerializationException)
-                            {
-                                // Gracefully handle old incompatible data
-                            }
-                        }
-
-                        if (!isLoadedFromFile)
-                        {
-                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedCollectionData = getCollectionResponse.FromProtobuf();
-                        }
-
-                        await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+                        GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedCollectionData = getCollectionResponse.FromProtobuf();
                     }
                     catch (Exception)
                     {
@@ -491,24 +437,6 @@ namespace Loom.ZombieBattleground
         {
             string data = SerializeToJson(obj, true);
             return EncryptData(data);
-        }
-
-        private void FillFullCollection()
-        {
-            CachedCollectionData = new CollectionData();
-
-            foreach (Data.Faction set in CachedCardsLibraryData.Factions)
-            {
-                foreach (Data.Card card in set.Cards)
-                {
-                    CachedCollectionData.Cards.Add(
-                        new CollectionCardData
-                        (
-                            card.CardKey,
-                            (int) GetMaxCopiesValue(card, set.Name)
-                        ));
-                }
-            }
         }
 
         public async Task LoadZbVersionData()

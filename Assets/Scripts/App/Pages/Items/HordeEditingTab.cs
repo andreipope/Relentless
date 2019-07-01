@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
             _buttonBack = editingTabObj.transform.Find("Panel_Frame/Upper_Items/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
 
-            _uiCardCollections.Show(editingTabObj, PageType.DeckEditing);
+            _uiCardCollections.Show(editingTabObj, Enumerators.CardCollectionPageType.DeckEditing);
             _customDeckUi.Load(editingTabObj.transform.Find("Deck_Content").gameObject);
 
             _buttonLeftArrowScroll = editingTabObj.transform.Find("Panel_Content/Army/Element/Button_LeftArrow").GetComponent<Button>();

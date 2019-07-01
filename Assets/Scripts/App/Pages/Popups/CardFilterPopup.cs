@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
 
                     if (FilterData.GooCostList[gooIndex] && FilterData.GooCostList.FindAll(gooBottle => gooBottle).Count <= 1)
                     {
-                        OpenAlertDialog("Atleast one goo cost should be selected.");
+                        OpenAlertDialog("At least one goo cost should be selected.");
                         return;
                     }
 
@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground
 
             if (FilterData.FactionDictionary[faction] && FilterData.GetActiveElementFilterCount() <= 1)
             {
-                OpenAlertDialog("Atleast one element should be selected.");
+                OpenAlertDialog("At least one element should be selected.");
                 return;
             }
 
@@ -224,7 +224,7 @@ namespace Loom.ZombieBattleground
 
             if (FilterData.RankDictionary[rank] && FilterData.GetActiveRankFilterCount() <= 1)
             {
-                OpenAlertDialog("Atleast one rank should be selected.");
+                OpenAlertDialog("At least one rank should be selected.");
                 return;
             }
 

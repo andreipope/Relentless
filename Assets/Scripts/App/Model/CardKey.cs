@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(MouldId)}: {MouldId}, {nameof(Variant)}: {Variant})";
+            return $"({nameof(MouldId)}: {MouldId.Id}, {nameof(Variant)}: {Variant})";
         }
 
         public static CardKey FromCardTokenId(long tokenId)

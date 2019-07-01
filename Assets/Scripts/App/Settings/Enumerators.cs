@@ -993,5 +993,11 @@ namespace Loom.ZombieBattleground.Common
             Binance = 3,
             Tron = 4
         }
+
+        public enum CardCollectionPageType
+        {
+            Army,
+            DeckEditing
+        }
     }
 }

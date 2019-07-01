@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardCreaturePrefab;
 
-        private PageType _pageType;
+        private Enumerators.CardCollectionPageType _pageType;
 
         private static UnitCardUI _selectedUnitCard;
 
@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
             _selectedUnitCard = null;
         }
 
-        public void Show(GameObject obj, PageType pageType)
+        public void Show(GameObject obj, Enumerators.CardCollectionPageType pageType)
         {
             _selfPage = obj;
 
@@ -88,10 +88,10 @@ namespace Loom.ZombieBattleground
 
             switch (pageType)
             {
-                case PageType.Army:
+                case Enumerators.CardCollectionPageType.Army:
                     LoadAllCards();
                     break;
-                case PageType.DeckEditing:
+                case Enumerators.CardCollectionPageType.DeckEditing:
                     _deckScrollRect = _selfPage.transform.Find("Deck_Content/Cards/Scroll View").gameObject;
                     if(_tutorialManager.IsTutorial)
                         LoadTutorialCards();
@@ -264,12 +264,12 @@ namespace Loom.ZombieBattleground
 
             MultiPointerClickHandler multiPointerClickHandler = go.AddComponent<MultiPointerClickHandler>();
 
-            if (_pageType == PageType.Army)
+            if (_pageType == Enumerators.CardCollectionPageType.Army)
             {
                 multiPointerClickHandler.SingleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
                 multiPointerClickHandler.DoubleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
             }
-            else if (_pageType == PageType.DeckEditing)
+            else if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
             {
                 if(!_tutorialManager.IsTutorial)
                     multiPointerClickHandler.SingleClickReceived += () => { BoardCardSingleClickHandler(unitCard.GetCard()); };
@@ -536,13 +536,13 @@ namespace Loom.ZombieBattleground
 
             List<IReadOnlyCard> cardList = _cardUIList.Select(card => card.GetCardInterface()).ToList();
 
-            CardInfoWithSearchPopup.PopupType popupType= CardInfoWithSearchPopup.PopupType.NONE;
+            CardInfoWithSearchPopup.PopupType popupType = CardInfoWithSearchPopup.PopupType.NONE;
             switch (_pageType)
             {
-                case PageType.Army:
+                case Enumerators.CardCollectionPageType.Army:
                     popupType = CardInfoWithSearchPopup.PopupType.NONE;
                     break;
-                case PageType.DeckEditing:
+                case Enumerators.CardCollectionPageType.DeckEditing:
                     popupType = CardInfoWithSearchPopup.PopupType.ADD_CARD;
                     break;
                 default:
