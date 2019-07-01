@@ -495,10 +495,13 @@ namespace Loom.ZombieBattleground
                 if (_battleframeObject != null)
                     Object.Destroy(_battleframeObject);
 
-                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>
-                (
-                    "Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX"
-                );
+                string vfxPath = string.Empty;
+                if (Model.Card.Prototype.Type == Model.InitialUnitType)
+                    vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                else
+                    vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.Card.Prototype.Type + "_To_" + Model.InitialUnitType + "_Arrival_VFX";
+
+                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
