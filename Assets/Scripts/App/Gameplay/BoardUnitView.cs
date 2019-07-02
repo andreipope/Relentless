@@ -496,14 +496,24 @@ namespace Loom.ZombieBattleground
                     Object.Destroy(_battleframeObject);
 
                 string vfxPath = string.Empty;
-                if (playUniqueAnimation)
-                    vfxPath = "Prefabs/Gameplay/ArrivalsVfx/Unique_Arrival_VFX";
-                else if (Model.Card.Prototype.Type == Model.InitialUnitType)
+                GameObject arrivalPrefab;
+                if (Model.Card.Prototype.Type == Model.InitialUnitType)
+                {
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                    arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                }
                 else
+                {
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.Card.Prototype.Type + "_To_" + Model.InitialUnitType + "_Arrival_VFX";
+                    arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
 
-                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                    if (arrivalPrefab == null)
+                    {
+                        vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                        arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                    }
+                }
+
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
