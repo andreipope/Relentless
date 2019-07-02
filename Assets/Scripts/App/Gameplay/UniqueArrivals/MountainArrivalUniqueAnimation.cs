@@ -25,19 +25,24 @@ namespace Loom.ZombieBattleground
                                                         "Prefabs/VFX/UniqueArrivalAnimations/Mountain_Arrival"));
 
             Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
-            CameraManager.GetGameplayCameras().SetParent(cameraVFXObj);
 
+            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
 
             //PlaySound("CZB_AUD_Cherno_Bill_Arrival_F1_EXP");
 
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
+
+            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
 
             InternalTools.DoActionDelayed(() =>
             {
                 unitView.GameObject.SetActive(true);
                 unitView.battleframeAnimator.Play(0, -1, 1);
 
-                CameraManager.GetGameplayCameras().SetParent(null);
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero;
                 Object.Destroy(animationVFX);
 
                 endArrivalCallback?.Invoke();
