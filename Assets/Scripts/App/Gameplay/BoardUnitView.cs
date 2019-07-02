@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _arrivalModelObject;
 
-        private GameObject _arrivaVfxObject;
+        //private GameObject _arrivaVfxObject;
 
         private GameObject _distractObject;
 
@@ -496,12 +496,24 @@ namespace Loom.ZombieBattleground
                     Object.Destroy(_battleframeObject);
 
                 string vfxPath = string.Empty;
+                GameObject arrivalPrefab;
                 if (Model.Card.Prototype.Type == Model.InitialUnitType)
+                {
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                    arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                }
                 else
+                {
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.Card.Prototype.Type + "_To_" + Model.InitialUnitType + "_Arrival_VFX";
+                    arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
 
-                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                    if (arrivalPrefab == null)
+                    {
+                        vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                        arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                    }
+                }
+
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
@@ -680,7 +692,7 @@ namespace Loom.ZombieBattleground
         {
             _unitContentObject.SetActive(state);
             //_arrivalModelObject.SetActive(state);
-            _arrivaVfxObject.SetActive(state);
+            //_arrivaVfxObject.SetActive(state);
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)
