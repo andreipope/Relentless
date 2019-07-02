@@ -6,6 +6,9 @@ using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Loom.Google.Protobuf;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
@@ -15,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         public BaseRaycaster[] AlwaysActiveRaycasters = new BaseRaycaster[0];
         public GameObject[] ObjectsToDisableInProduction = { };
+
+        public Dropdown SelectBackendDropdown;
 
         private AFPSCounter _afpsCounter;
         private bool _isVisible;
@@ -26,6 +31,18 @@ namespace Loom.ZombieBattleground
             _afpsCounter = FindObjectOfType<AFPSCounter>();
             if (_afpsCounter == null)
                 throw new Exception("AFPSCounter instance not found in scene");
+
+            SelectBackendDropdown.options.Clear();
+            SelectBackendDropdown.options.Add(new Dropdown.OptionData("No Override"));
+            SelectBackendDropdown.options.AddRange(
+                ((BackendPurpose[]) Enum.GetValues(typeof(BackendPurpose)))
+                .Select(p => new Dropdown.OptionData(p.ToString()))
+            );
+
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValueKey, -1);
+            SelectBackendDropdown.value = backendOverrideValue + 1;
+            SelectBackendDropdown.RefreshShownValue();
+            SelectBackendDropdown.onValueChanged.AddListener(SelectBackend);
 
             SetVisibility(ShouldBeVisible);
 #if USE_PRODUCTION_BACKEND
@@ -76,6 +93,20 @@ namespace Loom.ZombieBattleground
         }
 
         #region UI Handlers
+
+        public void SelectBackend(int index)
+        {
+            if (index == 0)
+            {
+                index = -1;
+            }
+            else
+            {
+                index--;
+            }
+
+            PlayerPrefs.SetInt(Constants.BackendPurposeOverrideValueKey, index);
+        }
 
         public void SubmitBugReport()
         {

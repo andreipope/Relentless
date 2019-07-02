@@ -31,7 +31,19 @@ namespace Loom.ZombieBattleground.Editor
             compareLogic.Config.MaxDifferences = 100;
             compareLogic.Config.ActualName = "Fetched";
             compareLogic.Config.ExpectedName = "Stored";
-            return compareLogic.Compare(storedNetworks, fetchedNetworks);
+            ComparisonResult comparisonResult = compareLogic.Compare(storedNetworks, fetchedNetworks);
+            for (int i = comparisonResult.Differences.Count - 1; i >= 0; i--)
+            {
+                Difference difference = comparisonResult.Differences[i];
+                // Ignore difference if fetched address is none
+                if (difference.Object2Value == "none")
+                {
+                    comparisonResult.Differences.RemoveAt(i);
+                }
+            }
+
+            comparisonResult.DifferencesString = null;
+            return comparisonResult;
         }
 
         public MarketplacePlasmachainContractAddressesNetworks GetContractAddressesOnAllNetworks()

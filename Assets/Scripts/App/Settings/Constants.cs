@@ -217,6 +217,8 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
+        internal const string BackendPurposeOverrideValueKey = "RL_BackendPurposeOverride";
+
         internal const int LastTutorialId = 8;
 
         internal const string MarketPlaceLink = "https://loom.games/en/purchase";

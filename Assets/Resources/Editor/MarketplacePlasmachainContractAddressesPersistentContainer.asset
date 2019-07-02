@@ -49,7 +49,7 @@ MonoBehaviour:
       _tronLotteryContractAddress: 0xeca0c956bf5f2b5cf2b08a813fce68cba42a4f24
     _production:
       _zbgCardContractAddress: 0xad94eae166f5f69167e5668f2c8dbfa8e690a120
-      _cardFaucetContractAddress: 0x9d5dd04317a58a16a33b7730e0c02673039148af
+      _cardFaucetContractAddress: 0x1621fbbede0e85fb1fafd4f29cc2faaebde62db0
       _boosterPackContractAddress: 0x2fa54683d976c72806d2e54d1d61a476848e4da9
       _superPackContractAddress: 0x2b44d4f3b086d4b752d762ec2cf1ab7a0b3bfe44
       _airPackContractAddress: 0xcfaef1552a11acc7794088ea2434c23af8434ced

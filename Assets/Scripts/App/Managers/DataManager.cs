@@ -215,6 +215,8 @@ namespace Loom.ZombieBattleground
 
         private void DeleteVersionFile()
         {
+            PlayerPrefs.DeleteAll();
+
             FileInfo[] files = _dir.GetFiles();
             foreach (FileInfo file in files)
             {

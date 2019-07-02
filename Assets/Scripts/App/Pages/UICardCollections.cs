@@ -43,9 +43,13 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.CardCollectionPageType _pageType;
 
-        private static UnitCardUI _selectedUnitCard;
+        private UnitCardUI _selectedUnitCard;
 
         private GameObject _deckScrollRect;
+
+        private bool _showingUserCollection;
+
+        private Toggle _showCollectionToggle;
 
         #region IUIElement
 
@@ -81,15 +85,18 @@ namespace Loom.ZombieBattleground
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
-            ScrollRect scrollRect = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View")
-                .GetComponent<ScrollRect>();
+            ScrollRect scrollRect = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>();
             _allCardsContent = scrollRect.content;
             Scrollbar cardCollectionScrollbar = scrollRect.horizontalScrollbar;
 
             switch (pageType)
             {
                 case Enumerators.CardCollectionPageType.Army:
+                    _showingUserCollection = true;
+                    _showCollectionToggle = _selfPage.transform.Find("Panel_Frame/Upper_Items/Toggle_ShowCollection")?.GetComponent<Toggle>();
+                    _showCollectionToggle.onValueChanged.AddListener(OnShowCollectionToggleValueChanged);
                     LoadAllCards();
+                    UpdateCardsAmountDisplay();
                     break;
                 case Enumerators.CardCollectionPageType.DeckEditing:
                     _deckScrollRect = _selfPage.transform.Find("Deck_Content/Cards/Scroll View").gameObject;
@@ -122,6 +129,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void OnShowCollectionToggleValueChanged(bool arg0)
+        {
+            _showingUserCollection = !_showingUserCollection;
+            UpdateCardsUiList();
+        }
+
         private void UpdateCardsUiList()
         {
             List<Enumerators.Faction> availableSetType = _cardFilter.FilterData.GetFilteredFactionList();
@@ -136,7 +149,8 @@ namespace Loom.ZombieBattleground
                     (
                         CheckIfSatisfyFactionFilter(card) &&
                         CheckIfSatisfyGooCostFilter(card) &&
-                        CheckIfSatisfyRankFilter(card)
+                        CheckIfSatisfyRankFilter(card) &&
+                        CheckIfSatisfyUserCollectionFilter(card)
                     )
                     {
                         resultList.Add(card);
@@ -159,7 +173,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < cardUiList.Count; i++)
             {
                 Card card = cardUiList[i].GetCard();
-                if(CheckIfSatisfyRankFilter(card) && CheckIfSatisfyGooCostFilter(card))
+                if(CheckIfSatisfyRankFilter(card) && CheckIfSatisfyGooCostFilter(card) && CheckIfSatisfyUserCollectionFilter(card))
                     cardUiList[i].EnableObject(isFilter);
             }
 
@@ -177,7 +191,9 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < cardUiList.Count; i++)
             {
                 Card card = cardUiList[i].GetCard();
-                if(CheckIfSatisfyFactionFilter(card) && CheckIfSatisfyGooCostFilter(card))
+                if(CheckIfSatisfyFactionFilter(card) &&
+                    CheckIfSatisfyGooCostFilter(card) &&
+                    CheckIfSatisfyUserCollectionFilter(card))
                     cardUiList[i].EnableObject(isFilter);
             }
 
@@ -195,7 +211,9 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < cardUiList.Count; i++)
             {
                 Card card = cardUiList[i].GetCard();
-                if(CheckIfSatisfyFactionFilter(card) && CheckIfSatisfyRankFilter(card))
+                if(CheckIfSatisfyFactionFilter(card) &&
+                    CheckIfSatisfyRankFilter(card) &&
+                    CheckIfSatisfyUserCollectionFilter(card))
                     cardUiList[i].EnableObject(isFilter);
             }
 
@@ -410,7 +428,7 @@ namespace Loom.ZombieBattleground
 
                 // get amount of card in collection data
                 CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
-                int totalCardAmount = cardInCollection.Amount;
+                int totalCardAmount = cardInCollection?.Amount ?? 0;
                _cardUIList[i].UpdateCardAmount(totalCardAmount);
             }
         }
@@ -496,7 +514,8 @@ namespace Loom.ZombieBattleground
                         card.Name.ToLower().Contains(keyword) &&
                         CheckIfSatisfyFactionFilter(card) &&
                         CheckIfSatisfyGooCostFilter(card) &&
-                        CheckIfSatisfyRankFilter(card)
+                        CheckIfSatisfyRankFilter(card) &&
+                        CheckIfSatisfyUserCollectionFilter(card)
                     )
                     {
                         resultList.Add(card);
@@ -510,19 +529,16 @@ namespace Loom.ZombieBattleground
 
         private void DisplayCards(List<Card> cards)
         {
-            List<UnitCardUI> cardUiList = _cardUIList.Where(uiCard =>
-                cards.Any(resultCard => uiCard.GetCard().CardKey == resultCard.CardKey)).ToList();
-            for (int i = 0; i < cardUiList.Count; i++)
+            foreach (UnitCardUI cardUI in _cardUIList)
             {
-                cardUiList[i].EnableObject(true);
-            }
+                bool enabled = cards.Any(card => cardUI.GetCard().CardKey == card.CardKey);
+                cardUI.EnableObject(enabled);
 
-            cardUiList.Clear();
-            cardUiList = _cardUIList.Where(uiCard =>
-                cards.All(resultCard => uiCard.GetCard().CardKey != resultCard.CardKey)).ToList();
-            for (int i = 0; i < cardUiList.Count; i++)
-            {
-                cardUiList[i].EnableObject(false);
+                if (_showingUserCollection)
+                {
+                    bool existsInCollection = _dataManager.CachedCollectionData.Cards.Any(card => card.CardKey == cardUI.GetCard().CardKey);
+                    cardUI.GrayScaleCard(existsInCollection);
+                }
             }
         }
 
@@ -582,13 +598,17 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardCounterText(int cardCount)
         {
-            _cardCounter.text = cardCount + "/" + _allCardsCount;
+            int totalCardCount =
+                _showingUserCollection ?
+                    _dataManager.CachedCollectionData.Cards.Count :
+                    _allCardsCount;
+            _cardCounter.text = cardCount + "/" + totalCardCount;
         }
 
         private void UpdateCardCounterText()
         {
-            var activeCards = _cardUIList.FindAll(card => card.IsActive());
-           _cardCounter.text = activeCards.Count + "/" + _allCardsCount;
+            List<UnitCardUI> activeCards = _cardUIList.FindAll(card => card.IsActive());
+            UpdateCardCounterText(activeCards.Count);
         }
 
         private bool CheckIfSatisfyGooCostFilter(Card card)
@@ -618,6 +638,14 @@ namespace Loom.ZombieBattleground
         private bool CheckIfSatisfyFactionFilter(Card card)
         {
             return _cardFilter.FilterData.FactionDictionary[card.Faction];
+        }
+
+        private bool CheckIfSatisfyUserCollectionFilter(Card card)
+        {
+            if (!_showingUserCollection)
+                return true;
+
+            return _dataManager.CachedCollectionData.Cards.Any(c => c.CardKey == card.CardKey);
         }
     }
 }

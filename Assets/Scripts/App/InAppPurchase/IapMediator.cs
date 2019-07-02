@@ -407,7 +407,10 @@ namespace Loom.ZombieBattleground.Iap
         private void IapPlatformStoreFacadeOnInitialized()
         {
             _initializationState = IapInitializationState.Initialized;
-            Products = _iapPlatformStoreFacade.StoreController.products.all.ToList();
+            Products =
+                _iapPlatformStoreFacade.StoreController.products.all
+                    .Where(product => product.availableToPurchase && product.definition.enabled)
+                    .ToList();
             Initialized?.Invoke();
         }
 

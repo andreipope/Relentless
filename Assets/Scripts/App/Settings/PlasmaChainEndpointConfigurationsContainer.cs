@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 "wss://plasma.dappchains.com/queryws",
                 "wss://plasma.dappchains.com/websocket",
                 "0xad94eae166f5f69167e5668f2c8dbfa8e690a120",
-                "0x9d5dd04317a58a16a33b7730e0c02673039148af",
+                "0x1621fbbede0e85fb1fafd4f29cc2faaebde62db0",
                 "0x2fa54683d976c72806d2e54d1d61a476848e4da9",
                 "0x2b44d4f3b086d4b752d762ec2cf1ab7a0b3bfe44",
                 "0xcfaef1552a11acc7794088ea2434c23af8434ced",

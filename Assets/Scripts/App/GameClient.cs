@@ -118,6 +118,12 @@ namespace Loom.ZombieBattleground
 #endif
             BackendPurpose backend = defaultBackend;
 
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValueKey, -1);
+            if (backendOverrideValue != -1)
+            {
+                backend = (BackendPurpose) backendOverrideValue;
+            }
+
 #if UNITY_EDITOR
             const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
             string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpointName);
