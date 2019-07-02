@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _arrivalModelObject;
 
-        private GameObject _arrivaVfxObject;
+        //private GameObject _arrivaVfxObject;
 
         private GameObject _distractObject;
 
@@ -496,7 +496,9 @@ namespace Loom.ZombieBattleground
                     Object.Destroy(_battleframeObject);
 
                 string vfxPath = string.Empty;
-                if (Model.Card.Prototype.Type == Model.InitialUnitType)
+                if (playUniqueAnimation)
+                    vfxPath = "Prefabs/Gameplay/ArrivalsVfx/Unique_Arrival_VFX";
+                else if (Model.Card.Prototype.Type == Model.InitialUnitType)
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
                 else
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.Card.Prototype.Type + "_To_" + Model.InitialUnitType + "_Arrival_VFX";
@@ -680,7 +682,7 @@ namespace Loom.ZombieBattleground
         {
             _unitContentObject.SetActive(state);
             //_arrivalModelObject.SetActive(state);
-            _arrivaVfxObject.SetActive(state);
+            //_arrivaVfxObject.SetActive(state);
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)
