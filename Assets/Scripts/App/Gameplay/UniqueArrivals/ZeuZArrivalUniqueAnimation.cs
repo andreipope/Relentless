@@ -25,8 +25,7 @@ namespace Loom.ZombieBattleground
             unitView.GameObject.SetActive(false);
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                        "Prefabs/VFX/UniqueArrivalAnimations/ZeuZ_Arrival"));
-            
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/ZeuZ_Arrival"));            
 
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
