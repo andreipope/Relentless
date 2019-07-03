@@ -29,8 +29,7 @@ namespace Loom.Client
 
         private ILogger logger = NullLogger.Instance;
 
-        // null if not subscribed to anything
-        private ICollection<string> subscribedTopics;
+        private HashSet<string> subscribedTopics = new HashSet<string>();
 
         /// <summary>
         /// RPC client to use for submitting transactions.
@@ -56,6 +55,11 @@ namespace Loom.Client
         /// Controls the flow of blockchain calls.
         /// </summary>
         public IDAppChainClientCallExecutor CallExecutor { get; }
+
+        /// <summary>
+        /// List of topics this client is currently subscribed to.
+        /// </summary>
+        public IReadOnlyCollection<string> SubscribedTopics => subscribedTopics;
 
         /// <summary>
         /// Logger to be used for logging, defaults to <see cref="NullLogger"/>.
@@ -193,7 +197,7 @@ namespace Loom.Client
             if (this.readClient.ConnectionState != RpcConnectionState.Connected)
                 throw new InvalidOperationException("Read client must be connected");
 
-            if (this.subscribedTopics != null && this.subscribedTopics.SequenceEqual(topics))
+            if (this.subscribedTopics.IsSupersetOf(topics))
                 return;
 
             await this.CallExecutor.Call(
@@ -201,42 +205,111 @@ namespace Loom.Client
                 {
                     await EnsureConnected();
                     await this.readClient.SubscribeToEventsAsync(topics);
+                    this.subscribedTopics.UnionWith(topics);
                 },
                 new CallDescription("_subscribe", false)
             );
         }
 
         /// <summary>
-        /// Subscribes to chain events.
+        /// Subscribes to all chain events.
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
+        [Obsolete("Use " + nameof(SubscribeToAllEvents), true)]
         public Task SubscribeToEvents()
+        {
+            return SubscribeToAllEvents();
+        }
+
+        /// <summary>
+        /// Subscribes to all chain events.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public Task SubscribeToAllEvents()
         {
             return SubscribeToEvents(Array.Empty<string>());
         }
 
         /// <summary>
-        /// Unsubscribes from chain events.
+        /// Unsubscribes from all chain events.
         /// </summary>
+        [Obsolete("Use " + nameof(UnsubscribeFromAllEvents), true)]
         public async Task UnsubscribeFromEvents()
         {
+            await UnsubscribeFromAllEvents();
+        }
+
+        /// <summary>
+        /// Unsubscribes from all chain events.
+        /// </summary>
+        public async Task UnsubscribeFromAllEvents()
+        {
+            await UnsubscribeFromEvents(this.subscribedTopics.ToArray());
+        }
+
+        /// <summary>
+        /// Unsubscribes from chain events.
+        /// </summary>
+        public async Task UnsubscribeFromEvents(IReadOnlyList<string> topics)
+        {
+            if (topics == null)
+                throw new ArgumentNullException(nameof(topics));
+
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            // Not subscribed, exit early
-            if (this.subscribedTopics == null)
-                return;
-
             if (this.readClient.ConnectionState != RpcConnectionState.Connected)
                 throw new InvalidOperationException("Read client must be connected");
+
+            // Not unsubscribing from anything, exit early
+            if (topics.Count == 0)
+                return;
+
+            foreach (string topic in topics)
+            {
+                if (!this.subscribedTopics.Contains(topic))
+                    throw new ArgumentException("Not subscribed to topic: " + topic);
+            }
 
             await this.CallExecutor.Call(
                 async () =>
                 {
                     await EnsureConnected();
-                    await this.readClient.UnsubscribeFromEventsAsync();
-                    this.subscribedTopics = null;
+
+                    // For whatever reason, "subevents" takes a list of topics,
+                    // but "unsubevents" takes a single topic, so we have to unsubcribe one topic per call at a time.
+                    List<Exception> exceptions = null;
+                    foreach (string topic in topics)
+                    {
+                        Logger.Log("Unsubscribing from topic " + topic);
+
+                        try
+                        {
+                            await this.readClient.UnsubscribeFromEventAsync(topic);
+                            this.subscribedTopics.Remove(topic);
+                        }
+                        catch (Exception e)
+                        {
+                            if (exceptions == null)
+                            {
+                                exceptions = new List<Exception>();
+                            }
+
+                            exceptions.Add(e);
+                        }
+                    }
+
+                    if (exceptions != null && exceptions.Count != 0)
+                    {
+                        throw new RpcClientException(
+                            "Unsubscribing from one or more topics has failed",
+                            new AggregateException(exceptions),
+                            -1,
+                            this.readClient
+                        );
+                    }
                 },
                 new CallDescription("_unsubscribe", false)
             );
@@ -376,7 +449,7 @@ namespace Loom.Client
 
         private void ReadClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            this.subscribedTopics = null;
+            this.subscribedTopics.Clear();
         }
 
         private async Task EnsureConnected()

@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
             try
             {
                 ResetCheckPlayerStatus();
-                await _backendFacade.UnsubscribeEvent();
+                await _backendFacade.UnsubscribeFromAllEvents();
             }
             catch(Exception e)
             {
@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
                 await _matchMakingFlowController.Stop();
                 _matchMakingFlowController = null;
 
-                await _backendFacade.UnsubscribeEvent();
+                await _backendFacade.UnsubscribeFromAllEvents();
                 if (MatchMetadata?.Id != null)
                 {
                     await _backendFacade.CancelFindMatch(
@@ -257,7 +257,9 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
+            Log.Debug("Set _keepAliveActive = true");
             _keepAliveActive = true;
+            _nextKeepAliveSendTimer = 0;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
@@ -472,7 +474,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            Log.Info($"{nameof(ResetCheckPlayerStatus)} ({nameof(_keepAliveActive)} = {_keepAliveActive}, {nameof(_nextKeepAliveSendTimer)} = {_nextKeepAliveSendTimer})");
+            Log.Info($"{nameof(ResetCheckPlayerStatus)} (was {nameof(_keepAliveActive)} = {_keepAliveActive}, {nameof(_nextKeepAliveSendTimer)} = {_nextKeepAliveSendTimer})");
             _keepAliveActive = false;
             _nextKeepAliveSendTimer = 0f;
         }

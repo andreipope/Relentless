@@ -117,9 +117,11 @@ namespace Loom.ZombieBattleground.Test
 
         public MultiplayerDebugClient(string name = null, BigInteger? userIdNumber = null)
         {
+            userIdNumber = userIdNumber ?? new BigInteger(Guid.NewGuid().ToByteArray().Concat(new byte[] { 0 }).ToArray());
+
             UserDataModel = new UserDataModel(
                 "DebugClient_" + (name != null ? name + "_" : "") + userIdNumber,
-                userIdNumber ?? new BigInteger(Guid.NewGuid().ToByteArray()),
+                userIdNumber.Value,
                 CryptoUtils.GeneratePrivateKey()
             );
         }
@@ -170,6 +172,7 @@ namespace Loom.ZombieBattleground.Test
             _keepAliveTimer = 0f;
             if (BackendFacade != null)
             {
+                await BackendFacade.UnsubscribeFromAllEvents();
                 BackendFacade.Dispose();
 
                 BackendFacade = null;

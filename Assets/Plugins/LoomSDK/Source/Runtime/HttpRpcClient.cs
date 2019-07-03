@@ -28,7 +28,7 @@ namespace Loom.Client
             throw new NotImplementedException();
         }
 
-        public override Task UnsubscribeFromEventsAsync()
+        public override Task UnsubscribeFromEventAsync(string topic)
         {
             throw new NotImplementedException();
         }
@@ -41,7 +41,7 @@ namespace Loom.Client
         {
             return Task.CompletedTask;
         }
-        
+
         public override Task DisconnectAsync()
         {
             return Task.CompletedTask;

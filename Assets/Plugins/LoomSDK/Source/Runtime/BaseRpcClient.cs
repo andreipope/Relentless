@@ -50,7 +50,7 @@ namespace Loom.Client.Internal
         public abstract Task ConnectAsync();
         public abstract Task DisconnectAsync();
         public abstract Task SubscribeToEventsAsync(ICollection<string> topics);
-        public abstract Task UnsubscribeFromEventsAsync();
+        public abstract Task UnsubscribeFromEventAsync(string topic);
 
         protected abstract void Dispose(bool disposing);
 
@@ -100,16 +100,16 @@ namespace Loom.Client.Internal
                 this
             );
         }
-        
+
         protected void AssertNotAlreadyConnectedOrConnecting()
         {
             RpcConnectionState connectionState = this.ConnectionState;
-            
+
             if (connectionState == RpcConnectionState.Connecting)
             {
                 throw new RpcClientException("An attempt to connect while in process of connecting", 1, this);
             }
-            
+
             if (connectionState == RpcConnectionState.Connected)
             {
                 throw new RpcClientException("An attempt to connect when already connected", 1, this);

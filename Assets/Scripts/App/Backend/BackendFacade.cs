@@ -425,19 +425,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
         }
 
-        public async Task SubscribeEvent(IList<string> topics)
+        public async Task SubscribeToEvents(IList<string> topics)
         {
-            await UnsubscribeEvent();
+            await UnsubscribeFromAllEvents();
             Contract.EventReceived += EventHandler;
             await Contract.Client.SubscribeToEvents(topics);
         }
 
-        public async Task UnsubscribeEvent()
+        public async Task UnsubscribeFromAllEvents()
         {
             Contract.EventReceived -= EventHandler;
             try
             {
-                await Contract.Client.UnsubscribeFromEvents();
+                await Contract.Client.UnsubscribeFromAllEvents();
             }
             catch (RpcClientException rpcClientException) when (rpcClientException.Message.Contains("Subscription not found"))
             {

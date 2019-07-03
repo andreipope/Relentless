@@ -46,7 +46,7 @@ namespace Loom.Client.Unity.WebGL.Internal
             this.url = new Uri(url);
             this.webSocket = new WebSocket();
         }
-        
+
         public override async Task ConnectAsync()
         {
             AssertNotAlreadyConnectedOrConnecting();

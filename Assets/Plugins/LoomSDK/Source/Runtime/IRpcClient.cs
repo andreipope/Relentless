@@ -16,7 +16,7 @@ namespace Loom.Client
         Task ConnectAsync();
         Task DisconnectAsync();
         Task SubscribeToEventsAsync(ICollection<string> topics);
-        Task UnsubscribeFromEventsAsync();
+        Task UnsubscribeFromEventAsync(string topic);
     }
 
     [Obsolete("Use IRpcClient", true)]
