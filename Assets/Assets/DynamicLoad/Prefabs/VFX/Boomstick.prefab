@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4277838956231708}
   - component: {fileID: 198000915782378562}
   - component: {fileID: 199180027814725988}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Muzzle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4776,7 +4776,7 @@ GameObject:
   - component: {fileID: 4091114739528524}
   - component: {fileID: 198399036171991228}
   - component: {fileID: 199968271956377926}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesB (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9592,7 +9592,7 @@ GameObject:
   - component: {fileID: 4486772944245248}
   - component: {fileID: 198218636144095140}
   - component: {fileID: 199355920189741190}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14366,7 +14366,7 @@ GameObject:
   - component: {fileID: 4282264871338714}
   - component: {fileID: 198647449820998612}
   - component: {fileID: 199653014730613996}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesA (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19131,7 +19131,7 @@ GameObject:
   - component: {fileID: 4540726413236554}
   - component: {fileID: 198008793811157034}
   - component: {fileID: 199783447265527040}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23959,7 +23959,7 @@ GameObject:
   - component: {fileID: 4390202861523254}
   - component: {fileID: 198129886971029594}
   - component: {fileID: 199155351886834530}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesA (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28781,7 +28781,7 @@ GameObject:
   - component: {fileID: 4580685788708220}
   - component: {fileID: 198800906298278518}
   - component: {fileID: 199351206178912840}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesA (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33546,7 +33546,7 @@ GameObject:
   - component: {fileID: 4003537234976848}
   - component: {fileID: 198140678519603998}
   - component: {fileID: 199550365115020738}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesB (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38312,7 +38312,7 @@ GameObject:
   - component: {fileID: 4101018858202462}
   - component: {fileID: 198506932339832760}
   - component: {fileID: 199864621094034352}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43077,7 +43077,7 @@ GameObject:
   - component: {fileID: 4818447398963542}
   - component: {fileID: 198750514370561968}
   - component: {fileID: 199381486406494206}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesB (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47843,7 +47843,7 @@ GameObject:
   - component: {fileID: 4793809026468614}
   - component: {fileID: 198732271647391862}
   - component: {fileID: 199019858244036032}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesA (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52608,7 +52608,7 @@ GameObject:
   - component: {fileID: 4021134682572834}
   - component: {fileID: 198914837632184792}
   - component: {fileID: 199475661646547082}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57386,7 +57386,7 @@ GameObject:
   - component: {fileID: 4493497572339596}
   - component: {fileID: 198206609109111462}
   - component: {fileID: 199215034225631794}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesB (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62152,7 +62152,7 @@ GameObject:
   - component: {fileID: 4616392870414286}
   - component: {fileID: 198056952940114440}
   - component: {fileID: 199187642014365324}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66980,7 +66980,7 @@ GameObject:
   - component: {fileID: 4473486717249508}
   - component: {fileID: 198754031930716868}
   - component: {fileID: 199249068930394060}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HolesB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71746,7 +71746,7 @@ GameObject:
   - component: {fileID: 5910181898654413867}
   - component: {fileID: 514784943319710295}
   - component: {fileID: 5281815088404656120}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH2 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76520,7 +76520,7 @@ GameObject:
   - component: {fileID: 5581171886630017001}
   - component: {fileID: 7368261142977496763}
   - component: {fileID: 7500057196629068156}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH2 (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81294,7 +81294,7 @@ GameObject:
   - component: {fileID: 5044077383730049862}
   - component: {fileID: 4353763826542568337}
   - component: {fileID: 5371033519042949395}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86068,7 +86068,7 @@ GameObject:
   - component: {fileID: 1019675110801526628}
   - component: {fileID: 3061230442332376668}
   - component: {fileID: 8656469782245724136}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH2 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

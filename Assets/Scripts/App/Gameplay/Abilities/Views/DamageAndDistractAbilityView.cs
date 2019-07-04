@@ -58,14 +58,16 @@ namespace Loom.ZombieBattleground
                     justPosition = true;
                 }
 
-                Vector3 targetPosition = Vector3.zero;
+                Vector3 targetPosition = VfxObject.transform.position + offset;
 
                 if (Ability.CardModel != null && Ability.CardModel.Prototype.CardKey.MouldId == _lawnmowerCardMouldId)
                 {
-                    CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                    VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
-                    _lineObject = VfxObject.transform.Find("Lawnmover/BurstToxic").gameObject;
-                    _cardDissapearingPrefab = VfxObject.transform.Find("Lawnmover/CardsDissapearing/Tears").gameObject;
+                    float posY = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 2f : -1.45f;
+                    targetPosition = new Vector3(targetPosition.x, posY, targetPosition.z);
+
+                    CreateVfx(targetPosition, true, delayBeforeDestroy, true);
+                    _lineObject = VfxObject.transform.Find("BurstToxic").gameObject;
+                    _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing").gameObject;
                     _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                     Ability.OnUpdateEvent += OnUpdateEventHandler;
