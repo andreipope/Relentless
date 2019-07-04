@@ -217,7 +217,9 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal const string BackendPurposeOverrideValueKey = "RL_BackendPurposeOverride";
+        internal const string BackendPurposeOverrideValuePlayerPrefsKey = "RL_BackendPurposeOverride";
+
+        internal const string ForceUseAuthPlayerPrefsKey = "RL_ForceUseAuth";
 
         internal const int LastTutorialId = 8;
 

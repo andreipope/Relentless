@@ -20,8 +20,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private IDataManager _dataManager;
 
-        private IUIManager _uiManager;
-
         private BackendFacade _backendFacade;
         private AuthApiFacade _authApiFacade;
         private AuthFiatApiFacade _authFiatApiFacade;
@@ -34,7 +32,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
-            _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _authApiFacade = GameClient.Get<AuthApiFacade>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
@@ -103,6 +100,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 _backendFacade.UserFullCardCollectionSyncEventReceived += OnUserFullCardCollectionSyncEventReceived;
                 LoginResponse loginResponse = await _backendFacade.Login(UserDataModel.UserId);
+                if (loginResponse.DataWiped)
+                {
+                    Log.Warn("NOTE: user data wiped");
+                }
+
                 if (loginResponse.FullCardCollectionSyncExecuted)
                 {
                     Log.Debug("Waiting for full card collection sync event...");
@@ -135,9 +137,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             try
             {
-                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
+                BackendPurpose defaultBackendPurpose = GameClient.GetDefaultBackendPurpose();
+                if (defaultBackendPurpose == BackendPurpose.Production ||
+                    GameClient.GetForceUseAuth())
                 {
-                    ZbVersion zbVersion = await _authApiFacade.GetZbVersionData(BackendPurpose.Production);
+                    ZbVersion zbVersion = await _authApiFacade.GetZbVersionData(defaultBackendPurpose);
                     BackendEndpoint backendEndpoint =
                         _authApiFacade.GetProductionBackendEndpointFromZbVersion(zbVersion, _backendFacade.BackendEndpoint.PlasmachainEndpointsConfiguration);
                     _backendFacade.SetBackendEndpoint(backendEndpoint);
@@ -162,7 +166,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             IDAppChainClientCallExecutor chainClientCallExecutor = new NotifyingDAppChainClientCallExecutor(clientConfiguration);
             await _backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, chainClientCallExecutor: chainClientCallExecutor);
 
-            // Subscribe to persistent user events
+            // Subscribe to persistent user events right away, since we always listen to them
             await _backendFacade.SubscribeToEvents(UserDataModel.UserId, Array.Empty<string>());
         }
     }

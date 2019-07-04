@@ -184,6 +184,7 @@ namespace Loom.ZombieBattleground
             ClearOpenedCards();
 
             Object.Destroy(_openedPackPanel);
+            _controller?.Dispose();
 
             if (_selfPage == null)
                 return;
@@ -549,6 +550,10 @@ namespace Loom.ZombieBattleground
             {
                 return Task.FromResult(OneOf<Success, Exception>.FromT0(new Success()));
             }
+
+            public virtual void Dispose()
+            {
+            }
         }
 
         private class TutorialPackOpenerController : PackOpenerControllerBase
@@ -765,6 +770,11 @@ namespace Loom.ZombieBattleground
                 }
 
                 return new Success();
+            }
+
+            public override void Dispose()
+            {
+                _backendFacade.UserAutoCardCollectionSyncEventReceived -= OnUserAutoCardCollectionSyncEventReceived;
             }
 
             private void OnUserAutoCardCollectionSyncEventReceived(BackendFacade.UserAutoCardCollectionSyncEventData evt)

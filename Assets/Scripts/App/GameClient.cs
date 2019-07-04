@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
 #endif
             BackendPurpose backend = defaultBackend;
 
-            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValueKey, -1);
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, -1);
             if (backendOverrideValue != -1)
             {
                 backend = (BackendPurpose) backendOverrideValue;
@@ -134,6 +134,11 @@ namespace Loom.ZombieBattleground
 #endif
 
             return backend;
+        }
+
+        public static bool GetForceUseAuth()
+        {
+            return PlayerPrefs.GetInt(Constants.ForceUseAuthPlayerPrefsKey, 0) != 0;
         }
 
         public static GameClient Instance

@@ -24,6 +24,7 @@ namespace Loom.ZombieBattleground
         public GameObject[] ObjectsToDisableInProduction = { };
 
         public Dropdown SelectBackendDropdown;
+        public Toggle ForceUseAuthToggle;
 
         public Button RequestFullCardCollectionSyncButton;
 
@@ -45,10 +46,14 @@ namespace Loom.ZombieBattleground
                 .Select(p => new Dropdown.OptionData(p.ToString()))
             );
 
-            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValueKey, -1);
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, -1);
             SelectBackendDropdown.value = backendOverrideValue + 1;
             SelectBackendDropdown.RefreshShownValue();
-            SelectBackendDropdown.onValueChanged.AddListener(SelectBackend);
+            SelectBackendDropdown.onValueChanged.AddListener(OnSelectBackendDropdownValueChanged);
+
+            bool forceUseAuth = PlayerPrefs.GetInt(Constants.ForceUseAuthPlayerPrefsKey, 0) != 0;
+            ForceUseAuthToggle.isOn = forceUseAuth;
+            ForceUseAuthToggle.onValueChanged.AddListener(OnForceUseAuthToggleValueChanged);
 
             SetVisibility(ShouldBeVisible);
 #if USE_PRODUCTION_BACKEND
@@ -99,20 +104,6 @@ namespace Loom.ZombieBattleground
         }
 
         #region UI Handlers
-
-        public void SelectBackend(int index)
-        {
-            if (index == 0)
-            {
-                index = -1;
-            }
-            else
-            {
-                index--;
-            }
-
-            PlayerPrefs.SetInt(Constants.BackendPurposeOverrideValueKey, index);
-        }
 
         public async void RequestFullCardCollectionSync()
         {
@@ -195,6 +186,25 @@ namespace Loom.ZombieBattleground
             {
                 Debug.LogError(e);
             }
+        }
+
+        private void OnSelectBackendDropdownValueChanged(int index)
+        {
+            if (index == 0)
+            {
+                index = -1;
+            }
+            else
+            {
+                index--;
+            }
+
+            PlayerPrefs.SetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, index);
+        }
+
+        private void OnForceUseAuthToggleValueChanged(bool forceUseAuth)
+        {
+            PlayerPrefs.SetInt(Constants.ForceUseAuthPlayerPrefsKey, forceUseAuth ? 1 : 0);
         }
 
         #endregion

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Numerics;
 using Loom.Client;
@@ -516,14 +517,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         //attempt to implement a one message action policy
-        private byte[] _previousEventData;
+        private RawChainEventArgs _previousEventArgs;
 
         private void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
         {
-            if (_previousEventData != null && _previousEventData.SequenceEqual(rawChainEventArgs.Data))
+            if (_previousEventArgs != null &&
+                _previousEventArgs.BlockHeight == rawChainEventArgs.BlockHeight &&
+                _previousEventArgs.CallerAddress == rawChainEventArgs.CallerAddress &&
+                _previousEventArgs.Topics.SequenceEqual(rawChainEventArgs.Topics) &&
+                _previousEventArgs.Data.SequenceEqual(rawChainEventArgs.Data)
+            )
                 return;
 
-            _previousEventData = rawChainEventArgs.Data;
+            _previousEventArgs = rawChainEventArgs;
 
             bool ParseAndInvokeMatchEvent(IReadOnlyList<string> topicSplit)
             {
