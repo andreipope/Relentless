@@ -98,6 +98,7 @@ namespace Loom.ZombieBattleground
                     _showCollectionToggle = _selfPage.transform.Find("Panel_Frame/Lower_Items/Filters/FiltersButtons/Toggle_ShowCollection")?.GetComponent<Toggle>();
                     if (_showCollectionToggle != null)
                     {
+                        _showCollectionToggle.isOn = _showCollectionToggle;
                         _showCollectionToggle.onValueChanged.AddListener(OnShowCollectionToggleValueChanged);
                     }
 
@@ -135,9 +136,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnShowCollectionToggleValueChanged(bool arg0)
+        private void OnShowCollectionToggleValueChanged(bool onlyCollection)
         {
-            _showingUserCollection = !_showingUserCollection;
+            _showingUserCollection = onlyCollection;
             UpdateCardsUiList();
         }
 
@@ -648,7 +649,7 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIfSatisfyUserCollectionFilter(Card card)
         {
-            if (!_showingUserCollection)
+            if (!_showingUserCollection && _pageType == Enumerators.CardCollectionPageType.Army)
                 return true;
 
             return _dataManager.CachedCollectionData.Cards.Any(c => c.CardKey == card.CardKey);
