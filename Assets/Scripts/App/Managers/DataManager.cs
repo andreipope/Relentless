@@ -12,7 +12,6 @@ using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -95,7 +94,7 @@ namespace Loom.ZombieBattleground
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
             {
-                await LoadCachedData((Enumerators.CacheDataType) i);
+                await LoadCache((Enumerators.CacheDataType) i);
             }
 
             _localizationManager.ApplyLocalization();
@@ -244,7 +243,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<LoginPopup>().SetValidationFailed(msg);
         }
 
-        private async Task LoadCachedData(Enumerators.CacheDataType type)
+        public async Task LoadCache(Enumerators.CacheDataType type)
         {
             switch (type)
             {

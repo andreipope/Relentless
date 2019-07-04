@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CodeStage.AdvancedFPSCounter;
+using log4net;
 using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,12 +16,16 @@ namespace Loom.ZombieBattleground
 {
     public class HiddenUI : MonoBehaviour
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(HiddenUI));
+
         public GameObject UIRoot;
 
         public BaseRaycaster[] AlwaysActiveRaycasters = new BaseRaycaster[0];
         public GameObject[] ObjectsToDisableInProduction = { };
 
         public Dropdown SelectBackendDropdown;
+
+        public Button RequestFullCardCollectionSyncButton;
 
         private AFPSCounter _afpsCounter;
         private bool _isVisible;
@@ -106,6 +112,35 @@ namespace Loom.ZombieBattleground
             }
 
             PlayerPrefs.SetInt(Constants.BackendPurposeOverrideValueKey, index);
+        }
+
+        public async void RequestFullCardCollectionSync()
+        {
+            Text buttonText = RequestFullCardCollectionSyncButton.GetComponentInChildren<Text>();
+            string originalButtonText = buttonText.text;
+            try
+            {
+                RequestFullCardCollectionSyncButton.interactable = false;
+                buttonText.text = "Wait...";
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                BackendDataControlMediator backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+                await backendFacade.RequestUserFullCardCollectionSync(backendDataControlMediator.UserDataModel.UserId);
+                buttonText.text = "Done! Please restart game";
+            }
+            catch (Exception e)
+            {
+                buttonText.text = "Error, try again";
+                Log.Warn(nameof(RequestFullCardCollectionSync) + ":" + e);
+            }
+            finally
+            {
+                await Task.Delay(5000);
+                if (RequestFullCardCollectionSyncButton != null)
+                {
+                    RequestFullCardCollectionSyncButton.interactable = true;
+                    buttonText.text = originalButtonText;
+                }
+            }
         }
 
         public void SubmitBugReport()

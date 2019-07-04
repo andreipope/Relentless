@@ -1,18 +1,14 @@
 #if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using UnityEditor;
 using UnityEngine;
 using CardList = Loom.ZombieBattleground.Data.CardList;
-using Logger = Loom.WebSocketSharp.Logger;
 
 namespace Loom.ZombieBattleground.Helpers.Tools
 {

@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         false,
-                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Local]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         false,
                         false,
                         false,
-                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Development]
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {

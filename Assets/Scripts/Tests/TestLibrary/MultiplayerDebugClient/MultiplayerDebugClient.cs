@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -12,12 +11,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
-using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
-using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
-using ILogger = log4net.Core.ILogger;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -172,7 +167,7 @@ namespace Loom.ZombieBattleground.Test
             _keepAliveTimer = 0f;
             if (BackendFacade != null)
             {
-                await BackendFacade.UnsubscribeFromAllEvents();
+                await BackendFacade.UnsubscribeFromAllEvents(_userDataModel.UserId);
                 BackendFacade.Dispose();
 
                 BackendFacade = null;
@@ -207,7 +202,10 @@ namespace Loom.ZombieBattleground.Test
                     if (_keepAliveTimer <= 0f)
                     {
                         _keepAliveTimer = KeepAliveInterval;
-                        await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
+                        if (_backendFacade.IsConnected)
+                        {
+                            await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
+                        }
                     }
                 }
             }

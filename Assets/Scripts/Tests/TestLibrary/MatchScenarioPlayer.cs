@@ -1,13 +1,11 @@
 #define DEBUG_SCENARIO_PLAYER
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using log4net;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -50,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
             _localQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _localProxy);
             _opponentQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _opponentProxy);
 
-            _opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
+            _opponentClient.BackendFacade.PlayerActionEventReceived += OnOpponentPlayerActionEventReceived;
         }
 
         public async Task Play()
@@ -96,7 +94,7 @@ namespace Loom.ZombieBattleground.Test
         {
             if (_opponentClient?.BackendFacade != null)
             {
-                _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
+                _opponentClient.BackendFacade.PlayerActionEventReceived -= OnOpponentPlayerActionEventReceived;
             }
         }
 
@@ -208,7 +206,7 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private async void OnBackendFacadeOnPlayerActionDataReceived(byte[] bytes)
+        private async void OnOpponentPlayerActionEventReceived(BackendFacade.PlayerActionEventData playerActionEventData)
         {
             // Switch to main thread
             await new WaitForUpdate();
@@ -219,12 +217,11 @@ namespace Loom.ZombieBattleground.Test
             try
             {
                 MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
-                bool? isOpponentPlayer = playerActionEvent.PlayerAction != null ?
-                    playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
+                bool? isOpponentPlayer = playerActionEventData.Event.PlayerAction != null ?
+                    playerActionEventData.Event.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
                     (bool?) null;
 
-                if (isOpponentPlayer != null && !isOpponentPlayer.Value && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
+                if (isOpponentPlayer != null && !isOpponentPlayer.Value && playerActionEventData.Event.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                 {
                     _endTurnSemaphore++;
                 }

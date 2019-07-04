@@ -263,9 +263,6 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            // TODO: REMOVE logs when issue will be fixed
-            Log.Debug($"SelfOverlord: {SelfOverlord}");
-
             InitialDefense = _defense;
             BuffedDefense = 0;
 

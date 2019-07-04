@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         private bool _isReconnecting;
 
         public bool IsAppPaused { get; private set; }
-        
+
         public event Action ConnectionStatusDidUpdate;
 
         public Enumerators.AppState AppState { get; set; }
@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.PlaySelection:
                     _uiManager.SetPage<MainMenuWithNavigationPage>();
-                    _uiManager.DrawPopup<GameModePopup>(); 
+                    _uiManager.DrawPopup<GameModePopup>();
                     break;
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
             UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
         }
 
-        private void CheckIfPlayAgainOptionShouldBeAvailable() 
+        private void CheckIfPlayAgainOptionShouldBeAvailable()
         {
             if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
-        
+
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
             if (!UnitTestDetector.IsRunningUnitTests && state == RpcConnectionState.Connected)

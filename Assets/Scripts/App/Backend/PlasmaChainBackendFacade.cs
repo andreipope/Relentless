@@ -15,7 +15,6 @@ using Loom.Nethereum.Hex.HexTypes;
 using Loom.Nethereum.RPC.Eth.DTOs;
 using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
-using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground.Iap
 {
@@ -60,7 +59,7 @@ namespace Loom.ZombieBattleground.Iap
         public void SetEndpoints(PlasmachainEndpointsConfiguration endpointsConfiguration)
         {
             EndpointsConfiguration = endpointsConfiguration ?? throw new ArgumentNullException(nameof(endpointsConfiguration));
-            Log.Info("Endpoints: " + JsonConvert.SerializeObject(EndpointsConfiguration, Formatting.Indented));
+            Log.Info("Plasmachain Endpoints: " + JsonConvert.SerializeObject(EndpointsConfiguration, Formatting.Indented));
         }
 
         public void Init()

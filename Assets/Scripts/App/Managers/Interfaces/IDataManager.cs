@@ -33,6 +33,8 @@ namespace Loom.ZombieBattleground
 
         Task SaveCache(Enumerators.CacheDataType type);
 
+        Task LoadCache(Enumerators.CacheDataType type);
+
         TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType);
 
         TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescription gameMechanic);

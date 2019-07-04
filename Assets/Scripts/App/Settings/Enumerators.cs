@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        { 
+        {
             ANY,
             ONLY_DIFFERENT
         }
@@ -735,7 +735,9 @@ namespace Loom.ZombieBattleground.Common
             ZeuzArrival,
             CerberusArrival,
             TzunamyArrival,
-            ChernoBillArrival
+            ChernoBillArrival,
+            MountainArrival,
+            GargantuaArrival
         }
 
         public enum CardNameOfAbility
@@ -942,7 +944,7 @@ namespace Loom.ZombieBattleground.Common
             AbovePopups,
             AboveUI
         }
-        
+
         public enum MarketplaceCardPackType
         {
             Booster = 0,
@@ -954,7 +956,7 @@ namespace Loom.ZombieBattleground.Common
             Toxic = 6,
             Water = 7,
             Small = 8,
-            Minion = 9            
+            Minion = 9
         }
 
         public enum TutorialStepType

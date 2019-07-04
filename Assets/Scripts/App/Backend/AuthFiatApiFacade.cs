@@ -7,8 +7,6 @@ using System.Numerics;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 

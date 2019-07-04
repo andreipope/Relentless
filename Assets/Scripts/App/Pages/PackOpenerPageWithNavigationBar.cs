@@ -209,7 +209,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void OpenedPackPanelCloseButtonHandler()
+        private async void OpenedPackPanelCloseButtonHandler()
         {
             if (_tutorialManager.BlockAndReport(_openedPackPanelCloseButton.name))
                 return;
@@ -220,6 +220,8 @@ namespace Loom.ZombieBattleground
             _openedPackPanelOpenNextPackButton.interactable = false;
 
             PlayCardsHideAnimation(ClearOpenedCards);
+
+            await _controller.OnOpenedPackScreenClosed();
 
             Sequence sequence = DOTween.Sequence();
             sequence.AppendInterval(CardHideAnimationDuration);
@@ -539,7 +541,14 @@ namespace Loom.ZombieBattleground
 
             public abstract Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType);
 
-            public abstract void OnPackCollected();
+            public virtual void OnPackCollected()
+            {
+            }
+
+            public virtual Task<OneOf<Success, Exception>> OnOpenedPackScreenClosed()
+            {
+                return Task.FromResult(OneOf<Success, Exception>.FromT0(new Success()));
+            }
         }
 
         private class TutorialPackOpenerController : PackOpenerControllerBase
@@ -595,8 +604,13 @@ namespace Loom.ZombieBattleground
             private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
             private readonly BackendDataControlMediator _backendDataControlMediator;
             private readonly BackendFacade _backendFacade;
+            private readonly IDataManager _dataManager;
+            private readonly INetworkActionManager _networkActionManager;
 
             private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
+
+            private bool _gotAutoCardCollectionSyncEvent;
+            private bool _isOpenedPackScreenActive;
 
             public NormalPackOpenerController()
             {
@@ -604,6 +618,8 @@ namespace Loom.ZombieBattleground
                 _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _backendFacade = GameClient.Get<BackendFacade>();
+                _dataManager = GameClient.Get<IDataManager>();
+                _networkActionManager = GameClient.Get<INetworkActionManager>();
             }
 
             public override IReadOnlyList<Enumerators.MarketplaceCardPackType> ShownPackTypes { get; } = new[]
@@ -677,6 +693,13 @@ namespace Loom.ZombieBattleground
 
             public override async Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
             {
+                if (!_isOpenedPackScreenActive)
+                {
+                    _isOpenedPackScreenActive = true;
+                    _gotAutoCardCollectionSyncEvent = false;
+                    _backendFacade.UserAutoCardCollectionSyncEventReceived += OnUserAutoCardCollectionSyncEventReceived;
+                }
+
                 _uiManager.DrawPopup<LoadingOverlayPopup>("Opening your pack...");
                 try
                 {
@@ -697,8 +720,57 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            public override void OnPackCollected()
+            public override async Task<OneOf<Success, Exception>> OnOpenedPackScreenClosed()
             {
+                Log.Debug(nameof(OnOpenedPackScreenClosed));
+
+                if (!_gotAutoCardCollectionSyncEvent)
+                {
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Updating collection...");
+                }
+
+                _isOpenedPackScreenActive = false;
+
+                // Wait a bit, then update collection anyway
+                const float waitForAutoCardCollectionSyncEventTimeout = 15;
+                bool timedOut = await InternalTools.WaitWithTimeout(waitForAutoCardCollectionSyncEventTimeout, () => _gotAutoCardCollectionSyncEvent);
+                if (timedOut)
+                {
+                    Log.Warn("Timed out waiting for auto card collection sync event");
+                }
+
+                _backendFacade.UserAutoCardCollectionSyncEventReceived -= OnUserAutoCardCollectionSyncEventReceived;
+
+                try
+                {
+                    Log.Debug("Updating card collection");
+                    await _networkActionManager.ExecuteNetworkTask(async () =>
+                        {
+                            await _dataManager.LoadCache(Enumerators.CacheDataType.COLLECTION_DATA);
+                        },
+                        onUnknownExceptionCallbackFunc: exception =>
+                        {
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                            return Task.CompletedTask;
+                        });
+                }
+                catch (Exception)
+                {
+                    // No additional handling
+                }
+                finally
+                {
+
+                    _uiManager.HidePopup<LoadingOverlayPopup>();
+                }
+
+                return new Success();
+            }
+
+            private void OnUserAutoCardCollectionSyncEventReceived(BackendFacade.UserAutoCardCollectionSyncEventData evt)
+            {
+                Log.Debug("Got card collection auto sync event");
+                _gotAutoCardCollectionSyncEvent = true;
             }
 
             private async Task UpdatePackBalanceAmount(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)

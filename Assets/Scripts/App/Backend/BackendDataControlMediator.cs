@@ -6,7 +6,9 @@ using Loom.Client;
 using Newtonsoft.Json;
 using UnityEngine;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Iap;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -73,10 +75,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
+        /// <returns>Whether full card sync will be executed</returns>
         public async Task LoginAndLoadData()
         {
+            bool gotFullCardSyncEvent = false;
+            void OnUserFullCardCollectionSyncEventReceived(BackendFacade.UserFullCardCollectionSyncEventData data)
+            {
+                gotFullCardSyncEvent = true;
+                Log.Debug("Got full card collection sync event");
+            }
+
             LoadUserDataModel();
-      
+
             Log.Info("User Id: " + UserDataModel.UserId);
 
             try
@@ -90,19 +100,35 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     // Ignore
                 }
-                await _backendFacade.Login(UserDataModel.UserId);
+
+                _backendFacade.UserFullCardCollectionSyncEventReceived += OnUserFullCardCollectionSyncEventReceived;
+                LoginResponse loginResponse = await _backendFacade.Login(UserDataModel.UserId);
+                if (loginResponse.FullCardCollectionSyncExecuted)
+                {
+                    Log.Debug("Waiting for full card collection sync event...");
+                    const float waitForFullCardCollectionSyncEventTimeout = 20;
+                    bool timedOut = await InternalTools.WaitWithTimeout(waitForFullCardCollectionSyncEventTimeout, () => gotFullCardSyncEvent);
+                    if (timedOut)
+                    {
+                        throw new RpcClientException("Timed out waiting for full card collection sync event", -1, null);
+                    }
+                }
             }
             catch (RpcClientException exception)
             {
                 Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn("RpcException ==", exception);
-                if (UserDataModel.IsValid) 
+                if (UserDataModel.IsValid)
                 {
                     GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                 }
             }
+            finally
+            {
+                _backendFacade.UserFullCardCollectionSyncEventReceived -= OnUserFullCardCollectionSyncEventReceived;
+            }
 
-            await _dataManager.StartLoadCache();      
+            await _dataManager.StartLoadCache();
         }
 
         public async Task UpdateEndpointsFromZbVersion()
@@ -135,6 +161,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
             IDAppChainClientCallExecutor chainClientCallExecutor = new NotifyingDAppChainClientCallExecutor(clientConfiguration);
             await _backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, chainClientCallExecutor: chainClientCallExecutor);
+
+            // Subscribe to persistent user events
+            await _backendFacade.SubscribeToEvents(UserDataModel.UserId, Array.Empty<string>());
         }
     }
 }
