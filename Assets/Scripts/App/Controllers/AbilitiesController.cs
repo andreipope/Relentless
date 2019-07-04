@@ -1208,7 +1208,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
                     ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
-                    break; 
+                    abilityView = new ChangeStatThisTurnAbilityView((ChangeStatThisTurnAbility)ability);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }
