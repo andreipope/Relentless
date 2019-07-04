@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             HandleTargets();
+
+            InvokeActionTriggered();
         }
 
         protected override void TurnStartedHandler()
