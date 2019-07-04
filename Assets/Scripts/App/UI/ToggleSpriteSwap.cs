@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
         {
             _targetToggle = GetComponent<Toggle>();
             _targetToggle.onValueChanged.AddListener(OnTargetToggleValueChanged);
+            OnTargetToggleValueChanged(_targetToggle.isOn);
         }
 
         private void OnTargetToggleValueChanged(bool newValue) {

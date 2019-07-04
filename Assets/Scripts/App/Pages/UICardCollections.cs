@@ -89,12 +89,18 @@ namespace Loom.ZombieBattleground
             _allCardsContent = scrollRect.content;
             Scrollbar cardCollectionScrollbar = scrollRect.horizontalScrollbar;
 
+            _showingUserCollection = false;
+
             switch (pageType)
             {
                 case Enumerators.CardCollectionPageType.Army:
                     _showingUserCollection = true;
-                    _showCollectionToggle = _selfPage.transform.Find("Panel_Frame/Upper_Items/Toggle_ShowCollection")?.GetComponent<Toggle>();
-                    _showCollectionToggle.onValueChanged.AddListener(OnShowCollectionToggleValueChanged);
+                    _showCollectionToggle = _selfPage.transform.Find("Panel_Frame/Lower_Items/Filters/FiltersButtons/Toggle_ShowCollection")?.GetComponent<Toggle>();
+                    if (_showCollectionToggle != null)
+                    {
+                        _showCollectionToggle.onValueChanged.AddListener(OnShowCollectionToggleValueChanged);
+                    }
+
                     LoadAllCards();
                     UpdateCardsAmountDisplay();
                     break;
