@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -12,7 +13,7 @@ namespace Loom.ZombieBattleground
 
         private ICameraManager _cameraManager;
 
-        private List<CardModel> _unitsViews;
+        private List<BoardUnitView> _unitsViews;
 
         #region BulldozerFields
 
@@ -29,13 +30,12 @@ namespace Loom.ZombieBattleground
 
             _cameraManager = GameClient.Get<ICameraManager>();
 
-            _unitsViews = new List<CardModel>();
+            _unitsViews = new List<BoardUnitView>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
-            _unitsViews = (List<CardModel>)info;
-
+            List<CardModel> units = info as List<CardModel>;
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
             Vector3 offset = Vector3.zero;
@@ -72,10 +72,11 @@ namespace Loom.ZombieBattleground
                     case Enumerators.CardNameOfAbility.Bulldozer:
                         {
                             CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                            opponentLineObject = VfxObject.transform.Find("RubbleUp/RubbleSeq").gameObject;
-                            playerLineObject = VfxObject.transform.Find("Rubble/RubbleSeq").gameObject;
+                            opponentLineObject = VfxObject.transform.Find("RubbleUp/BurstToxic").gameObject;
+                            playerLineObject = VfxObject.transform.Find("Rubble/BurstToxic").gameObject;
 
-                            _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing/Tears").gameObject;
+                            _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing").gameObject;
+                            _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                             Ability.OnUpdateEvent += OnUpdateEventHandler;
                         }
@@ -96,10 +97,12 @@ namespace Loom.ZombieBattleground
             BoardUnitView unitView;
             for (int i = 0; i < _unitsViews.Count; i++)
             {
-                unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(_unitsViews[i]);
+                unitView = _unitsViews[i];
 
                 if (unitView == null || unitView is default(BoardUnitView))
+                {
                     continue;
+                }
 
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
@@ -126,7 +129,7 @@ namespace Loom.ZombieBattleground
         private void DestroyUnit(BoardUnitView unit)
         {
             CreateSubParticle(unit.Transform.position);
-            _unitsViews.Remove(unit.Model);
+            _unitsViews.Remove(unit);
             _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
             if (!unit.Model.HasBuffShield)
             {

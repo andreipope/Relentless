@@ -89,15 +89,15 @@ namespace Loom.ZombieBattleground
 
         private void CustomCreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            int playerPos = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 1 : -1;
+            float playerPosY = Ability.PlayerCallerOfAbility.IsLocalPlayer ? -1f : -5f;
 
             if (!justPosition)
             {
-                pos = Utilites.CastVfxPosition(pos * playerPos);
+                pos = Utilites.CastVfxPosition(pos + new Vector3(0, playerPosY, 0));
             }
             else
             {
-                pos = pos * playerPos;
+                pos = pos + new Vector3(0, playerPosY, 0);
             }
             ClearParticles();
 
