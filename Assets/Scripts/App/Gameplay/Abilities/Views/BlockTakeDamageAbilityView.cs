@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 
         private CardModel _targetedUnit;
 
-        private string _cardName;
+        private GameObject _idleVfxObject;
 
         public BlockTakeDamageAbilityView(BlockTakeDamageAbility ability) : base(ability)
         {
@@ -24,6 +24,13 @@ namespace Loom.ZombieBattleground
             _targetedUnit = info as CardModel;
             _targetedUnit.IsPlayable = false;
             ActionCompleted();
+            Ability.OnDeactivate += () =>
+            {
+                if (_idleVfxObject != null)
+                {
+                    Object.Destroy(_idleVfxObject);
+                }
+            };
         }
 
         private void ActionCompleted()
@@ -45,6 +52,7 @@ namespace Loom.ZombieBattleground
                 Vector3 targetPosition = unitTransform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                _idleVfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
@@ -59,6 +67,13 @@ namespace Loom.ZombieBattleground
                 CreateVfx(targetPosition, true, delayBeforeDestroy);
                 VfxObject.transform.SetParent(unitTransform, false);
                 VfxObject.transform.localPosition = offset;
+                
+                if(_idleVfxObject != null)
+                {
+                    _idleVfxObject = Object.Instantiate(_idleVfxObject);
+                    _idleVfxObject.transform.SetParent(unitTransform, false);
+                    _idleVfxObject.transform.localPosition = offset;
+                }
             }
 
             PlaySound(soundName, soundDelay);
