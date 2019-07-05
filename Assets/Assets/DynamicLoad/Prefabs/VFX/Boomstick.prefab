@@ -28765,7 +28765,7 @@ MonoBehaviour:
   delayForChangeState: 0
   soundName: CZB_AUD_Boomstick_Entry_F1_EXP
   delayForSound: 0
-  offset: {x: 0, y: -1.4, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   localOffset: {x: 0, y: 0, z: 0}
   isRotate: 0
   positionInfo:
