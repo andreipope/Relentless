@@ -13,9 +13,9 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(-0.25f, 3.21f, 0f);
+            Vector3 offset = new Vector3(0f, 0f, 0f);
 
-            const float delayBeforeSpawn = 5f;
+            const float delayBeforeSpawn = 6.5f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
@@ -24,20 +24,31 @@ namespace Loom.ZombieBattleground
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));
 
-            PlaySound("CZB_AUD_Cherno_Bill_Arrival_F1_EXP");
+            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
+
+            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
 
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
+            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
+
             InternalTools.DoActionDelayed(() =>
-            {
-                unitView.GameObject.SetActive(true);
-                unitView.battleframeAnimator.Play(0, -1, 1);
-
+            {                
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero; 
+                
                 Object.Destroy(animationVFX);
+                
+                if (unitView != null)
+                {
+                    unitView.GameObject.SetActive(true);
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                }             
 
-                endArrivalCallback?.Invoke();
-
-                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                endArrivalCallback?.Invoke();                
 
                 IsPlaying = false;
 
