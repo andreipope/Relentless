@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: frame_Frozem2
   m_Shader: {fileID: 4800000, guid: 8855ff89bf793f64aaedab1cf6764f88, type: 3}
@@ -19,7 +19,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Dissolve:
-        m_Texture: {fileID: 2800000, guid: 2c450754810e56a44a1e9478b3f0997c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 58e5abb89d88e2a439493f209deae76a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
