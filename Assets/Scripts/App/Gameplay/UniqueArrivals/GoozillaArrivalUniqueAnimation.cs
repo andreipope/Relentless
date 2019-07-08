@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 offset = new Vector3(0.5f, 0.5f, 0f);
 
-            const float delayBeforeSpawn = 6;
+            const float delayBeforeSpawn = 4.8f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
