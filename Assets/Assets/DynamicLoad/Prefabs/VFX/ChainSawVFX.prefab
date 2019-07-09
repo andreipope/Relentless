@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4155444842767298}
   - component: {fileID: 198519936141398426}
   - component: {fileID: 199278584723427642}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderFume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4735,7 +4735,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4558443966634590}
   - component: {fileID: 95277952765075138}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ZB_ANM_ChainsawNormal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4750,7 +4750,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1272429527107440}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4141823487321986}
@@ -4787,7 +4787,7 @@ GameObject:
   - component: {fileID: 4141823487321986}
   - component: {fileID: 198773386490519916}
   - component: {fileID: 199542130200854432}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pulse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9563,7 +9563,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4349666087188304}
   - component: {fileID: 95265449542967254}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ZB_ANM_ChainsawHeavy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9578,7 +9578,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1680966597319160}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3673695277977158931}
@@ -9615,7 +9615,7 @@ GameObject:
   - component: {fileID: 4068876614334112}
   - component: {fileID: 198150832667497388}
   - component: {fileID: 199285777274833764}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderFume (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14340,7 +14340,7 @@ GameObject:
   - component: {fileID: 4047176830137584}
   - component: {fileID: 198584849587559068}
   - component: {fileID: 199415355439117510}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Darken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19179,7 +19179,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4027002860028788}
-  m_Layer: 0
+  - component: {fileID: 7765938305575593081}
+  m_Layer: 9
   m_Name: ChainSawIdleVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19202,6 +19203,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7765938305575593081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1919007431617776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Chainsaw
+  cardNameOfAbility: 0
+  delayBeforeEffect: 3.5
+  delayAfterEffect: 3
+  delayForChangeState: 0
+  soundName: 
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
+  positionInfo:
+    type: 0
 --- !u!1 &3670448572981038767
 GameObject:
   m_ObjectHideFlags: 0
@@ -19213,7 +19238,7 @@ GameObject:
   - component: {fileID: 3673411020180241103}
   - component: {fileID: 3473949267745142223}
   - component: {fileID: 3472724421666226447}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderFume (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23938,7 +23963,7 @@ GameObject:
   - component: {fileID: 3673695277977158931}
   - component: {fileID: 3474262975280661501}
   - component: {fileID: 3472778965686181169}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pulse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28715,7 +28740,7 @@ GameObject:
   - component: {fileID: 3673799005127957395}
   - component: {fileID: 3473902159106818687}
   - component: {fileID: 3472799750014273727}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Darken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33556,7 +33581,7 @@ GameObject:
   - component: {fileID: 3673780376176181587}
   - component: {fileID: 3473515870116803339}
   - component: {fileID: 3474204141188592555}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderFume
   m_TagString: Untagged
   m_Icon: {fileID: 0}

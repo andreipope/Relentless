@@ -909,6 +909,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
+                    abilityView = new ChangeStatAbilityView((ChangeStatAbility)ability);
                     break;
                 case Enumerators.AbilityType.STUN:
                     ability = new StunAbility(cardKind, abilityData);

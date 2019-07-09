@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
                 GetParameters(out int defense, out int attack);
                 ChangeStatsOfTarget(TargetUnit, defense, attack);
 
+                InvokeActionTriggered(TargetUnit);
+                
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)
