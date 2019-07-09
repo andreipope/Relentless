@@ -76,6 +76,7 @@ namespace Loom.ZombieBattleground
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
             AddService<PlasmachainBackendFacade>(new PlasmachainBackendFacade(backendEndpoint.PlasmachainEndpointsConfiguration));
+            AddService<BackendDataSyncService>(new BackendDataSyncService());
         }
 
         public override void InitServices() {

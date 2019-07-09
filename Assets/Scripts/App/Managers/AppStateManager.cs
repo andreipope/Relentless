@@ -36,6 +36,7 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
         private INetworkActionManager _networkActionManager;
         private bool _isReconnecting;
+        private int _stateChangeSequenceNumber;
 
         public bool IsAppPaused { get; private set; }
 
@@ -45,11 +46,14 @@ namespace Loom.ZombieBattleground
 
         public void ChangeAppState(Enumerators.AppState stateTo, bool force = false)
         {
+            Log.Debug($"{nameof(ChangeAppState)} - stateTo: {stateTo}{(!force && AppState == stateTo ? ", ignored" : "")}");
             if (!force)
             {
                 if (AppState == stateTo)
                     return;
             }
+
+            int currentSequenceNumber = _stateChangeSequenceNumber;
 
             switch (stateTo)
             {
@@ -129,11 +133,20 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);
             }
 
-            _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;
+            if (currentSequenceNumber == _stateChangeSequenceNumber)
+            {
+                _previousState = AppState;
+                AppState = stateTo;
+                _stateChangeSequenceNumber++;
 
-            AppState = stateTo;
-
-            UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+                Log.Debug($"{nameof(ChangeAppState)} - App state: " + AppState);
+                UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+            }
+            else
+            {
+                // This can happen if the page has changed the state when showing (i.e. when an error happened)
+                Log.Debug($"{nameof(ChangeAppState)} - App state already changed to " + AppState);
+            }
         }
 
         private void CheckIfPlayAgainOptionShouldBeAvailable()
@@ -303,7 +316,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                    ChangeAppState(Enumerators.AppState.MAIN_MENU, true);
                 }
             }
 

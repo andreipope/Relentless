@@ -14,13 +14,13 @@ namespace Loom.ZombieBattleground
     public class DeckGeneratorController : IController
     {
         private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionWithNavigationPage));
-    
+
         private IDataManager _dataManager;
-        
+
         private BackendFacade _backendFacade;
-        
+
         private BackendDataControlMediator _backendDataControlMediator;
-        
+
         private IAnalyticsManager _analyticsManager;
 
         private INetworkActionManager _networkActionManager;
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _networkActionManager = GameClient.Get<INetworkActionManager>();
         }
-        
+
         public void Update()
         {
 
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         {
 
         }
-        
+
         public void ResetAll()
         {
 
@@ -228,9 +228,19 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             Enumerators.Faction faction = overlord.Prototype.Faction;
 
+            // Prioritize cards of the champion's faction, but don't exclude cards from other factions,
+            // except the faction the champion is weak against.
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
-            List<Card> creatureCards = overlordElementSet.Cards.ToList();
-            List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
+            List<Card> creatureCards =
+                overlordElementSet
+                    .Cards
+                    .Where(card => collectionData.Cards.Any(collectionCard => collectionCard.CardKey == card.CardKey))
+                    .ToList();
+            List<Card> itemCards =
+                SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM)
+                    .Cards
+                    .Where(card => collectionData.Cards.Any(collectionCard => collectionCard.CardKey == card.CardKey))
+                    .ToList();
 
             List<Card> availableCreatureCardList = new List<Card>();
             foreach (Card card in creatureCards)
@@ -342,7 +352,7 @@ namespace Loom.ZombieBattleground
                     cardsToAdd.Add(card);
                     cardList.Remove(card);
                     creatureCardList.Remove(card);
-                    
+
                     if(cost >= 1 && cost <= 3 )
                     {
                         ++countCardOneToThreeCost;
@@ -363,7 +373,7 @@ namespace Loom.ZombieBattleground
                                           .Concat(cardSortByGooCost[2])
                                           .Concat(cardSortByGooCost[3])
                                           .ToList();
-                                          
+
             for (int i = 0; i < 7 - countCardOneToThreeCost && cardZeroToThreeCostList.Count > 0; ++i)
             {
                 int randIndex = Random.Range(0, cardZeroToThreeCostList.Count);
@@ -379,7 +389,7 @@ namespace Loom.ZombieBattleground
                                           .Concat(cardSortByGooCost[6])
                                           .Concat(cardSortByGooCost[7])
                                           .ToList();
-            
+
             for (int i = 0; i < 12 - countCardFourToSevenCost && cardFourToSevenCostList.Count > 0; ++i)
             {
                 int randIndex = Random.Range(0, cardFourToSevenCostList.Count);
@@ -394,7 +404,7 @@ namespace Loom.ZombieBattleground
                                           .Concat(cardSortByGooCost[9])
                                           .Concat(cardSortByGooCost[10])
                                           .ToList();
-            
+
             for (int i = 0; i < 4 - countCardEightToTenCost && cardEightToTenCostList.Count > 0; ++i)
             {
                 int randIndex = Random.Range(0, cardEightToTenCostList.Count);
@@ -407,7 +417,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < 7; ++i)
             {
-                if (itemCardList.Count < 0)
+                if (itemCardList.Count == 0)
                     break;
 
                 Card card = itemCardList[Random.Range(0, itemCardList.Count)];

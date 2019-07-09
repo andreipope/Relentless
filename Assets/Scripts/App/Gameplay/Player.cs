@@ -114,11 +114,14 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent)
+        public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent, bool onlyInit = false)
         {
             InstanceId = instanceId;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
+
+            if (onlyInit)
+                return;
 
             _dataManager = GameClient.Get<IDataManager>();
             _uiManager = GameClient.Get<IUIManager>();

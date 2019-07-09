@@ -133,7 +133,10 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
-            GameObject.transform.SetParent(parent, false);
+            if (parent != null)
+            {
+                GameObject.transform.SetParent(parent, false);
+            }
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
@@ -272,11 +275,11 @@ namespace Loom.ZombieBattleground
 
             if (Model.Card.Owner.IsLocalPlayer)
             {
-                PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
+                //PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
             }
             else
             {
-                PositionOfBoard = _battlegroundController.OpponentBoardObject.transform.position;
+                //PositionOfBoard = _battlegroundController.OpponentBoardObject.transform.position;
             }
 
         }
@@ -763,7 +766,7 @@ namespace Loom.ZombieBattleground
 
         private void UnitSelectedEventHandler(IBoardObject boardObject)
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || 
+            if (_boardArrowController.IsBoardArrowNowInTheBattle ||
                 !_gameplayManager.CanDoDragActions ||
                 _battlegroundController.TurnWaitingForEnd)
                 return;
@@ -898,7 +901,7 @@ namespace Loom.ZombieBattleground
         public void HandleAttackCard(Action completeCallback, CardModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
             BoardUnitView targetCardView = _battlegroundController.GetCardViewByModel<BoardUnitView>(targetCard);
-            
+
             if (targetCardView == null || targetCardView.GameObject == null || GameObject == null)
             {
                 _actionsQueueController.ForceContinueAction(Model.ActionForDying);

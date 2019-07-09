@@ -519,78 +519,90 @@ namespace Loom.ZombieBattleground.BackendCommunication
         //attempt to implement a one message action policy
         private RawChainEventArgs _previousEventArgs;
 
-        private void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
+        private async void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
         {
-            if (_previousEventArgs != null &&
-                _previousEventArgs.BlockHeight == rawChainEventArgs.BlockHeight &&
-                _previousEventArgs.CallerAddress == rawChainEventArgs.CallerAddress &&
-                _previousEventArgs.Topics.SequenceEqual(rawChainEventArgs.Topics) &&
-                _previousEventArgs.Data.SequenceEqual(rawChainEventArgs.Data)
-            )
-                return;
-
-            _previousEventArgs = rawChainEventArgs;
-
-            bool ParseAndInvokeMatchEvent(IReadOnlyList<string> topicSplit)
+            try
             {
-                if (topicSplit.Count != 2)
-                    return false;
 
-                long matchId = Convert.ToInt64(topicSplit[1]);
-                PlayerActionEvent @event = PlayerActionEvent.Parser.ParseFrom(rawChainEventArgs.Data);
-                PlayerActionEventData eventData = new PlayerActionEventData(matchId, @event);
-                PlayerActionEventReceived?.Invoke(eventData);
+                if (_previousEventArgs != null &&
+                    _previousEventArgs.BlockHeight == rawChainEventArgs.BlockHeight &&
+                    _previousEventArgs.CallerAddress == rawChainEventArgs.CallerAddress &&
+                    _previousEventArgs.Topics.SequenceEqual(rawChainEventArgs.Topics) &&
+                    _previousEventArgs.Data.SequenceEqual(rawChainEventArgs.Data)
+                )
+                    return;
 
-                return true;
-            }
+                _previousEventArgs = rawChainEventArgs;
 
-            bool ParseAndInvokeUserEvent(IReadOnlyList<string> topicSplit)
-            {
-                if (topicSplit.Count != 2)
-                    return false;
-
-                UserEvent userEvent = UserEvent.Parser.ParseFrom(rawChainEventArgs.Data);
-                switch (userEvent.EventCase)
+                bool ParseAndInvokeMatchEvent(IReadOnlyList<string> topicSplit)
                 {
-                    case UserEvent.EventOneofCase.AutoCardCollectionSync:
-                    {
-                        UserAutoCardCollectionSyncEventData eventData = new UserAutoCardCollectionSyncEventData(userEvent.UserId);
-                        UserAutoCardCollectionSyncEventReceived?.Invoke(eventData);
-                        return true;
-                    }
-                    case UserEvent.EventOneofCase.FullCardCollectionSync:
-                    {
-                        UserFullCardCollectionSyncEventData eventData = new UserFullCardCollectionSyncEventData(userEvent.UserId);
-                        UserFullCardCollectionSyncEventReceived?.Invoke(eventData);
-                        return true;
-                    }
-                    case UserEvent.EventOneofCase.None:
-                    default:
+                    if (topicSplit.Count != 2)
                         return false;
+
+                    long matchId = Convert.ToInt64(topicSplit[1]);
+                    PlayerActionEvent @event = PlayerActionEvent.Parser.ParseFrom(rawChainEventArgs.Data);
+                    PlayerActionEventData eventData = new PlayerActionEventData(matchId, @event);
+                    PlayerActionEventReceived?.Invoke(eventData);
+
+                    return true;
                 }
-            }
 
-            bool isParsed = false;
-            foreach (string topic in rawChainEventArgs.Topics)
-            {
-                string[] topicSplit = topic.Split(':');
-                if (topicSplit.Length == 0)
-                    continue;
-
-                switch (topicSplit[0])
+                bool ParseAndInvokeUserEvent(IReadOnlyList<string> topicSplit)
                 {
-                    case MatchEventNamePrefix:
-                        isParsed = ParseAndInvokeMatchEvent(topicSplit);
-                        break;
-                    case UserEventNamePrefix:
-                        isParsed = ParseAndInvokeUserEvent(topicSplit);
-                        break;
-                }
-            }
+                    if (topicSplit.Count != 2)
+                        return false;
 
-            if (!isParsed)
+                    UserEvent userEvent = UserEvent.Parser.ParseFrom(rawChainEventArgs.Data);
+                    switch (userEvent.EventCase)
+                    {
+                        case UserEvent.EventOneofCase.AutoCardCollectionSync:
+                        {
+                            UserAutoCardCollectionSyncEventData eventData = new UserAutoCardCollectionSyncEventData(userEvent.UserId);
+                            UserAutoCardCollectionSyncEventReceived?.Invoke(eventData);
+                            return true;
+                        }
+                        case UserEvent.EventOneofCase.FullCardCollectionSync:
+                        {
+                            UserFullCardCollectionSyncEventData eventData = new UserFullCardCollectionSyncEventData(userEvent.UserId);
+                            UserFullCardCollectionSyncEventReceived?.Invoke(eventData);
+                            return true;
+                        }
+                        case UserEvent.EventOneofCase.None:
+                        default:
+                            return false;
+                    }
+                }
+
+                if (ScenePlaybackDetector.IsPlaying)
+                {
+                    await Awaiters.NextFrame;
+                }
+
+                bool isParsed = false;
+                foreach (string topic in rawChainEventArgs.Topics)
+                {
+                    string[] topicSplit = topic.Split(':');
+                    if (topicSplit.Length == 0)
+                        continue;
+
+                    switch (topicSplit[0])
+                    {
+                        case MatchEventNamePrefix:
+                            isParsed = ParseAndInvokeMatchEvent(topicSplit);
+                            break;
+                        case UserEventNamePrefix:
+                            isParsed = ParseAndInvokeUserEvent(topicSplit);
+                            break;
+                    }
+                }
+
+                if (!isParsed)
+                {
+                    Log.Error("Unexpected event with topics: " + Utilites.FormatCallLogList(rawChainEventArgs.Topics));
+                }
+            } catch (Exception e)
             {
-                Log.Error("Unexpected event with topics: " + Utilites.FormatCallLogList(rawChainEventArgs.Topics));
+                Log.Error($"Exception in {nameof(EventHandler)}:", e);
             }
         }
 

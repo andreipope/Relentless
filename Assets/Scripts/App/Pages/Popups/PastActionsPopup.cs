@@ -732,6 +732,8 @@ namespace Loom.ZombieBattleground
             private bool _withEffect;
             private bool _hideCardInfo;
 
+            public GameObject SelfObject => _selfObject;
+
             public SmallUnitCardElement(Transform parent, bool withEffect = false, bool hideCardInfo = false)
             {
                 GameObject cardUnit = hideCardInfo ?
@@ -845,6 +847,8 @@ namespace Loom.ZombieBattleground
                           _effectImage;
 
             private bool _withEffect;
+
+            public GameObject SelfObject => _selfObject;
 
             public SmallItemCardElement(Transform parent, bool withEffect = false)
             {

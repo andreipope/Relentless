@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (DebugClient.BackendFacade != null && DebugClient.MatchMakingFlowController != null)
             {
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
 
                 GUILayout.Label("<b>Debug Cheats</b>", GameStateGUI.Styles.RichLabel);
                 {
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EditorGUI.EndDisabledGroup();
                 }
 
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
 
                 GUILayout.Label("<b>Matchmaking</b>", GameStateGUI.Styles.RichLabel);
                 {
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 if (DebugClient.MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed &&
                     _currentGameState != null)
                 {
-                    DrawSeparator();
+                    EditorSpecialGuiUtility.DrawSeparator();
 
                     GUILayout.Label("<b>Game Actions</b>", GameStateGUI.Styles.RichLabel);
                     {
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (_initialGameState != null && _initialGameState.HasValue)
             {
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
                 bool isExpanded = _initialGameState.IsExpanded;
                 GameStateGUI.DrawGameState(_initialGameState.Instance, DebugClient.UserDataModel?.UserId, "Initial Game State", null, null, ref isExpanded);
                 _initialGameState.IsExpanded = isExpanded;
@@ -216,7 +216,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             if (DebugClient.MatchMakingFlowController != null && DebugClient.MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed ||
                 _playerActionLogView.PlayerActions.Count > 0)
             {
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
                 if (GUILayout.Button("Update Game State"))
                 {
                     EnqueueAsyncTask(UpdateCurrentGameState);
@@ -239,7 +239,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     _currentGameState.IsExpanded = isExpanded;
                 }
 
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
 
                 GUILayout.Label("<b>Action Log</b>", GameStateGUI.Styles.RichLabel);
                 {
@@ -656,14 +656,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             GUILayout.Label(guiContent, GUILayout.Width(GUI.skin.label.CalcSize(guiContent).x));
         }
 
-        private static void DrawSeparator()
-        {
-            EditorGUILayout.Space();
-            Rect rect = EditorGUILayout.GetControlRect(false, 2);
-            rect.height = 1;
-            EditorGUI.DrawRect(rect, Color.black);
-            EditorGUILayout.Space();
-        }
+
 
         [Serializable]
         private class GameActionsState

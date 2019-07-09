@@ -89,17 +89,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             try
             {
                 await CreateContract();
-                try
-                {
-                    await _backendFacade.SignUp(UserDataModel.UserId);
-                }
-                catch (TxCommitException e) when (e.Message.Contains("user already exists"))
-                {
-                    // Ignore
-                }
-
                 _backendFacade.UserFullCardCollectionSyncEventReceived += OnUserFullCardCollectionSyncEventReceived;
                 LoginResponse loginResponse = await _backendFacade.Login(UserDataModel.UserId);
+
+                // Register and login again
+                if (loginResponse.UserNotRegistered)
+                {
+                    Log.Info("User not registered on Gamechain, creating account");
+                    await _backendFacade.SignUp(UserDataModel.UserId);
+                    loginResponse = await _backendFacade.Login(UserDataModel.UserId);
+                }
+
                 if (loginResponse.DataWiped)
                 {
                     Log.Warn("NOTE: user data wiped");

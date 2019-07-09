@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -42,6 +43,16 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
+        public static Vector3 ToVector3(this FloatVector3 vector)
+        {
+            return new Vector3(vector.X, vector.Y, vector.Z);
+        }
+
+        public static FloatVector3 ToFloatVector3(this Vector3 vector)
+        {
+            return new FloatVector3(vector.x, vector.y, vector.z);
+        }
+
         public static string LimitStringLength(string str, int maxLength)
         {
             if (str.Length < maxLength)
@@ -71,7 +82,7 @@ namespace Loom.ZombieBattleground
                 scenes[i] = SceneManager.GetSceneAt(i);
             }
 
-            return 
+            return
                 scenes
                     .Concat(new[]
                     {
@@ -121,7 +132,7 @@ namespace Loom.ZombieBattleground
 
             return true;
         }
-        
+
         /// <summary>
         /// Waits for the task to complete for up to <paramref name="timeoutMilliseconds"/>
         /// and returns whether it completed in time.

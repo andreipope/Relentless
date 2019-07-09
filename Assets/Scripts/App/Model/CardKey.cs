@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground.Data
     /// </summary>
     public struct CardKey : IEquatable<CardKey>
     {
+        public static IComparer<CardKey> Comparer { get; } = new MouldIdVariantRelationalComparer();
+
         [JsonProperty("mouldId")]
         public MouldId MouldId { get; }
 
@@ -61,6 +64,18 @@ namespace Loom.ZombieBattleground.Data
                 new MouldId(tokenId / 10),
                 (Enumerators.CardVariant) (tokenId % 10)
             );
+        }
+
+        private sealed class MouldIdVariantRelationalComparer : IComparer<CardKey>
+        {
+            public int Compare(CardKey x, CardKey y)
+            {
+                int mouldIdComparison = x.MouldId.CompareTo(y.MouldId);
+                if (mouldIdComparison != 0)
+                    return mouldIdComparison;
+
+                return x.Variant.CompareTo(y.Variant);
+            }
         }
     }
 }

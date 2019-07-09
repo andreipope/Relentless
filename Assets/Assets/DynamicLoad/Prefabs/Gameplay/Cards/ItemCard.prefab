@@ -10806,8 +10806,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore
+  m_text: '<b>Lorem ipsum:</b> dolor sit amet, consectetur adipiscing elit, sed do
+    eiusmod tempor incididunt ut labore et dolore
 
 '
   m_isRightToLeft: 0
@@ -10844,7 +10844,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_textAlignment: 514
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: -3
@@ -10879,7 +10879,7 @@ MonoBehaviour:
   m_margin: {x: 0.69242007, y: 0.26422703, z: 0.81457794, w: 0}
   m_textInfo:
     textComponent: {fileID: 114406709118438214}
-    characterCount: 110
+    characterCount: 111
     spriteCount: 0
     spaceCount: 17
     wordCount: 17

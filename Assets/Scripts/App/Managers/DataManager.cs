@@ -16,6 +16,7 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using CardList = Loom.ZombieBattleground.Data.CardList;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 
@@ -25,7 +26,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(DataManager));
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings =
+        private static readonly JsonSerializerSettings StrictJsonSerializerSettings =
             JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
 
         private ILocalizationManager _localizationManager;
@@ -125,12 +126,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     data = SerializePersistentObject(CachedUserLocalData);
                     break;
+#if DEVELOPMENT
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     data = SerializePersistentObject(CachedCollectionData);
                     break;
-#if DEVELOPMENT
-                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                     data = SerializePersistentObject(CachedCardsLibraryData);
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                     data = SerializePersistentObject(new CardList{ Cards = CachedCardsLibraryData.Cards });
                      break;
                  case Enumerators.CacheDataType.CREDITS_DATA:
                      data = SerializePersistentObject(CachedCreditsData);
@@ -168,6 +169,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+
         }
 
         public void Init()
@@ -251,10 +253,14 @@ namespace Loom.ZombieBattleground
                     string cardsLibraryFilePath = GetPersistentDataPath(_cacheDataFileNames[type]);
 
                     List<Card> cardList;
-                    if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
+                    bool allowLocalCardLibrary = ConfigData.SkipBackendCardData;
+#if ALLOW_LOCAL_CARD_LIBRARY
+                    allowLocalCardLibrary = true;
+#endif
+                    if (allowLocalCardLibrary && File.Exists(cardsLibraryFilePath))
                     {
                         Log.Warn("===== Loading Card Library from persistent data ===== ");
-                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
+                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards.ToList();
                     }
                     else
                     {
@@ -269,6 +275,7 @@ namespace Loom.ZombieBattleground
                             throw;
                         }
                     }
+                    //cardList.Sort((card1, card2) => CardKey.Comparer.Compare(card1.CardKey, card2.CardKey));
                     CachedCardsLibraryData = new CardsLibraryData(cardList);
 
                     break;
@@ -410,13 +417,13 @@ namespace Loom.ZombieBattleground
             return JsonConvert.SerializeObject(
                 obj,
                 indented ? Formatting.Indented : Formatting.None,
-                JsonSerializerSettings
+                StrictJsonSerializerSettings
             );
         }
 
         public T DeserializeFromJson<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<T>(json, StrictJsonSerializerSettings);
         }
 
         public string GetPersistentDataPath(string fileName)

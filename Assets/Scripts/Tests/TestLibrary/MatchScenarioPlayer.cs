@@ -206,11 +206,8 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private async void OnOpponentPlayerActionEventReceived(BackendFacade.PlayerActionEventData playerActionEventData)
+        private void OnOpponentPlayerActionEventReceived(BackendFacade.PlayerActionEventData playerActionEventData)
         {
-            // Switch to main thread
-            await new WaitForUpdate();
-
             if (Completed)
                 return;
 

@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
         private static BackendDataControlMediator _backendDataControlMediator;
         private static PlasmachainBackendFacade _plasmaChainBackendFacade;
         private static BackendFacade _backendFacade;
+        private static IDataManager _dataManager;
+        private static BackendDataSyncService _backendDataSyncService;
 
         public static void Initialize()
         {
@@ -23,6 +25,8 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _backendDataSyncService = GameClient.Get<BackendDataSyncService>();
         }
 
         [CommandHandler]
@@ -30,6 +34,12 @@ namespace Loom.ZombieBattleground
         {
             await _backendFacade.RequestUserFullCardCollectionSync(_backendDataControlMediator.UserDataModel.UserId);
             Debug.Log("Added request for full card sync");
+        }
+
+        [CommandHandler]
+        public static void SetUserCollectionDirtyFlag()
+        {
+            _backendDataSyncService.SetCollectionDataDirtyFlag();
         }
 
         [CommandHandler]

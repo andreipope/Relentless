@@ -20,6 +20,9 @@ namespace Loom.ZombieBattleground.Test
     [Category("EditQuickSubset")]
     public class DataTest
     {
+        private static readonly JsonSerializerSettings StringJsonSerializerSettings =
+            JsonUtility.CreateStrictSerializerSettings((sender, args) => throw args.ErrorContext.Error);
+
         [Test]
         public void ZbVersionDeserialization()
         {
@@ -82,9 +85,23 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [Test]
-        public void CardProtobufSerialization()
+        public void PictureTransformDeserialization()
         {
-            Card card = new Card(
+            string json =
+                "        {\r\n            \"position\": {\r\n                \"x\": 0.07,\r\n                \"y\": 0.02,\r\n                \"z\": 0\r\n            },\r\n            \"scale\": {\r\n                \"x\": 0.9,\r\n                \"y\": 0.9,\r\n                \"z\": 0.9\r\n            }\r\n        }";
+            PictureTransform pictureTransform = JsonConvert.DeserializeObject<PictureTransform>(json, StringJsonSerializerSettings);
+            Assert.AreEqual(0.07f, pictureTransform.Position.X);
+            Assert.AreEqual(0.02f, pictureTransform.Position.Y);
+            Assert.AreEqual(0f, pictureTransform.Position.Z);
+            Assert.AreEqual(0.9f, pictureTransform.Scale.X);
+            Assert.AreEqual(0.9f, pictureTransform.Scale.Y);
+            Assert.AreEqual(0.9f, pictureTransform.Scale.Z);
+        }
+
+        [Test]
+        public void CardSerialization()
+        {
+            Card cardPrototype = new Card(
                 new CardKey(new MouldId(123), Enumerators.CardVariant.Standard),
                 "Foo",
                 3,
@@ -115,9 +132,13 @@ namespace Loom.ZombieBattleground.Test
                 true
             );
 
-            WorkingCard original = new WorkingCard(card, card, null, new Data.InstanceId(373));
-            WorkingCard deserialized = original.ToProtobuf().FromProtobuf(null);
-            original.ShouldDeepEqual(deserialized);
+            string cardPrototypeSerializedToJson = JsonConvert.SerializeObject(cardPrototype, Formatting.Indented, StringJsonSerializerSettings);
+            Card cardPrototypeDeserializedFromJson = JsonConvert.DeserializeObject<Card>(cardPrototypeSerializedToJson, StringJsonSerializerSettings);
+            cardPrototype.ShouldDeepEqual(cardPrototypeDeserializedFromJson);
+
+            WorkingCard workingCardProtobuf = new WorkingCard(cardPrototype, cardPrototype, null, new Data.InstanceId(373));
+            WorkingCard workingCardDeserializedFromProtobuf = workingCardProtobuf.ToProtobuf().FromProtobuf(null);
+            workingCardProtobuf.ShouldDeepEqual(workingCardDeserializedFromProtobuf);
         }
 
         [Test]

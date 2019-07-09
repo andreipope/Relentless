@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using OneOf;
+using OneOf.Types;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -10,7 +13,12 @@ namespace Loom.ZombieBattleground
 {
     public class HordeSelectionWithNavigationPage : IUIElement
     {
-        public enum Tab { None = -1, SelectDeck = 0,  Editing = 1 }
+        public enum Tab
+        {
+            None = -1,
+            SelectDeck = 0,
+            Editing = 1
+        }
 
         private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionWithNavigationPage));
 
@@ -21,6 +29,8 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
 
         private ITutorialManager _tutorialManager;
+
+        private BackendDataSyncService _backendDataSyncService;
 
         public SelectDeckTab HordeSelectDeckTab;
         public HordeEditingTab HordeEditTab;
@@ -49,6 +59,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _backendDataSyncService = GameClient.Get<BackendDataSyncService>();
 
             SelectDeckIndex = 0;
 
@@ -64,7 +75,7 @@ namespace Loom.ZombieBattleground
             HordeEditTab.Update();
         }
 
-        public void Show()
+        public async void Show()
         {
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyDecksPage"));
@@ -81,12 +92,11 @@ namespace Loom.ZombieBattleground
             HordeSelectDeckTab.Show(selectDeckObj);
             HordeEditTab.Load(editingTabObj);
 
-            SelectedDeckId = (int)_dataManager.CachedDecksData.Decks[0].Id.Id;
+            SelectedDeckId = (int) _dataManager.CachedDecksData.Decks[0].Id.Id;
 
             _tabObjects = new[]
             {
-                selectDeckObj,
-                editingTabObj
+                selectDeckObj, editingTabObj
             };
 
             SelectOverlordAbilitiesPopup.OnSelectOverlordSkill += SelectOverlordAbilitiesHandler;
@@ -95,6 +105,20 @@ namespace Loom.ZombieBattleground
             RenamePopup.OnSaveNewDeckName += SaveNewDeckNameHandler;
 
             LoadTabs();
+
+            if (_backendDataSyncService.IsCollectionDataDirty)
+            {
+                OneOf<Success, Exception> result = await _backendDataSyncService.UpdateCardCollectionWithUi(false);
+                if (result.IsT1)
+                {
+                    Log.Warn(result.AsT1);
+
+                    FailAndGoToMainMenu("Failed to update card collection. Please try again.");
+                    return;
+                }
+
+                HordeSelectDeckTab.Show(selectDeckObj);
+            }
         }
 
         public void Hide()
@@ -127,15 +151,14 @@ namespace Loom.ZombieBattleground
 
         private void UpdatePageScaleToMatchResolution()
         {
-            float screenRatio = (float)Screen.width/Screen.height;
-            if(screenRatio < 1.76f)
+            float screenRatio = (float) Screen.width / Screen.height;
+            if (screenRatio < 1.76f)
             {
                 _selfPage.transform.localScale = Vector3.one * 0.93f;
             }
         }
 
         #region UI Handlers
-
 
         public List<Deck> GetDeckList()
         {
@@ -145,20 +168,18 @@ namespace Loom.ZombieBattleground
                 if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
-                    SelectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
+                    SelectedDeckId = (int) _dataManager.CachedUserLocalData.TutorialSavedDeck.Id.Id;
                 }
+
                 return tutorialDeckList;
             }
 
             return _dataManager.CachedDecksData.Decks.ToList();
         }
 
-
-
         #endregion
 
         #region Data and State
-
 
         public void AssignCurrentDeck(int deckIndex)
         {
@@ -172,6 +193,7 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 CurrentEditDeck = deck.Clone();
+
                 //CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Prototype.Id == CurrentEditDeck.OverlordId);
                 IsEditingNewDeck = false;
             }
@@ -235,10 +257,10 @@ namespace Loom.ZombieBattleground
             Tab oldTabl = _tab;
             _tab = newTab;
 
-            for (int i = 0; i < _tabObjects.Length;++i)
+            for (int i = 0; i < _tabObjects.Length; ++i)
             {
                 GameObject tabObject = _tabObjects[i];
-                tabObject.SetActive(i == (int)newTab);
+                tabObject.SetActive(i == (int) newTab);
             }
 
             UpdateAreaBarPopup(newTab != Tab.Editing);
@@ -264,7 +286,7 @@ namespace Loom.ZombieBattleground
         private void UpdateAreaBarPopup(bool isShow)
         {
             var areaBarPopUp = GameClient.Get<IUIManager>().GetPopup<AreaBarPopup>();
-            if(isShow)
+            if (isShow)
                 areaBarPopUp.Show();
             else
             {
@@ -290,5 +312,12 @@ namespace Loom.ZombieBattleground
         }*/
 
         #endregion
+
+        private void FailAndGoToMainMenu(string customMessage = null)
+        {
+            _uiManager.HidePopup<LoadingOverlayPopup>();
+            _uiManager.DrawPopup<WarningPopup>(customMessage ?? "Something went wrong.\n Please try again.");
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU, true);
+        }
     }
 }
