@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -99,6 +100,23 @@ namespace Loom.ZombieBattleground
                 }
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
+                
+                if(effectInfo != null && effectInfo.cardName == "Harpoon")
+                {
+                    Transform cameraVFXObj = VfxObject.transform.Find("!! Camera shake");
+                    cameraVFXObj.transform.position = Vector3.zero;
+                    Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                    cameraGroupTransform.SetParent
+                    (
+                       cameraVFXObj
+                    );
+                    cameraGroupTransform.localPosition = VfxObject.transform.position * -1;
+                    Ability.VFXAnimationEnded += () =>
+                    {
+                        cameraGroupTransform.SetParent(null);
+                        cameraGroupTransform.position = Vector3.zero; 
+                    };
+                }
 
                 PlaySound(soundClipTitle, delayBeforeSound);
             }
