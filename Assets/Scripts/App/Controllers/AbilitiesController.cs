@@ -919,6 +919,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.SUMMON:
                     ability = new SummonsAbility(cardKind, abilityData);
+                    abilityView = new SummonAbilityView((SummonsAbility)ability);
                     break;
                 case Enumerators.AbilityType.CARD_RETURN:
                     ability = new ReturnToHandAbility(cardKind, abilityData);
