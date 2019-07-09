@@ -65,6 +65,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.UniqueAnimation.BlizzardArrival:
                     uniqueAnimation = new BlizzardArrivalUniqueAnimation();
                     break;
+                case Enumerators.UniqueAnimation.GoozillaArrival:
+                    uniqueAnimation = new GoozillaArrivalUniqueAnimation();
+                    break;
                 default:
                     throw new NotImplementedException(nameof(uniqueAnimationType) + " not implemented yet");
             }
