@@ -738,6 +738,7 @@ namespace Loom.ZombieBattleground.Common
             ChernoBillArrival,
             MountainArrival,
             GargantuaArrival,
+            BlizzardArrival,
             GoozillaArrival
         }
 
