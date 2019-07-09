@@ -105,15 +105,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Log.Warn("NOTE: user data wiped");
                 }
 
-                if (loginResponse.FullCardCollectionSyncExecuted)
+                // No need to wait for card collection sync for guests, we know they won't have any
+                if (UserDataModel.IsRegistered && loginResponse.FullCardCollectionSyncExecuted)
                 {
                     Log.Debug("Waiting for full card collection sync event...");
                     const float waitForFullCardCollectionSyncEventTimeout = 20;
                     bool timedOut = await InternalTools.WaitWithTimeout(waitForFullCardCollectionSyncEventTimeout, () => gotFullCardSyncEvent);
                     if (timedOut)
-                    {
                         throw new RpcClientException("Timed out waiting for full card collection sync event", -1, null);
-                    }
                 }
             }
             catch (RpcClientException exception)

@@ -228,18 +228,27 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             Enumerators.Faction faction = overlord.Prototype.Faction;
 
-            // Prioritize cards of the champion's faction, but don't exclude cards from other factions,
+            // Prioritize cards of the champion's faction, allow cards from other factions,
             // except the faction the champion is weak against.
-            Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
-            List<Card> creatureCards =
-                overlordElementSet
-                    .Cards
-                    .Where(card => collectionData.Cards.Any(collectionCard => collectionCard.CardKey == card.CardKey))
+
+            IReadOnlyList<Card> collectionCards =
+                _dataManager.CachedCardsLibraryData.GetCardsByCardKeys(collectionData.Cards.Select(card => card.CardKey).ToList());
+
+            Enumerators.Faction factionWeakAgainst = Constants.FactionAgainstDictionary[faction];
+            List<Card> cardsOverlordFactionFirst =
+                collectionCards
+                    .Where(card => card.Faction != factionWeakAgainst)
+                    .OrderByDescending(card => card.Faction == faction)
                     .ToList();
+
+            List<Card> creatureCards =
+                cardsOverlordFactionFirst
+                    .Where(card => card.Kind == Enumerators.CardKind.CREATURE)
+                    .ToList();
+
             List<Card> itemCards =
-                SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM)
-                    .Cards
-                    .Where(card => collectionData.Cards.Any(collectionCard => collectionCard.CardKey == card.CardKey))
+                cardsOverlordFactionFirst
+                    .Where(card => card.Kind == Enumerators.CardKind.ITEM)
                     .ToList();
 
             List<Card> availableCreatureCardList = new List<Card>();

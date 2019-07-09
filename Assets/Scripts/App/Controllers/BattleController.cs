@@ -22,8 +22,6 @@ namespace Loom.ZombieBattleground
 
         private VfxController _vfxController;
 
-        private Dictionary<Enumerators.Faction, Enumerators.Faction> _strongerElemental, _weakerElemental;
-
         public void Dispose()
         {
         }
@@ -38,8 +36,6 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-            FillStrongersAndWeakers();
         }
 
         public void Update()
@@ -117,7 +113,7 @@ namespace Loom.ZombieBattleground
                 damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 finalDamageAttacking = Mathf.Min(damageAttacking, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
-                
+
                 if (finalDamageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damageAttacking = 0;
@@ -126,7 +122,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
-                
+
                 attackedUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacking,
                     Enumerators.ReasonForValueChange.Attack);
 
@@ -336,53 +332,6 @@ namespace Loom.ZombieBattleground
                     attackedUnit.OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchMatchExperienceInfo : _overlordExperienceManager.OpponentMatchMatchExperienceInfo
                     );
             }
-        }
-
-        private void FillStrongersAndWeakers()
-        {
-            _strongerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
-            {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.AIR
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.FIRE
-                }
-            };
-
-            _weakerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
-            {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
-                }
-            };
         }
     }
 }

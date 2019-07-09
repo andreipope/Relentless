@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.Iap
         private AuthFiatApiFacade.StoreData _dataData;
 
         // TODO: store between game restarts
-        private UniqueList<Product> _storePendingPurchases = new UniqueList<Product>();
+        private readonly UniqueList<Product> _storePendingPurchases = new UniqueList<Product>();
 
         private IapInitializationState _initializationState;
 
@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground.Iap
         public IReadOnlyList<Product> Products { get; private set; }
 
         public IReadOnlyList<string> StringsRemovedFromProductTitles { get; private set; }
+
+        public IReadOnlyList<Product> StorePendingPurchases => _storePendingPurchases;
 
         /// <summary>
         /// Begins the IAP initialization process. The initialization can fail immediately.
