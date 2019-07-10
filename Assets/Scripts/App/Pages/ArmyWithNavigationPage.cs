@@ -12,8 +12,12 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
 
-        private Button _buttonBuyPacks,
-                       _buttonMarketplace;
+        private Button _buttonBuyPacks;
+        private Button _buttonMarketplace;
+        private Button _buttonLeftArrowScroll;
+        private Button _buttonRightArrowScroll;
+
+        private Scrollbar _cardCollectionScrollBar;
 
         private UICardCollections _uiCardCollections;
 
@@ -53,6 +57,14 @@ namespace Loom.ZombieBattleground
 
             _buttonBuyPacks = _selfPage.transform.Find("Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
             _buttonBuyPacks.onClick.AddListener(ButtonBuyPacksHandler);
+
+            _buttonLeftArrowScroll = _selfPage.transform.Find("Panel_Content/Army/Element/Button_LeftArrow").GetComponent<Button>();
+            _buttonLeftArrowScroll.onClick.AddListener(ButtonLeftArrowScrollHandler);
+
+            _buttonRightArrowScroll = _selfPage.transform.Find("Panel_Content/Army/Element/Button_RightArrow").GetComponent<Button>();
+            _buttonRightArrowScroll.onClick.AddListener(ButtonRightArrowScrollHandler);
+
+            _cardCollectionScrollBar = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
 
             UpdatePageScaleToMatchResolution();
         }
@@ -101,6 +113,28 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
+
+        private void ButtonLeftArrowScrollHandler()
+        {
+            if (_cardCollectionScrollBar.value <= 0)
+                return;
+
+            _cardCollectionScrollBar.value -= _cardCollectionScrollBar.size;
+            if (_cardCollectionScrollBar.value <= 0)
+                _cardCollectionScrollBar.value = 0;
+
+        }
+
+        private void ButtonRightArrowScrollHandler()
+        {
+            if (_cardCollectionScrollBar.value >= 1)
+                return;
+
+            _cardCollectionScrollBar.value += _cardCollectionScrollBar.size;
+            if (_cardCollectionScrollBar.value >= 1)
+                _cardCollectionScrollBar.value = 1;
+        }
+
 
         private void ButtonMarketplace()
         {
