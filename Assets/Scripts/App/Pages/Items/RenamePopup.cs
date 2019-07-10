@@ -16,6 +16,7 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonSaveRenameDeck;
         private Button _buttonCancel;
+        private Button _buttonBack;
         private Button _buttonContinue;
 
         private TMP_InputField _inputFieldRenameDeckName;
@@ -29,6 +30,7 @@ namespace Loom.ZombieBattleground
         public static Action<string> OnSaveNewDeckName;
 
         private Deck _deck;
+        private bool _openFromCreatingNewHorde;
 
         public void Init()
         {
@@ -49,6 +51,9 @@ namespace Loom.ZombieBattleground
             _inputFieldRenameDeckName.onEndEdit.AddListener(OnInputFieldRenameEndedEdit);
             _inputFieldRenameDeckName.text = "Deck Name";
 
+            _buttonBack = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Back").GetComponent<Button>();
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
+
             _buttonContinue = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
 
@@ -58,16 +63,7 @@ namespace Loom.ZombieBattleground
             _buttonCancel = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
-            if (_deck.Id.Id == -1)
-            {
-                _buttonSaveRenameDeck.gameObject.SetActive(false);
-                _buttonContinue.gameObject.SetActive(true);
-            }
-            else
-            {
-                _buttonSaveRenameDeck.gameObject.SetActive(true);
-                _buttonContinue.gameObject.SetActive(false);
-            }
+            EnablePanelButtons();
 
             SetName(_deck.Name);
 
@@ -75,9 +71,41 @@ namespace Loom.ZombieBattleground
             _inputFieldRenameDeckName.interactable = !GameClient.Get<ITutorialManager>().IsTutorial;
         }
 
+        private void EnablePanelButtons()
+        {
+            if (_deck.Id.Id == -1)
+            {
+                if (_openFromCreatingNewHorde)
+                {
+                    _buttonBack.gameObject.SetActive(true);
+                    _buttonCancel.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _buttonBack.gameObject.SetActive(false);
+                    _buttonCancel.gameObject.SetActive(true);
+                }
+
+                _buttonSaveRenameDeck.gameObject.SetActive(false);
+                _buttonContinue.gameObject.SetActive(true);
+            }
+            else
+            {
+                _buttonBack.gameObject.SetActive(false);
+                _buttonCancel.gameObject.SetActive(true);
+                _buttonSaveRenameDeck.gameObject.SetActive(true);
+                _buttonContinue.gameObject.SetActive(false);
+            }
+        }
+
         public void Show(object data)
         {
-            _deck = (Deck) data;
+            if (data is object[] param)
+            {
+                _deck = (Deck) param[0];
+                _openFromCreatingNewHorde = (bool) param[1];
+            }
+
             Show();
         }
 
@@ -143,6 +171,14 @@ namespace Loom.ZombieBattleground
 
             OnSaveNewDeckName?.Invoke(deck.Name);
         }
+
+        private void ButtonBackHandler()
+        {
+            DataUtilities.PlayClickSound();
+            Hide();
+            _uiManager.DrawPopup<SelectOverlordAbilitiesPopup>();
+        }
+
 
         private void ButtonContinueHandler()
         {
