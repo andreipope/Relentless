@@ -35,9 +35,12 @@ namespace Loom.ZombieBattleground
             cameraGroupTransform.localPosition = cameraLocalPosition;
 
             InternalTools.DoActionDelayed(() =>
-            {                
-                cameraGroupTransform.SetParent(null);
-                cameraGroupTransform.position = Vector3.zero; 
+            {
+                if (cameraGroupTransform.parent == cameraVFXObj)
+                {
+                    cameraGroupTransform.SetParent(null);
+                    cameraGroupTransform.position = Vector3.zero;
+                }
                 
                 Object.Destroy(animationVFX);
                 

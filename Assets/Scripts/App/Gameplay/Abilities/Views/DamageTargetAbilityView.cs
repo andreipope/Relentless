@@ -101,8 +101,15 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
                 
-                if(effectInfo != null && effectInfo.cardName == "Harpoon")
-                {
+                if
+                (
+                    effectInfo != null && 
+                    (
+                        effectInfo.cardName == "Harpoon" ||
+                        effectInfo.cardName == "Gargantua"
+                    )
+                )
+                {                    
                     Transform cameraVFXObj = VfxObject.transform.Find("!! Camera shake");
                     cameraVFXObj.transform.position = Vector3.zero;
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
