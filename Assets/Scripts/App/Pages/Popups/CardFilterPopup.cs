@@ -186,19 +186,13 @@ namespace Loom.ZombieBattleground
         private void ButtonGooCostLeftArrowHandler()
         {
             PlayClickSound();
-            _scrollRectGooCost.horizontalNormalizedPosition = 0;
-
-            _buttonGooCostLeftArrow.interactable = false;
-            _buttonGooCostRightArrow.interactable = true;
+            _scrollRectGooCost.horizontalNormalizedPosition = _scrollRectGooCost.horizontalNormalizedPosition > 0 ? 0 : 1;
         }
 
         private void ButtonGooCostRightArrowHandler()
         {
             PlayClickSound();
-            _scrollRectGooCost.horizontalNormalizedPosition = 1;
-
-            _buttonGooCostLeftArrow.interactable = true;
-            _buttonGooCostRightArrow.interactable = false;
+            _scrollRectGooCost.horizontalNormalizedPosition = _scrollRectGooCost.horizontalNormalizedPosition < 1 ? 1 : 0;
         }
 
         private void ButtonElementIconHandler(Enumerators.Faction faction)
@@ -387,9 +381,6 @@ namespace Loom.ZombieBattleground
             {
                 UpdateGooCostButtonDisplay(i);
             }
-
-            _buttonGooCostLeftArrow.interactable = false;
-            _buttonGooCostRightArrow.interactable = true;
         }
 
         #endregion
