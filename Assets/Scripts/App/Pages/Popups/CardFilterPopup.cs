@@ -112,6 +112,7 @@ namespace Loom.ZombieBattleground
             _buttonGooCostRightArrow.onClick.AddListener(ButtonGooCostRightArrowHandler);
 
             _scrollRectGooCost = Self.transform.Find("Tab_GooCost/Goo/Scroll View").GetComponent<ScrollRect>();
+            _scrollRectGooCost.horizontalNormalizedPosition = 0f;
 
             _buttonElementsDictionary.Clear();
             foreach(Enumerators.Faction faction in AllAvailableFactionList)
