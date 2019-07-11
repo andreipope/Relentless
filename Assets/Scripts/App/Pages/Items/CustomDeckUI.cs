@@ -82,6 +82,11 @@ namespace Loom.ZombieBattleground
             UpdateCardsInDeckCountDisplay();
         }
 
+        public void Update()
+        {
+            _viewDeckPage.Update();
+        }
+
         public void Load(GameObject obj)
         {
             GameObject selfObject = obj;
@@ -89,7 +94,7 @@ namespace Loom.ZombieBattleground
             _deckNameText = selfObject.transform.Find("Top_Panel/Panel_Image/Deck_Name").GetComponent<TextMeshProUGUI>();
             _cardsCountText = selfObject.transform.Find("Bottom_Panel/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
 
-            _cardListScrollRect = selfObject.transform.parent.Find("Panel_Content/Army/Element/Scroll View").gameObject;
+            _cardListScrollRect = selfObject.transform.parent.Find("Panel_Frame/Panel_Content/Army/Element/Scroll View").gameObject;
 
             _buttonRename = selfObject.transform.Find("Top_Panel/Panel_Image/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);

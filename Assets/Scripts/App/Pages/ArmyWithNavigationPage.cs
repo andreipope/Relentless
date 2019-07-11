@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         private UICardCollections _uiCardCollections;
 
+        private FadeoutBars _fadeoutBars;
+
         private GameObject _selfPage;
 
         #region IUIElement
@@ -58,13 +60,19 @@ namespace Loom.ZombieBattleground
             _buttonBuyPacks = _selfPage.transform.Find("Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
             _buttonBuyPacks.onClick.AddListener(ButtonBuyPacksHandler);
 
-            _buttonLeftArrowScroll = _selfPage.transform.Find("Panel_Content/Army/Element/Button_LeftArrow").GetComponent<Button>();
+            _buttonLeftArrowScroll = _selfPage.transform.Find("Panel_Frame/Panel_Content/Army/Element/Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrowScroll.onClick.AddListener(ButtonLeftArrowScrollHandler);
 
-            _buttonRightArrowScroll = _selfPage.transform.Find("Panel_Content/Army/Element/Button_RightArrow").GetComponent<Button>();
+            _buttonRightArrowScroll = _selfPage.transform.Find("Panel_Frame/Panel_Content/Army/Element/Button_RightArrow").GetComponent<Button>();
             _buttonRightArrowScroll.onClick.AddListener(ButtonRightArrowScrollHandler);
 
-            _cardCollectionScrollBar = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
+            _cardCollectionScrollBar = _selfPage.transform.Find("Panel_Frame/Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
+
+            GameObject leftFadeGameObject = _selfPage.transform.Find("Panel_Frame/Panel_Content/Army/Element/Fade_Left").gameObject;
+            GameObject rightFadeGameObject = _selfPage.transform.Find("Panel_Frame/Panel_Content/Army/Element/Fade_Right").gameObject;
+
+            _fadeoutBars = new FadeoutBars();
+            _fadeoutBars.Init(_cardCollectionScrollBar, leftFadeGameObject, rightFadeGameObject);
 
             UpdatePageScaleToMatchResolution();
         }
@@ -88,6 +96,7 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
             _uiCardCollections.Update();
+            _fadeoutBars?.Update();
         }
 
         public void Dispose()
