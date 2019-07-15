@@ -2,16 +2,16 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class DestroyUnitsAbilityView : AbilityViewBase<DestroyUnitsAbility>
     {
         private BattlegroundController _battlegroundController;
-
-        private ICameraManager _cameraManager;
 
         private List<BoardUnitView> _unitsViews;
 
@@ -22,13 +22,13 @@ namespace Loom.ZombieBattleground
         private GameObject playerLineObject;
 
         private GameObject _cardDissapearingPrefab;
+
+        private event Action OnEventEnded;
         #endregion
 
         public DestroyUnitsAbilityView(DestroyUnitsAbility ability) : base(ability)
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
-
-            _cameraManager = GameClient.Get<ICameraManager>();
 
             _unitsViews = new List<BoardUnitView>();
         }
@@ -72,10 +72,34 @@ namespace Loom.ZombieBattleground
                     case Enumerators.CardNameOfAbility.Bulldozer:
                         {
                             CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                            opponentLineObject = VfxObject.transform.Find("RubbleUp/BurstToxic").gameObject;
-                            playerLineObject = VfxObject.transform.Find("Rubble/BurstToxic").gameObject;
+                            
+                            Transform cameraVFXObjParent = VfxObject.transform.Find("Camera Anim");                    
+                            Transform cameraVFXObj = cameraVFXObjParent.transform.Find("!! Camera shake");                    
+                            Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                            cameraGroupTransform.SetParent
+                            (
+                               cameraVFXObj
+                            );
 
-                            _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing").gameObject;
+                            cameraVFXObjParent.parent = null;
+                            cameraVFXObjParent.position = Vector3.zero;
+                            cameraVFXObj.transform.position = Vector3.zero;
+                            cameraGroupTransform.localPosition = Vector3.zero;
+                            
+                            int cacheCullingMask = Camera.main.cullingMask;
+                            Camera.main.cullingMask = 0;
+                            OnEventEnded += () =>
+                            {
+                                cameraGroupTransform.SetParent(null);
+                                cameraGroupTransform.position = Vector3.zero; 
+                                Camera.main.cullingMask = cacheCullingMask;
+                                Object.Destroy(cameraVFXObjParent.gameObject);
+                            };
+                            
+                            opponentLineObject = VfxObject.transform.Find("VFX/RubbleUp/BurstToxic").gameObject;
+                            playerLineObject = VfxObject.transform.Find("VFX/Rubble/BurstToxic").gameObject;
+
+                            _cardDissapearingPrefab = VfxObject.transform.Find("VFX/CardsDissapearing").gameObject;
                             _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                             Ability.OnUpdateEvent += OnUpdateEventHandler;
@@ -121,7 +145,8 @@ namespace Loom.ZombieBattleground
             }
 
             if(_unitsViews.Count == 0)
-            {
+            {                
+                OnEventEnded?.Invoke();
                 Ability.OnUpdateEvent -= OnUpdateEventHandler;
             }
         }
@@ -130,7 +155,6 @@ namespace Loom.ZombieBattleground
         {
             CreateSubParticle(unit.Transform.position);
             _unitsViews.Remove(unit);
-            _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
             if (!unit.Model.HasBuffShield)
             {
                 unit.ChangeModelVisibility(false);
