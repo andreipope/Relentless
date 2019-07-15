@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
 
@@ -7,6 +8,14 @@ namespace Loom.ZombieBattleground
 {
     public class GargantuaArrivalUniqueAnimation : UniqueAnimation
     {
+        public Coroutine CheckForCancelCoroutine;
+
+        private GameObject _animationVFX;
+
+        private Transform _cameraGroupTransform, _cameraVFXObj;
+
+        private BoardUnitView _unitView;
+        
         public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
@@ -17,45 +26,79 @@ namespace Loom.ZombieBattleground
 
             const float delayBeforeSpawn = 3f;
 
-            BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
+            _unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
-            unitView.GameObject.SetActive(false);
+            _unitView.GameObject.SetActive(false);
 
-            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
+            _animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/Gargantua_Arrival"));
 
-            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
+            _cameraVFXObj = _animationVFX.transform.Find("!! Camera shake");
 
-            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
-            cameraGroupTransform.SetParent(cameraVFXObj);
+            _cameraGroupTransform = CameraManager.GetGameplayCameras();
+            _cameraGroupTransform.SetParent(_cameraVFXObj);
 
-            animationVFX.transform.position = unitView.PositionOfBoard + offset;
+            _animationVFX.transform.position = _unitView.PositionOfBoard + offset;
 
-            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
-            cameraGroupTransform.localPosition = cameraLocalPosition;
+            Vector3 cameraLocalPosition = _animationVFX.transform.position * -1;
+            _cameraGroupTransform.localPosition = cameraLocalPosition;
+
+            CheckForCancelCoroutine = MainApp.Instance.StartCoroutine(CheckForCancel(_unitView, _animationVFX));
+            DamageTargetAbility.OnInputEnd += OnAbilityInputEnd;
 
             InternalTools.DoActionDelayed(() =>
             {
-                if (cameraGroupTransform.parent == cameraVFXObj)
-                {
-                    cameraGroupTransform.SetParent(null);
-                    cameraGroupTransform.position = Vector3.zero;
-                }
-                
-                Object.Destroy(animationVFX);
-                
-                if (unitView != null)
-                {
-                    unitView.GameObject.SetActive(true);
-                    unitView.battleframeAnimator.Play(0, -1, 1);
-                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
-                }             
-
-                endArrivalCallback?.Invoke();                
+                VFXEnd();        
 
                 IsPlaying = false;
 
             }, delayBeforeSpawn);
+        }
+        
+        public IEnumerator CheckForCancel(BoardUnitView unitView, GameObject animationVFX)
+        {
+            while(true)
+            {
+                if (unitView == null)
+                {
+                    Object.Destroy(animationVFX);
+                    break;
+                }
+                yield return null;
+            }
+        }
+        
+        private void VFXEnd()
+        {
+            if (CheckForCancelCoroutine != null)
+            {
+                MainApp.Instance.StopCoroutine(CheckForCancelCoroutine);
+            }
+            CheckForCancelCoroutine = null;
+
+            if (_cameraGroupTransform.parent == _cameraVFXObj)
+            {
+                _cameraGroupTransform.SetParent(null);
+                _cameraGroupTransform.position = Vector3.zero;
+            }
+
+            Object.Destroy(_animationVFX);
+
+            if (_unitView != null)
+            {
+                _unitView.GameObject.SetActive(true);
+                _unitView.battleframeAnimator.Play(0, -1, 1);
+                BoardController.UpdateCurrentBoardOfPlayer(_unitView.Model.OwnerPlayer, null);
+            }
+        }        
+
+        private void OnAbilityInputEnd(bool isAbilityResolved)
+        {
+            DamageTargetAbility.OnInputEnd -= OnAbilityInputEnd;
+            if (!isAbilityResolved)
+            {
+                VFXEnd();
+            }           
         }
     }
 }
