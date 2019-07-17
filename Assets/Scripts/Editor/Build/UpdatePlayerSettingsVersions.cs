@@ -19,6 +19,7 @@ namespace Loom.ZombieBattleground.Editor
         public void OnPreprocessBuild(BuildReport report)
         {
             PlayerSettings.SplashScreen.showUnityLogo = false;
+            PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Debug);
 
             #if USE_STAGING_BACKEND && !UNITY_IOS && !UNITY_ANDROID
                 PlayerSettings.applicationIdentifier = applicationIdentifierStaging;
@@ -27,12 +28,16 @@ namespace Loom.ZombieBattleground.Editor
 #if UNITY_CLOUD_BUILD
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;
 
+#if USE_PRODUCTION_BACKEND
+            PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Master);
+#endif
+
 #if UNITY_IOS
             Version version = buildMetaInfo.Version;
             PlayerSettings.bundleVersion = $"{version.Major}.{version.Minor}.{version.Build}";
 #else
             PlayerSettings.bundleVersion = buildMetaInfo.ShortVersionName;
-#endif            
+#endif
             PlayerSettings.macOS.buildNumber = buildMetaInfo.CloudBuildBuildNumber.ToString();
             PlayerSettings.iOS.buildNumber = buildMetaInfo.CloudBuildBuildNumber.ToString();
             PlayerSettings.Android.bundleVersionCode = buildMetaInfo.CloudBuildBuildNumber;

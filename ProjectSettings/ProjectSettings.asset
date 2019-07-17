@@ -247,13 +247,13 @@ PlayerSettings:
   clonedFromGUID: a8599356c9bbe634f93b94fe78f10654
   templatePackageId: 
   templateDefaultScene: 
-  AndroidTargetArchitectures: 5
+  AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 2800000, guid: f9d0b426c53724dc0bc1189640db3427, type: 3}
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
   AndroidBuildApkPerCpuArchitecture: 0
-  AndroidTVCompatibility: 1
+  AndroidTVCompatibility: 0
   AndroidIsGame: 1
   AndroidEnableTango: 0
   androidEnableBanner: 1
@@ -612,8 +612,10 @@ PlayerSettings:
     1: USE_DEVELOPMENT_BACKEND
     7: 
   platformArchitecture: {}
-  scriptingBackend: {}
-  il2cppCompilerConfiguration: {}
+  scriptingBackend:
+    Android: 1
+  il2cppCompilerConfiguration:
+    Android: 0
   managedStrippingLevel:
     iOS: 2
   incrementalIl2cppBuild: {}

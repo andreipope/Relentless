@@ -1,4 +1,4 @@
-#define ADD_APP_GROUP
+﻿#define ADD_APP_GROUP
 //remove to prevent the addition of the app group
 
 #if UNITY_5_4_OR_NEWER && UNITY_IPHONE && UNITY_EDITOR
@@ -37,7 +37,7 @@
          // UserNotifications.framework is required by libOneSignal.a
          project.AddFrameworkToProject(targetGUID, "UserNotifications.framework", false);
         
-         #if UNITY_2017_2_OR_NEWER && !UNITY_CLOUD_BUILD && false
+         #if UNITY_2017_2_OR_NEWER && !UNITY_CLOUD_BUILD
            
             var platformsLocation = "Assets" + separator + "OneSignal" + separator + "Platforms" + separator;
             var extensionTargetName = "OneSignalNotificationServiceExtension";
@@ -107,49 +107,33 @@
          if (File.Exists(entitlementPath))
             entitlements.ReadFromFile(entitlementPath);
          
-         if (entitlements.root["aps-environment"] == null) {
+         if (entitlements.root["aps-environment"] == null)
             entitlements.root.SetString("aps-environment", "development");
-         }
 
-         if (entitlements.root["com.apple.security.application-groups"] == null) {
-            var groups = entitlements.root.CreateArray("com.apple.security.application-groups");
-            groups.AddString("group." + PlayerSettings.applicationIdentifier + ".onesignal");
-         }
+         #if !UNITY_CLOUD_BUILD && ADD_APP_GROUP
+            if (entitlements.root["com.apple.security.application-groups"] == null) {
+               var groups = entitlements.root.CreateArray("com.apple.security.application-groups");
+               groups.AddString("group." + PlayerSettings.applicationIdentifier + ".onesignal");
+            }
+         #endif
 
+         entitlements.WriteToFile(entitlementPath);
 
-        entitlements.WriteToFile(entitlementPath);
+         // Copy the entitlement file to the xcode project
+         var entitlementFileName = Path.GetFileName(entitlementPath);
+         var unityTarget = PBXProject.GetUnityTargetName();
+         var relativeDestination = unityTarget + "/" + entitlementFileName;
 
-        // write into root plist
-        string pathToRootInfoPlist = path + separator + "Info.plist";
-        PlistDocument rootInfoPlist = new PlistDocument();
-        rootInfoPlist.ReadFromFile(pathToRootInfoPlist);
-        var bmgroups = rootInfoPlist.root.CreateArray("UIBackgroundModes");
-        bmgroups.AddString("remote-notification");
-        rootInfoPlist.root.SetString("NSLocationAlwaysUsageDescription", "Used to confirm the location of the player.");
-        rootInfoPlist.root.SetString("NSLocationWhenInUseUsageDescription", "Used to confirm the location of the player.");
-        if (rootInfoPlist.root.values.ContainsKey("UIApplicationExitsOnSuspend"))
-        {
-           rootInfoPlist.root.values.Remove("UIApplicationExitsOnSuspend");
-        }
-        rootInfoPlist.WriteToFile(pathToRootInfoPlist);
+         // Add the pbx configs to include the entitlements files on the project
+         project.AddFile(relativeDestination, entitlementFileName);
+         project.AddBuildProperty(targetGUID, "CODE_SIGN_ENTITLEMENTS", relativeDestination);
 
-        // Copy the entitlement file to the xcode project
-        var entitlementFileName = Path.GetFileName(entitlementPath);
-        var unityTarget = PBXProject.GetUnityTargetName();
-        var relativeDestination = unityTarget + "/" + entitlementFileName;
-
-        // Add the pbx configs to include the entitlements files on the project
-        project.AddFile(relativeDestination, entitlementFileName);
-        project.AddBuildProperty(targetGUID, "CODE_SIGN_ENTITLEMENTS", relativeDestination);
-
-        project.AddCapability(targetGUID, PBXCapabilityType.BackgroundModes);
-
-        // Add push notifications as a capability on the target
-        project.AddBuildProperty(targetGUID, "SystemCapabilities", "{com.apple.Push = {enabled = 1;};}");
+         // Add push notifications as a capability on the target
+         project.AddBuildProperty(targetGUID, "SystemCapabilities", "{com.apple.Push = {enabled = 1;};}");
          File.WriteAllText(projectPath, project.WriteToString());
       }
 
-      #if UNITY_2017_2_OR_NEWER
+      #if UNITY_2017_2_OR_NEWER && !UNITY_CLOUD_BUILD
          
          // This function takes a static framework that is already linked to a different target in the project and links it to the specified target
          public static void InsertStaticFrameworkIntoTargetBuildPhaseFrameworks(string staticFrameworkName, string frameworkGuid, string target, ref string contents, PBXProject project) {
