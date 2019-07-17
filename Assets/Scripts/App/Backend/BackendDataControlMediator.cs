@@ -105,7 +105,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Log.Warn("NOTE: user data wiped");
                 }
 
-                // No need to wait for card collection sync for guests, we know they won't have any
                 if (loginResponse.FullCardCollectionSyncExecuted)
                 {
                     Log.Debug("Waiting for full card collection sync event...");

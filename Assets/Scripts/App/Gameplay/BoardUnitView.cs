@@ -275,11 +275,11 @@ namespace Loom.ZombieBattleground
 
             if (Model.Card.Owner.IsLocalPlayer)
             {
-                //PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
+                PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
             }
             else
             {
-                //PositionOfBoard = _battlegroundController.OpponentBoardObject.transform.position;
+                PositionOfBoard = _battlegroundController.OpponentBoardObject.transform.position;
             }
 
         }
