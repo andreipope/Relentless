@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf;
 
@@ -102,7 +100,9 @@ namespace Loom.Client {
     /// into and querying that contract.
     /// </summary>
     public abstract class ContractBase<TChainEvent> : ContractBase {
-        protected ContractBase(DAppChainClient client, Address contractAddress, Address callerAddress) : base(client,
+        protected ContractBase(DAppChainClient client, Address contractAddress, Address callerAddress) 
+            : base(
+            client,
             contractAddress,
             callerAddress)
         {

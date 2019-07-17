@@ -1,7 +1,6 @@
 ﻿using Loom.Google.Protobuf;
 using System.Threading.Tasks;
 using Loom.Client.Protobuf;
-using UnityEngine;
 
 namespace Loom.Client
 {

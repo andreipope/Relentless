@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
 
                 // No need to wait for card collection sync for guests, we know they won't have any
-                if (UserDataModel.IsRegistered && loginResponse.FullCardCollectionSyncExecuted)
+                if (loginResponse.FullCardCollectionSyncExecuted)
                 {
                     Log.Debug("Waiting for full card collection sync event...");
                     const float waitForFullCardCollectionSyncEventTimeout = 20;

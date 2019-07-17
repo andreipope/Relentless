@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground.Iap
                 // Get all events since call to OpenPackMethod
                 EvmEvent<T> evmEvent = zbgCardContract.GetEvent<T>(eventName);
                 NewFilterInput filterInput =
-                    evmEvent.CreateFilterInput(
+                    evmEvent.EventAbi.CreateFilterInput(
                         new BlockParameter(new HexBigInteger(openPackTxResult.Height)),
                         BlockParameter.CreatePending()
                     );

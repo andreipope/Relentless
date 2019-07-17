@@ -28,7 +28,9 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName}");
+            Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName} " +
+                $"({BuildMetaInfo.Instance.CloudBuildTargetName}) " +
+                $"on {Application.platform}");
 
             DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();

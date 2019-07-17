@@ -6,14 +6,7 @@ using System;
 using Loom.Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Threading;
-using Loom.Client.Internal;
 using Loom.Client.Protobuf;
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
-#endif
 
 namespace Loom.Client
 {
@@ -22,14 +15,19 @@ namespace Loom.Client
     /// </summary>
     public class DAppChainClient : IDisposable
     {
+        /// <summary>
+        /// Topic name corresponding to all events emitted by the contract.
+        /// </summary>
+        public const string GlobalContractEventTopicName = "contract";
+
         private const string LogTag = "Loom.DAppChainClient";
 
         private readonly IRpcClient writeClient;
         private readonly IRpcClient readClient;
 
-        private ILogger logger = NullLogger.Instance;
+        private readonly HashSet<string> subscribedTopics = new HashSet<string>();
 
-        private HashSet<string> subscribedTopics = new HashSet<string>();
+        private ILogger logger = NullLogger.Instance;
 
         /// <summary>
         /// RPC client to use for submitting transactions.
@@ -197,6 +195,7 @@ namespace Loom.Client
             if (this.readClient.ConnectionState != RpcConnectionState.Connected)
                 throw new InvalidOperationException("Read client must be connected");
 
+            // Account for empty list meaning subscribing to all events
             if (this.subscribedTopics.IsSupersetOf(topics))
                 return;
 
@@ -216,7 +215,7 @@ namespace Loom.Client
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        [Obsolete("Use " + nameof(SubscribeToAllEvents), true)]
+        [Obsolete("Use " + nameof(SubscribeToAllEvents))]
         public Task SubscribeToEvents()
         {
             return SubscribeToAllEvents();
@@ -229,13 +228,13 @@ namespace Loom.Client
         /// <exception cref="InvalidOperationException"></exception>
         public Task SubscribeToAllEvents()
         {
-            return SubscribeToEvents(Array.Empty<string>());
+            return SubscribeToEvents(new[] { GlobalContractEventTopicName });
         }
 
         /// <summary>
         /// Unsubscribes from all chain events.
         /// </summary>
-        [Obsolete("Use " + nameof(UnsubscribeFromAllEvents), true)]
+        [Obsolete("Use " + nameof(UnsubscribeFromAllEvents))]
         public async Task UnsubscribeFromEvents()
         {
             await UnsubscribeFromAllEvents();
@@ -250,7 +249,8 @@ namespace Loom.Client
         }
 
         /// <summary>
-        /// Unsubscribes from chain events.
+        /// Unsubscribes from chain events listed in <paramref name="topics"/>.
+        /// If <paramref name="topics"/>, the client won't unsubscribe from any events.
         /// </summary>
         public async Task UnsubscribeFromEvents(IReadOnlyList<string> topics)
         {
@@ -279,7 +279,7 @@ namespace Loom.Client
                     await EnsureConnected();
 
                     // For whatever reason, "subevents" takes a list of topics,
-                    // but "unsubevents" takes a single topic, so we have to unsubcribe one topic per call at a time.
+                    // but "unsubevents" takes a single topic, so we have to unsubcribe one topic per call.
                     List<Exception> exceptions = null;
                     foreach (string topic in topics)
                     {

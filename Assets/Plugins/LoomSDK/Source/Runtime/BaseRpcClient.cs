@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
 using UnityEngine;
 
 namespace Loom.Client.Internal
@@ -43,6 +39,7 @@ namespace Loom.Client.Internal
         }
 
         public event RpcClientConnectionStateChangedHandler ConnectionStateChanged;
+
         public event EventHandler<JsonRpcEventData> EventReceived;
 
         public abstract RpcConnectionState ConnectionState { get; }
@@ -100,16 +97,16 @@ namespace Loom.Client.Internal
                 this
             );
         }
-
+        
         protected void AssertNotAlreadyConnectedOrConnecting()
         {
             RpcConnectionState connectionState = this.ConnectionState;
-
+            
             if (connectionState == RpcConnectionState.Connecting)
             {
                 throw new RpcClientException("An attempt to connect while in process of connecting", 1, this);
             }
-
+            
             if (connectionState == RpcConnectionState.Connected)
             {
                 throw new RpcClientException("An attempt to connect when already connected", 1, this);

@@ -6,7 +6,6 @@ using System.Text;
 using Loom.Client.Internal;
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
 using UnityEngine.Networking;
-using UnityEngine;
 
 namespace Loom.Client
 {
@@ -41,7 +40,7 @@ namespace Loom.Client
         {
             return Task.CompletedTask;
         }
-
+        
         public override Task DisconnectAsync()
         {
             return Task.CompletedTask;

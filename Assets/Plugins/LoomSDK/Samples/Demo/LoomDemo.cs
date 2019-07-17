@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using Loom.Client;
 using Loom.Client.Samples;
 using System;
-using System.Threading.Tasks;
 using Loom.Newtonsoft.Json;
 
 public class LoomDemo : MonoBehaviour

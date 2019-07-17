@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground.Iap
 
         private BackendDataControlMediator _backendDataControlMediator;
         private BackendFacade _backendFacade;
-        
+
         public string AuthApiHost { get; private set; }
 
         public AuthFiatApiFacade(string authApiHost)
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Iap
             AuthApiHost = authApiHost;
             Log.Info("Auth Host:" + AuthApiHost);
         }
-        
+
         #region IService
 
         public void Init()
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground.Iap
             public TransactionReceipt(
                 VerifySignResult verifyHash,
                 BigInteger userId,
-                uint booster, 
+                uint booster,
                 uint super,
                 uint air,
                 uint earth,
@@ -219,13 +219,13 @@ namespace Loom.ZombieBattleground.Iap
         {
             [JsonProperty("currency")]
             public string Currency { get; }
-            
+
             [JsonProperty("store")]
             public string Store { get; }
-            
+
             [JsonProperty("packs")]
             public IReadOnlyList<ProductData> Packs { get; }
-            
+
             [JsonProperty("unit_percent")]
             public int UnitPercent { get; }
 
@@ -243,20 +243,20 @@ namespace Loom.ZombieBattleground.Iap
         {
             [JsonProperty("uid")]
             public string Uid { get; }
-            
+
             [JsonProperty("display_name")]
-            
+
             public string DisplayName { get; }
-            
+
             [JsonProperty("description")]
             public string Description { get; }
-            
+
             [JsonProperty("store_id")]
             public string StoreId { get; }
-            
+
             [JsonProperty("amount")]
             public int Amount { get; }
-            
+
             [JsonProperty("price")]
             public int Price { get; }
 
@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground.Iap
             public BigInteger user_id;
             public BigInteger[] transaction_ids;
         }
-        
+
         private class StoresDataList
         {
             [JsonProperty("products")]
