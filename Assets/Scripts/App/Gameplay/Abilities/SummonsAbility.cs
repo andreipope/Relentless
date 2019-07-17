@@ -46,6 +46,13 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
+            InvokeActionTriggered();
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
             foreach (Enumerators.Target target in TargetTypes)
             {
                 switch (target)

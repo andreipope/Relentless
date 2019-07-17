@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 
         private IBoardObject _targetObject;
 
+        public static event Action<bool> OnInputEnd;
+
         public DamageTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -32,6 +34,7 @@ namespace Loom.ZombieBattleground
         {
             base.InputEndedHandler();
 
+            OnInputEnd?.Invoke(IsAbilityResolved);
             if (IsAbilityResolved)
             {
                 Action();

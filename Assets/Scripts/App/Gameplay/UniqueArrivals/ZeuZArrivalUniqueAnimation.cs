@@ -16,67 +16,33 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(0, 1.2f, 0f);
+            Vector3 offset = new Vector3(0, 0.718f, 0f);
 
-            const float delayBeforeSpawn = 0.7f;
-            const float delayBeforeDestroyVFX = 5f;
+            const float delayBeforeSpawn = 2.75f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
-            Transform boardParent = unitView.GameObject.transform.parent;
-
             unitView.GameObject.SetActive(false);
 
-            unitView.GameObject.transform.Find("Other").gameObject?.SetActive(true);
+            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/ZeuZ_Arrival"));            
 
-            Dictionary<GameObject, int> unitLayerInfo = new Dictionary<GameObject, int>();
-
-            SortingGroup sortingGroup = unitView.Transform.GetComponent<SortingGroup>();
-
-            int sortingIndex = sortingGroup.sortingLayerID;
-
-            sortingGroup.sortingLayerID = SRSortingLayers.GameplayInfo;
-
-            List<GameObject>  allUnitObj = unitView.GameObject.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
-            foreach (GameObject child in allUnitObj)
-            {
-                unitLayerInfo.Add(child, child.layer);
-                child.layer = 0;
-            }
+            animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
             InternalTools.DoActionDelayed(() =>
             {
-                GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                            "Prefabs/VFX/UniqueArrivalAnimations/ZeuZ"));
-
-                animationVFX.transform.position = unitView.PositionOfBoard + offset;
                 unitView.GameObject.SetActive(true);
-                unitView.Transform.SetParent(animationVFX.transform.Find("Zeus_Card_PH"), false);
-                unitView.Transform.localScale = Vector3.one * 5.95f;
+                unitView.battleframeAnimator.Play(0, -1, 1);
 
+                Object.Destroy(animationVFX);
 
-                InternalTools.DoActionDelayed(() =>
-                {
+                endArrivalCallback?.Invoke();
 
-                    unitView.Transform.SetParent(boardParent, true);
-                    Object.Destroy(animationVFX);
+                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
-                    foreach (GameObject child in allUnitObj)
-                    {
-                        if (unitLayerInfo.ContainsKey(child))
-                        {
-                            child.layer = unitLayerInfo[child];
-                        }
-                    }
-                    sortingGroup.sortingLayerID = sortingIndex;
+                IsPlaying = false;
 
-                    endArrivalCallback?.Invoke();
-
-                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
-
-                    IsPlaying = false;
-                }, delayBeforeDestroyVFX);
-            }, delayBeforeSpawn);
+            }, delayBeforeSpawn);            
         }
     }
 }

@@ -909,6 +909,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
+                    abilityView = new ChangeStatAbilityView((ChangeStatAbility)ability);
                     break;
                 case Enumerators.AbilityType.STUN:
                     ability = new StunAbility(cardKind, abilityData);
@@ -919,6 +920,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.SUMMON:
                     ability = new SummonsAbility(cardKind, abilityData);
+                    abilityView = new SummonAbilityView((SummonsAbility)ability);
                     break;
                 case Enumerators.AbilityType.CARD_RETURN:
                     ability = new ReturnToHandAbility(cardKind, abilityData);
@@ -1208,7 +1210,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
                     ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
-                    break; 
+                    abilityView = new ChangeStatThisTurnAbilityView((ChangeStatThisTurnAbility)ability);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }

@@ -13,30 +13,46 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                        "Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_Shammann"));
+            Vector3 offset = new Vector3(-0.65f, 0.23f, 0f);
 
-            PlaySound("Shammann");
+            const float delayBeforeSpawn = 5f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
-            const float yOffsetOfCard = -0.75f;
+            unitView.GameObject.SetActive(false);
 
-            animationVFX.transform.position = unitView.PositionOfBoard;
-            unitView.Transform.SetParent(animationVFX.transform.Find("Shaman/Main_Model/Root"));
-            unitView.Transform.localPosition = new Vector3(0, yOffsetOfCard, 0);
+            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/ShammannArrival"));
+
+            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
+
+            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
+
+            animationVFX.transform.position = unitView.PositionOfBoard + offset;
+
+            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
 
             InternalTools.DoActionDelayed(() =>
-            {
-                unitView.Transform.parent = null;
-
+            {                
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero; 
+                
                 Object.Destroy(animationVFX);
+                
+                if (unitView != null)
+                {
+                    unitView.GameObject.SetActive(true);
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                }             
 
-                endArrivalCallback?.Invoke();
+                endArrivalCallback?.Invoke();                
 
-                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
                 IsPlaying = false;
-            }, 3f);
+
+            }, delayBeforeSpawn);
         }
     }
 }

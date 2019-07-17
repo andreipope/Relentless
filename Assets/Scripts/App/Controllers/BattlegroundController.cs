@@ -1040,6 +1040,7 @@ namespace Loom.ZombieBattleground
 
             foreach (AbilityBase ability in abilities)
             {
+                ability.SetAuraStatusToFalse();
                 ability.Deactivate();
                 ability.Dispose();
             }

@@ -1,0 +1,180 @@
+fileFormatVersion: 2
+guid: d323f7fa4f87e9648b7d948fe0f8fd1c
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: harpoon2
+    100002: rope
+    100004: SpineRig:control1
+    100006: SpineRig:control2
+    100008: SpineRig:control3
+    100010: SpineRig:control4
+    100012: SpineRig:control5
+    100014: SpineRig:IK_trsf_06
+    100016: SpineRig:IKFK_trsf_01
+    100018: SpineRig:IKFK_trsf_02
+    100020: SpineRig:IKFK_trsf_03
+    100022: SpineRig:IKFK_trsf_04
+    100024: SpineRig:IKFK_trsf_05
+    100026: SpineRig:joint1
+    100028: SpineRig:joint10
+    100030: SpineRig:joint11
+    100032: SpineRig:joint12
+    100034: SpineRig:joint13
+    100036: SpineRig:joint14
+    100038: SpineRig:joint15
+    100040: SpineRig:joint16
+    100042: SpineRig:joint17
+    100044: SpineRig:joint18
+    100046: SpineRig:joint19
+    100048: SpineRig:joint2
+    100050: SpineRig:joint20
+    100052: SpineRig:joint21
+    100054: SpineRig:joint22
+    100056: SpineRig:joint23
+    100058: SpineRig:joint24
+    100060: SpineRig:joint25
+    100062: SpineRig:joint26
+    100064: SpineRig:joint3
+    100066: SpineRig:joint4
+    100068: SpineRig:joint5
+    100070: SpineRig:joint6
+    100072: SpineRig:joint7
+    100074: SpineRig:joint8
+    100076: SpineRig:joint9
+    100078: SpineRig:Main
+    100080: SpineRig:tail
+    100082: //RootNode
+    400000: harpoon2
+    400002: rope
+    400004: SpineRig:control1
+    400006: SpineRig:control2
+    400008: SpineRig:control3
+    400010: SpineRig:control4
+    400012: SpineRig:control5
+    400014: SpineRig:IK_trsf_06
+    400016: SpineRig:IKFK_trsf_01
+    400018: SpineRig:IKFK_trsf_02
+    400020: SpineRig:IKFK_trsf_03
+    400022: SpineRig:IKFK_trsf_04
+    400024: SpineRig:IKFK_trsf_05
+    400026: SpineRig:joint1
+    400028: SpineRig:joint10
+    400030: SpineRig:joint11
+    400032: SpineRig:joint12
+    400034: SpineRig:joint13
+    400036: SpineRig:joint14
+    400038: SpineRig:joint15
+    400040: SpineRig:joint16
+    400042: SpineRig:joint17
+    400044: SpineRig:joint18
+    400046: SpineRig:joint19
+    400048: SpineRig:joint2
+    400050: SpineRig:joint20
+    400052: SpineRig:joint21
+    400054: SpineRig:joint22
+    400056: SpineRig:joint23
+    400058: SpineRig:joint24
+    400060: SpineRig:joint25
+    400062: SpineRig:joint26
+    400064: SpineRig:joint3
+    400066: SpineRig:joint4
+    400068: SpineRig:joint5
+    400070: SpineRig:joint6
+    400072: SpineRig:joint7
+    400074: SpineRig:joint8
+    400076: SpineRig:joint9
+    400078: SpineRig:Main
+    400080: SpineRig:tail
+    400082: //RootNode
+    2100000: 'Material #30'
+    2300000: harpoon2
+    3300000: harpoon2
+    4300000: rope
+    4300002: harpoon2
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: rope
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

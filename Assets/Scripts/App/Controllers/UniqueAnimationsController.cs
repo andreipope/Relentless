@@ -56,6 +56,18 @@ namespace Loom.ZombieBattleground
                 case Enumerators.UniqueAnimation.ChernoBillArrival:
                     uniqueAnimation = new ChernoBillArrivalUniqueAnimation();
                     break;
+                case Enumerators.UniqueAnimation.MountainArrival:
+                    uniqueAnimation = new MountainArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.GargantuaArrival:
+                    uniqueAnimation = new GargantuaArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.BlizzardArrival:
+                    uniqueAnimation = new BlizzardArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.GoozillaArrival:
+                    uniqueAnimation = new GoozillaArrivalUniqueAnimation();
+                    break;
                 default:
                     throw new NotImplementedException(nameof(uniqueAnimationType) + " not implemented yet");
             }

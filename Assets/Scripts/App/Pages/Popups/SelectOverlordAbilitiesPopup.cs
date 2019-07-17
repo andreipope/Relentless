@@ -23,6 +23,7 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _selectedAbilitiesCount;
 
+        private Button _buttonBack;
         private Button _buttonCancel;
         private Button _buttonSave;
         private Button _buttonContinue;
@@ -30,7 +31,7 @@ namespace Loom.ZombieBattleground
         private RectTransform _allAbilitiesContent;
 
         private Deck _deck;
-        private bool _openRenamePopup;
+        private bool _openFromCreatingNewHorde;
 
         private List<AbilityBarUI> _abilitiesBar;
 
@@ -54,9 +55,8 @@ namespace Loom.ZombieBattleground
                 Deck deck = (Deck) param[0];
                 _deck = deck.Clone();
 
-                _openRenamePopup = (bool) param[1];
+                _openFromCreatingNewHorde = (bool) param[1];
             }
-
 
             Show();
         }
@@ -75,6 +75,9 @@ namespace Loom.ZombieBattleground
 
             _selectedAbilitiesCount = Self.transform.Find("Abilities/Panel_BG/Top_Panel/Header_Small/Abilities_Selected").GetComponent<TextMeshProUGUI>();
 
+            _buttonBack = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Back").GetComponent<Button>();
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
+
             _buttonCancel = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
@@ -84,16 +87,7 @@ namespace Loom.ZombieBattleground
             _buttonSave = Self.transform.Find("Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Save").GetComponent<Button>();
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
 
-            if (_deck.Id.Id == -1)
-            {
-                _buttonSave.gameObject.SetActive(false);
-                _buttonContinue.gameObject.SetActive(true);
-            }
-            else
-            {
-                _buttonSave.gameObject.SetActive(true);
-                _buttonContinue.gameObject.SetActive(false);
-            }
+            EnablePanelButtons();
 
             _allAbilitiesContent = Self.transform.Find("Abilities/Panel_BG/Ability_List/Element/Scroll View").GetComponent<ScrollRect>().content;
 
@@ -102,6 +96,33 @@ namespace Loom.ZombieBattleground
             ShowAbilityCount();
 
             OnSelectSkill += SelectSkill;
+        }
+
+        private void EnablePanelButtons()
+        {
+            if (_deck.Id.Id == -1)
+            {
+                if (_openFromCreatingNewHorde)
+                {
+                    _buttonBack.gameObject.SetActive(true);
+                    _buttonCancel.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _buttonBack.gameObject.SetActive(false);
+                    _buttonCancel.gameObject.SetActive(true);
+                }
+
+                _buttonSave.gameObject.SetActive(false);
+                _buttonContinue.gameObject.SetActive(true);
+            }
+            else
+            {
+                _buttonBack.gameObject.SetActive(false);
+                _buttonCancel.gameObject.SetActive(true);
+                _buttonSave.gameObject.SetActive(true);
+                _buttonContinue.gameObject.SetActive(false);
+            }
         }
 
         private void SelectSkill(SkillId skillId)
@@ -210,8 +231,15 @@ namespace Loom.ZombieBattleground
             GetSelectedAbilities(false);
             Hide();
 
-            if(_openRenamePopup)
-                _uiManager.DrawPopup<RenamePopup>(_deck);
+            if(_openFromCreatingNewHorde)
+                _uiManager.DrawPopup<RenamePopup>(new object[] {_deck, _openFromCreatingNewHorde});
+        }
+
+        private void ButtonBackHandler()
+        {
+            DataUtilities.PlayClickSound();
+            Hide();
+            _uiManager.DrawPopup<SelectOverlordPopup>();
         }
 
         private void ButtonCancelHandler()

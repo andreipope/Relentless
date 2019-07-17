@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
                 GetParameters(out int defense, out int attack);
                 ChangeStatsOfTarget(TargetUnit, defense, attack);
 
+                InvokeActionTriggered(TargetUnit);
+                
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)
@@ -172,12 +174,20 @@ namespace Loom.ZombieBattleground
 
         protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
         {
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA && !(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo))
                 return;
 
             ResetAffectedUnits();
             _affectedUnits.Clear();
-            ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                PlayerCurrentGooChangedHandler(AbilityUnitOwner.OwnerPlayer.CurrentGoo);
+            }
+            else
+            {
+                ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
+            }
         }
 
         private void ChangeStatsToItself()

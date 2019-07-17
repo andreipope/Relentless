@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Text.RegularExpressions;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -164,6 +165,18 @@ namespace Loom.ZombieBattleground
             string path = "Images/UI/DeckIcons/";
             path = path + "icon_" + faction.ToString().ToLower();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
+        }
+
+        public static string GetNickName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return name;
+
+            string nickName = string.Empty;
+            Regex pRegex = new Regex("\".*?(?=\")", RegexOptions.IgnoreCase);
+            var result = pRegex.Match(name).Value;
+            nickName = Regex.Replace(result , "\"", string.Empty);
+            return nickName;
         }
 
     }

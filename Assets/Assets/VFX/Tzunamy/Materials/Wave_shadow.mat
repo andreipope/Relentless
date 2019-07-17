@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Wave_shadow
   m_Shader: {fileID: 4800000, guid: 493c91abbf0f1ae4e8f2bfa3b27f7743, type: 3}
   m_ShaderKeywords: 
@@ -39,6 +40,6 @@ Material:
     - _Mask2_V: -0.5
     - _Mask_U: 0.4
     - _Mask_V: 0
-    - _Strength: 10
+    - _Strength: 5
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

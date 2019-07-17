@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground.Data
             List<VisualEffectInfo> visualEffectsToPlay,
             Enumerators.GameMechanicDescription gameMechanicDescription,
             Enumerators.Faction targetFaction,
-            Enumerators.AbilitySubTrigger abilitySubTrigger,
+            Enumerators.AbilitySubTrigger subTrigger,
             List<ChoosableAbility> choosableAbilities,
             int defense2,
             int cost,
@@ -140,7 +140,7 @@ namespace Loom.ZombieBattleground.Data
             VisualEffectsToPlay = visualEffectsToPlay ?? new List<VisualEffectInfo>();
             GameMechanicDescription = gameMechanicDescription;
             TargetFaction = targetFaction;
-            SubTrigger = abilitySubTrigger;
+            SubTrigger = subTrigger;
             ChoosableAbilities = choosableAbilities ?? new List<ChoosableAbility>();
             Defense2 = defense2;
             Cost = cost;

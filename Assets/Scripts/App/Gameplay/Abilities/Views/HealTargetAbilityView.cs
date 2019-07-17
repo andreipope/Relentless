@@ -70,6 +70,7 @@ namespace Loom.ZombieBattleground
                 Vector3 targetPosition = Vector3.zero;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                GameObject vfxPrefab = VfxObject;
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
 
@@ -88,6 +89,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (IBoardObject boardObject in _targets)
                 {
+                    VfxObject = vfxPrefab;
                     switch (boardObject)
                     {
                         case CardModel unit:
@@ -102,20 +104,13 @@ namespace Loom.ZombieBattleground
 
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
 
-                    if (isUnit)
+                    if (_cardName == "Zed Kit" && isUnit)
                     {
                         unitModel = boardObject as CardModel;
 
-                        string objectName = "WalkerMask";
-                        switch (unitModel.InitialUnitType)
-                        {
-                            case Enumerators.CardType.FERAL:
-                                objectName = "FeralMask";
-                                break;
-                            case Enumerators.CardType.HEAVY:
-                                objectName = "HeavyMask";
-                                break;
-                        }
+                        string objectName = unitModel.InitialUnitType == Enumerators.CardType.HEAVY ?
+                            "ZedKitHeavy" : 
+                            "ZedKitNormal";
                         VfxObject.transform.Find(objectName).gameObject.SetActive(true);
                     }
                 }
