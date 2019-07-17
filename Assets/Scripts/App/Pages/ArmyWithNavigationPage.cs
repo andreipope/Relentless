@@ -129,8 +129,11 @@ namespace Loom.ZombieBattleground
                 return;
 
             _cardCollectionScrollBar.value -= _cardCollectionScrollBar.size;
+            
             if (_cardCollectionScrollBar.value <= 0)
+            {
                 _cardCollectionScrollBar.value = 0;
+            }
 
         }
 
@@ -140,8 +143,11 @@ namespace Loom.ZombieBattleground
                 return;
 
             _cardCollectionScrollBar.value += _cardCollectionScrollBar.size;
+
             if (_cardCollectionScrollBar.value >= 1)
+            {
                 _cardCollectionScrollBar.value = 1;
+            }
         }
 
 

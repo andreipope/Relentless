@@ -251,19 +251,6 @@ static class BattleCommandsHandler
             AIController aiController = _gameplayManager.GetController<AIController>();
             aiController.PlayCardOnBoard(cardModelInDeck);
         }
-
-//        CardModel cardModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
-//
-//        if (cardModel == null)
-//        {
-//            Debug.LogError("Card model is null");
-//            return;
-//        }
-
-
-
-        //BoardCardView boardCardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
-        //_cardsController.PlayPlayerCard(opponentPlayer, boardCardView, boardCardView.HandBoardCard, null);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
