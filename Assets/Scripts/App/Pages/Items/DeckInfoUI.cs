@@ -99,8 +99,7 @@ namespace Loom.ZombieBattleground
         private void ButtonRenameHandler()
         {
             IUIManager uiManager = GameClient.Get<IUIManager>();
-            uiManager.DrawPopup<RenamePopup>(_currentEditDeck);
-
+            uiManager.DrawPopup<RenamePopup>(new object[] {_currentEditDeck, false});
         }
     }
 }

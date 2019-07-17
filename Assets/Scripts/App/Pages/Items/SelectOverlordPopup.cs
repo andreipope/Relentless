@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private RectTransform _allCardsContent;
 
+        private FadeoutBars _fadeoutBars;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -120,6 +122,14 @@ namespace Loom.ZombieBattleground
                 _overlordCards.Add(overlordCard);
             }
 
+            Scrollbar deckCardsScrollBar = Self.transform.Find("Panel_Content/Panel/Right_Panel/Overlords/Scroll View")
+                .GetComponent<ScrollRect>().horizontalScrollbar;
+            GameObject leftFadeGameObject = Self.transform.Find("Panel_Content/Panel/Right_Panel/Fade_Left").gameObject;
+            GameObject rightFadeGameObject = Self.transform.Find("Panel_Content/Panel/Right_Panel/Fade_Right").gameObject;
+
+            _fadeoutBars = new FadeoutBars();
+            _fadeoutBars.Init(deckCardsScrollBar, leftFadeGameObject, rightFadeGameObject);
+
 
             if (_tutorialManager.IsTutorial)
             {
@@ -154,7 +164,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-
+            _fadeoutBars?.Update();
         }
 
         public void Dispose()
@@ -211,7 +221,7 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.Overlords.Find(overlords => overlords.Prototype.Id == overlordId);
 
             _overlordImage.sprite = DataUtilities.GetOverlordImage(overlord.Prototype.Faction);
-            _textSelectOverlordName.text = overlord.Prototype.Name;
+            _textSelectOverlordName.text = DataUtilities.GetNickName(overlord.Prototype.Name);
             _textSelectOverlordDescription.text = overlord.Prototype.ShortDescription;
 
             Enumerators.Faction againstFaction = Constants.FactionAgainstDictionary[overlord.Prototype.Faction];
