@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         internal GameClient()
         {
             Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName} " +
-                $"({BuildMetaInfo.Instance.CloudBuildTargetName}) " +
+                $"{(BuildMetaInfo.Instance.CloudBuildTargetName != "" ? "(" + BuildMetaInfo.Instance.CloudBuildTargetName + ") " : "")}" +
                 $"on {Application.platform}");
 
             DOTween.KillAll();

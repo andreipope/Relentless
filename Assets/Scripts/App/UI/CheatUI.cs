@@ -118,6 +118,7 @@ namespace Loom.ZombieBattleground
 
         private void Update()
         {
+            Debug.developerConsoleVisible = false;
             foreach (Action updateBind in _updateBinds)
             {
                 updateBind();
@@ -308,30 +309,30 @@ namespace Loom.ZombieBattleground
                     {
                         deckCard.Amount++;
                     }
-    
+
                     if (GUILayout.Button("-", GUILayout.Width(30)))
                     {
                         deckCard.Amount = Mathf.Max(deckCard.Amount - 1, 0);
                     }
-    
+
                     GUILayout.Space(5f);
-    
+
                     GUI.enabled = deckCardIndex > 0;
                     if (GUILayout.Button("↑", GUILayout.Width(30)))
                     {
                         MoveCard(-1);
                     }
-    
+
                     GUI.enabled = deckCardIndex < customDeck.Cards.Count - 1;
                     if (GUILayout.Button("↓", GUILayout.Width(30)))
                     {
                         MoveCard(1);
                     }
-    
+
                     GUI.enabled = true;
-    
+
                     GUILayout.Space(5f);
-    
+
                     if (GUILayout.Button("X", GUILayout.Width(30)))
                     {
                         customDeck.Cards.Remove(deckCard);
