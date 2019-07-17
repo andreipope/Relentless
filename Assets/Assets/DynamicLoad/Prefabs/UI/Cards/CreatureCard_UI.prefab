@@ -1107,14 +1107,14 @@ RectTransform:
   m_GameObject: {fileID: 1591991997242452}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 224684503696705872}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 352, y: -12}
+  m_AnchoredPosition: {x: 315, y: 22}
   m_SizeDelta: {x: 73, y: 113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222923464685777118
@@ -1233,8 +1233,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 352, y: -33.2}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 313.1, y: -29}
+  m_SizeDelta: {x: 167.3, y: 169.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222623136739347536
 CanvasRenderer:
@@ -1264,7 +1264,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 0
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 82356db5a5e5f1d468125eb62285c598, type: 2}
   m_sharedMaterial: {fileID: 21431480145053772, guid: 82356db5a5e5f1d468125eb62285c598,
@@ -1293,12 +1293,12 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 90
+  m_fontSize: 120
   m_fontSizeBase: 90
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 120
   m_fontStyle: 0
   m_textAlignment: 514
   m_isAlignmentEnumConverted: 1
@@ -1331,10 +1331,10 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 24.29193, y: -27.254288, z: 27.254358, w: -58.65611}
+  m_margin: {x: 0.9697036, y: -0.43375316, z: 1.5998652, w: 0.8155555}
   m_textInfo:
     textComponent: {fileID: 114435574579766580}
-    characterCount: 1
+    characterCount: 2
     spriteCount: 0
     spaceCount: 0
     wordCount: 1

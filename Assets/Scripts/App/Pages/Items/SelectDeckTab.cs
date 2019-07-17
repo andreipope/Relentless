@@ -619,7 +619,7 @@ namespace Loom.ZombieBattleground
 
             PlayClickSound();
 
-            _uiManager.DrawPopup<RenamePopup>(_myDeckPage.CurrentEditDeck);
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_myDeckPage.CurrentEditDeck, false});
         }
 
         private void PlayClickSound()

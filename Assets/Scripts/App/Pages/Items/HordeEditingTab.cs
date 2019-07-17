@@ -82,13 +82,13 @@ namespace Loom.ZombieBattleground
             _uiCardCollections.Show(editingTabObj, Enumerators.CardCollectionPageType.DeckEditing);
             _customDeckUi.Load(editingTabObj.transform.Find("Deck_Content").gameObject);
 
-            _buttonLeftArrowScroll = editingTabObj.transform.Find("Panel_Content/Army/Element/Button_LeftArrow").GetComponent<Button>();
+            _buttonLeftArrowScroll = editingTabObj.transform.Find("Panel_Frame/Panel_Content/Army/Element/Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrowScroll.onClick.AddListener(ButtonLeftArrowScrollHandler);
 
-            _buttonRightArrowScroll = editingTabObj.transform.Find("Panel_Content/Army/Element/Button_RightArrow").GetComponent<Button>();
+            _buttonRightArrowScroll = editingTabObj.transform.Find("Panel_Frame/Panel_Content/Army/Element/Button_RightArrow").GetComponent<Button>();
             _buttonRightArrowScroll.onClick.AddListener(ButtonRightArrowScrollHandler);
 
-            _cardCollectionScrollBar = editingTabObj.transform.Find("Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
+            _cardCollectionScrollBar = editingTabObj.transform.Find("Panel_Frame/Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>().horizontalScrollbar;
         }
 
         public void Show(int deckId)
@@ -136,6 +136,7 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
             _uiCardCollections.Update();
+            _customDeckUi.Update();
         }
 
         public void Dispose()

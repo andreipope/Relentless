@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: FireBallGlow_1
-  m_Shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 4d9928fefd167d246a9350d6f216a497, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -42,6 +42,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 52a055d0610bc6a4e9953f468101ff02, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 2800000, guid: ff1ae9bf4a63ca84bb167a0fb851a357, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -63,6 +67,10 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _InvFade: 1
+    - _MainTex_U: 0
+    - _MainTex_V: 0
+    - _Mask_U: 1
+    - _Mask_V: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -70,6 +78,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Strength: 6.4
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

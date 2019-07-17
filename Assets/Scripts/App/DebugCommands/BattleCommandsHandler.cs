@@ -230,6 +230,29 @@ static class BattleCommandsHandler
         player.PlayerCardsController.CreateNewCardAndAddToHand(card);
     }
 
+    [CommandHandler(Description = "AI Draw - Draw Card from Library with Card Name")]
+    private static void AIDraw(string cardName)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        Player opponentPlayer = _gameplayManager.OpponentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
+        {
+            Log.Error("Please Wait For Your Turn");
+            return;
+        }
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
+        CardModel cardModelInDeck = opponentPlayer.PlayerCardsController.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (cardModelInDeck == null)
+        {
+            opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
+        }
+        else
+        {
+            AIController aiController = _gameplayManager.GetController<AIController>();
+            aiController.PlayCardOnBoard(cardModelInDeck);
+        }
+    }
+
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
     private static void PlayerInfiniteAbility(bool useInfiniteAbility)
     {

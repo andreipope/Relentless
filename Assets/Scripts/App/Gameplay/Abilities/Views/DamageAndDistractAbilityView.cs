@@ -16,8 +16,6 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
-        private ICameraManager _cameraManager;
-
         #region LawnmowerFields
 
         private GameObject _lineObject;
@@ -30,8 +28,6 @@ namespace Loom.ZombieBattleground
         public DamageAndDistractAbilityView(DamageAndDistractAbility ability) : base(ability)
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
-
-            _cameraManager = GameClient.Get<ICameraManager>();
 
             _unitsViews = new List<BoardUnitView>();
         }
@@ -58,14 +54,38 @@ namespace Loom.ZombieBattleground
                     justPosition = true;
                 }
 
-                Vector3 targetPosition = Vector3.zero;
+                Vector3 targetPosition = VfxObject.transform.position + offset;
 
                 if (Ability.CardModel != null && Ability.CardModel.Prototype.CardKey.MouldId == _lawnmowerCardMouldId)
                 {
-                    CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                    VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
-                    _lineObject = VfxObject.transform.Find("Lawnmover/BurstToxic").gameObject;
-                    _cardDissapearingPrefab = VfxObject.transform.Find("Lawnmover/CardsDissapearing/Tears").gameObject;
+                    float posY = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 2f : -1.45f;
+                    targetPosition = new Vector3(targetPosition.x, posY, targetPosition.z - 7f);
+
+                    CreateVfx(targetPosition, true, delayBeforeDestroy, true);
+
+                    Transform cameraVFXObjParent = VfxObject.transform.Find("Camera Anim");                    
+                    Transform cameraVFXObj = cameraVFXObjParent.transform.Find("!! Camera shake");                    
+                    Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                    cameraGroupTransform.SetParent
+                    (
+                       cameraVFXObj
+                    );
+                    
+                    cameraVFXObjParent.position = Vector3.zero;
+                    cameraVFXObj.transform.position = Vector3.zero;
+                    cameraGroupTransform.localPosition = Vector3.zero;
+                    
+                    int cacheCullingMask = Camera.main.cullingMask;
+                    Camera.main.cullingMask = 0;
+                    Ability.VFXAnimationEnded += () =>
+                    {
+                        cameraGroupTransform.SetParent(null);
+                        cameraGroupTransform.position = Vector3.zero; 
+                        Camera.main.cullingMask = cacheCullingMask;
+                    };
+                    
+                    _lineObject = VfxObject.transform.Find("BurstToxic").gameObject;
+                    _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing").gameObject;
                     _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                     Ability.OnUpdateEvent += OnUpdateEventHandler;
@@ -121,7 +141,6 @@ namespace Loom.ZombieBattleground
                         Ability.OneActionCompleted(_unitView.Model);
                         CreateSubParticle(_unitView.Transform.position);
                         _unitsViews.Remove(_unitView);
-                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
                     }
                 }
                 else

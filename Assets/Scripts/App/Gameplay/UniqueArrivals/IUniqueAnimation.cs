@@ -1,5 +1,6 @@
 using System;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Gameplay;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,6 +11,7 @@ namespace Loom.ZombieBattleground
         protected ILoadObjectsManager LoadObjectsManager;
         protected IGameplayManager GameplayManager;
         protected ISoundManager SoundManager;
+        protected ICameraManager CameraManager;
 
         protected BattlegroundController BattlegroundController;
         protected BoardController BoardController;
@@ -20,6 +22,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             GameplayManager = GameClient.Get<IGameplayManager>();
             SoundManager = GameClient.Get<ISoundManager>();
+            CameraManager = GameClient.Get<ICameraManager>();
 
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();

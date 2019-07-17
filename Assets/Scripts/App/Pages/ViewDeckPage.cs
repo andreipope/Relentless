@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
         private Deck _updatedDeck;
         private CollectionData _updatedCollectionData;
 
+        private FadeoutBars _fadeoutBars;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -63,6 +65,14 @@ namespace Loom.ZombieBattleground
 
             _allCardsContent = _selfPage.transform.Find("ViewDeck/Panel_Content/Deck/Element/Scroll View")
                 .GetComponent<ScrollRect>().content;
+
+            Scrollbar deckCardsScrollBar = _selfPage.transform.Find("ViewDeck/Panel_Content/Deck/Element/Scroll View")
+                .GetComponent<ScrollRect>().horizontalScrollbar;
+            GameObject leftFadeGameObject = _selfPage.transform.Find("ViewDeck/Panel_Content/Deck/Element/Fade_Left").gameObject;
+            GameObject rightFadeGameObject = _selfPage.transform.Find("ViewDeck/Panel_Content/Deck/Element/Fade_Right").gameObject;
+
+            _fadeoutBars = new FadeoutBars();
+            _fadeoutBars.Init(deckCardsScrollBar, leftFadeGameObject, rightFadeGameObject);
 
             UpdatePageScaleToMatchResolution();
 
@@ -146,6 +156,8 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            //update fading
+            _fadeoutBars?.Update();
 
         }
 

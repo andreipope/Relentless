@@ -1,5 +1,6 @@
 using System;
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.Gameplay
 {
@@ -16,5 +17,7 @@ namespace Loom.ZombieBattleground.Gameplay
         void FadeOut(Action callback = null, int level = 0, bool immediately = false);
 
         void ShakeGameplay(Enumerators.ShakeType type);
+
+        Transform GetGameplayCameras();
     }
 }

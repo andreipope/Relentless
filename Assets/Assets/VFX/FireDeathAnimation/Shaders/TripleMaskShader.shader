@@ -36,6 +36,7 @@ Shader "pXs/ThreeTexturedParticle" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #define UNITY_PASS_FORWARDBASE
             #include "UnityCG.cginc"
             #pragma multi_compile_fwdbase
             #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
@@ -99,6 +100,7 @@ Shader "pXs/ThreeTexturedParticle" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #define UNITY_PASS_SHADOWCASTER
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
             #pragma fragmentoption ARB_precision_hint_fastest

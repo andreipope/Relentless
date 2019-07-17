@@ -85,7 +85,8 @@ namespace Loom.ZombieBattleground
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
-            ScrollRect scrollRect = _selfPage.transform.Find("Panel_Content/Army/Element/Scroll View").GetComponent<ScrollRect>();
+            ScrollRect scrollRect = _selfPage.transform.Find("Panel_Frame/Panel_Content/Army/Element/Scroll View")
+                .GetComponent<ScrollRect>();
             _allCardsContent = scrollRect.content;
             Scrollbar cardCollectionScrollbar = scrollRect.horizontalScrollbar;
 

@@ -544,6 +544,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void SetAuraStatusToFalse()
+        {
+            ChangeAuraStatusAction(false);
+        }
+
         private void CheckRageStatus()
         {
             if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)

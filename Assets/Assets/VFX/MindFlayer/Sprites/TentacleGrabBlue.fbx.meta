@@ -1,0 +1,188 @@
+fileFormatVersion: 2
+guid: 3a7327975de934a478b311e0a0b3086e
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: FourthTent:joint10
+    100002: FourthTent:joint11
+    100004: FourthTent:joint12
+    100006: FourthTent:joint13
+    100008: FourthTent:joint14
+    100010: FourthTent:joint15
+    100012: FourthTent:joint16
+    100014: FourthTent:joint17
+    100016: FourthTent:joint18
+    100018: FourthTent:joint19
+    100020: FourthTent:joint20
+    100022: FourthTent:joint21
+    100024: FourthTent:joint22
+    100026: FourthTent:joint23
+    100028: FourthTent:joint24
+    100030: FourthTent:joint25
+    100032: FourthTent:joint26
+    100034: FourthTent:joint7
+    100036: FourthTent:joint8
+    100038: FourthTent:joint9
+    100040: FourthTent:pCylinder1
+    100042: FourthTent:tail
+    100044: joint10
+    100046: joint11
+    100048: joint12
+    100050: joint13
+    100052: joint14
+    100054: joint15
+    100056: joint16
+    100058: joint17
+    100060: joint18
+    100062: joint19
+    100064: joint20
+    100066: joint21
+    100068: joint22
+    100070: joint23
+    100072: joint24
+    100074: joint25
+    100076: joint26
+    100078: joint7
+    100080: joint8
+    100082: joint9
+    100084: pCylinder1
+    100086: tail
+    100088: //RootNode
+    100090: Main
+    400000: FourthTent:joint10
+    400002: FourthTent:joint11
+    400004: FourthTent:joint12
+    400006: FourthTent:joint13
+    400008: FourthTent:joint14
+    400010: FourthTent:joint15
+    400012: FourthTent:joint16
+    400014: FourthTent:joint17
+    400016: FourthTent:joint18
+    400018: FourthTent:joint19
+    400020: FourthTent:joint20
+    400022: FourthTent:joint21
+    400024: FourthTent:joint22
+    400026: FourthTent:joint23
+    400028: FourthTent:joint24
+    400030: FourthTent:joint25
+    400032: FourthTent:joint26
+    400034: FourthTent:joint7
+    400036: FourthTent:joint8
+    400038: FourthTent:joint9
+    400040: FourthTent:pCylinder1
+    400042: FourthTent:tail
+    400044: joint10
+    400046: joint11
+    400048: joint12
+    400050: joint13
+    400052: joint14
+    400054: joint15
+    400056: joint16
+    400058: joint17
+    400060: joint18
+    400062: joint19
+    400064: joint20
+    400066: joint21
+    400068: joint22
+    400070: joint23
+    400072: joint24
+    400074: joint25
+    400076: joint26
+    400078: joint7
+    400080: joint8
+    400082: joint9
+    400084: pCylinder1
+    400086: tail
+    400088: //RootNode
+    400090: Main
+    2100000: surfaceShader1
+    2100002: FourthTent_surfaceShader1
+    4300000: pCylinder1
+    4300002: FourthTent:pCylinder1
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: FourthTent:pCylinder1
+    13700002: pCylinder1
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _arrivalModelObject;
 
-        private GameObject _arrivaVfxObject;
+        //private GameObject _arrivaVfxObject;
 
         private GameObject _distractObject;
 
@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
                                     false, false, true);
                         }, .6f);
 
-                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, 1.3f);
                         break;
                 }
             }
@@ -376,7 +376,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CardType.WALKER:
-                    ChangeTypeFrame(1.3f, 0.3f);
+                    ChangeTypeFrame(1.3f, 1.3f);
                     break;
                 case Enumerators.CardType.FERAL:
                     ChangeTypeFrame(2.7f, 1.7f);
@@ -501,13 +501,39 @@ namespace Loom.ZombieBattleground
                 if (_battleframeObject != null)
                     Object.Destroy(_battleframeObject);
 
-                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+                string vfxPath = string.Empty;
+                GameObject arrivalPrefab;
+                if (Model.Card.Prototype.Type == Model.InitialUnitType)
+                {
+                    vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                    arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                }
+                else
+                {
+                    vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.Card.Prototype.Type + "_To_" + Model.InitialUnitType + "_Arrival_VFX";
+                    arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+
+                    if (arrivalPrefab == null)
+                    {
+                        vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
+                        arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                    }
+                }
+
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
-                _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
-                _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
-                Transform spriteContainerTransform =
-                    _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+                //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
+                //_arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
+                Transform spriteContainerTransform = _battleframeObject.transform.Find("Battleframe/SpriteContainer");
+
+                // TODO : Remove the code after changing all vfx to new one
+                if (spriteContainerTransform == null)
+                {
+                    spriteContainerTransform =
+                        _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+
+                }
+
                 Vector3 scale = spriteContainerTransform.transform.localScale;
                 scale.x *= -1;
                 spriteContainerTransform.transform.localScale = scale;
@@ -528,7 +554,7 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.CardType.WALKER:
                     default:
-                        delay = Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f;
+                        delay = 1.3f;
                         break;
                 }
 
@@ -671,8 +697,8 @@ namespace Loom.ZombieBattleground
         public void ChangeModelVisibility(bool state)
         {
             _unitContentObject.SetActive(state);
-            _arrivalModelObject.SetActive(state);
-            _arrivaVfxObject.SetActive(state);
+            //_arrivalModelObject.SetActive(state);
+            //_arrivaVfxObject.SetActive(state);
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)

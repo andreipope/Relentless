@@ -57,6 +57,14 @@ namespace Loom.ZombieBattleground
                     {
                         case Enumerators.Target.OPPONENT_ALL_CARDS:
                             CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
+
+                            // add camera shaking vfx
+                            Transform cameraVFXObj = VfxObject.transform.Find("!!NULL_CAMERAS_SHAKE_ANIM_FILE");
+                            if (cameraVFXObj != null)
+                            {
+                                AddCameraShakeVFX(cameraVFXObj);
+                            }
+
                             break;
                         case Enumerators.Target.PLAYER_ALL_CARDS:
                             foreach (CardModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
@@ -68,24 +76,41 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
+            InternalTools.DoActionDelayed(() =>
+            {
+                Transform cameraGroupTransform = _cameraManager.GetGameplayCameras();
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero;
+
+                Ability?.InvokeVFXAnimationEnded();
+
+            }, delayAfter);
         }
 
         private void CustomCreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            int playerPos = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 1 : -1;
+            float playerPosY = Ability.PlayerCallerOfAbility.IsLocalPlayer ? -1f : -5f;
 
             if (!justPosition)
             {
-                pos = Utilites.CastVfxPosition(pos * playerPos);
+                pos = Utilites.CastVfxPosition(pos + new Vector3(0, playerPosY, 0));
             }
             else
             {
-                pos = pos * playerPos;
+                pos = pos + new Vector3(0, playerPosY, 0);
             }
             ClearParticles();
 
             base.CreateVfx(pos, autoDestroy, duration, justPosition);
+        }
+
+        private void AddCameraShakeVFX(Transform cameraVFXObj)
+        {
+            Transform cameraGroupTransform = _cameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
+
+            Vector3 cameraLocalPosition = VfxObject.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
         }
     }
 }

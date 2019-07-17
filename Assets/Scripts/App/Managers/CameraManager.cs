@@ -88,6 +88,11 @@ namespace Loom.ZombieBattleground.Gameplay
             sequence.Append(_uiManager.GetPage<GameplayPage>().Self.transform.DOPath(uiPoints, 0.05f));
         }
 
+        public Transform GetGameplayCameras()
+        {
+            return _gameplayCamerasObject.transform;
+        }
+
         public void Dispose()
         {
         }

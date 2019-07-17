@@ -26,8 +26,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            ToPlayer = AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
-
             InvokeUseAbilityEvent();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
@@ -79,6 +77,8 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
+
+            ToPlayer = AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : AbilityUnitOwner.OwnerPlayer;
 
             if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && GetAliveUnits(ToPlayer
                     .CardsOnBoard).ToList().FindAll(x => x.UnitSpecialStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
