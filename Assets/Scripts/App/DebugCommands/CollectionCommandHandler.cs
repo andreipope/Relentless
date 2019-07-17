@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static async void PlasmachainGetOwnerCards()
+        public static async void PlasmachainGetOwnedCards()
         {
             using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
             {

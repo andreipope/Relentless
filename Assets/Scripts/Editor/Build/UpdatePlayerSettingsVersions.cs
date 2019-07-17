@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground.Editor
         public void OnPreprocessBuild(BuildReport report)
         {
             PlayerSettings.SplashScreen.showUnityLogo = false;
+
+            //PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.Mono2x);
             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Debug);
 
             #if USE_STAGING_BACKEND && !UNITY_IOS && !UNITY_ANDROID
@@ -28,6 +30,7 @@ namespace Loom.ZombieBattleground.Editor
 #if UNITY_CLOUD_BUILD
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;
 
+            PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
 #if USE_PRODUCTION_BACKEND
             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Master);
 #endif

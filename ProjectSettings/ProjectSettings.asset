@@ -610,7 +610,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
     1: USE_DEVELOPMENT_BACKEND
-    7: 
+    7: USE_DEVELOPMENT_BACKEND
   platformArchitecture: {}
   scriptingBackend:
     Android: 1
