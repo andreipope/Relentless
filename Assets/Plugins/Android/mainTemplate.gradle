@@ -38,7 +38,7 @@ allprojects {
             url "https://maven.google.com" // Assets/Plugins/GoogleAnalytics/GoogleAnalyticsV4/Editor/GoogleAnalyticsDependencies.xml:34
         }
         maven {
-            url "file:///G:/WORK/UpWork/Loom/CryptoZombies-Battleground-2/Assets/Plugins/GoogleSignIn/Editor/m2repository" // Assets/Plugins/GoogleSignIn/Editor/GoogleSignInSupportDependencies.xml:9
+            url (unityProjectPath + "/Assets/Plugins/GoogleSignIn/Editor/m2repository") // Assets/Plugins/GoogleSignIn/Editor/GoogleSignInSupportDependencies.xml:9
         }
         mavenLocal()
         jcenter()
