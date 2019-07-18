@@ -41,6 +41,7 @@ namespace Loom.ZombieBattleground
             bool justPosition = false;
             Enumerators.CardNameOfAbility cardNameOfAbility = Enumerators.CardNameOfAbility.None;
 
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
@@ -59,31 +60,23 @@ namespace Loom.ZombieBattleground
                 if (Ability.CardModel != null && Ability.CardModel.Prototype.CardKey.MouldId == _lawnmowerCardMouldId)
                 {
                     float posY = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 2f : -1.45f;
-                    targetPosition = new Vector3(targetPosition.x, posY, targetPosition.z - 7f);
+                    Vector3 newTargetPosition = new Vector3(targetPosition.x, posY, targetPosition.z - 7f);
 
-                    CreateVfx(targetPosition, true, delayBeforeDestroy, true);
+                    CreateVfx(newTargetPosition, true, delayBeforeDestroy, true);
 
-                    Transform cameraVFXObjParent = VfxObject.transform.Find("Camera Anim");                    
-                    Transform cameraVFXObj = cameraVFXObjParent.transform.Find("!! Camera shake");                    
+                    Transform cameraVFXObj = VfxObject.transform.Find("Camera Anim/!! Camera shake");
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
-                    cameraGroupTransform.SetParent
-                    (
-                       cameraVFXObj
-                    );
-                    
-                    cameraVFXObjParent.position = Vector3.zero;
-                    cameraVFXObj.transform.position = Vector3.zero;
-                    cameraGroupTransform.localPosition = Vector3.zero;
-                    
-                    int cacheCullingMask = Camera.main.cullingMask;
-                    Camera.main.cullingMask = 0;
+                    cameraGroupTransform.SetParent(cameraVFXObj);
+
+                    Vector3 cameraPostion = newTargetPosition * -1;
+                    cameraGroupTransform.localPosition = new Vector3(cameraPostion.x, cameraGroupTransform.localPosition.y, cameraPostion.y);
+
                     Ability.VFXAnimationEnded += () =>
                     {
                         cameraGroupTransform.SetParent(null);
-                        cameraGroupTransform.position = Vector3.zero; 
-                        Camera.main.cullingMask = cacheCullingMask;
+                        cameraGroupTransform.position = Vector3.zero;
                     };
-                    
+
                     _lineObject = VfxObject.transform.Find("BurstToxic").gameObject;
                     _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing").gameObject;
                     _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
