@@ -37,7 +37,9 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfPage;
 
-        private GameObject[] _tabObjects;
+        private GameObject _selectDeckGameObject;
+
+        private GameObject _editingTabGameObject;
 
         #region Cache Data
 
@@ -86,25 +88,12 @@ namespace Loom.ZombieBattleground
 
             UpdatePageScaleToMatchResolution();
 
-            GameObject selectDeckObj = _selfPage.transform.Find("Tab_SelectDeck").gameObject;
-            GameObject editingTabObj = _selfPage.transform.Find("Tab_Editing").gameObject;
+            _selectDeckGameObject = _selfPage.transform.Find("Tab_SelectDeck").gameObject;
+            _editingTabGameObject = _selfPage.transform.Find("Tab_Editing").gameObject;
 
-            HordeSelectDeckTab.Show(selectDeckObj);
-            HordeEditTab.Load(editingTabObj);
-
-            SelectedDeckId = (int) _dataManager.CachedDecksData.Decks[0].Id.Id;
-
-            _tabObjects = new[]
-            {
-                selectDeckObj, editingTabObj
-            };
-
-            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill += SelectOverlordAbilitiesHandler;
-            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += SaveOverlordAbilitiesHandler;
-            RenamePopup.OnSelectDeckName += SelectDeckNameHandler;
-            RenamePopup.OnSaveNewDeckName += SaveNewDeckNameHandler;
-
-            LoadTabs();
+            HordeSelectDeckTab.Show(_selectDeckGameObject);
+            HordeSelectDeckTab.UpdateDeckInfoObjects(true);
+            ShowTabGameObject(Tab.SelectDeck);
 
             if (_backendDataSyncService.IsCollectionDataDirty)
             {
@@ -116,9 +105,17 @@ namespace Loom.ZombieBattleground
                     FailAndGoToMainMenu("Failed to update card collection. Please try again.");
                     return;
                 }
-
-                HordeSelectDeckTab.Show(selectDeckObj);
             }
+
+            HordeEditTab.Load(_editingTabGameObject);
+            SelectedDeckId = (int) _dataManager.CachedDecksData.Decks[0].Id.Id;
+
+            SelectOverlordAbilitiesPopup.OnSelectOverlordSkill += SelectOverlordAbilitiesHandler;
+            SelectOverlordAbilitiesPopup.OnSaveSelectedSkill += SaveOverlordAbilitiesHandler;
+            RenamePopup.OnSelectDeckName += SelectDeckNameHandler;
+            RenamePopup.OnSaveNewDeckName += SaveNewDeckNameHandler;
+
+            LoadTabs();
         }
 
         public void Hide()
@@ -257,11 +254,7 @@ namespace Loom.ZombieBattleground
             Tab oldTabl = _tab;
             _tab = newTab;
 
-            for (int i = 0; i < _tabObjects.Length; ++i)
-            {
-                GameObject tabObject = _tabObjects[i];
-                tabObject.SetActive(i == (int) newTab);
-            }
+            ShowTabGameObject(newTab);
 
             UpdateAreaBarPopup(newTab != Tab.Editing);
 
@@ -280,6 +273,23 @@ namespace Loom.ZombieBattleground
             if (oldTabl != Tab.None && oldTabl != newTab)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
+            }
+        }
+
+        private void ShowTabGameObject(Tab tab)
+        {
+            switch (tab) {
+                case Tab.SelectDeck:
+                    _selectDeckGameObject.SetActive(true);
+                    _editingTabGameObject.SetActive(false);
+                    break;
+                case Tab.Editing:
+                    _selectDeckGameObject.SetActive(false);
+                    _editingTabGameObject.SetActive(true);
+                    break;
+                case Tab.None:
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tab), tab, null);
             }
         }
 

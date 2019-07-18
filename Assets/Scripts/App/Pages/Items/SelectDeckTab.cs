@@ -209,13 +209,16 @@ namespace Loom.ZombieBattleground
             return deckListFromSelectedPageToDisplay;
         }
 
-        private void UpdateDeckInfoObjects()
+        public void UpdateDeckInfoObjects(bool emptyDeckList = false)
         {
             bool displayNewDeckButton = (_deckPageIndex == 0);
             _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
             _deckInfoObjectList[0].Button.gameObject.SetActive(!displayNewDeckButton);
 
-            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
+            List<Deck> deckListToDisplay =
+                !emptyDeckList ?
+                    GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton) :
+                    new List<Deck>();
 
             int startObjectIndex = displayNewDeckButton?1:0;
             int deckDataIndex = 0;

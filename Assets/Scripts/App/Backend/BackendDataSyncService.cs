@@ -66,9 +66,14 @@ namespace Loom.ZombieBattleground
                 await _networkActionManager.ExecuteNetworkTask(async () =>
                     {
                         await _dataManager.LoadCache(Enumerators.CacheDataType.COLLECTION_DATA);
+                        await _dataManager.LoadCache(Enumerators.CacheDataType.DECKS_DATA);
                         IsCollectionDataDirty = false;
                     },
-                    onUnknownExceptionCallbackFunc: exception => Task.CompletedTask);
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        Log.Warn("Error while updating card collection:" + exception);
+                        return Task.CompletedTask;
+                    });
 
                 return new Success();
             }
@@ -81,6 +86,20 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.HidePopup<LoadingOverlayPopup>();
             }
+        }
+
+        private void BackendFacadeOnUserFullCardCollectionSyncEventReceived(BackendFacade.UserFullCardCollectionSyncEventData evt)
+        {
+            Log.Debug("Got card collection full sync event");
+            _gotPendingFullCardCollectionSyncEvent = true;
+            SetCollectionDataDirtyFlag();
+        }
+
+        private void BackendFacadeOnUserAutoCardCollectionSyncEventReceived(BackendFacade.UserAutoCardCollectionSyncEventData evt)
+        {
+            Log.Debug("Got card collection auto sync event");
+            _gotPendingAutoCardCollectionSyncEvent = true;
+            SetCollectionDataDirtyFlag();
         }
 
         #region IService
@@ -108,19 +127,5 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
-        private void BackendFacadeOnUserFullCardCollectionSyncEventReceived(BackendFacade.UserFullCardCollectionSyncEventData evt)
-        {
-            Log.Debug("Got card collection full sync event");
-            _gotPendingFullCardCollectionSyncEvent = true;
-            SetCollectionDataDirtyFlag();
-        }
-
-        private void BackendFacadeOnUserAutoCardCollectionSyncEventReceived(BackendFacade.UserAutoCardCollectionSyncEventData evt)
-        {
-            Log.Debug("Got card collection auto sync event");
-            _gotPendingAutoCardCollectionSyncEvent = true;
-            SetCollectionDataDirtyFlag();
-        }
     }
 }
