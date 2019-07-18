@@ -495,6 +495,7 @@ namespace Loom.ZombieBattleground
                 if (_battleframeObject != null)
                     Object.Destroy(_battleframeObject);
 
+                float animationNormalizeTime = 0f;
                 string vfxPath = string.Empty;
                 GameObject arrivalPrefab;
                 if (Model.Card.Prototype.Type == Model.InitialUnitType)
@@ -506,16 +507,21 @@ namespace Loom.ZombieBattleground
                 {
                     vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.Card.Prototype.Type + "_To_" + Model.InitialUnitType + "_Arrival_VFX";
                     arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                    animationNormalizeTime = 0.1f;
 
                     if (arrivalPrefab == null)
                     {
                         vfxPath = "Prefabs/Gameplay/ArrivalsVfx/" + Model.InitialUnitType + "_Arrival_VFX";
                         arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(vfxPath);
+                        animationNormalizeTime = 0.0f;
                     }
                 }
 
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
+                battleframeAnimator.Play(0, -1, animationNormalizeTime);
+
                 //_arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
                 //_arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
                 Transform spriteContainerTransform = _battleframeObject.transform.Find("Battleframe/SpriteContainer");
