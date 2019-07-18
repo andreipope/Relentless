@@ -68,8 +68,8 @@ namespace Loom.ZombieBattleground
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
                     cameraGroupTransform.SetParent(cameraVFXObj);
 
-                    Vector3 cameraPostion = newTargetPosition * -1;
-                    cameraGroupTransform.localPosition = new Vector3(cameraPostion.x, cameraGroupTransform.localPosition.y, cameraPostion.y);
+                    Vector3 cameraPosition = newTargetPosition * -1;
+                    cameraGroupTransform.localPosition = new Vector3(cameraPosition.x, cameraGroupTransform.localPosition.y, cameraPosition.y);
 
                     Ability.VFXAnimationEnded += () =>
                     {
