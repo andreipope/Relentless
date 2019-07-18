@@ -16,10 +16,10 @@ namespace mixpanel
     public static partial class Mixpanel
     {
         private const string MixpanelUnityVersion = "2.0.0";
-        
+
         private const string MixpanelTrackUrl = "https://api.mixpanel.com/track";
         private const string MixpanelEngageUrl = "https://api.mixpanel.com/engage";
-        
+
         internal static Value OnceProperties = Value.Object;
         internal static Value AutoTrackProperties;
         internal static Value AutoEngageProperties;
@@ -71,7 +71,7 @@ namespace mixpanel
                 {"$bluetooth_version", "none"}
             };
             #if UNITY_IOS
-            properties["$os_version"] = Device.systemVersion},
+            properties["$os_version"] = Device.systemVersion;
             properties["$manufacturer"] = "Apple";
             properties["$ios_ifa"] = Device.advertisingIdentifier;
             #endif
@@ -90,7 +90,7 @@ namespace mixpanel
             properties["$distinct_id"] = DistinctId;
             Enqueue(MixpanelEngageUrl, properties);
         }
-        
+
         internal static Value CollectAutoEngageProperties()
         {
             Value properties = new Value();
