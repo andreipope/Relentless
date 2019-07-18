@@ -96,7 +96,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 
-        //Mixpanel.Track(title); 
+        Mixpanel.Track(title);
 #endif
     }
 
@@ -150,17 +150,17 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
 #if USE_PRODUCTION_BACKEND
-            _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
-            _googleAnalytics.androidTrackingCode = "UA-124278621-1";
-            _googleAnalytics.otherTrackingCode = "UA-124278621-1";
+        _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
+        _googleAnalytics.androidTrackingCode = "UA-124278621-1";
+        _googleAnalytics.otherTrackingCode = "UA-124278621-1";
 
-            Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Production"));
+        MixpanelSettings.Instance.RuntimeToken = MixpanelSettings.Instance.DebugToken = "609343ab4cfd24db2e55c89ddd834dfc";
 #else
-            _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
-            _googleAnalytics.androidTrackingCode = "UA-130846432-1";
-            _googleAnalytics.otherTrackingCode = "UA-130846432-1";
+        _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
+        _googleAnalytics.androidTrackingCode = "UA-130846432-1";
+        _googleAnalytics.otherTrackingCode = "UA-130846432-1";
 
-            Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Staging"));
+        MixpanelSettings.Instance.RuntimeToken = MixpanelSettings.Instance.DebugToken = "7378161f22b124e736e23d71002981df";
 #endif
 
         _fbManager = GameClient.Get<IFacebookManager>();
@@ -209,14 +209,14 @@ public class AnalyticsManager : IAnalyticsManager, IService
 #endif
     }
 
-    public void SetPoepleProperty(string identityId, string property, string value)
+    public void SetPeopleProperty(string identityId, string property, string value)
     {
 #if !DISABLE_ANALYTICS
         if (string.IsNullOrEmpty(identityId))
             return;
 
         Mixpanel.Identify(identityId);
-        Mixpanel.people.Set(property, value);
+        Mixpanel.People.Set(property, value);
 #endif
     }
 
@@ -227,10 +227,10 @@ public class AnalyticsManager : IAnalyticsManager, IService
 #endif
     }
 
-    public void SetPoepleIncrement(string property, int value)
+    public void SetPeopleIncrement(string property, int value)
     {
 #if !DISABLE_ANALYTICS
-        Mixpanel.people.Increment(property, value);
+        Mixpanel.People.Increment(property, value);
 #endif
     }
 

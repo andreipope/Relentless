@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Iap;
 using Opencoding.CommandHandlerSystem;
@@ -56,6 +58,14 @@ namespace Loom.ZombieBattleground
 
                 Debug.Log($"Result: {cardsOwned.Count} cards:\n" + String.Join("\n", cardsOwned));
             }
+        }
+
+        [CommandHandler]
+        public static async Task DebugCheatSetFullCardCollection()
+        {
+            await _backendFacade.DebugCheatSetFullCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+            _backendDataSyncService.SetCollectionDataDirtyFlag();
+            Debug.Log("Done! Full card library is added to your collection.");
         }
     }
 }

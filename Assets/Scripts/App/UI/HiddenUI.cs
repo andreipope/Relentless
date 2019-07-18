@@ -27,6 +27,7 @@ namespace Loom.ZombieBattleground
         public Toggle ForceUseAuthToggle;
 
         public Button RequestFullCardCollectionSyncButton;
+        public Button DebugCheatSetFullCardCollectionButton;
 
         private AFPSCounter _afpsCounter;
         private bool _isVisible;
@@ -114,9 +115,12 @@ namespace Loom.ZombieBattleground
                 RequestFullCardCollectionSyncButton.interactable = false;
                 buttonText.text = "Wait...";
                 BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                BackendDataSyncService backendDataSyncService = GameClient.Get<BackendDataSyncService>();
                 BackendDataControlMediator backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 await backendFacade.RequestUserFullCardCollectionSync(backendDataControlMediator.UserDataModel.UserId);
-                buttonText.text = "Done! Please restart game";
+                backendDataSyncService.SetCollectionDataDirtyFlag();
+                await Task.Delay(5000);
+                buttonText.text = "Done!";
             }
             catch (Exception e)
             {
@@ -151,6 +155,33 @@ namespace Loom.ZombieBattleground
         public void SkipTutorial()
         {
             GeneralCommandsHandler.SkipTutorialFlow();
+        }
+
+        public async void DebugCheatSetFullCardCollection()
+        {
+            Text buttonText = DebugCheatSetFullCardCollectionButton.GetComponentInChildren<Text>();
+            string originalButtonText = buttonText.text;
+            try
+            {
+                DebugCheatSetFullCardCollectionButton.interactable = false;
+                buttonText.text = "Wait...";
+                await CollectionCommandHandler.DebugCheatSetFullCardCollection();
+                buttonText.text = "Done!";
+            }
+            catch (Exception e)
+            {
+                buttonText.text = "Error, try again";
+                Log.Warn(nameof(DebugCheatSetFullCardCollection) + ":" + e);
+            }
+            finally
+            {
+                await Task.Delay(5000);
+                if (DebugCheatSetFullCardCollectionButton != null)
+                {
+                    DebugCheatSetFullCardCollectionButton.interactable = true;
+                    buttonText.text = originalButtonText;
+                }
+            }
         }
 
         public void DumpState()

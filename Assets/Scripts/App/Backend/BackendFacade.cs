@@ -728,6 +728,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<DebugMintBoosterPackReceiptResponse>("DebugMintBoosterPackReceipt", request);
         }
 
+        public async Task DebugCheatSetFullCardCollection(string userId)
+        {
+            DebugCheatSetFullCardCollectionRequest request = new DebugCheatSetFullCardCollectionRequest
+            {
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            await _contractCallProxy.CallAsync("DebugCheatSetFullCardCollection", request);
+        }
+
         #endregion
 
         public struct PlayerActionEventData

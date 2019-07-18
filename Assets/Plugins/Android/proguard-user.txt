@@ -1,9 +1,14 @@
+# Google Play
+
 -keep public class com.google.android.gms.**
 -keepclassmembers class com.google.android.gms.** {
     public <methods>;
     public <fields>;
 }
 
+# Facebook
+
+-keep class com.facebook.** { *; }
 -keep public class com.facebook.unity.**
 -keepclassmembers class com.facebook.unity.** {
     public <methods>;
