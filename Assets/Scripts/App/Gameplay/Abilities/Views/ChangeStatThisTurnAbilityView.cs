@@ -14,7 +14,6 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            Debug.LogWarning("On ability action called = " + Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact));
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
             string soundName = string.Empty;
@@ -32,10 +31,9 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-
                 Vector3 targetPosition = VfxObject.transform.position;
-                Debug.LogWarning(targetPosition);
                 CreateVfx(targetPosition, true, delayBeforeDestroy, true);
+                VfxObject.transform.eulerAngles = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.zero : new Vector3(140, 0, 0);
                 PlaySound(soundName, delaySound);
             }
 

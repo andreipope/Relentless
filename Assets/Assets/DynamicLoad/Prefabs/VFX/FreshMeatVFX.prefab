@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4846543129404574}
   - component: {fileID: 198828293157538394}
   - component: {fileID: 199262039613984386}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Smack (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4739,8 +4739,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -4776,7 +4776,7 @@ GameObject:
   - component: {fileID: 4855026510997374}
   - component: {fileID: 198140576121219566}
   - component: {fileID: 199815510087483308}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Smack (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9504,8 +9504,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -9541,7 +9541,7 @@ GameObject:
   - component: {fileID: 4281395037877328}
   - component: {fileID: 198338278295541280}
   - component: {fileID: 199333192523452076}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Smack (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14269,8 +14269,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -14306,7 +14306,7 @@ GameObject:
   - component: {fileID: 4397667032744628}
   - component: {fileID: 198214230512226004}
   - component: {fileID: 199856678608834434}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PieceThrow03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19079,8 +19079,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -19115,7 +19115,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4391513453354652}
   - component: {fileID: 95400998425217478}
-  - component: {fileID: 4260712814201719664}
   m_Layer: 0
   m_Name: FreshMeatVFX
   m_TagString: Untagged
@@ -19131,7 +19130,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1432910341675260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: 0}
+  m_LocalPosition: {x: 1.2526104, y: 0.17300105, z: -1.3535156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4167166264235888}
@@ -19157,30 +19156,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4260712814201719664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1432910341675260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardName: 
-  cardNameOfAbility: 0
-  delayBeforeEffect: 2.5
-  delayAfterEffect: 0
-  delayForChangeState: 2
-  soundName: CZB_AUD_Fresh_Meat_F2_EXP
-  delayForSound: 0
-  offset: {x: 0, y: 0, z: 0}
-  localOffset: {x: 0, y: 0, z: 0}
-  isRotate: 0
-  positionInfo:
-    type: 0
 --- !u!1 &1499496827705532
 GameObject:
   m_ObjectHideFlags: 0
@@ -19192,7 +19167,7 @@ GameObject:
   - component: {fileID: 4604727457105628}
   - component: {fileID: 198357692390460942}
   - component: {fileID: 199832675740701708}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Splat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23920,8 +23895,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -23957,7 +23932,7 @@ GameObject:
   - component: {fileID: 4025194454648908}
   - component: {fileID: 198846610484249828}
   - component: {fileID: 199195455297789822}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PieceThrow04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28730,8 +28705,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -28767,7 +28742,7 @@ GameObject:
   - component: {fileID: 4544528249214070}
   - component: {fileID: 198813956029897628}
   - component: {fileID: 199637395490511944}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Splat (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33495,8 +33470,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -33532,7 +33507,7 @@ GameObject:
   - component: {fileID: 4374718593213248}
   - component: {fileID: 198909581985184780}
   - component: {fileID: 199615155581728642}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Smack (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38260,8 +38235,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -38297,7 +38272,7 @@ GameObject:
   - component: {fileID: 4167166264235888}
   - component: {fileID: 198570662828957202}
   - component: {fileID: 199748375875270910}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 'PieceThrow01 '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43110,7 +43085,7 @@ GameObject:
   - component: {fileID: 4841397516295526}
   - component: {fileID: 198656927167684330}
   - component: {fileID: 199119133779479546}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PieceThrow02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47883,8 +47858,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -47920,7 +47895,7 @@ GameObject:
   - component: {fileID: 4022963745177532}
   - component: {fileID: 198726181367972110}
   - component: {fileID: 199223164526964548}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Splat (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52648,8 +52623,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -52685,7 +52660,7 @@ GameObject:
   - component: {fileID: 4769335481653064}
   - component: {fileID: 198393472240142132}
   - component: {fileID: 199373684440827302}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Splat (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57413,8 +57388,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -57450,7 +57425,7 @@ GameObject:
   - component: {fileID: 4393236292161888}
   - component: {fileID: 198717035497557164}
   - component: {fileID: 199159144968100228}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PieceThrow01 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62223,8 +62198,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
