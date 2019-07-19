@@ -105,6 +105,16 @@ namespace Loom.ZombieBattleground
                             Ability.OnUpdateEvent += OnUpdateEventHandler;
                         }
                         break;
+                    case Enumerators.CardNameOfAbility.Molotov:
+                        {
+                            _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
+                            foreach(BoardUnitView unitView in _unitsViews)
+                            {
+                                targetPosition = unitView.Transform.position;
+                                CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
+                            }                            
+                        }
+                        break;
                     default:
                         break;
                 }

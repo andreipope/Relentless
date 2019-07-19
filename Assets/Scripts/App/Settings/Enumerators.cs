@@ -746,7 +746,8 @@ namespace Loom.ZombieBattleground.Common
         {
             None,
             Bulldozer,
-            Lawnmover
+            Lawnmover,
+            Molotov            
         }
 
         public enum AbilityEffectInfoPositionType
