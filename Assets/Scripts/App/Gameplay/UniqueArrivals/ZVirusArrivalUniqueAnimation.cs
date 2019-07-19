@@ -23,11 +23,8 @@ namespace Loom.ZombieBattleground
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/ZVirusArrival"));
-
-            int cacheCullingMask = Camera.main.cullingMask;
-            Camera.main.cullingMask = 0;
                     
-            Transform cameraVFXObj = animationVFX.transform.Find("ZVirus/!! Camera shake");
+            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
 
             Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
             cameraGroupTransform.SetParent(cameraVFXObj);
@@ -39,7 +36,6 @@ namespace Loom.ZombieBattleground
 
             InternalTools.DoActionDelayed(() =>
             {
-                Camera.main.cullingMask = cacheCullingMask;
                 cameraGroupTransform.SetParent(null);
                 cameraGroupTransform.position = Vector3.zero; 
                 
@@ -49,6 +45,14 @@ namespace Loom.ZombieBattleground
                 {
                     unitView.GameObject.SetActive(true);
                     unitView.battleframeAnimator.Play(0, -1, 1);
+                    foreach (Transform child in unitView.battleframeAnimator.transform)
+                    {
+                        if (child.name == "ScrapFlies")
+                        {
+                            child.gameObject.SetActive(false);
+                            break;
+                        }
+                    }
                     BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
                 }             
 

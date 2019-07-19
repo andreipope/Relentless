@@ -124,6 +124,11 @@ namespace Loom.ZombieBattleground
             BattlegroundController.DistractUnit(boardUnit);
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
+
+            if (!boardUnit.IsDead || boardUnit.CurrentDefense > 0)
+            {
+                boardUnit.SetUnitActiveStatus(true);
+            }
         }
 
         public void OneActionCompleted(CardModel cardModel)
