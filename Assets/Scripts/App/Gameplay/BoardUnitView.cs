@@ -661,6 +661,7 @@ namespace Loom.ZombieBattleground
             if (_fightTargetingArrow != null)
             {
                 _fightTargetingArrow.Dispose();
+                _fightTargetingArrow = null;
             }
         }
 
@@ -758,11 +759,7 @@ namespace Loom.ZombieBattleground
             {
                 if (Model.IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 {
-                    if (_fightTargetingArrow != null)
-                    {
-                        _fightTargetingArrow.Dispose();
-                        _fightTargetingArrow = null;
-                    }
+                    CancelTargetingArrows();
                     Model.Die();
                 }
             }

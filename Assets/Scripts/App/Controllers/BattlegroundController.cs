@@ -1000,6 +1000,8 @@ namespace Loom.ZombieBattleground
         {
             card.BuffedDamage = 0;
             card.BuffedDefense = 0;
+            card.HpDebuffUntillEndOfTurn = 0;
+            card.DamageDebuffUntillEndOfTurn = 0;
             card.DisableBuffsOnValueHistory(card.CurrentDamageHistory);
             card.DisableBuffsOnValueHistory(card.CurrentDefenseHistory);
             card.HasSwing = false;
