@@ -218,113 +218,13 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-        private void OpenedPackPanelOpenNextPackHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_openedPackPanelOpenNextPackButton.name))
-                return;
-
-            _openedPackPanelCloseButton.interactable = false;
-            _openedPackPanelOpenNextPackButton.interactable = false;
-
-            PlayCardsHideAnimation(async () =>
-            {
-                ClearOpenedCards();
-                await OpenSelectedPack();
-            });
-        }
-
-        private async void OpenedPackPanelCloseButtonHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_openedPackPanelCloseButton.name))
-                return;
-
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerClosedOpenCardsScreen);
-
-            _openedPackPanelCloseButton.interactable = false;
-            _openedPackPanelOpenNextPackButton.interactable = false;
-
-            PlayCardsHideAnimation(ClearOpenedCards);
-
-            await _controller.OnOpenedPackScreenClosed();
-
-            Sequence sequence = DOTween.Sequence();
-            sequence.AppendInterval(CardHideAnimationDuration);
-            sequence.Append(_openedPackPanelCanvasGroup.DOFade(0f, FadeDuration));
-            sequence.AppendCallback(() =>
-            {
-                _openedPackPanel.SetActive(false);
-                CreatePackObjects();
-            });
-        }
-
-        private async void OpenButtonHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_openButton.name))
-                return;
-
-            PlayClickSound();
-            await OpenSelectedPack();
-        }
-
-        private void ScrollButtonHandler(bool isRight)
-        {
-            if (_packObjects.Count == 0)
-                return;
-
-            PlayClickSound();
-
-            int currentIndex = _packObjects.IndexOf(_packObjects.First(pack => pack.PackType == _selectedPackType));
-            int newIndex = currentIndex + (isRight ? 1 : -1);
-            int newIndexClamped = MathUtility.Repeat(newIndex, _packObjects.Count);
-
-            /*Log.Debug(
-                $"Current: [PackType: {_packObjects[currentIndex].PackType}, Index: {currentIndex}], " +
-                $"New: [PackType: {_packObjects[newIndexClamped].PackType}, IndexClamped: {newIndexClamped}, Index: {newIndex}]");*/
-
-            Vector2 newPosition = CalculatePackObjectsRootPositionByIndex(newIndex);
-            Vector2 newPositionClamped = CalculatePackObjectsRootPositionByIndex(newIndexClamped);
-
-            // To avoid ugly jumps when clicking VERY quickly while keeping it smooth,
-            // only complete the previous sequence if delta is big
-            float packSizesDelta =
-                Mathf.Abs(_packObjectsRootRectTransform.anchoredPosition.x - newPosition.x) /
-                CalculatePackShiftPerItem();
-            if (packSizesDelta < 1f || packSizesDelta > 2.5f)
-            {
-                _currentPackScrollSequence?.Complete(true);
-            }
-            else
-            {
-                _currentPackScrollSequence?.Kill();
-            }
-
-            _currentPackScrollSequence = DOTween.Sequence();
-            _currentPackScrollSequence.Append(
-                _packObjectsRootRectTransform.DOAnchorPos(newPosition, PackScrollAnimationDuration));
-            _currentPackScrollSequence.AppendCallback(() =>
-                _packObjectsRootRectTransform.anchoredPosition = newPositionClamped);
-
-            SetSelectedPackType(_packObjects[newIndexClamped].PackType);
-        }
-
-        private float CalculatePackShiftPerItem()
-        {
-            return PackWidth + _packObjectsRootHorizontalLayoutGroup.spacing;
-        }
-
-        private Vector2 CalculatePackObjectsRootPositionByIndex(int index)
-        {
-            index += _fakeLeftPackObjects.Count - 1;
-            return new Vector2(index * -CalculatePackShiftPerItem(), 0f);
-        }
-
         private void PlayCardsHideAnimation(Action onEnd)
         {
             for (int i = 0; i < _openedCards.Count; i++)
             {
                 OpenedPackCard openedPackCard = _openedCards[i];
                 Sequence hideSequence = DOTween.Sequence();
-                hideSequence.AppendInterval(i * 0.3f);
+                hideSequence.AppendInterval(i * 0.1f);
                 hideSequence.Append(
                     openedPackCard.GameObject.transform.DOMove(CardHidePosition, CardHideAnimationDuration));
                 if (i == _openedCards.Count - 1)
@@ -423,9 +323,10 @@ namespace Loom.ZombieBattleground
                         if (allFlipped)
                         {
                             _openedPackPanelCloseButton.gameObject.SetActive(true);
-                            _openedPackPanelOpenNextPackButton.gameObject.SetActive(
-                                _controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
-                            _openedPackPanelBottomButtonsCanvasGroup.DOFade(1f, 0.3f).ChangeStartValue(0)
+                            _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
+                            _openedPackPanelBottomButtonsCanvasGroup
+                                .DOFade(1f, 0.3f)
+                                .ChangeStartValue(0)
                                 .SetDelay(0.5f);
 
                             _controller.OnPackCollected();
@@ -480,9 +381,13 @@ namespace Loom.ZombieBattleground
 
             for (int i = fakePackObjectsCount - 1; i >= 0; i--)
             {
-                _fakeLeftPackObjects.Add(new PackObject(_packObjectsRoot.transform,
-                    _loadObjectsManager,
-                    _controller.ShownPackTypes[_controller.ShownPackTypes.Count - 1 - i]));
+                _fakeLeftPackObjects.Add(
+                    new PackObject(
+                        _packObjectsRoot.transform,
+                        _loadObjectsManager,
+                        packTypes[packTypes.Count - 1 - i]
+                    )
+                );
             }
 
             foreach (Enumerators.MarketplaceCardPackType packType in packTypes)
@@ -493,9 +398,13 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < fakePackObjectsCount; i++)
             {
-                _fakeRightPackObjects.Add(new PackObject(_packObjectsRoot.transform,
-                    _loadObjectsManager,
-                    _controller.ShownPackTypes[i]));
+                _fakeRightPackObjects.Add(
+                    new PackObject(
+                        _packObjectsRoot.transform,
+                        _loadObjectsManager,
+                        packTypes[i]
+                    )
+                );
             }
 
             _fakeLeftPackObjects.ForEach(pack => pack.GameObject.name = "=== " + pack.GameObject.name + " Fake");
@@ -552,6 +461,108 @@ namespace Loom.ZombieBattleground
             _fakeRightPackObjects.ForEach(pack => pack.Dispose());
             _fakeRightPackObjects.Clear();
         }
+
+        private float CalculatePackShiftPerItem()
+        {
+            return PackWidth + _packObjectsRootHorizontalLayoutGroup.spacing;
+        }
+
+        private Vector2 CalculatePackObjectsRootPositionByIndex(int index)
+        {
+            index += _fakeLeftPackObjects.Count - 1;
+            return new Vector2(index * -CalculatePackShiftPerItem(), 0f);
+        }
+
+        #region UI Handlers
+
+        private void OpenedPackPanelOpenNextPackHandler()
+        {
+            if (_tutorialManager.BlockAndReport(_openedPackPanelOpenNextPackButton.name))
+                return;
+
+            _openedPackPanelCloseButton.interactable = false;
+            _openedPackPanelOpenNextPackButton.interactable = false;
+
+            PlayCardsHideAnimation(async () =>
+            {
+                ClearOpenedCards();
+                await OpenSelectedPack();
+            });
+        }
+
+        private async void OpenedPackPanelCloseButtonHandler()
+        {
+            if (_tutorialManager.BlockAndReport(_openedPackPanelCloseButton.name))
+                return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardOpenerClosedOpenCardsScreen);
+
+            _openedPackPanelCloseButton.interactable = false;
+            _openedPackPanelOpenNextPackButton.interactable = false;
+
+            PlayCardsHideAnimation(ClearOpenedCards);
+
+            await _controller.OnOpenedPackScreenClosed();
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.AppendInterval(CardHideAnimationDuration);
+            sequence.Append(_openedPackPanelCanvasGroup.DOFade(0f, FadeDuration));
+            sequence.AppendCallback(() =>
+            {
+                _openedPackPanel.SetActive(false);
+                CreatePackObjects();
+            });
+        }
+
+        private async void OpenButtonHandler()
+        {
+            if (_tutorialManager.BlockAndReport(_openButton.name))
+                return;
+
+            PlayClickSound();
+            await OpenSelectedPack();
+        }
+
+        private void ScrollButtonHandler(bool isRight)
+        {
+            if (_packObjects.Count == 0)
+                return;
+
+            PlayClickSound();
+
+            int currentIndex = _packObjects.IndexOf(_packObjects.First(pack => pack.PackType == _selectedPackType));
+            int newIndex = currentIndex + (isRight ? 1 : -1);
+            int newIndexClamped = MathUtility.Repeat(newIndex, _packObjects.Count);
+
+            /*Log.Debug(
+                $"Current: [PackType: {_packObjects[currentIndex].PackType}, Index: {currentIndex}], " +
+                $"New: [PackType: {_packObjects[newIndexClamped].PackType}, IndexClamped: {newIndexClamped}, Index: {newIndex}]");*/
+
+            Vector2 newPosition = CalculatePackObjectsRootPositionByIndex(newIndex);
+            Vector2 newPositionClamped = CalculatePackObjectsRootPositionByIndex(newIndexClamped);
+
+            // To avoid ugly jumps when clicking VERY quickly while keeping it smooth,
+            // only complete the previous sequence if delta is big
+            float packSizesDelta =
+                Mathf.Abs(_packObjectsRootRectTransform.anchoredPosition.x - newPosition.x) /
+                CalculatePackShiftPerItem();
+            if (packSizesDelta < 1f || packSizesDelta > 2.5f)
+            {
+                _currentPackScrollSequence?.Complete(true);
+            }
+            else
+            {
+                _currentPackScrollSequence?.Kill();
+            }
+
+            _currentPackScrollSequence = DOTween.Sequence();
+            _currentPackScrollSequence.Append(_packObjectsRootRectTransform.DOAnchorPos(newPosition, PackScrollAnimationDuration));
+            _currentPackScrollSequence.AppendCallback(() => _packObjectsRootRectTransform.anchoredPosition = newPositionClamped);
+
+            SetSelectedPackType(_packObjects[newIndexClamped].PackType);
+        }
+
+        #endregion
 
         #region Util
 
@@ -959,7 +970,7 @@ namespace Loom.ZombieBattleground
                     case 1:
                         ShownPackTypes = new[]
                         {
-                            Enumerators.MarketplaceCardPackType.Booster, 
+                            Enumerators.MarketplaceCardPackType.Booster,
                             Enumerators.MarketplaceCardPackType.Binance
                         };
                         break;
