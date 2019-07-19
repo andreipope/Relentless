@@ -9,6 +9,7 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using Loom.ZombieBattleground.Editor.Tools;
+using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -57,7 +58,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion
-      
+
         #region project file hierarchy Utility
 
         [MenuItem("Utility/Editor/Delete Empty Folders")]
@@ -83,7 +84,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion project file hierarchy Utility
-        
+
         #region Auto Saving Scenes in Editor
 
         private static readonly int MinutesDelay = 2;
@@ -166,7 +167,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion Auto Saving Scenes in Editor
-        
+
         #region cached data, player prefs, and data in persistent data path
 
         [MenuItem("Utility/Data/Delete PlayerPrefs")]
@@ -205,7 +206,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion cached data, player prefs, and data in persistent data path
-        
+
         #region asset bundles and cache
 
         [MenuItem("Utility/CacheAndBundles/Clean Cache")]
@@ -338,7 +339,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion asset bundles and cache
-        
+
         #region scene hierarchy Utility
 
         [MenuItem("Utility/Editor/Select GOs With Missing Scripts")]
@@ -374,6 +375,23 @@ namespace Loom.ZombieBattleground.Editor
                 rectTransform.sizeDelta = sizeDelta;
 
                 rectTransform.localScale = Vector3.one;
+            }
+        }
+
+        [MenuItem("Utility/Editor/Convert child SpriteRenderers to UI Image")]
+        public static void ConvertSpriteRenderersToImage()
+        {
+            if (Selection.activeGameObject == null)
+                return;
+
+            Undo.RecordObject(Selection.activeGameObject, "Convert child SpriteRenderers to UI Image");
+            SpriteRenderer[] spriteRenderers = Selection.activeGameObject.GetComponentsInChildren<SpriteRenderer>();
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                Image image = spriteRenderer.gameObject.AddComponent<Image>();
+                image.sprite = spriteRenderer.sprite;
+                image.raycastTarget = false;
+                Object.DestroyImmediate(spriteRenderer);
             }
         }
 
