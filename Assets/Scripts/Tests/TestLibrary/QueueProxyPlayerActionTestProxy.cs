@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEngine;
-using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {

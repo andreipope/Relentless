@@ -6,6 +6,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Loom.ZombieBattleground.Common;
+#if UNITY_EDITOR
+using System.Collections.Generic;
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 public class UnitCardUI
 {
@@ -53,6 +57,9 @@ public class UnitCardUI
 
         _grayScaleMaterial = _loadObjectsManager.GetObjectByPath<Material>("Materials/UI-Default-Grayscale");
 
+#if UNITY_EDITOR
+        MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
     }
 
     public void FillCardData(Card card, int cardCount = 0)
@@ -150,4 +157,31 @@ public class UnitCardUI
         _rankImage.material = material;
         _setImage.material = material;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (_selfObj == null)
+        {
+            MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+            return;
+        }
+
+        if (_card == null || !_selfObj.activeInHierarchy)
+            return;
+
+        List<string> lines = new List<string>();
+        lines.Add("Mould Id: " + _card.CardKey.MouldId.Id);
+        if (_card.CardKey.Variant != Enumerators.CardVariant.Standard)
+        {
+            lines.Add("Variant: " + _card.CardKey.Variant);
+        }
+        lines.Add("Name: " + _card.Name);
+
+        DebugCardInfoDrawer.DrawCustom(
+            _selfObj.transform.position,
+            lines,
+            false);
+    }
+#endif
 }

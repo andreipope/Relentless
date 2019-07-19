@@ -12,11 +12,11 @@ using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using CardList = Loom.ZombieBattleground.Data.CardList;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 
@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(DataManager));
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings =
+        private static readonly JsonSerializerSettings StrictJsonSerializerSettings =
             JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
 
         private ILocalizationManager _localizationManager;
@@ -95,11 +95,8 @@ namespace Loom.ZombieBattleground
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
             {
-                await LoadCachedData((Enumerators.CacheDataType) i);
+                await LoadCache((Enumerators.CacheDataType) i);
             }
-
-            // FIXME: remove next line after fetching collection from backend is implemented
-            FillFullCollection();
 
             _localizationManager.ApplyLocalization();
 
@@ -129,12 +126,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     data = SerializePersistentObject(CachedUserLocalData);
                     break;
+#if DEVELOPMENT
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     data = SerializePersistentObject(CachedCollectionData);
                     break;
-#if DEVELOPMENT
-                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                     data = SerializePersistentObject(CachedCardsLibraryData);
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                     data = SerializePersistentObject(new CardList{ Cards = CachedCardsLibraryData.Cards });
                      break;
                  case Enumerators.CacheDataType.CREDITS_DATA:
                      data = SerializePersistentObject(CachedCreditsData);
@@ -172,6 +169,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+
         }
 
         public void Init()
@@ -197,38 +195,6 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private uint GetMaxCopiesValue(Data.Card card, Enumerators.Faction setName)
-        {
-            Enumerators.CardRank rank = card.Rank;
-            uint maxCopies;
-
-            if (setName == Enumerators.Faction.ITEM)
-            {
-                maxCopies = Constants.CardItemMaxCopies;
-                return maxCopies;
-            }
-
-            switch (rank)
-            {
-                case Enumerators.CardRank.MINION:
-                    maxCopies = Constants.CardMinionMaxCopies;
-                    break;
-                case Enumerators.CardRank.OFFICER:
-                    maxCopies = Constants.CardOfficerMaxCopies;
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    maxCopies = Constants.CardCommanderMaxCopies;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    maxCopies = Constants.CardGeneralMaxCopies;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return maxCopies;
-        }
-
         private void CheckVersion()
         {
             FileInfo[] files = _dir.GetFiles();
@@ -250,6 +216,8 @@ namespace Loom.ZombieBattleground
 
         private void DeleteVersionFile()
         {
+            PlayerPrefs.DeleteAll();
+
             FileInfo[] files = _dir.GetFiles();
             foreach (FileInfo file in files)
             {
@@ -277,7 +245,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<LoginPopup>().SetValidationFailed(msg);
         }
 
-        private async Task LoadCachedData(Enumerators.CacheDataType type)
+        public async Task LoadCache(Enumerators.CacheDataType type)
         {
             switch (type)
             {
@@ -285,10 +253,14 @@ namespace Loom.ZombieBattleground
                     string cardsLibraryFilePath = GetPersistentDataPath(_cacheDataFileNames[type]);
 
                     List<Card> cardList;
-                    if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
+                    bool allowLocalCardLibrary = ConfigData.SkipBackendCardData;
+#if ALLOW_LOCAL_CARD_LIBRARY
+                    allowLocalCardLibrary = true;
+#endif
+                    if (allowLocalCardLibrary && File.Exists(cardsLibraryFilePath))
                     {
                         Log.Warn("===== Loading Card Library from persistent data ===== ");
-                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
+                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards.ToList();
                     }
                     else
                     {
@@ -303,6 +275,7 @@ namespace Loom.ZombieBattleground
                             throw;
                         }
                     }
+                    //cardList.Sort((card1, card2) => CardKey.Comparer.Compare(card1.CardKey, card2.CardKey));
                     CachedCardsLibraryData = new CardsLibraryData(cardList);
 
                     break;
@@ -321,27 +294,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
-                        bool isLoadedFromFile = false;
-                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
-                        {
-                            try
-                            {
-                                CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
-                                isLoadedFromFile = true;
-                            }
-                            catch (JsonSerializationException)
-                            {
-                                // Gracefully handle old incompatible data
-                            }
-                        }
-
-                        if (!isLoadedFromFile)
-                        {
-                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedCollectionData = getCollectionResponse.FromProtobuf();
-                        }
-
-                        await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+                        GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedCollectionData = getCollectionResponse.FromProtobuf();
                     }
                     catch (Exception)
                     {
@@ -463,13 +417,13 @@ namespace Loom.ZombieBattleground
             return JsonConvert.SerializeObject(
                 obj,
                 indented ? Formatting.Indented : Formatting.None,
-                JsonSerializerSettings
+                StrictJsonSerializerSettings
             );
         }
 
         public T DeserializeFromJson<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<T>(json, StrictJsonSerializerSettings);
         }
 
         public string GetPersistentDataPath(string fileName)
@@ -491,24 +445,6 @@ namespace Loom.ZombieBattleground
         {
             string data = SerializeToJson(obj, true);
             return EncryptData(data);
-        }
-
-        private void FillFullCollection()
-        {
-            CachedCollectionData = new CollectionData();
-
-            foreach (Data.Faction set in CachedCardsLibraryData.Factions)
-            {
-                foreach (Data.Card card in set.Cards)
-                {
-                    CachedCollectionData.Cards.Add(
-                        new CollectionCardData
-                        (
-                            card.CardKey,
-                            (int) GetMaxCopiesValue(card, set.Name)
-                        ));
-                }
-            }
         }
 
         public async Task LoadZbVersionData()

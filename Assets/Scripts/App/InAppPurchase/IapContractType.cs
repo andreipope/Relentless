@@ -14,6 +14,10 @@ namespace Loom.ZombieBattleground.Iap
         ToxicPack,
         WaterPack,
         SmallPack,
-        MinionPack
+        MinionPack,
+        BinancePack,
+        TronPack,
+        BinancePackFaucet,
+        TronPackFaucet,
     }
 }

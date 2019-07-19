@@ -1,8 +1,0 @@
-{
-    "name": "Mixpanel.Runtime",
-    "references": [],
-    "optionalUnityReferences": [],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false
-}

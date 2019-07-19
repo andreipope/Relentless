@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using KellermanSoftware.CompareNetObjects;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Loom.ZombieBattleground.Editor
@@ -31,7 +30,19 @@ namespace Loom.ZombieBattleground.Editor
             compareLogic.Config.MaxDifferences = 100;
             compareLogic.Config.ActualName = "Fetched";
             compareLogic.Config.ExpectedName = "Stored";
-            return compareLogic.Compare(storedNetworks, fetchedNetworks);
+            ComparisonResult comparisonResult = compareLogic.Compare(storedNetworks, fetchedNetworks);
+            for (int i = comparisonResult.Differences.Count - 1; i >= 0; i--)
+            {
+                Difference difference = comparisonResult.Differences[i];
+                // Ignore difference if fetched address is none
+                if (difference.Object2Value == "none" || difference.Object2Value == "manual")
+                {
+                    comparisonResult.Differences.RemoveAt(i);
+                }
+            }
+
+            comparisonResult.DifferencesString = null;
+            return comparisonResult;
         }
 
         public MarketplacePlasmachainContractAddressesNetworks GetContractAddressesOnAllNetworks()
@@ -49,6 +60,7 @@ namespace Loom.ZombieBattleground.Editor
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> smallPackAddresses = GetAddressesOfContract("ZBGSmallPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> minionPackAddresses = GetAddressesOfContract("ZBGMinionPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> binancePackAddresses = GetAddressesOfContract("ZBGBinancePack");
+            IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> tronPackAddresses = GetAddressesOfContract("ZBGTronPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> fiatPurchaseAddresses = GetAddressesOfContract("FiatPurchase");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> openLotteryAddresses = GetAddressesOfContract("OpenLottery");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> tronLotteryAddresses = GetAddressesOfContract("TronLottery");
@@ -72,6 +84,7 @@ namespace Loom.ZombieBattleground.Editor
                         smallPackAddresses[network],
                         minionPackAddresses[network],
                         binancePackAddresses[network],
+                        tronPackAddresses[network],
                         fiatPurchaseAddresses[network],
                         openLotteryAddresses[network],
                         tronLotteryAddresses[network]

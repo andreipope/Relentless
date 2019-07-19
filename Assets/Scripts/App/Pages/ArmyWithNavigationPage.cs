@@ -1,16 +1,21 @@
+using System;
+using log4net;
 using Loom.ZombieBattleground.Common;
+using OneOf;
+using OneOf.Types;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-
-public enum PageType { Army, DeckEditing }
 
 namespace Loom.ZombieBattleground
 {
     public class ArmyWithNavigationPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ArmyWithNavigationPage));
+
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
+        private BackendDataSyncService _backendDataSyncService;
 
         private Button _buttonBuyPacks;
         private Button _buttonMarketplace;
@@ -31,12 +36,13 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _backendDataSyncService = GameClient.Get<BackendDataSyncService>();
 
             _uiCardCollections = new UICardCollections();
             _uiCardCollections.Init();
         }
 
-        public void Show()
+        public async void Show()
         {
             GameObject armyPage = Object.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyCardsPage"),
@@ -48,7 +54,19 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);
             _uiManager.DrawPopup<AreaBarPopup>();
 
-            _uiCardCollections.Show(_selfPage, PageType.Army);
+            if (_backendDataSyncService.IsCollectionDataDirty)
+            {
+                OneOf<Success, Exception> result = await _backendDataSyncService.UpdateCardCollectionWithUi(false);
+                if (result.IsT1)
+                {
+                    Log.Warn(result.AsT1);
+
+                    FailAndGoToMainMenu("Failed to update card collection. Please try again.");
+                    return;
+                }
+            }
+
+            _uiCardCollections.Show(_selfPage, Enumerators.CardCollectionPageType.Army);
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);
@@ -176,5 +194,12 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
         #endregion
+
+        private void FailAndGoToMainMenu(string customMessage = null)
+        {
+            _uiManager.HidePopup<LoadingOverlayPopup>();
+            _uiManager.DrawPopup<WarningPopup>(customMessage ?? "Something went wrong.\n Please try again.");
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU, true);
+        }
     }
 }

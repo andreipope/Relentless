@@ -1,13 +1,8 @@
-using System;
 using UnityEngine;
 using NUnit.Framework;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 

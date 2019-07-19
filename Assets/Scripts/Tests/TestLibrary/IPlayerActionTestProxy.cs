@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {

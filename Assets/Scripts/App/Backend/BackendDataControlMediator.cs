@@ -6,7 +6,9 @@ using Loom.Client;
 using Newtonsoft.Json;
 using UnityEngine;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Iap;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -17,8 +19,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string UserDataFileName = "UserLoginData.json";
 
         private IDataManager _dataManager;
-
-        private IUIManager _uiManager;
 
         private BackendFacade _backendFacade;
         private AuthApiFacade _authApiFacade;
@@ -32,7 +32,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
-            _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _authApiFacade = GameClient.Get<AuthApiFacade>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
@@ -73,45 +72,74 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
+        /// <returns>Whether full card sync will be executed</returns>
         public async Task LoginAndLoadData()
         {
+            bool gotFullCardSyncEvent = false;
+            void OnUserFullCardCollectionSyncEventReceived(BackendFacade.UserFullCardCollectionSyncEventData data)
+            {
+                gotFullCardSyncEvent = true;
+                Log.Debug("Got full card collection sync event");
+            }
+
             LoadUserDataModel();
-      
+
             Log.Info("User Id: " + UserDataModel.UserId);
 
             try
             {
                 await CreateContract();
-                try
+                _backendFacade.UserFullCardCollectionSyncEventReceived += OnUserFullCardCollectionSyncEventReceived;
+                LoginResponse loginResponse = await _backendFacade.Login(UserDataModel.UserId);
+
+                // Register and login again
+                if (loginResponse.UserNotRegistered)
                 {
+                    Log.Info("User not registered on Gamechain, creating account");
                     await _backendFacade.SignUp(UserDataModel.UserId);
+                    loginResponse = await _backendFacade.Login(UserDataModel.UserId);
                 }
-                catch (TxCommitException e) when (e.Message.Contains("user already exists"))
+
+                if (loginResponse.DataWiped)
                 {
-                    // Ignore
+                    Log.Warn("NOTE: user data wiped");
                 }
-                await _backendFacade.Login(UserDataModel.UserId);
+
+                if (loginResponse.FullCardCollectionSyncExecuted)
+                {
+                    Log.Debug("Waiting for full card collection sync event...");
+                    const float waitForFullCardCollectionSyncEventTimeout = 20;
+                    bool timedOut = await InternalTools.WaitWithTimeout(waitForFullCardCollectionSyncEventTimeout, () => gotFullCardSyncEvent);
+                    if (timedOut)
+                        throw new RpcClientException("Timed out waiting for full card collection sync event", -1, null);
+                }
             }
             catch (RpcClientException exception)
             {
                 Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn("RpcException ==", exception);
-                if (UserDataModel.IsValid) 
+                if (UserDataModel.IsValid)
                 {
                     GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                 }
             }
+            finally
+            {
+                _backendFacade.UserFullCardCollectionSyncEventReceived -= OnUserFullCardCollectionSyncEventReceived;
+            }
 
-            await _dataManager.StartLoadCache();      
+            await _dataManager.StartLoadCache();
         }
 
         public async Task UpdateEndpointsFromZbVersion()
         {
             try
             {
-                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
+                BackendPurpose defaultBackendPurpose = GameClient.GetDefaultBackendPurpose();
+                if (defaultBackendPurpose == BackendPurpose.Production ||
+                    GameClient.GetForceUseAuth())
                 {
-                    ZbVersion zbVersion = await _authApiFacade.GetZbVersionData(BackendPurpose.Production);
+                    ZbVersion zbVersion = await _authApiFacade.GetZbVersionData(defaultBackendPurpose);
                     BackendEndpoint backendEndpoint =
                         _authApiFacade.GetProductionBackendEndpointFromZbVersion(zbVersion, _backendFacade.BackendEndpoint.PlasmachainEndpointsConfiguration);
                     _backendFacade.SetBackendEndpoint(backendEndpoint);
@@ -135,6 +163,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
             IDAppChainClientCallExecutor chainClientCallExecutor = new NotifyingDAppChainClientCallExecutor(clientConfiguration);
             await _backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, chainClientCallExecutor: chainClientCallExecutor);
+
+            // Subscribe to persistent user events right away, since we always listen to them
+            await _backendFacade.SubscribeToEvents(UserDataModel.UserId, Array.Empty<string>());
         }
     }
 }

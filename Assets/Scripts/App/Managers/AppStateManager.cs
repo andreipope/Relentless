@@ -36,20 +36,24 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
         private INetworkActionManager _networkActionManager;
         private bool _isReconnecting;
+        private int _stateChangeSequenceNumber;
 
         public bool IsAppPaused { get; private set; }
-        
+
         public event Action ConnectionStatusDidUpdate;
 
         public Enumerators.AppState AppState { get; set; }
 
         public void ChangeAppState(Enumerators.AppState stateTo, bool force = false)
         {
+            Log.Debug($"{nameof(ChangeAppState)} - stateTo: {stateTo}{(!force && AppState == stateTo ? ", ignored" : "")}");
             if (!force)
             {
                 if (AppState == stateTo)
                     return;
             }
+
+            int currentSequenceNumber = _stateChangeSequenceNumber;
 
             switch (stateTo)
             {
@@ -114,7 +118,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.PlaySelection:
                     _uiManager.SetPage<MainMenuWithNavigationPage>();
-                    _uiManager.DrawPopup<GameModePopup>(); 
+                    _uiManager.DrawPopup<GameModePopup>();
                     break;
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
@@ -129,14 +133,23 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);
             }
 
-            _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;
+            if (currentSequenceNumber == _stateChangeSequenceNumber)
+            {
+                _previousState = AppState;
+                AppState = stateTo;
+                _stateChangeSequenceNumber++;
 
-            AppState = stateTo;
-
-            UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+                Log.Debug($"{nameof(ChangeAppState)} - App state: " + AppState);
+                UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+            }
+            else
+            {
+                // This can happen if the page has changed the state when showing (i.e. when an error happened)
+                Log.Debug($"{nameof(ChangeAppState)} - App state already changed to " + AppState);
+            }
         }
 
-        private void CheckIfPlayAgainOptionShouldBeAvailable() 
+        private void CheckIfPlayAgainOptionShouldBeAvailable()
         {
             if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -208,7 +221,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
-        
+
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
             if (!UnitTestDetector.IsRunningUnitTests && state == RpcConnectionState.Connected)
@@ -303,7 +316,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                    ChangeAppState(Enumerators.AppState.MAIN_MENU, true);
                 }
             }
 

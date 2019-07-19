@@ -2,52 +2,36 @@
   <packages>
     <package>com.android.support:appcompat-v7:25.3.1</package>
     <package>com.android.support:cardview-v7:25.3.1</package>
-    <package>com.android.support:customtabs:[26.0.0, 27.2.0[</package>
+    <package>com.android.support:customtabs:[26.0.0,27.2.0[</package>
     <package>com.android.support:customtabs:25.3.1</package>
-    <package>com.android.support:support-v4:[26.0.0, 27.2.0[</package>
+    <package>com.android.support:support-v4:[26.0.0,27.2.0[</package>
     <package>com.android.support:support-v4:25.3.1</package>
-    <package>com.google.android.gms:play-services-analytics:LATEST</package>
-    <package>com.google.android.gms:play-services-auth:16+</package>
-    <package>com.google.android.gms:play-services-base:[10.2.1, 12.1.0[</package>
-    <package>com.google.android.gms:play-services-location:[10.2.1, 12.1.0[</package>
-    <package>com.google.firebase:firebase-messaging:[10.2.1, 12.1.0[</package>
+    <package>com.facebook.android:facebook-applinks:[5,6)</package>
+    <package>com.facebook.android:facebook-core:[5,6)</package>
+    <package>com.facebook.android:facebook-login:[5,6)</package>
+    <package>com.facebook.android:facebook-share:[5,6)</package>
+    <package>com.google.android.gms:play-services-analytics:17.0.+</package>
+    <package>com.google.android.gms:play-services-auth:16.0.+</package>
+    <package>com.google.android.gms:play-services-base:17.0.+</package>
+    <package>com.google.android.gms:play-services-location:17.0.+</package>
+    <package>com.google.firebase:firebase-messaging:19.0.+</package>
     <package>com.google.signin:google-signin-support:1.0.4</package>
+    <package>com.parse.bolts:bolts-android:1.4.0</package>
   </packages>
   <files>
-    <file>Assets/Plugins/Android/android.arch.core.common-1.0.0.jar</file>
-    <file>Assets/Plugins/Android/android.arch.lifecycle.common-1.0.0.jar</file>
-    <file>Assets/Plugins/Android/android.arch.lifecycle.runtime-1.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.animated-vector-drawable-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.appcompat-v7-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.cardview-v7-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.customtabs-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-annotations-26.1.0.jar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-compat-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-core-ui-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-core-utils-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-fragment-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-media-compat-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-v4-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-vector-drawable-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-ads-identifier-16.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-analytics-16.0.8.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-analytics-impl-16.0.8.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-16.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-api-phone-16.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-base-16.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-base-16.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-basement-16.2.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-location-16.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-places-placereport-16.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-stats-16.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-tagmanager-v4-impl-16.0.8.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-tasks-16.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.auto.value.auto-value-annotations-1.6.jar</file>
-    <file>Assets/Plugins/Android/com.google.firebase.firebase-common-16.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-17.1.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-interop-16.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-17.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.firebase.firebase-messaging-17.5.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.signin.google-signin-support-1.0.4.aar</file>
+    <file>Assets/Plugins/GoogleSignIn/Editor/m2repository/com/google/signin/google-signin-support/1.0.4/google-signin-support-1.0.4.aar</file>
   </files>
+  <settings>
+    <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
+    <setting name="bundleId" value="games.loom.battleground" />
+    <setting name="explodeAars" value="False" />
+    <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
+    <setting name="installAndroidPackages" value="True" />
+    <setting name="packageDir" value="Assets\Plugins\Android" />
+    <setting name="patchAndroidManifest" value="True" />
+    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="projectExportEnabled" value="False" />
+    <setting name="useJetifier" value="True" />
+  </settings>
 </dependencies>

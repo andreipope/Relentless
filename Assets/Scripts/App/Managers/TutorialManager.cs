@@ -431,7 +431,7 @@ namespace Loom.ZombieBattleground
         {
             TutorialDuration.FinishTimer();
             Dictionary<string, object> eventParameters = new Dictionary<string, object>();
-            eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDiffrence());
+            eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDifference());
             _analyticsManager.SetEvent(eventName, eventParameters);
         }
 

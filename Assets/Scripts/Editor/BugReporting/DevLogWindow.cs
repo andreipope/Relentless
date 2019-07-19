@@ -3,7 +3,6 @@ using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
 using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Assets.Editor.BugReporting
 {

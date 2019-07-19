@@ -14,8 +14,6 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Iap;
-using OneOf.Types;
 using UnityEngine.EventSystems;
 
 namespace Loom.ZombieBattleground
@@ -121,6 +119,8 @@ namespace Loom.ZombieBattleground
         private bool _gameStarted = false;
 
         private int _onEnterInputIndex = -1;
+
+        private bool _gotFullCardCollectionSyncEvent;
 
         public GameObject Self { get; private set; }
 
@@ -233,7 +233,7 @@ namespace Loom.ZombieBattleground
 
             _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
                 (int)KeyCode.Return, null, OnInputDownEnterButton);
-                
+
             OnShowPopupEvent?.Invoke();
         }
 
@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
             _confirmFieldRegister.text = _password;
         }
 
-        public void Logout() 
+        public void Logout()
         {
             Show();
             SetLoginAsGuestState();
@@ -672,6 +672,7 @@ namespace Loom.ZombieBattleground
             {
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
+
                         await _backendDataControlMediator.LoginAndLoadData();
 
                         _backendDataControlMediator.UserDataModel.IsValid = true;
@@ -714,7 +715,7 @@ namespace Loom.ZombieBattleground
         {
             _lastErrorMessage = errorMessage;
             SetUIState(LoginState.ValidationFailed);
-        } 
+        }
 
         private async void SuccessfulLogin()
         {
@@ -757,8 +758,8 @@ namespace Loom.ZombieBattleground
                             questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
 
                             _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
-                        } 
-                        else 
+                        }
+                        else
                         {
                             _tutorialManager.SkipTutorial();
                         }

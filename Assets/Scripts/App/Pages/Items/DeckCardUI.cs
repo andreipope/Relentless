@@ -79,6 +79,14 @@ namespace Loom.ZombieBattleground
             _cardCountIndicator.EnableIndicator(cardAmount);
         }
 
+        public void Dispose()
+        {
+            if (_selfObject != null)
+            {
+                Object.Destroy(_selfObject);
+            }
+        }
+
         private Color GetFactionColor(Enumerators.Faction faction)
         {
             Color color = Color.white;

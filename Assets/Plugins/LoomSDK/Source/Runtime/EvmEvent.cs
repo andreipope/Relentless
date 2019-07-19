@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,62 +8,26 @@ using Loom.Nethereum.Contracts;
 using Loom.Nethereum.Hex.HexTypes;
 using Loom.Nethereum.RPC.Eth.DTOs;
 using Loom.Newtonsoft.Json;
-using Loom.Newtonsoft.Json.Linq;
+using Loom.Nethereum.ABI.Model;
 
 namespace Loom.Client
 {
     /// <summary>
     /// Represent a Solidity event.
     /// </summary>
-    public class EvmEvent
+    public class EvmEvent<T> where T : new()
     {
-        protected EvmContract Contract { get; }
-        protected EventBuilder EventBuilder { get; }
+        public EvmContract Contract { get; }
 
-        public EvmEvent(EvmContract contract, EventBuilder eventBuilder)
+        public EventABI EventAbi { get; }
+
+        public EvmEvent(EvmContract contract, EventABI eventAbi)
         {
             this.Contract = contract;
-            this.EventBuilder = eventBuilder;
+            this.EventAbi = eventAbi;
         }
 
-        public NewFilterInput CreateFilterInput(BlockParameter fromBlock = null, BlockParameter toBlock = null)
-        {
-            return this.EventBuilder.CreateFilterInput(fromBlock, toBlock);
-        }
-
-        public NewFilterInput CreateFilterInput(
-            object[] filterTopic1,
-            BlockParameter fromBlock = null,
-            BlockParameter toBlock = null)
-        {
-            return this.EventBuilder.CreateFilterInput(filterTopic1, fromBlock, toBlock);
-        }
-
-        public NewFilterInput CreateFilterInput(
-            object[] filterTopic1,
-            object[] filterTopic2,
-            BlockParameter fromBlock = null,
-            BlockParameter toBlock = null)
-        {
-            return this.EventBuilder.CreateFilterInput(filterTopic1, filterTopic2, fromBlock, toBlock);
-        }
-
-        public NewFilterInput CreateFilterInput(
-            object[] filterTopic1,
-            object[] filterTopic2,
-            object[] filterTopic3,
-            BlockParameter fromBlock = null,
-            BlockParameter toBlock = null)
-        {
-            return this.EventBuilder.CreateFilterInput(filterTopic1, filterTopic2, filterTopic3, fromBlock, toBlock);
-        }
-
-        public static List<EventLog<T>> DecodeAllEvents<T>(FilterLog[] logs) where T : new()
-        {
-            return EventBuilder.DecodeAllEvents<T>(logs);
-        }
-
-        public async Task<FilterLog[]> GetAllChanges(NewFilterInput filterInput)
+        public async Task<FilterLog[]> GetAllChangesRaw(NewFilterInput filterInput)
         {
             EthFilterLogList logs = await GetAllChangesInternal(filterInput);
             return
@@ -73,30 +36,10 @@ namespace Loom.Client
                     .ToArray();
         }
 
-        public async Task<List<EventLog<T>>> GetAllChanges<T>(NewFilterInput filterInput) where T : new()
+        public async Task<List<EventLog<T>>> GetAllChanges(NewFilterInput filterInput)
         {
-            FilterLog[] changes = await GetAllChanges(filterInput);
-            return DecodeAllEvents<T>(changes);
-        }
-
-        public bool IsLogForEvent(JToken log)
-        {
-            return this.EventBuilder.IsLogForEvent(log);
-        }
-
-        public bool IsLogForEvent(FilterLog log)
-        {
-            return this.EventBuilder.IsLogForEvent(log);
-        }
-
-        public List<EventLog<T>> DecodeAllEventsForEvent<T>(FilterLog[] logs) where T : new()
-        {
-            return this.EventBuilder.DecodeAllEventsForEvent<T>(logs);
-        }
-
-        public List<EventLog<T>> DecodeAllEventsForEvent<T>(JArray logs) where T : new()
-        {
-            return this.EventBuilder.DecodeAllEventsForEvent<T>(logs);
+            FilterLog[] changes = await GetAllChangesRaw(filterInput);
+            return this.EventAbi.DecodeAllEvents<T>(changes);
         }
 
         private async Task<EthFilterLogList> GetAllChangesInternal(NewFilterInput filterInput)
@@ -134,33 +77,6 @@ namespace Loom.Client
                 TransactionHash = CryptoBytes.ToHexStringLower(log.TransactionHash.ToByteArray()),
                 TransactionIndex = new HexBigInteger(log.TransactionIndex)
             };
-        }
-    }
-
-    public class EvmEvent<T> : EvmEvent where T : new()
-    {
-        public EvmEvent(EvmContract contract, EventBuilder eventBuilder) : base(contract, eventBuilder)
-        {
-        }
-
-        public List<EventLog<T>> DecodeAllEventsForEvent(JArray logs)
-        {
-            return DecodeAllEventsForEvent<T>(logs);
-        }
-
-        public List<EventLog<T>> DecodeAllEventsForEvent(FilterLog[] logs)
-        {
-            return DecodeAllEventsForEvent<T>(logs);
-        }
-
-        public static List<EventLog<T>> DecodeAllEvents(FilterLog[] logs)
-        {
-            return DecodeAllEvents<T>(logs);
-        }
-
-        public new Task<List<EventLog<T>>> GetAllChanges(NewFilterInput filterInput)
-        {
-            return GetAllChanges<T>(filterInput);
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Iap;
 using Opencoding.CommandHandlerSystem;
@@ -15,6 +17,8 @@ namespace Loom.ZombieBattleground
         private static BackendDataControlMediator _backendDataControlMediator;
         private static PlasmachainBackendFacade _plasmaChainBackendFacade;
         private static BackendFacade _backendFacade;
+        private static IDataManager _dataManager;
+        private static BackendDataSyncService _backendDataSyncService;
 
         public static void Initialize()
         {
@@ -23,6 +27,8 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _backendDataSyncService = GameClient.Get<BackendDataSyncService>();
         }
 
         [CommandHandler]
@@ -33,7 +39,13 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler]
-        public static async void PlasmachainGetOwnerCards()
+        public static void SetUserCollectionDirtyFlag()
+        {
+            _backendDataSyncService.SetCollectionDataDirtyFlag();
+        }
+
+        [CommandHandler]
+        public static async void PlasmachainGetOwnedCards()
         {
             using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
             {
@@ -46,6 +58,14 @@ namespace Loom.ZombieBattleground
 
                 Debug.Log($"Result: {cardsOwned.Count} cards:\n" + String.Join("\n", cardsOwned));
             }
+        }
+
+        [CommandHandler]
+        public static async Task DebugCheatSetFullCardCollection()
+        {
+            await _backendFacade.DebugCheatSetFullCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+            _backendDataSyncService.SetCollectionDataDirtyFlag();
+            Debug.Log("Done! Full card library is added to your collection.");
         }
     }
 }

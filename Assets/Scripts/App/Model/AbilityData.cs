@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonProperty]
         public string Name { get; }
-        
+
         [JsonProperty]
         public int Damage { get; }
 
@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("targetCardKind")]
         public Enumerators.CardKind TargetKind { get; private set; }
 
-        [JsonProperty]
+        [JsonProperty("targetGameMechanicDescriptionTypes")]
         public List<Enumerators.GameMechanicDescription> TargetGameMechanicDescriptions { get; private set; }
 
         [JsonConstructor]
@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground.Data
             source.Cost,
             source.TargetKind,
             source.TargetGameMechanicDescriptions
-        ) 
+        )
         {
         }
 

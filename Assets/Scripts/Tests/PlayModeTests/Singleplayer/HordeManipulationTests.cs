@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
 using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
 using UnityEngine.TestTools;

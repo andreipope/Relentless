@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
 using Loom.Nethereum.ABI.Model;
 using Loom.Nethereum.Contracts;
 using Loom.Nethereum.RPC.Eth.DTOs;
@@ -31,17 +30,8 @@ namespace Loom.Client
             this.topicToEventName = new Dictionary<string, string>();
             foreach (EventABI eventAbi in this.contractBuilder.ContractABI.Events)
             {
-                this.topicToEventName.Add("0x" + eventAbi.Sha33Signature, eventAbi.Name);
+                this.topicToEventName.Add("0x" + eventAbi.Sha3Signature, eventAbi.Name);
             }
-        }
-
-        /// <summary>
-        /// Gets an instance of <see cref="EvmEvent"/> set up for working with Solidity event named <paramref name="name"/>.
-        /// </summary>
-        /// <param name="name">Solidity event name.</param>
-        public EvmEvent GetEvent(string name)
-        {
-            return new EvmEvent(this, this.contractBuilder.GetEventBuilder(name));
         }
 
         /// <summary>
@@ -52,7 +42,7 @@ namespace Loom.Client
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/calling-transactions-events/"/>
         public EvmEvent<T> GetEvent<T>(string name) where T : new()
         {
-            return new EvmEvent<T>(this, this.contractBuilder.GetEventBuilder(name));
+            return new EvmEvent<T>(this, this.contractBuilder.GetEventAbi(name));
         }
 
         #region CallAsync methods
@@ -120,7 +110,7 @@ namespace Loom.Client
         /// <param name="functionInput">Argument objects arrays for the smart contract method.</param>
         /// <returns>Return Data Transfer Object of the smart contract method.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use CallDtoTypeOutputAsync")]
+        [Obsolete("Use CallDtoTypeOutputAsync", true)]
         public async Task<TReturn> CallDTOTypeOutputAsync<TReturn>(string method, params object[] functionInput) where TReturn : new()
         {
             return await CallDtoTypeOutputAsync<TReturn>(method, functionInput);
@@ -150,7 +140,7 @@ namespace Loom.Client
         /// <param name="functionOutput">Return Data Transfer Object of the smart contract method. A pre-existing object can be reused.</param>
         /// <returns>Return Data Transfer Object of the smart contract method. Same object instance as <paramref name="functionOutput"/>.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use CallDtoTypeOutputAsync")]
+        [Obsolete("Use CallDtoTypeOutputAsync", true)]
         public async Task<TReturn> CallDTOTypeOutputAsync<TReturn>(TReturn functionOutput, string method, params object[] functionInput) where TReturn : new()
         {
             return await CallDtoTypeOutputAsync(functionOutput, method, functionInput);
@@ -189,7 +179,7 @@ namespace Loom.Client
         /// <param name="functionInput">Input Data Transfer Object for smart contract method.</param>
         /// <returns>Return Data Transfer Object of the smart contract method.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use CallDtoTypeOutputAsync")]
+        [Obsolete("Use CallDtoTypeOutputAsync", true)]
         public async Task<TReturn> CallDTOTypeOutputAsync<TInput, TReturn>(TInput functionInput) where TReturn : new()
         {
             return await CallDtoTypeOutputAsync<TInput, TReturn>(functionInput);
@@ -217,7 +207,7 @@ namespace Loom.Client
         /// <param name="functionOutput">Return Data Transfer Object of the smart contract method. A pre-existing object can be reused.</param>
         /// <returns>Return Data Transfer Object of the smart contract method. Same object instance as <paramref name="functionOutput"/>.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use CallDtoTypeOutputAsync")]
+        [Obsolete("Use CallDtoTypeOutputAsync", true)]
         public async Task<TReturn> CallDTOTypeOutputAsync<TInput, TReturn>(TInput functionInput, TReturn functionOutput) where TReturn : new()
         {
             return await CallDtoTypeOutputAsync(functionInput, functionOutput);
@@ -290,7 +280,7 @@ namespace Loom.Client
         /// <param name="functionInput">Argument objects arrays for the smart contract method.</param>
         /// <returns>Return Data Transfer Object of the smart contract method.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use StaticCallDtoTypeOutputAsync")]
+        [Obsolete("Use StaticCallDtoTypeOutputAsync", true)]
         public async Task<TReturn> StaticCallDTOTypeOutputAsync<TReturn>(string method, params object[] functionInput) where TReturn : new()
         {
             return await StaticCallDtoTypeOutputAsync<TReturn>(method, functionInput);
@@ -320,7 +310,7 @@ namespace Loom.Client
         /// <param name="functionOutput">Return Data Transfer Object of the smart contract method. A pre-existing object can be reused.</param>
         /// <returns>Return Data Transfer Object of the smart contract method. Same object instance as <paramref name="functionOutput"/>.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use StaticCallDtoTypeOutputAsync")]
+        [Obsolete("Use StaticCallDtoTypeOutputAsync", true)]
         public async Task<TReturn> StaticCallDTOTypeOutputAsync<TReturn>(TReturn functionOutput, string method, params object[] functionInput) where TReturn : new()
         {
             return await StaticCallDtoTypeOutputAsync(functionOutput, method, functionInput);
@@ -359,7 +349,7 @@ namespace Loom.Client
         /// <param name="functionInput">Input Data Transfer Object for smart contract method.</param>
         /// <returns>Return Data Transfer Object of the smart contract method.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use StaticCallDtoTypeOutputAsync")]
+        [Obsolete("Use StaticCallDtoTypeOutputAsync", true)]
         public async Task<TReturn> StaticCallDTOTypeOutputAsync<TInput, TReturn>(TInput functionInput) where TReturn : new()
         {
             return await StaticCallDtoTypeOutputAsync<TInput, TReturn>(functionInput);
@@ -387,7 +377,7 @@ namespace Loom.Client
         /// <param name="functionOutput">Return Data Transfer Object of the smart contract method. A pre-existing object can be reused.</param>
         /// <returns>Return Data Transfer Object of the smart contract method. Same object instance as <paramref name="functionOutput"/>.</returns>
         /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/functiondtos/"/>
-        [Obsolete("Use StaticCallDtoTypeOutputAsync")]
+        [Obsolete("Use StaticCallDtoTypeOutputAsync", true)]
         public async Task<TReturn> StaticCallDTOTypeOutputAsync<TInput, TReturn>(TInput functionInput, TReturn functionOutput) where TReturn : new()
         {
             return await StaticCallDtoTypeOutputAsync(functionInput, functionOutput);

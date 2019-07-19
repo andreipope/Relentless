@@ -18,9 +18,9 @@ public interface IAnalyticsManager
     void SetEvent(string propertyName);
     void SetEvent(string propertyName, Dictionary<string, object> parameters);
 
-    void SetPoepleProperty(string identityId, string property, string value);
+    void SetPeopleProperty(string identityId, string property, string value);
 
     void SetSuperProperty(string property, string value);
 
-    void SetPoepleIncrement(string property, int value);
+    void SetPeopleIncrement(string property, int value);
 }

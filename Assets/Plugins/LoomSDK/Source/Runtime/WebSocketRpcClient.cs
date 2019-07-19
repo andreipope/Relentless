@@ -32,7 +32,7 @@ namespace Loom.Client
                 // Just return Disconnected until we know anything better for sure.
                 if (!anyConnectionStateChangesReceived)
                     return RpcConnectionState.Disconnected;
-                
+
                 WebSocketState state = this.webSocket.ReadyState;
                 switch (state)
                 {
@@ -77,6 +77,7 @@ namespace Loom.Client
             this.webSocket.OnError += WebSocketOnError;
             this.webSocket.OnOpen += WebSocketOnOpen;
             this.webSocket.OnClose += WebSocketOnClose;
+            this.webSocket.OnMessage += WSSharpRPCClient_OnMessage_EventHandler;
         }
 
         protected override void Dispose(bool disposing)
@@ -89,13 +90,14 @@ namespace Loom.Client
                 this.webSocket.OnError -= WebSocketOnError;
                 this.webSocket.OnOpen -= WebSocketOnOpen;
                 this.webSocket.OnClose -= WebSocketOnClose;
+                this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage_EventHandler;
                 ((IDisposable) this.webSocket).Dispose();
             }
 
             NotifyConnectionStateChanged();
             this.disposed = true;
         }
-        
+
         public override Task ConnectAsync()
         {
             AssertNotAlreadyConnectedOrConnecting();
@@ -154,9 +156,6 @@ namespace Loom.Client
 
         public override Task SubscribeToEventsAsync(ICollection<string> topics)
         {
-            this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage_EventHandler;
-            this.webSocket.OnMessage += WSSharpRPCClient_OnMessage_EventHandler;
-
             // TODO: once re-sub on reconnect is implemented this should only
             // be done on first sub
             Dictionary<string, ICollection<string>> args = null;
@@ -169,10 +168,14 @@ namespace Loom.Client
             return SendAsync<object, Dictionary<string, ICollection<string>>>("subevents", args);
         }
 
-        public override Task UnsubscribeFromEventsAsync()
+        public override async Task UnsubscribeFromEventAsync(string topic)
         {
-            this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage_EventHandler;
-            return SendAsync<object, object>("unsubevents", null);
+            if (topic == null)
+                throw new ArgumentNullException(nameof(topic));
+
+            Dictionary<string, string> args = new Dictionary<string, string>();
+            args["topic"] = topic;
+            await SendAsync<object, object>("unsubevents", args);
         }
 
         public override async Task<TResult> SendAsync<TResult, TArgs>(string method, TArgs args)
@@ -219,7 +222,7 @@ namespace Loom.Client
                     tcs.TrySetException(ex);
                 }
             };
-  
+
             this.webSocket.OnClose += closeHandler;
             this.webSocket.OnMessage += messageHandler;
             try

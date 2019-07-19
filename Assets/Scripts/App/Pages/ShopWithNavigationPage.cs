@@ -248,11 +248,11 @@ namespace Loom.ZombieBattleground
         {
             ChangeState(State.InitializingStore);
 
-            Action onFail = () =>
+            Action<string> onFail = (s) =>
             {
                 _iapMediator.Initialized -= IapMediatorOnInitialized;
                 _iapMediator.InitializationFailed -= IapMediatorOnInitializationFailed;
-                FailAndGoToMainMenu();
+                FailAndGoToMainMenu(s);
             };
 
             _iapMediator.Initialized += IapMediatorOnInitialized;
@@ -293,7 +293,7 @@ namespace Loom.ZombieBattleground
                 if (!iapInitializeResult.IsT0)
                 {
                     Log.Warn("Failed to initialize store: " + iapInitializeResult.Value);
-                    onFail();
+                    onFail(null);
                     return false;
                 }
             }
@@ -309,14 +309,32 @@ namespace Loom.ZombieBattleground
             if (isInitializationTimeout)
             {
                 Log.Warn("Store initialization timed out");
-                onFail();
+                onFail(null);
                 return false;
             }
 
             if (_iapMediator.InitializationState == IapInitializationState.Failed)
             {
                 Log.Warn("Store initialization failed: " + failure);
-                onFail();
+
+                string message = null;
+                if (failure.IsT0)
+                {
+                    switch (failure.AsT0)
+                    {
+                        case InitializationFailureReason.PurchasingUnavailable:
+                            message =
+                                "Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.";
+                            break;
+                        case InitializationFailureReason.NoProductsAvailable:
+                        case InitializationFailureReason.AppNotKnown:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                onFail(message);
                 return false;
             }
 
@@ -375,6 +393,35 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
+        private bool HandlePurchaseFailureReason(PurchaseFailureReason error)
+        {
+            switch (error)
+            {
+                case PurchaseFailureReason.Unknown:
+                    // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
+                    return true;
+                case PurchaseFailureReason.UserCancelled:
+                    // Don't show error on user cancel
+                    return true;
+                case PurchaseFailureReason.ExistingPurchasePending:
+                    OpenAlertDialog("Purchase for this product is already in progress. Please try again.");
+                    return true;
+                case PurchaseFailureReason.PaymentDeclined:
+                    OpenAlertDialog("Payment was declined.");
+                    return true;
+                case PurchaseFailureReason.PurchasingUnavailable:
+                    OpenAlertDialog("Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.");
+                    return true;
+                case PurchaseFailureReason.ProductUnavailable:
+                case PurchaseFailureReason.SignatureInvalid:
+                case PurchaseFailureReason.DuplicateTransaction:
+                    // Those cases don't happen normally, so fallthrough to the next error handler
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private void IapMediatorOnPurchaseStateChanged(
             IapPurchaseState state,
             OneOf<IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException>? failure)
@@ -391,31 +438,8 @@ namespace Loom.ZombieBattleground
 
                     if (failure.Value.IsT0)
                     {
-                        switch (failure.Value.AsT0.FailureReason)
-                        {
-                            case PurchaseFailureReason.Unknown:
-                                // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
-                                return;
-                            case PurchaseFailureReason.UserCancelled:
-                                // Don't show error on user cancel
-                                return;
-                            case PurchaseFailureReason.ExistingPurchasePending:
-                                OpenAlertDialog("Purchase for this product is already in progress. Please try again.");
-                                return;
-                            case PurchaseFailureReason.PaymentDeclined:
-                                OpenAlertDialog("Payment was declined.");
-                                return;
-                            case PurchaseFailureReason.PurchasingUnavailable:
-                                OpenAlertDialog("Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.");
-                                return;
-                            case PurchaseFailureReason.ProductUnavailable:
-                            case PurchaseFailureReason.SignatureInvalid:
-                            case PurchaseFailureReason.DuplicateTransaction:
-                                // Those cases don't happen normally, so fallthrough to the next error handler
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        if (HandlePurchaseFailureReason(failure.Value.AsT0.FailureReason))
+                            return;
                     }
 
                     string failureString = "";

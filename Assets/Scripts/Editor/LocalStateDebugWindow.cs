@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -9,7 +8,6 @@ using Loom.ZombieBattleground.Editor.Tools;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
 using UnityEngine;
-using Player = Loom.ZombieBattleground.Player;
 using Rect = UnityEngine.Rect;
 
 namespace Loom.ZombieBattleground.Editor

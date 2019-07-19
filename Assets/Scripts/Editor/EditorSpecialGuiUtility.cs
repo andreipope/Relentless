@@ -45,5 +45,14 @@ namespace Loom.ZombieBattleground.Editor
 
             return path;
         }
+
+        public static void DrawSeparator()
+        {
+            EditorGUILayout.Space();
+            Rect rect = EditorGUILayout.GetControlRect(false, 2);
+            rect.height = 1;
+            EditorGUI.DrawRect(rect, Color.black);
+            EditorGUILayout.Space();
+        }
     }
 }

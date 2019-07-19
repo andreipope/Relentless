@@ -114,6 +114,9 @@ namespace Loom.ZombieBattleground
             [JsonProperty("plasmachain_binancepack_contract_address")]
             public string PlasmachainBinancePackContractAddress { get; private set; }
 
+            [JsonProperty("plasmachain_tronpack_contract_address")]
+            public string PlasmachainTronPackContractAddress { get; private set; }
+
             [JsonProperty("plasmachain_fiatpurchase_contract_address")]
             public string PlasmachainFiatPurchaseContractAddress { get; private set; }
 
@@ -153,6 +156,7 @@ namespace Loom.ZombieBattleground
                 string plasmachainSmallPackContractAddress,
                 string plasmachainMinionPackContractAddress,
                 string plasmachainBinancePackContractAddress,
+                string plasmachainTronPackContractAddress,
                 string plasmachainFiatPurchaseContractAddress,
                 string plasmachainOpenLotteryContractAddress,
                 string plasmachainTronLotteryContractAddress)
@@ -190,6 +194,7 @@ namespace Loom.ZombieBattleground
                 PlasmachainSmallPackContractAddress = plasmachainSmallPackContractAddress;
                 PlasmachainMinionPackContractAddress = plasmachainMinionPackContractAddress;
                 PlasmachainBinancePackContractAddress = plasmachainBinancePackContractAddress;
+                PlasmachainTronPackContractAddress = plasmachainTronPackContractAddress;
                 PlasmachainFiatPurchaseContractAddress = plasmachainFiatPurchaseContractAddress;
                 PlasmachainOpenLotteryContractAddress = plasmachainOpenLotteryContractAddress;
                 PlasmachainTronLotteryContractAddress = plasmachainTronLotteryContractAddress;

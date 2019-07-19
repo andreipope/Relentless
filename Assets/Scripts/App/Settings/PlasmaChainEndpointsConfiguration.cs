@@ -26,6 +26,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string smallPackContractAddress,
             string minionPackContractAddress,
             string binancePackContractAddress,
+            string tronPackContractAddress,
             string fiatPurchaseContractAddress,
             string openLotteryContractAddress,
             string tronLotteryContractAddress)
@@ -46,6 +47,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             SmallPackContractAddress = Address.FromString(smallPackContractAddress, ChainId);
             MinionPackContractAddress = Address.FromString(minionPackContractAddress, ChainId);
             BinancePackContractAddress = Address.FromString(binancePackContractAddress, ChainId);
+            TronPackContractAddress = Address.FromString(tronPackContractAddress, ChainId);
             FiatPurchaseContractAddress = Address.FromString(fiatPurchaseContractAddress, ChainId);
             OpenLotteryContractAddress = !String.IsNullOrWhiteSpace(openLotteryContractAddress) ?
                 Address.FromString(openLotteryContractAddress, ChainId) :
@@ -117,13 +119,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public Address BinancePackContractAddress { get; }
 
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
+        [JsonProperty("plasmachain_tronpack_contract_address")]
+        public Address TronPackContractAddress { get; }
+
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_fiatpurchase_contract_address")]
         public Address FiatPurchaseContractAddress { get; }
 
+        /// <summary>
+        /// Binance card faucet.
+        /// </summary>
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_openlottery_contract_address")]
         public Address OpenLotteryContractAddress { get; }
 
+        /// <summary>
+        /// Tron card faucet.
+        /// </summary>
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_tronlottery_contract_address")]
         public Address TronLotteryContractAddress { get; }
