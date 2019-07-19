@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1014321640706920}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 2.03, z: -0.01}
-  m_LocalScale: {x: 1.127906, y: 1.1279062, z: 1.1279062}
+  m_LocalPosition: {x: 0, y: -1, z: 0.25}
+  m_LocalScale: {x: 1.127906, y: 1.1279067, z: 1.1279067}
   m_Children: []
   m_Father: {fileID: 4635831670660448}
   m_RootOrder: 1
@@ -4840,7 +4840,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -5814,8 +5814,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1138688382687656}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0.4, z: 0.44}
-  m_LocalScale: {x: 0.5893438, y: 0.45107332, z: 0.5467649}
+  m_LocalPosition: {x: 0, y: 0.7300002, z: 0.44000012}
+  m_LocalScale: {x: 0.5893438, y: 0.45107356, z: 0.54676515}
   m_Children: []
   m_Father: {fileID: 4635831670660448}
   m_RootOrder: 0
@@ -10968,7 +10968,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1209817362615740}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.04, y: -0.01, z: 1.37}
+  m_LocalPosition: {x: 0.04, y: -0.01, z: 1.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4156452686093134}
@@ -18267,9 +18267,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875424970660830}
-  m_LocalRotation: {x: -0, y: -0, z: 0.00000004214686, w: 1}
-  m_LocalPosition: {x: -0.007, y: 1.14, z: 0.46}
-  m_LocalScale: {x: 1.7745656, y: 1.7745656, z: 1.7745656}
+  m_LocalRotation: {x: -0, y: -0, z: 0.000000042146862, w: 1}
+  m_LocalPosition: {x: 0, y: 1.47, z: 0.46000016}
+  m_LocalScale: {x: 1.7745656, y: 1.7745675, z: 1.7745675}
   m_Children: []
   m_Father: {fileID: 4635831670660448}
   m_RootOrder: 2
@@ -23258,7 +23258,7 @@ GameObject:
   - component: {fileID: 4151977715216564}
   - component: {fileID: 95015617559750594}
   m_Layer: 9
-  m_Name: Normal_Arrival_VFX
+  m_Name: Walker_Arrival_VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
