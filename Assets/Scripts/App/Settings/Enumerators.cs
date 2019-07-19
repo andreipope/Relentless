@@ -739,7 +739,8 @@ namespace Loom.ZombieBattleground.Common
             MountainArrival,
             GargantuaArrival,
             BlizzardArrival,
-            GoozillaArrival
+            GoozillaArrival,
+            VortexArrival
         }
 
         public enum CardNameOfAbility

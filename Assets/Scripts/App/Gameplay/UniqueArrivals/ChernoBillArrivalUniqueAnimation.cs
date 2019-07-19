@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 offset = new Vector3(0f, 0f, 0f);
 
-            const float delayBeforeSpawn = 6.5f;
+            const float delayBeforeSpawn = 6f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
@@ -23,6 +23,9 @@ namespace Loom.ZombieBattleground
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));
+                                                        
+            int cacheCullingMask = Camera.main.cullingMask;
+            Camera.main.cullingMask = 0;                                            
 
             Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
 
@@ -30,12 +33,14 @@ namespace Loom.ZombieBattleground
             cameraGroupTransform.SetParent(cameraVFXObj);
 
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
+            animationVFX.transform.Find("DestroyAllCards/Bubble").position = Vector3.zero;
 
             Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
             cameraGroupTransform.localPosition = cameraLocalPosition;
 
             InternalTools.DoActionDelayed(() =>
             {                
+                Camera.main.cullingMask = cacheCullingMask;
                 cameraGroupTransform.SetParent(null);
                 cameraGroupTransform.position = Vector3.zero; 
                 
@@ -45,6 +50,14 @@ namespace Loom.ZombieBattleground
                 {
                     unitView.GameObject.SetActive(true);
                     unitView.battleframeAnimator.Play(0, -1, 1);
+                    foreach (Transform child in unitView.battleframeAnimator.transform)
+                    {
+                        if (child.name == "ScrapFlies")
+                        {
+                            child.gameObject.SetActive(false);
+                            break;
+                        }
+                    }
                     BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
                 }             
 

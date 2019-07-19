@@ -328,6 +328,12 @@ namespace Loom.ZombieBattleground
             _affectedUnits.Clear();
         }
 
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+            TargetUnit.IsPlayable = true;
+        }
+
         class CardStatInfo
         {
             public CardModel CardModel;

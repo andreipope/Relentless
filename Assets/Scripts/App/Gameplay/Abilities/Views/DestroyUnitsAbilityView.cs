@@ -60,42 +60,31 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                Vector3 targetPosition = Vector3.zero;
+                Vector3 targetPosition = Vector3.zero + offset;
 
                 switch (cardNameOfAbility)
                 {
                     case Enumerators.CardNameOfAbility.None:
                         {
-                            CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
+                            CreateVfx(targetPosition, true, delayBeforeDestroy, true);
                         }
                         break;
                     case Enumerators.CardNameOfAbility.Bulldozer:
                         {
-                            CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                            
-                            Transform cameraVFXObjParent = VfxObject.transform.Find("Camera Anim");                    
-                            Transform cameraVFXObj = cameraVFXObjParent.transform.Find("!! Camera shake");                    
-                            Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
-                            cameraGroupTransform.SetParent
-                            (
-                               cameraVFXObj
-                            );
+                            CreateVfx(targetPosition, true, delayBeforeDestroy, true);
 
-                            cameraVFXObjParent.parent = null;
-                            cameraVFXObjParent.position = Vector3.zero;
-                            cameraVFXObj.transform.position = Vector3.zero;
-                            cameraGroupTransform.localPosition = Vector3.zero;
-                            
-                            int cacheCullingMask = Camera.main.cullingMask;
-                            Camera.main.cullingMask = 0;
+                            Transform cameraVFXObj = VfxObject.transform.Find("Camera Anim/!! Camera shake");
+                            Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                            cameraGroupTransform.SetParent(cameraVFXObj);
+
+                            cameraGroupTransform.localPosition = targetPosition * -1;
+
                             OnEventEnded += () =>
                             {
                                 cameraGroupTransform.SetParent(null);
-                                cameraGroupTransform.position = Vector3.zero; 
-                                Camera.main.cullingMask = cacheCullingMask;
-                                Object.Destroy(cameraVFXObjParent.gameObject);
+                                cameraGroupTransform.position = Vector3.zero;
                             };
-                            
+
                             opponentLineObject = VfxObject.transform.Find("VFX/RubbleUp/BurstToxic").gameObject;
                             playerLineObject = VfxObject.transform.Find("VFX/Rubble/BurstToxic").gameObject;
 
