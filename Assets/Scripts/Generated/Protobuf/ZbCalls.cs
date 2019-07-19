@@ -172,28 +172,33 @@ namespace Loom.ZombieBattleground.Protobuf {
             "b24YASABKAsyJC5NaW50aW5nVHJhbnNhY3Rpb25SZWNlaXB0Q29sbGVjdGlv",
             "biJYCi5Db25maXJtUGVuZGluZ01pbnRpbmdUcmFuc2FjdGlvblJlY2VpcHRS",
             "ZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCRIWCgR0eElkGAIgASgLMgguQmlnVUlu",
-            "dCJVCiJEZWJ1Z01pbnRCb29zdGVyUGFja1JlY2VpcHRSZXF1ZXN0EhgKBnVz",
-            "ZXJJZBgBIAEoCzIILkJpZ1VJbnQSFQoNYm9vc3RlckFtb3VudBgCIAEoBSJn",
-            "CiNEZWJ1Z01pbnRCb29zdGVyUGFja1JlY2VpcHRSZXNwb25zZRITCgtyZWNl",
-            "aXB0SnNvbhgBIAEoCRIrCgdyZWNlaXB0GAIgASgLMhouTWludGluZ1RyYW5z",
-            "YWN0aW9uUmVjZWlwdCI7Ch5EZWJ1Z0dldFVzZXJJZEJ5QWRkcmVzc1JlcXVl",
-            "c3QSGQoHYWRkcmVzcxgBIAEoCzIILkFkZHJlc3MiSAorRGVidWdHZXRQZW5k",
-            "aW5nQ2FyZEFtb3VudENoYW5nZUl0ZW1zUmVxdWVzdBIZCgdhZGRyZXNzGAEg",
-            "ASgLMgguQWRkcmVzcyJiCixEZWJ1Z0dldFBlbmRpbmdDYXJkQW1vdW50Q2hh",
-            "bmdlSXRlbXNSZXNwb25zZRIyCgljb250YWluZXIYASABKAsyHy5DYXJkQW1v",
-            "dW50Q2hhbmdlSXRlbXNDb250YWluZXIiSQomRGVidWdDaGVhdFNldEZ1bGxD",
-            "YXJkQ29sbGVjdGlvblJlcXVlc3QSDgoGdXNlcklkGAEgASgJEg8KB3ZlcnNp",
-            "b24YAiABKAkiaAoTV2lwZVVzZXJEYXRhUmVxdWVzdBIPCgd2ZXJzaW9uGAEg",
-            "ASgJEg4KBnVzZXJJZBgCIAEoCRIRCgl3aXBlRGVja3MYAyABKAgSHQoVd2lw",
-            "ZU92ZXJsb3Jkc1VzZXJEYXRhGAQgASgIIjoKKFJlcXVlc3RVc2VyRnVsbENh",
-            "cmRDb2xsZWN0aW9uU3luY1JlcXVlc3QSDgoGdXNlcklkGAEgASgJIvYBCglV",
-            "c2VyRXZlbnQSDgoGdXNlcklkGAEgASgJEkgKFmF1dG9DYXJkQ29sbGVjdGlv",
-            "blN5bmMYCiABKAsyJi5Vc2VyRXZlbnQuQXV0b0NhcmRDb2xsZWN0aW9uU3lu",
-            "Y0V2ZW50SAASSAoWZnVsbENhcmRDb2xsZWN0aW9uU3luYxgLIAEoCzImLlVz",
-            "ZXJFdmVudC5GdWxsQ2FyZENvbGxlY3Rpb25TeW5jRXZlbnRIABodChtBdXRv",
-            "Q2FyZENvbGxlY3Rpb25TeW5jRXZlbnQaHQobRnVsbENhcmRDb2xsZWN0aW9u",
-            "U3luY0V2ZW50QgcKBUV2ZW50QiOqAiBMb29tLlpvbWJpZUJhdHRsZWdyb3Vu",
-            "ZC5Qcm90b2J1ZmIGcHJvdG8z"));
+            "dCKmAgoiRGVidWdNaW50Qm9vc3RlclBhY2tSZWNlaXB0UmVxdWVzdBIYCgZ1",
+            "c2VySWQYASABKAsyCC5CaWdVSW50EhUKDWJvb3N0ZXJBbW91bnQYAiABKAQS",
+            "EwoLc3VwZXJBbW91bnQYAyABKAQSEQoJYWlyQW1vdW50GAQgASgEEhMKC2Vh",
+            "cnRoQW1vdW50GAUgASgEEhIKCmZpcmVBbW91bnQYBiABKAQSEgoKbGlmZUFt",
+            "b3VudBgHIAEoBBITCgt0b3hpY0Ftb3VudBgIIAEoBBITCgt3YXRlckFtb3Vu",
+            "dBgJIAEoBBITCgtzbWFsbEFtb3VudBgKIAEoBBIUCgxtaW5pb25BbW91bnQY",
+            "CyABKAQSFQoNYmluYW5jZUFtb3VudBgMIAEoBCJnCiNEZWJ1Z01pbnRCb29z",
+            "dGVyUGFja1JlY2VpcHRSZXNwb25zZRITCgtyZWNlaXB0SnNvbhgBIAEoCRIr",
+            "CgdyZWNlaXB0GAIgASgLMhouTWludGluZ1RyYW5zYWN0aW9uUmVjZWlwdCI7",
+            "Ch5EZWJ1Z0dldFVzZXJJZEJ5QWRkcmVzc1JlcXVlc3QSGQoHYWRkcmVzcxgB",
+            "IAEoCzIILkFkZHJlc3MiSAorRGVidWdHZXRQZW5kaW5nQ2FyZEFtb3VudENo",
+            "YW5nZUl0ZW1zUmVxdWVzdBIZCgdhZGRyZXNzGAEgASgLMgguQWRkcmVzcyJi",
+            "CixEZWJ1Z0dldFBlbmRpbmdDYXJkQW1vdW50Q2hhbmdlSXRlbXNSZXNwb25z",
+            "ZRIyCgljb250YWluZXIYASABKAsyHy5DYXJkQW1vdW50Q2hhbmdlSXRlbXND",
+            "b250YWluZXIiSQomRGVidWdDaGVhdFNldEZ1bGxDYXJkQ29sbGVjdGlvblJl",
+            "cXVlc3QSDgoGdXNlcklkGAEgASgJEg8KB3ZlcnNpb24YAiABKAkiaAoTV2lw",
+            "ZVVzZXJEYXRhUmVxdWVzdBIPCgd2ZXJzaW9uGAEgASgJEg4KBnVzZXJJZBgC",
+            "IAEoCRIRCgl3aXBlRGVja3MYAyABKAgSHQoVd2lwZU92ZXJsb3Jkc1VzZXJE",
+            "YXRhGAQgASgIIjoKKFJlcXVlc3RVc2VyRnVsbENhcmRDb2xsZWN0aW9uU3lu",
+            "Y1JlcXVlc3QSDgoGdXNlcklkGAEgASgJIvYBCglVc2VyRXZlbnQSDgoGdXNl",
+            "cklkGAEgASgJEkgKFmF1dG9DYXJkQ29sbGVjdGlvblN5bmMYCiABKAsyJi5V",
+            "c2VyRXZlbnQuQXV0b0NhcmRDb2xsZWN0aW9uU3luY0V2ZW50SAASSAoWZnVs",
+            "bENhcmRDb2xsZWN0aW9uU3luYxgLIAEoCzImLlVzZXJFdmVudC5GdWxsQ2Fy",
+            "ZENvbGxlY3Rpb25TeW5jRXZlbnRIABodChtBdXRvQ2FyZENvbGxlY3Rpb25T",
+            "eW5jRXZlbnQaHQobRnVsbENhcmRDb2xsZWN0aW9uU3luY0V2ZW50QgcKBUV2",
+            "ZW50QiOqAiBMb29tLlpvbWJpZUJhdHRsZWdyb3VuZC5Qcm90b2J1ZmIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, global::Loom.ZombieBattleground.Protobuf.ZbDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -289,7 +294,7 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsRequest), global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsRequest.Parser, new[]{ "UserId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsResponse), global::Loom.ZombieBattleground.Protobuf.GetPendingMintingTransactionReceiptsResponse.Parser, new[]{ "ReceiptCollection" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ConfirmPendingMintingTransactionReceiptRequest), global::Loom.ZombieBattleground.Protobuf.ConfirmPendingMintingTransactionReceiptRequest.Parser, new[]{ "UserId", "TxId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest), global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest.Parser, new[]{ "UserId", "BoosterAmount" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest), global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptRequest.Parser, new[]{ "UserId", "BoosterAmount", "SuperAmount", "AirAmount", "EarthAmount", "FireAmount", "LifeAmount", "ToxicAmount", "WaterAmount", "SmallAmount", "MinionAmount", "BinanceAmount" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptResponse), global::Loom.ZombieBattleground.Protobuf.DebugMintBoosterPackReceiptResponse.Parser, new[]{ "ReceiptJson", "Receipt" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugGetUserIdByAddressRequest), global::Loom.ZombieBattleground.Protobuf.DebugGetUserIdByAddressRequest.Parser, new[]{ "Address" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsRequest), global::Loom.ZombieBattleground.Protobuf.DebugGetPendingCardAmountChangeItemsRequest.Parser, new[]{ "Address" }, null, null, null),
@@ -14367,6 +14372,16 @@ namespace Loom.ZombieBattleground.Protobuf {
     public DebugMintBoosterPackReceiptRequest(DebugMintBoosterPackReceiptRequest other) : this() {
       userId_ = other.userId_ != null ? other.userId_.Clone() : null;
       boosterAmount_ = other.boosterAmount_;
+      superAmount_ = other.superAmount_;
+      airAmount_ = other.airAmount_;
+      earthAmount_ = other.earthAmount_;
+      fireAmount_ = other.fireAmount_;
+      lifeAmount_ = other.lifeAmount_;
+      toxicAmount_ = other.toxicAmount_;
+      waterAmount_ = other.waterAmount_;
+      smallAmount_ = other.smallAmount_;
+      minionAmount_ = other.minionAmount_;
+      binanceAmount_ = other.binanceAmount_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -14388,12 +14403,122 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     /// <summary>Field number for the "boosterAmount" field.</summary>
     public const int BoosterAmountFieldNumber = 2;
-    private int boosterAmount_;
+    private ulong boosterAmount_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int BoosterAmount {
+    public ulong BoosterAmount {
       get { return boosterAmount_; }
       set {
         boosterAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "superAmount" field.</summary>
+    public const int SuperAmountFieldNumber = 3;
+    private ulong superAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong SuperAmount {
+      get { return superAmount_; }
+      set {
+        superAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "airAmount" field.</summary>
+    public const int AirAmountFieldNumber = 4;
+    private ulong airAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong AirAmount {
+      get { return airAmount_; }
+      set {
+        airAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "earthAmount" field.</summary>
+    public const int EarthAmountFieldNumber = 5;
+    private ulong earthAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong EarthAmount {
+      get { return earthAmount_; }
+      set {
+        earthAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "fireAmount" field.</summary>
+    public const int FireAmountFieldNumber = 6;
+    private ulong fireAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong FireAmount {
+      get { return fireAmount_; }
+      set {
+        fireAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "lifeAmount" field.</summary>
+    public const int LifeAmountFieldNumber = 7;
+    private ulong lifeAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong LifeAmount {
+      get { return lifeAmount_; }
+      set {
+        lifeAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "toxicAmount" field.</summary>
+    public const int ToxicAmountFieldNumber = 8;
+    private ulong toxicAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong ToxicAmount {
+      get { return toxicAmount_; }
+      set {
+        toxicAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "waterAmount" field.</summary>
+    public const int WaterAmountFieldNumber = 9;
+    private ulong waterAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong WaterAmount {
+      get { return waterAmount_; }
+      set {
+        waterAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "smallAmount" field.</summary>
+    public const int SmallAmountFieldNumber = 10;
+    private ulong smallAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong SmallAmount {
+      get { return smallAmount_; }
+      set {
+        smallAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "minionAmount" field.</summary>
+    public const int MinionAmountFieldNumber = 11;
+    private ulong minionAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong MinionAmount {
+      get { return minionAmount_; }
+      set {
+        minionAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "binanceAmount" field.</summary>
+    public const int BinanceAmountFieldNumber = 12;
+    private ulong binanceAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong BinanceAmount {
+      get { return binanceAmount_; }
+      set {
+        binanceAmount_ = value;
       }
     }
 
@@ -14412,6 +14537,16 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (!object.Equals(UserId, other.UserId)) return false;
       if (BoosterAmount != other.BoosterAmount) return false;
+      if (SuperAmount != other.SuperAmount) return false;
+      if (AirAmount != other.AirAmount) return false;
+      if (EarthAmount != other.EarthAmount) return false;
+      if (FireAmount != other.FireAmount) return false;
+      if (LifeAmount != other.LifeAmount) return false;
+      if (ToxicAmount != other.ToxicAmount) return false;
+      if (WaterAmount != other.WaterAmount) return false;
+      if (SmallAmount != other.SmallAmount) return false;
+      if (MinionAmount != other.MinionAmount) return false;
+      if (BinanceAmount != other.BinanceAmount) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -14419,7 +14554,17 @@ namespace Loom.ZombieBattleground.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (userId_ != null) hash ^= UserId.GetHashCode();
-      if (BoosterAmount != 0) hash ^= BoosterAmount.GetHashCode();
+      if (BoosterAmount != 0UL) hash ^= BoosterAmount.GetHashCode();
+      if (SuperAmount != 0UL) hash ^= SuperAmount.GetHashCode();
+      if (AirAmount != 0UL) hash ^= AirAmount.GetHashCode();
+      if (EarthAmount != 0UL) hash ^= EarthAmount.GetHashCode();
+      if (FireAmount != 0UL) hash ^= FireAmount.GetHashCode();
+      if (LifeAmount != 0UL) hash ^= LifeAmount.GetHashCode();
+      if (ToxicAmount != 0UL) hash ^= ToxicAmount.GetHashCode();
+      if (WaterAmount != 0UL) hash ^= WaterAmount.GetHashCode();
+      if (SmallAmount != 0UL) hash ^= SmallAmount.GetHashCode();
+      if (MinionAmount != 0UL) hash ^= MinionAmount.GetHashCode();
+      if (BinanceAmount != 0UL) hash ^= BinanceAmount.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -14437,9 +14582,49 @@ namespace Loom.ZombieBattleground.Protobuf {
         output.WriteRawTag(10);
         output.WriteMessage(UserId);
       }
-      if (BoosterAmount != 0) {
+      if (BoosterAmount != 0UL) {
         output.WriteRawTag(16);
-        output.WriteInt32(BoosterAmount);
+        output.WriteUInt64(BoosterAmount);
+      }
+      if (SuperAmount != 0UL) {
+        output.WriteRawTag(24);
+        output.WriteUInt64(SuperAmount);
+      }
+      if (AirAmount != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(AirAmount);
+      }
+      if (EarthAmount != 0UL) {
+        output.WriteRawTag(40);
+        output.WriteUInt64(EarthAmount);
+      }
+      if (FireAmount != 0UL) {
+        output.WriteRawTag(48);
+        output.WriteUInt64(FireAmount);
+      }
+      if (LifeAmount != 0UL) {
+        output.WriteRawTag(56);
+        output.WriteUInt64(LifeAmount);
+      }
+      if (ToxicAmount != 0UL) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(ToxicAmount);
+      }
+      if (WaterAmount != 0UL) {
+        output.WriteRawTag(72);
+        output.WriteUInt64(WaterAmount);
+      }
+      if (SmallAmount != 0UL) {
+        output.WriteRawTag(80);
+        output.WriteUInt64(SmallAmount);
+      }
+      if (MinionAmount != 0UL) {
+        output.WriteRawTag(88);
+        output.WriteUInt64(MinionAmount);
+      }
+      if (BinanceAmount != 0UL) {
+        output.WriteRawTag(96);
+        output.WriteUInt64(BinanceAmount);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -14452,8 +14637,38 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (userId_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserId);
       }
-      if (BoosterAmount != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(BoosterAmount);
+      if (BoosterAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(BoosterAmount);
+      }
+      if (SuperAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(SuperAmount);
+      }
+      if (AirAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(AirAmount);
+      }
+      if (EarthAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(EarthAmount);
+      }
+      if (FireAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(FireAmount);
+      }
+      if (LifeAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(LifeAmount);
+      }
+      if (ToxicAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ToxicAmount);
+      }
+      if (WaterAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(WaterAmount);
+      }
+      if (SmallAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(SmallAmount);
+      }
+      if (MinionAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(MinionAmount);
+      }
+      if (BinanceAmount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(BinanceAmount);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -14472,8 +14687,38 @@ namespace Loom.ZombieBattleground.Protobuf {
         }
         UserId.MergeFrom(other.UserId);
       }
-      if (other.BoosterAmount != 0) {
+      if (other.BoosterAmount != 0UL) {
         BoosterAmount = other.BoosterAmount;
+      }
+      if (other.SuperAmount != 0UL) {
+        SuperAmount = other.SuperAmount;
+      }
+      if (other.AirAmount != 0UL) {
+        AirAmount = other.AirAmount;
+      }
+      if (other.EarthAmount != 0UL) {
+        EarthAmount = other.EarthAmount;
+      }
+      if (other.FireAmount != 0UL) {
+        FireAmount = other.FireAmount;
+      }
+      if (other.LifeAmount != 0UL) {
+        LifeAmount = other.LifeAmount;
+      }
+      if (other.ToxicAmount != 0UL) {
+        ToxicAmount = other.ToxicAmount;
+      }
+      if (other.WaterAmount != 0UL) {
+        WaterAmount = other.WaterAmount;
+      }
+      if (other.SmallAmount != 0UL) {
+        SmallAmount = other.SmallAmount;
+      }
+      if (other.MinionAmount != 0UL) {
+        MinionAmount = other.MinionAmount;
+      }
+      if (other.BinanceAmount != 0UL) {
+        BinanceAmount = other.BinanceAmount;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -14494,7 +14739,47 @@ namespace Loom.ZombieBattleground.Protobuf {
             break;
           }
           case 16: {
-            BoosterAmount = input.ReadInt32();
+            BoosterAmount = input.ReadUInt64();
+            break;
+          }
+          case 24: {
+            SuperAmount = input.ReadUInt64();
+            break;
+          }
+          case 32: {
+            AirAmount = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            EarthAmount = input.ReadUInt64();
+            break;
+          }
+          case 48: {
+            FireAmount = input.ReadUInt64();
+            break;
+          }
+          case 56: {
+            LifeAmount = input.ReadUInt64();
+            break;
+          }
+          case 64: {
+            ToxicAmount = input.ReadUInt64();
+            break;
+          }
+          case 72: {
+            WaterAmount = input.ReadUInt64();
+            break;
+          }
+          case 80: {
+            SmallAmount = input.ReadUInt64();
+            break;
+          }
+          case 88: {
+            MinionAmount = input.ReadUInt64();
+            break;
+          }
+          case 96: {
+            BinanceAmount = input.ReadUInt64();
             break;
           }
         }

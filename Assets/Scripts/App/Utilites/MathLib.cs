@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -62,6 +63,25 @@ namespace Loom.ZombieBattleground.Helpers
         public static explicit operator Vector3(FloatVector3 vector)
         {
             return new Vector3(vector.X, vector.Y, vector.Z);
+        }
+    }
+
+    public static class MathUtility
+    {
+        public static int Repeat(int value, int length)
+        {
+            if (length < 1)
+                throw new ArgumentOutOfRangeException(nameof(length));
+
+            while (value < 0) {
+                value += length;
+            }
+
+            while (value >= length) {
+                value -= length;
+            }
+
+            return value;
         }
     }
 }

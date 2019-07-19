@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.Editor
             {
                 Difference difference = comparisonResult.Differences[i];
                 // Ignore difference if fetched address is none
-                if (difference.Object2Value == "none")
+                if (difference.Object2Value == "none" || difference.Object2Value == "manual")
                 {
                     comparisonResult.Differences.RemoveAt(i);
                 }
@@ -60,6 +60,7 @@ namespace Loom.ZombieBattleground.Editor
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> smallPackAddresses = GetAddressesOfContract("ZBGSmallPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> minionPackAddresses = GetAddressesOfContract("ZBGMinionPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> binancePackAddresses = GetAddressesOfContract("ZBGBinancePack");
+            IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> tronPackAddresses = GetAddressesOfContract("ZBGTronPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> fiatPurchaseAddresses = GetAddressesOfContract("FiatPurchase");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> openLotteryAddresses = GetAddressesOfContract("OpenLottery");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> tronLotteryAddresses = GetAddressesOfContract("TronLottery");
@@ -83,6 +84,7 @@ namespace Loom.ZombieBattleground.Editor
                         smallPackAddresses[network],
                         minionPackAddresses[network],
                         binancePackAddresses[network],
+                        tronPackAddresses[network],
                         fiatPurchaseAddresses[network],
                         openLotteryAddresses[network],
                         tronLotteryAddresses[network]

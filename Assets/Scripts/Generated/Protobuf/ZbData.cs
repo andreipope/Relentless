@@ -397,9 +397,9 @@ namespace Loom.ZombieBattleground.Protobuf {
             "bmVyEg4KBnVzZXJJZBgBIAEoCSLpAgoZTWludGluZ1RyYW5zYWN0aW9uUmVj",
             "ZWlwdBI/Cgp2ZXJpZnlIYXNoGAEgASgLMisuTWludGluZ1RyYW5zYWN0aW9u",
             "UmVjZWlwdC5WZXJpZnlTaWduUmVzdWx0EhgKBnVzZXJJZBgCIAEoCzIILkJp",
-            "Z1VJbnQSDwoHYm9vc3RlchgDIAEoBBILCgNhaXIYBCABKAQSDQoFZWFydGgY",
-            "BSABKAQSDAoEZmlyZRgGIAEoBBIMCgRsaWZlGAcgASgEEg0KBXRveGljGAgg",
-            "ASgEEg0KBXdhdGVyGAkgASgEEg0KBXN1cGVyGAogASgEEg0KBXNtYWxsGAsg",
+            "Z1VJbnQSDwoHYm9vc3RlchgDIAEoBBINCgVzdXBlchgKIAEoBBILCgNhaXIY",
+            "BCABKAQSDQoFZWFydGgYBSABKAQSDAoEZmlyZRgGIAEoBBIMCgRsaWZlGAcg",
+            "ASgEEg0KBXRveGljGAggASgEEg0KBXdhdGVyGAkgASgEEg0KBXNtYWxsGAsg",
             "ASgEEg4KBm1pbmlvbhgMIAEoBBIPCgdiaW5hbmNlGA0gASgEEhYKBHR4SWQY",
             "DiABKAsyCC5CaWdVSW50GjMKEFZlcmlmeVNpZ25SZXN1bHQSDAoEaGFzaBgB",
             "IAEoDBIRCglzaWduYXR1cmUYAiABKAwiUwojTWludGluZ1RyYW5zYWN0aW9u",
@@ -527,7 +527,7 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Notification), global::Loom.ZombieBattleground.Protobuf.Notification.Parser, new[]{ "Id", "CreatedAt", "Seen", "Type", "EndMatch" }, new[]{ "Notification" }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.NotificationList), global::Loom.ZombieBattleground.Protobuf.NotificationList.Parser, new[]{ "Notifications" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UserIdContainer), global::Loom.ZombieBattleground.Protobuf.UserIdContainer.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt), global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Parser, new[]{ "VerifyHash", "UserId", "Booster", "Air", "Earth", "Fire", "Life", "Toxic", "Water", "Super", "Small", "Minion", "Binance", "TxId" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Types.VerifySignResult), global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Types.VerifySignResult.Parser, new[]{ "Hash", "Signature" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt), global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Parser, new[]{ "VerifyHash", "UserId", "Booster", "Super", "Air", "Earth", "Fire", "Life", "Toxic", "Water", "Small", "Minion", "Binance", "TxId" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Types.VerifySignResult), global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceipt.Types.VerifySignResult.Parser, new[]{ "Hash", "Signature" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection), global::Loom.ZombieBattleground.Protobuf.MintingTransactionReceiptCollection.Parser, new[]{ "Receipts" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer), global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItemsContainer.Parser, new[]{ "CardAmountChanges" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItem), global::Loom.ZombieBattleground.Protobuf.CardAmountChangeItem.Parser, new[]{ "CardKey", "AmountChange" }, null, null, null)
@@ -24998,13 +24998,13 @@ namespace Loom.ZombieBattleground.Protobuf {
       verifyHash_ = other.verifyHash_ != null ? other.verifyHash_.Clone() : null;
       userId_ = other.userId_ != null ? other.userId_.Clone() : null;
       booster_ = other.booster_;
+      super_ = other.super_;
       air_ = other.air_;
       earth_ = other.earth_;
       fire_ = other.fire_;
       life_ = other.life_;
       toxic_ = other.toxic_;
       water_ = other.water_;
-      super_ = other.super_;
       small_ = other.small_;
       minion_ = other.minion_;
       binance_ = other.binance_;
@@ -25047,6 +25047,17 @@ namespace Loom.ZombieBattleground.Protobuf {
       get { return booster_; }
       set {
         booster_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "super" field.</summary>
+    public const int SuperFieldNumber = 10;
+    private ulong super_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong Super {
+      get { return super_; }
+      set {
+        super_ = value;
       }
     }
 
@@ -25116,17 +25127,6 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "super" field.</summary>
-    public const int SuperFieldNumber = 10;
-    private ulong super_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong Super {
-      get { return super_; }
-      set {
-        super_ = value;
-      }
-    }
-
     /// <summary>Field number for the "small" field.</summary>
     public const int SmallFieldNumber = 11;
     private ulong small_;
@@ -25187,13 +25187,13 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (!object.Equals(VerifyHash, other.VerifyHash)) return false;
       if (!object.Equals(UserId, other.UserId)) return false;
       if (Booster != other.Booster) return false;
+      if (Super != other.Super) return false;
       if (Air != other.Air) return false;
       if (Earth != other.Earth) return false;
       if (Fire != other.Fire) return false;
       if (Life != other.Life) return false;
       if (Toxic != other.Toxic) return false;
       if (Water != other.Water) return false;
-      if (Super != other.Super) return false;
       if (Small != other.Small) return false;
       if (Minion != other.Minion) return false;
       if (Binance != other.Binance) return false;
@@ -25207,13 +25207,13 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (verifyHash_ != null) hash ^= VerifyHash.GetHashCode();
       if (userId_ != null) hash ^= UserId.GetHashCode();
       if (Booster != 0UL) hash ^= Booster.GetHashCode();
+      if (Super != 0UL) hash ^= Super.GetHashCode();
       if (Air != 0UL) hash ^= Air.GetHashCode();
       if (Earth != 0UL) hash ^= Earth.GetHashCode();
       if (Fire != 0UL) hash ^= Fire.GetHashCode();
       if (Life != 0UL) hash ^= Life.GetHashCode();
       if (Toxic != 0UL) hash ^= Toxic.GetHashCode();
       if (Water != 0UL) hash ^= Water.GetHashCode();
-      if (Super != 0UL) hash ^= Super.GetHashCode();
       if (Small != 0UL) hash ^= Small.GetHashCode();
       if (Minion != 0UL) hash ^= Minion.GetHashCode();
       if (Binance != 0UL) hash ^= Binance.GetHashCode();
@@ -25304,6 +25304,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (Booster != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Booster);
       }
+      if (Super != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Super);
+      }
       if (Air != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Air);
       }
@@ -25321,9 +25324,6 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (Water != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Water);
-      }
-      if (Super != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Super);
       }
       if (Small != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Small);
@@ -25363,6 +25363,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (other.Booster != 0UL) {
         Booster = other.Booster;
       }
+      if (other.Super != 0UL) {
+        Super = other.Super;
+      }
       if (other.Air != 0UL) {
         Air = other.Air;
       }
@@ -25380,9 +25383,6 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (other.Water != 0UL) {
         Water = other.Water;
-      }
-      if (other.Super != 0UL) {
-        Super = other.Super;
       }
       if (other.Small != 0UL) {
         Small = other.Small;

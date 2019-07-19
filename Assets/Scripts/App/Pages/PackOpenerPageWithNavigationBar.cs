@@ -30,13 +30,20 @@ namespace Loom.ZombieBattleground
         private const float CardAppearAnimationDuration = 0.65f;
         private const float CardFlipAnimationDuration = 0.3f;
         private const float BoardCardViewOpenedCardScale = 32.55f;
+        private const float PackScrollAnimationDuration = 0.3f;
+        private const float PackWidth = 375f;
+
         private static readonly Vector3 CardHidePosition = new Vector3(0, -15, 0);
 
         private static readonly ILog Log = Logging.GetLog(nameof(PackOpenerPageWithNavigationBar));
 
         private readonly List<PackObject> _packObjects = new List<PackObject>();
 
-        private readonly List<PackCard> _openedCards = new List<PackCard>();
+        private readonly List<PackObject> _fakeLeftPackObjects = new List<PackObject>();
+
+        private readonly List<PackObject> _fakeRightPackObjects = new List<PackObject>();
+
+        private readonly List<OpenedPackCard> _openedCards = new List<OpenedPackCard>();
 
         private IUIManager _uiManager;
 
@@ -68,6 +75,10 @@ namespace Loom.ZombieBattleground
 
         private GameObject _packObjectsRoot;
 
+        private RectTransform _packObjectsRootRectTransform;
+
+        private HorizontalLayoutGroup _packObjectsRootHorizontalLayoutGroup;
+
         private Transform[] _cardPositions;
 
         private TextMeshProUGUI _currentPackTypeText;
@@ -76,11 +87,17 @@ namespace Loom.ZombieBattleground
 
         private Button _openButton;
 
+        private Button _scrollLeftButton;
+
+        private Button _scrollRightButton;
+
         private Enumerators.MarketplaceCardPackType? _selectedPackType;
 
         private PackOpenerControllerBase _controller;
 
         private CardInfoPopupHandler _cardInfoPopupHandler;
+
+        private Sequence _currentPackScrollSequence;
 
         #region IUIElement
 
@@ -124,10 +141,14 @@ namespace Loom.ZombieBattleground
             _openedPackPanelCloseButton = _openedPackPanel.transform.Find("BottomButtons/Button_ClosePackOpener").GetComponent<Button>();
             _openedPackPanelOpenNextPackButton = _openedPackPanel.transform.Find("BottomButtons/Button_OpenNextPack").GetComponent<Button>();
 
-            _packObjectsRoot = _selfPage.transform.Find("PackOpener/Packs/Layout/PacksRoot").gameObject;
+            _packObjectsRoot = _selfPage.transform.Find("PackOpener/Packs/Offset/PacksRoot").gameObject;
+            _packObjectsRootRectTransform = _packObjectsRoot.GetComponent<RectTransform>();
+            _packObjectsRootHorizontalLayoutGroup = _packObjectsRoot.GetComponent<HorizontalLayoutGroup>();
             _currentPackTypeText = _selfPage.transform.Find("PackOpener/CurrentPackTypeText").GetComponent<TextMeshProUGUI>();
             _currentPackTypeAmountText = _selfPage.transform.Find("PackOpener/CurrentPackTypeAmountText").GetComponent<TextMeshProUGUI>();
             _openButton = _selfPage.transform.Find("PackOpener/Button_OpenPacks").GetComponent<Button>();
+            _scrollLeftButton = _selfPage.transform.Find("PackOpener/Button_ArrowLeft").GetComponent<Button>();
+            _scrollRightButton = _selfPage.transform.Find("PackOpener/Button_ArrowRight").GetComponent<Button>();
             _cardPositions =
                 _selfPage.transform.Find("PackOpener/CardPositionsList")
                     .gameObject
@@ -144,6 +165,8 @@ namespace Loom.ZombieBattleground
             _openButton.onClick.AddListener(OpenButtonHandler);
             _openedPackPanelCloseButton.onClick.AddListener(OpenedPackPanelCloseButtonHandler);
             _openedPackPanelOpenNextPackButton.onClick.AddListener(OpenedPackPanelOpenNextPackHandler);
+            _scrollLeftButton.onClick.AddListener(() => ScrollButtonHandler(false));
+            _scrollRightButton.onClick.AddListener(() => ScrollButtonHandler(true));
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
             _uiManager.DrawPopup<AreaBarPopup>();
@@ -151,7 +174,7 @@ namespace Loom.ZombieBattleground
 
             UpdateOpenButtonState();
 
-            OneOf<Success,Exception> result = await _controller.Start();
+            OneOf<Success, Exception> result = await _controller.Start();
             if (result.IsT1)
             {
                 Log.Warn("Failed to start pack opener: " + result.Value);
@@ -243,14 +266,67 @@ namespace Loom.ZombieBattleground
             await OpenSelectedPack();
         }
 
+        private void ScrollButtonHandler(bool isRight)
+        {
+            if (_packObjects.Count == 0)
+                return;
+
+            PlayClickSound();
+
+            int currentIndex = _packObjects.IndexOf(_packObjects.First(pack => pack.PackType == _selectedPackType));
+            int newIndex = currentIndex + (isRight ? 1 : -1);
+            int newIndexClamped = MathUtility.Repeat(newIndex, _packObjects.Count);
+
+            /*Log.Debug(
+                $"Current: [PackType: {_packObjects[currentIndex].PackType}, Index: {currentIndex}], " +
+                $"New: [PackType: {_packObjects[newIndexClamped].PackType}, IndexClamped: {newIndexClamped}, Index: {newIndex}]");*/
+
+            Vector2 newPosition = CalculatePackObjectsRootPositionByIndex(newIndex);
+            Vector2 newPositionClamped = CalculatePackObjectsRootPositionByIndex(newIndexClamped);
+
+            // To avoid ugly jumps when clicking VERY quickly while keeping it smooth,
+            // only complete the previous sequence if delta is big
+            float packSizesDelta =
+                Mathf.Abs(_packObjectsRootRectTransform.anchoredPosition.x - newPosition.x) /
+                CalculatePackShiftPerItem();
+            if (packSizesDelta < 1f || packSizesDelta > 2.5f)
+            {
+                _currentPackScrollSequence?.Complete(true);
+            }
+            else
+            {
+                _currentPackScrollSequence?.Kill();
+            }
+
+            _currentPackScrollSequence = DOTween.Sequence();
+            _currentPackScrollSequence.Append(
+                _packObjectsRootRectTransform.DOAnchorPos(newPosition, PackScrollAnimationDuration));
+            _currentPackScrollSequence.AppendCallback(() =>
+                _packObjectsRootRectTransform.anchoredPosition = newPositionClamped);
+
+            SetSelectedPackType(_packObjects[newIndexClamped].PackType);
+        }
+
+        private float CalculatePackShiftPerItem()
+        {
+            return PackWidth + _packObjectsRootHorizontalLayoutGroup.spacing;
+        }
+
+        private Vector2 CalculatePackObjectsRootPositionByIndex(int index)
+        {
+            index += _fakeLeftPackObjects.Count - 1;
+            return new Vector2(index * -CalculatePackShiftPerItem(), 0f);
+        }
+
         private void PlayCardsHideAnimation(Action onEnd)
         {
             for (int i = 0; i < _openedCards.Count; i++)
             {
-                PackCard packCard = _openedCards[i];
+                OpenedPackCard openedPackCard = _openedCards[i];
                 Sequence hideSequence = DOTween.Sequence();
-                hideSequence.AppendInterval(i * 0.1f);
-                hideSequence.Append(packCard.GameObject.transform.DOMove(CardHidePosition, CardHideAnimationDuration));
+                hideSequence.AppendInterval(i * 0.3f);
+                hideSequence.Append(
+                    openedPackCard.GameObject.transform.DOMove(CardHidePosition, CardHideAnimationDuration));
                 if (i == _openedCards.Count - 1)
                 {
                     hideSequence.AppendCallback(() => onEnd());
@@ -266,6 +342,18 @@ namespace Loom.ZombieBattleground
                 uint amount = _controller.GetPackTypeAmount(packType.Value);
                 _currentPackTypeText.text = $"{packType.ToString().ToUpperInvariant()} PACK";
                 _currentPackTypeAmountText.text = amount.ToString();
+
+#if UNITY_EDITOR
+                foreach (PackObject packObject in _packObjects)
+                {
+                    const string selectedString = "✔ ";
+                    packObject.GameObject.name = packObject.GameObject.name.Replace(selectedString, "");
+                    if (packObject.PackType == packType)
+                    {
+                        packObject.GameObject.name = selectedString + packObject.GameObject.name;
+                    }
+                }
+#endif
             }
             else
             {
@@ -318,21 +406,27 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < cards.Count; i++)
             {
                 Card card = cards[i];
-                PackCard packCard = new PackCard(_openedPackPanel.transform, _loadObjectsManager, _cardsController, card);
-                packCard.GameObject.transform.position = _cardPositions[i].position;
-                packCard.GameObject.transform.localScale = Vector3.zero;
-                packCard.Button.onClick.AddListener(() =>
+                OpenedPackCard openedPackCard = new OpenedPackCard(
+                    _openedPackPanel.transform,
+                    _loadObjectsManager,
+                    _cardsController,
+                    card);
+                openedPackCard.GameObject.transform.position = _cardPositions[i].position;
+                openedPackCard.GameObject.transform.localScale = Vector3.zero;
+                openedPackCard.Button.onClick.AddListener(() =>
                 {
-                    if (!packCard.IsFlipped)
+                    if (!openedPackCard.IsFlipped)
                     {
-                        packCard.Flip();
+                        openedPackCard.Flip();
 
                         bool allFlipped = _openedCards.TrueForAll(c => c.IsFlipped);
                         if (allFlipped)
                         {
                             _openedPackPanelCloseButton.gameObject.SetActive(true);
-                            _openedPackPanelOpenNextPackButton.gameObject.SetActive(_controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
-                            _openedPackPanelBottomButtonsCanvasGroup.DOFade(1f, 0.3f).ChangeStartValue(0).SetDelay(0.5f);
+                            _openedPackPanelOpenNextPackButton.gameObject.SetActive(
+                                _controller.GetPackTypeAmount(_selectedPackType.Value) > 0);
+                            _openedPackPanelBottomButtonsCanvasGroup.DOFade(1f, 0.3f).ChangeStartValue(0)
+                                .SetDelay(0.5f);
 
                             _controller.OnPackCollected();
                         }
@@ -342,40 +436,86 @@ namespace Loom.ZombieBattleground
                         if (_cardInfoPopupHandler.IsStateChanging)
                             return;
 
-                        _cardInfoPopupHandler.SelectCard(packCard.BoardCardView);
+                        _cardInfoPopupHandler.SelectCard(openedPackCard.BoardCardView);
 
                         // Nicely hide the clicked card to avoid duplicating it visually
-                        packCard.GameObject.SetActive(false);
+                        openedPackCard.GameObject.SetActive(false);
 
                         void OnClosed()
                         {
-                            packCard.GameObject.SetActive(true);
+                            openedPackCard.GameObject.SetActive(true);
                             _cardInfoPopupHandler.Closed -= OnClosed;
                         }
 
                         _cardInfoPopupHandler.Closed += OnClosed;
                     }
                 });
-                packCard.PlayAppearAnimation();
-                _openedCards.Add(packCard);
+                openedPackCard.PlayAppearAnimation();
+                _openedCards.Add(openedPackCard);
             }
         }
 
         private void CreatePackObjects()
         {
+            IReadOnlyList<Enumerators.MarketplaceCardPackType> packTypes =
+                _controller.ShownPackTypes
+                    .Where(packType => _controller.GetPackTypeAmount(packType) != 0)
+                    .ToList();
+
             ClearPackObjects();
 
-            IReadOnlyList<Enumerators.MarketplaceCardPackType> packTypes = _controller.ShownPackTypes;
+            int fakePackObjectsCount;
+            switch (packTypes.Count)
+            {
+                case 0:
+                    fakePackObjectsCount = 0;
+                    break;
+                case 1:
+                    fakePackObjectsCount = 1;
+                    break;
+                default:
+                    fakePackObjectsCount = 2;
+                    break;
+            }
+
+            for (int i = fakePackObjectsCount - 1; i >= 0; i--)
+            {
+                _fakeLeftPackObjects.Add(new PackObject(_packObjectsRoot.transform,
+                    _loadObjectsManager,
+                    _controller.ShownPackTypes[_controller.ShownPackTypes.Count - 1 - i]));
+            }
+
             foreach (Enumerators.MarketplaceCardPackType packType in packTypes)
             {
-                if (_controller.GetPackTypeAmount(packType) == 0)
-                    continue;
-
                 PackObject packObject = new PackObject(_packObjectsRoot.transform, _loadObjectsManager, packType);
                 _packObjects.Add(packObject);
             }
 
-            SetSelectedPackType(_packObjects?.Count > 0 ? _packObjects?[0].PackType : null);
+            for (int i = 0; i < fakePackObjectsCount; i++)
+            {
+                _fakeRightPackObjects.Add(new PackObject(_packObjectsRoot.transform,
+                    _loadObjectsManager,
+                    _controller.ShownPackTypes[i]));
+            }
+
+            _fakeLeftPackObjects.ForEach(pack => pack.GameObject.name = "=== " + pack.GameObject.name + " Fake");
+            _fakeRightPackObjects.ForEach(pack => pack.GameObject.name = "=== " + pack.GameObject.name + " Fake");
+
+            // If there is only 1 available pack type, hide the fake left/right packs
+            if (packTypes.Count <= 1)
+            {
+                _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(false));
+                _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(false));
+            }
+            else
+            {
+                _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(true));
+                _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(true));
+            }
+
+            _packObjectsRootRectTransform.anchoredPosition = CalculatePackObjectsRootPositionByIndex(0);
+            _scrollLeftButton.interactable = _scrollRightButton.interactable = packTypes.Count > 1;
+            SetSelectedPackType(_packObjects?.Count > 0 ? _packObjects[0]?.PackType : null);
         }
 
         private void UpdateOpenButtonState()
@@ -393,7 +533,7 @@ namespace Loom.ZombieBattleground
 
         private void ClearOpenedCards()
         {
-            foreach (PackCard packCard in _openedCards)
+            foreach (OpenedPackCard packCard in _openedCards)
             {
                 packCard.Dispose();
             }
@@ -403,12 +543,14 @@ namespace Loom.ZombieBattleground
 
         private void ClearPackObjects()
         {
-            foreach (PackObject packTypeButton in _packObjects)
-            {
-                packTypeButton.Dispose();
-            }
-
+            _packObjects.ForEach(pack => pack.Dispose());
             _packObjects.Clear();
+
+            _fakeLeftPackObjects.ForEach(pack => pack.Dispose());
+            _fakeLeftPackObjects.Clear();
+
+            _fakeRightPackObjects.ForEach(pack => pack.Dispose());
+            _fakeRightPackObjects.Clear();
         }
 
         #region Util
@@ -460,10 +602,22 @@ namespace Loom.ZombieBattleground
 
             public GameObject GameObject { get; }
 
+            public Image Image { get; }
+
             public PackObject(Transform parent, ILoadObjectsManager loadObjectsManager, Enumerators.MarketplaceCardPackType packType)
             {
                 PackType = packType;
-                GameObject = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerPack"), parent);
+                GameObject =
+                    Object.Instantiate(
+                        loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerPack"),
+                        parent);
+                GameObject.name = $"PackOpenerPack [{packType}]";
+                Image = GameObject.GetComponent<Image>();
+            }
+
+            public void SetIsVisible(bool visible)
+            {
+                Image.enabled = visible;
             }
 
             public void Dispose()
@@ -472,7 +626,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private class PackCard
+        private class OpenedPackCard
         {
             public GameObject GameObject { get; }
 
@@ -484,9 +638,12 @@ namespace Loom.ZombieBattleground
 
             public bool IsFlipped { get; private set; }
 
-            public PackCard(Transform parent, ILoadObjectsManager loadObjectsManager, CardsController cardsController, IReadOnlyCard card)
+            public OpenedPackCard(Transform parent, ILoadObjectsManager loadObjectsManager, CardsController cardsController, IReadOnlyCard card)
             {
-                GameObject = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerCard"), parent);
+                GameObject =
+                    Object.Instantiate(
+                        loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerCard"),
+                        parent);
                 CardBackGameObject = GameObject.transform.Find("CardBack").gameObject;
                 Button = GameObject.transform.Find("Button").GetComponent<Button>();
 
@@ -510,13 +667,23 @@ namespace Loom.ZombieBattleground
                 IsFlipped = true;
                 BoardCardView.Transform.localEulerAngles = new Vector3(0, -90, 0);
                 Sequence sequence = DOTween.Sequence();
-                sequence.Append(CardBackGameObject.transform.DORotate(new Vector3(0, 90, 0), CardFlipAnimationDuration / 2f).SetEase(Ease.InSine));
+                sequence
+                    .Append(
+                        CardBackGameObject.transform
+                            .DORotate(new Vector3(0, 90, 0), CardFlipAnimationDuration / 2f)
+                            .SetEase(Ease.InSine)
+                    );
                 sequence.AppendCallback(() =>
                 {
                     CardBackGameObject.SetActive(false);
                     BoardCardView.GameObject.SetActive(true);
                 });
-                sequence.Append(BoardCardView.Transform.DORotate(new Vector3(0, 0, 0), CardFlipAnimationDuration / 2f).SetEase(Ease.OutSine));
+                sequence
+                    .Append(
+                        BoardCardView.Transform
+                            .DORotate(new Vector3(0, 0, 0), CardFlipAnimationDuration / 2f)
+                            .SetEase(Ease.OutSine)
+                    );
             }
 
             public void Dispose()
@@ -527,8 +694,12 @@ namespace Loom.ZombieBattleground
             public void PlayAppearAnimation()
             {
                 Sequence appearSequence = DOTween.Sequence();
-                appearSequence.AppendInterval(Random.Range(0f, 0.2f));
-                appearSequence.Append(GameObject.transform.DOScale(Vector3.one, CardAppearAnimationDuration).SetEase(Ease.InFlash));
+                appearSequence.AppendInterval(Random.Range(0f, 0.3f));
+                appearSequence.Append(
+                    GameObject.transform
+                        .DOScale(Vector3.one, CardAppearAnimationDuration)
+                        .SetEase(Ease.InFlash)
+                );
             }
         }
 
@@ -560,7 +731,8 @@ namespace Loom.ZombieBattleground
         {
             private readonly ITutorialManager _tutorialManager;
 
-            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
+            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount =
+                new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
 
             public TutorialPackOpenerController()
             {
@@ -613,7 +785,8 @@ namespace Loom.ZombieBattleground
             private readonly BackendDataSyncService _backendDataSyncService;
             private readonly INetworkActionManager _networkActionManager;
 
-            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount = new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
+            private readonly Dictionary<Enumerators.MarketplaceCardPackType, uint> _packTypeToPackAmount =
+                new Dictionary<Enumerators.MarketplaceCardPackType, uint>();
 
             private bool _isOpenedPackScreenActive;
 
@@ -630,7 +803,18 @@ namespace Loom.ZombieBattleground
 
             public override IReadOnlyList<Enumerators.MarketplaceCardPackType> ShownPackTypes { get; } = new[]
             {
-                Enumerators.MarketplaceCardPackType.Booster
+                Enumerators.MarketplaceCardPackType.Booster,
+                Enumerators.MarketplaceCardPackType.Super,
+                Enumerators.MarketplaceCardPackType.Air,
+                Enumerators.MarketplaceCardPackType.Earth,
+                Enumerators.MarketplaceCardPackType.Fire,
+                Enumerators.MarketplaceCardPackType.Life,
+                Enumerators.MarketplaceCardPackType.Toxic,
+                Enumerators.MarketplaceCardPackType.Water,
+                Enumerators.MarketplaceCardPackType.Small,
+                Enumerators.MarketplaceCardPackType.Minion,
+                Enumerators.MarketplaceCardPackType.Binance,
+                Enumerators.MarketplaceCardPackType.Tron
             };
 
             public override uint GetPackTypeAmount(Enumerators.MarketplaceCardPackType packType)
@@ -644,46 +828,52 @@ namespace Loom.ZombieBattleground
                 try
                 {
                     _uiManager.DrawPopup<LoadingOverlayPopup>("Checking your packs...");
-                    using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
+                    await _networkActionManager.ExecuteNetworkTask(async () =>
                     {
-                        // Claim unclaimed packs
-                        Log.Debug("Call GetPendingMintingTransactionReceipts");
-                        Protobuf.GetPendingMintingTransactionReceiptsResponse mintingTransactionReceipts =
-                            await _backendFacade.GetPendingMintingTransactionReceipts(_backendDataControlMediator.UserDataModel.UserId);
-                        if (mintingTransactionReceipts.ReceiptCollection.Receipts.Count > 0)
+                        using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
                         {
-                            _uiManager.DrawPopup<LoadingOverlayPopup>("Claiming packs...");
-                        }
-
-                        foreach (Protobuf.MintingTransactionReceipt receiptProtobuf in mintingTransactionReceipts.ReceiptCollection.Receipts)
-                        {
-                            AuthFiatApiFacade.TransactionReceipt receipt = receiptProtobuf.FromProtobuf();
-                            Log.Debug($"Claiming receipt with TxId {receipt.TxId}");
-                            try
+                            // Claim unclaimed packs
+                            Log.Debug("Call GetPendingMintingTransactionReceipts");
+                            Protobuf.GetPendingMintingTransactionReceiptsResponse mintingTransactionReceipts =
+                                await _backendFacade.GetPendingMintingTransactionReceipts(_backendDataControlMediator.UserDataModel.UserId);
+                            if (mintingTransactionReceipts.ReceiptCollection.Receipts.Count > 0)
                             {
-                                await _plasmaChainBackendFacade.ClaimPacks(client, receipt);
-                                Log.Info($"Claimed receipt with TxId {receipt.TxId} successfully!!");
-                            }
-                            catch (TxCommitException e)
-                            {
-                                // Already claimed?
-                                Log.Warn("Already claimed? " + e);
+                                _uiManager.DrawPopup<LoadingOverlayPopup>("Claiming packs...");
                             }
 
-                            Log.Debug($"Confirming receipt with TxId {receipt.TxId}");
-                            await _backendFacade.ConfirmPendingMintingTransactionReceipt(_backendDataControlMediator.UserDataModel.UserId, receipt.TxId);
-                        }
+                            foreach (Protobuf.MintingTransactionReceipt receiptProtobuf in mintingTransactionReceipts.ReceiptCollection.Receipts)
+                            {
+                                AuthFiatApiFacade.TransactionReceipt receipt = receiptProtobuf.FromProtobuf();
+                                Log.Debug($"Claiming receipt with TxId {receipt.TxId}");
+                                try
+                                {
+                                    await _plasmaChainBackendFacade.ClaimPacks(client, receipt);
+                                    Log.Info($"Claimed receipt with TxId {receipt.TxId} successfully!!");
+                                }
+                                catch (TxCommitException e)
+                                {
+                                    // Already claimed?
+                                    Log.Warn("Already claimed? " + e);
+                                }
 
-                        if (mintingTransactionReceipts.ReceiptCollection.Receipts.Count > 0)
-                        {
-                            _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your packs...");
-                        }
+                                Log.Debug($"Confirming receipt with TxId {receipt.TxId}");
+                                await _backendFacade.ConfirmPendingMintingTransactionReceipt(
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    receipt.TxId);
+                            }
 
-                        for (int i = 0; i < ShownPackTypes.Count; ++i)
-                        {
-                            await UpdatePackBalanceAmount(client, (Enumerators.MarketplaceCardPackType) i);
+                            if (mintingTransactionReceipts.ReceiptCollection.Receipts.Count > 0)
+                            {
+                                _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your packs...");
+                            }
+
+                            // Run these calls in parallel
+                            client.Configuration.AllowAsynchronousCalls = true;
+                            Task[] updatePackBalanceTasks =
+                                ShownPackTypes.Select(packType => UpdatePackBalanceAmount(client, packType)).ToArray();
+                            await Task.WhenAll(updatePackBalanceTasks);
                         }
-                    }
+                    });
                 }
                 catch (Exception e)
                 {
@@ -710,7 +900,8 @@ namespace Loom.ZombieBattleground
                 {
                     using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
                     {
-                        IReadOnlyList<CardKey> cardKeys = await _plasmaChainBackendFacade.CallOpenPack(client, packType);
+                        IReadOnlyList<CardKey> cardKeys =
+                            await _plasmaChainBackendFacade.CallOpenPack(client, packType);
                         _backendDataSyncService.SetCollectionDataDirtyFlag();
                         _packTypeToPackAmount[packType]--;
                         return OneOf<IReadOnlyList<CardKey>, Exception>.FromT0(cardKeys);
@@ -749,6 +940,70 @@ namespace Loom.ZombieBattleground
                 {
                     throw new Exception($"Failed to get balance for pack type {packType}", e);
                 }
+            }
+        }
+
+        // Used for UI debugging
+        private class FakePackOpenerController : PackOpenerControllerBase
+        {
+            public FakePackOpenerController()
+            {
+                switch (Random.Range(0, 3))
+                {
+                    case 0:
+                        ShownPackTypes = new[]
+                        {
+                            Enumerators.MarketplaceCardPackType.Booster
+                        };
+                        break;
+                    case 1:
+                        ShownPackTypes = new[]
+                        {
+                            Enumerators.MarketplaceCardPackType.Booster, 
+                            Enumerators.MarketplaceCardPackType.Binance
+                        };
+                        break;
+                    case 2:
+                        ShownPackTypes = new[]
+                        {
+                            Enumerators.MarketplaceCardPackType.Booster,
+                            Enumerators.MarketplaceCardPackType.Super,
+                            Enumerators.MarketplaceCardPackType.Air,
+                            Enumerators.MarketplaceCardPackType.Earth,
+                            Enumerators.MarketplaceCardPackType.Fire,
+                            Enumerators.MarketplaceCardPackType.Life,
+                            Enumerators.MarketplaceCardPackType.Toxic,
+                            Enumerators.MarketplaceCardPackType.Water,
+                            Enumerators.MarketplaceCardPackType.Small,
+                            Enumerators.MarketplaceCardPackType.Minion,
+                            Enumerators.MarketplaceCardPackType.Binance,
+                            Enumerators.MarketplaceCardPackType.Tron
+                        };
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            public override IReadOnlyList<Enumerators.MarketplaceCardPackType> ShownPackTypes { get; }
+
+            public override uint GetPackTypeAmount(Enumerators.MarketplaceCardPackType packType)
+            {
+                return (uint) packType + 2;
+            }
+
+            public override Task<OneOf<Success, Exception>> Start()
+            {
+                return Task.FromResult((OneOf<Success, Exception>) new Success());
+            }
+
+            public override Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
+            {
+                return Task.FromResult(OneOf<IReadOnlyList<CardKey>, Exception>.FromT0(new CardKey[0]));
+            }
+
+            public override void OnPackCollected()
+            {
             }
         }
     }

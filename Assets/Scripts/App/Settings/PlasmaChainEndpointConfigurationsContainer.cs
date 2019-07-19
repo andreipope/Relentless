@@ -22,6 +22,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 "0x67ad69baca9265bc07f2219cc156bb61648e103a",
                 "0xea59a949651ffc6d3e039db2d89f4e047301718d",
                 "0x0fd6e6405b2cef67447b11630d1c9e0ae03e39dc",
+                "0x03a66793dfbec8ed27b6ef96fd3215a1b4f35093",
                 "0x2e6d4f50150c2eba04ecb64d73772864c3bf1ad1",
                 "0x70f467d600cb3f4b0f7646d2e6346b70ae6876d7",
                 "0x9b7243bcfea5cb960c3a739f3619d13bb88f9da9"
@@ -45,6 +46,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 "0x0049493999a5ecc90654b5f0678d50a8952b9c3d",
                 "0x63c43b64f40b8115c2c9970e559405fd16377a57",
                 "0x837da2498b31d1654d51c1871b10fc4e3d192f02",
+                "0x3d9cb3c4af539f88f3fdd863621758be4917ef05",
                 "0xaff6212ab34f4066ee46f4b20429b2c74726eb67",
                 "0x808a1b867d2061d7bab4c610b6f98da9b65e42cf",
                 "0x4d608125767b951758fa23d9767791b683345a1a"
@@ -68,6 +70,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 "0xd28138eb47f20314a60714f95f55d5f3dc39da60",
                 "0x01d78e15525f4500dc2a7e1fe0ec997dfc3a982e",
                 "0x554e93eca9f192a07d5e1337b0d85a12abceb803",
+                "0x90df68c6745ee7664ac35eae18d98bd0cf930cfb",
                 "0x4e6da4b0bc7450a1ab5ff2e3812726a722a38a8b",
                 "0xd7782b2c7da1098749aa63ef6107ee0c7a12adb6",
                 "0x3c218c1fd6fd767e170b2a1476972b8f2a2d7e65"

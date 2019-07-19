@@ -717,12 +717,35 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<DebugGetPendingCardAmountChangeItemsResponse>("DebugGetPendingCardAmountChangeItems", request);
         }
 
-        public async Task<DebugMintBoosterPackReceiptResponse> DebugMintBoosterPackReceipt(BigInteger userId, int boosterAmount)
+        public async Task<DebugMintBoosterPackReceiptResponse> DebugMintBoosterPackReceipt(
+            BigInteger userId,
+            int boosterAmount,
+            int superAmount,
+            int airAmount,
+            int earthAmount,
+            int fireAmount,
+            int lifeAmount,
+            int toxicAmount,
+            int waterAmount,
+            int smallAmount,
+            int minionAmount,
+            int binanceAmount
+            )
         {
             DebugMintBoosterPackReceiptRequest request = new DebugMintBoosterPackReceiptRequest
             {
                 UserId = userId.ToProtobufUInt(),
-                BoosterAmount = boosterAmount
+                BoosterAmount = (ulong) boosterAmount,
+                SuperAmount = (ulong) superAmount,
+                AirAmount = (ulong) airAmount,
+                EarthAmount = (ulong) earthAmount,
+                FireAmount = (ulong) fireAmount,
+                LifeAmount = (ulong) lifeAmount,
+                ToxicAmount = (ulong) toxicAmount,
+                WaterAmount = (ulong) waterAmount,
+                SmallAmount = (ulong) smallAmount,
+                MinionAmount = (ulong) minionAmount,
+                BinanceAmount = (ulong) binanceAmount,
             };
 
             return await _contractCallProxy.CallAsync<DebugMintBoosterPackReceiptResponse>("DebugMintBoosterPackReceipt", request);

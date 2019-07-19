@@ -14,9 +14,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private BackendDataControlMediator _backendDataControlMediator;
         private BackendFacade _backendFacade;
-        
+
         public string AuthApiHost { get; private set; }
-        
+
         public string VaultApiHost { get; private set; }
 
         public AuthApiFacade(string authApiHost, string vaultApiHost)
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Log.Info("Auth Host: " + AuthApiHost);
             Log.Info("Vault Host: " + VaultApiHost);
         }
-        
+
         #region IService
 
         public void Init()
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Dispose() { }
 
         #endregion
-        
+
         private const string userInfoEndPoint = "/user/info";
 
         private const string loginEndPoint = "/auth/email/login";
@@ -280,6 +280,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     versionData.PlasmachainSmallPackContractAddress,
                     versionData.PlasmachainMinionPackContractAddress,
                     versionData.PlasmachainBinancePackContractAddress,
+                    versionData.PlasmachainTronPackContractAddress,
                     versionData.PlasmachainFiatPurchaseContractAddress,
                     versionData.PlasmachainOpenLotteryContractAddress,
                     versionData.PlasmachainTronLotteryContractAddress

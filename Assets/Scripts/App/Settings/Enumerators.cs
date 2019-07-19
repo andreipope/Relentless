@@ -958,7 +958,9 @@ namespace Loom.ZombieBattleground.Common
             Toxic = 6,
             Water = 7,
             Small = 8,
-            Minion = 9
+            Minion = 9,
+            Binance = 10,
+            Tron = 11
         }
 
         public enum TutorialStepType
