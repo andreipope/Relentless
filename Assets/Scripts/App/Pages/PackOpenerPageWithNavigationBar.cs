@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
         private const float CardFlipAnimationDuration = 0.3f;
         private const float BoardCardViewOpenedCardScale = 32.55f;
         private const float PackScrollAnimationDuration = 0.3f;
-        private const float PackWidth = 375f;
+        private const float PackWidth = 584f;
 
         private static readonly Vector3 CardHidePosition = new Vector3(0, -15, 0);
 
@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Init();
 
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPageWithNavigationBar"),
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPageWithNavigationBarNew"),
                 _uiManager.Canvas.transform,
                 false);
 
@@ -141,16 +141,17 @@ namespace Loom.ZombieBattleground
             _openedPackPanelCloseButton = _openedPackPanel.transform.Find("BottomButtons/Button_ClosePackOpener").GetComponent<Button>();
             _openedPackPanelOpenNextPackButton = _openedPackPanel.transform.Find("BottomButtons/Button_OpenNextPack").GetComponent<Button>();
 
-            _packObjectsRoot = _selfPage.transform.Find("PackOpener/Packs/Offset/PacksRoot").gameObject;
+            Transform packOpener = _selfPage.transform.Find("PackOpenerWrapper/PackOpener/PackOpenerPanel");
+            _packObjectsRoot = packOpener.Find("Packs/Offset/PacksRoot").gameObject;
             _packObjectsRootRectTransform = _packObjectsRoot.GetComponent<RectTransform>();
             _packObjectsRootHorizontalLayoutGroup = _packObjectsRoot.GetComponent<HorizontalLayoutGroup>();
-            _currentPackTypeText = _selfPage.transform.Find("PackOpener/CurrentPackTypeText").GetComponent<TextMeshProUGUI>();
-            _currentPackTypeAmountText = _selfPage.transform.Find("PackOpener/CurrentPackTypeAmountText").GetComponent<TextMeshProUGUI>();
-            _openButton = _selfPage.transform.Find("PackOpener/Button_OpenPacks").GetComponent<Button>();
-            _scrollLeftButton = _selfPage.transform.Find("PackOpener/Button_ArrowLeft").GetComponent<Button>();
-            _scrollRightButton = _selfPage.transform.Find("PackOpener/Button_ArrowRight").GetComponent<Button>();
+            _currentPackTypeText = packOpener.Find("CurrentPackTypeText").GetComponent<TextMeshProUGUI>();
+            _currentPackTypeAmountText = packOpener.Find("CurrentPackTypeAmountText").GetComponent<TextMeshProUGUI>();
+            _openButton = packOpener.Find("Button_OpenPacks").GetComponent<Button>();
+            _scrollLeftButton = packOpener.Find("Button_ArrowLeft").GetComponent<Button>();
+            _scrollRightButton = packOpener.Find("Button_ArrowRight").GetComponent<Button>();
             _cardPositions =
-                _selfPage.transform.Find("PackOpener/CardPositionsList")
+                _selfPage.transform.Find("PackOpenerWrapper/CardPositionsList")
                     .gameObject
                     .GetComponent<GameObjectList>()
                     .Items
@@ -620,9 +621,9 @@ namespace Loom.ZombieBattleground
                 PackType = packType;
                 GameObject =
                     Object.Instantiate(
-                        loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerPack"),
+                        loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerPackNew"),
                         parent);
-                GameObject.name = $"PackOpenerPack [{packType}]";
+                GameObject.name = $"PackOpenerPackNew [{packType}]";
                 Image = GameObject.GetComponent<Image>();
             }
 

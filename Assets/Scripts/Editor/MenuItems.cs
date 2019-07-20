@@ -391,7 +391,33 @@ namespace Loom.ZombieBattleground.Editor
                 Image image = spriteRenderer.gameObject.AddComponent<Image>();
                 image.sprite = spriteRenderer.sprite;
                 image.raycastTarget = false;
+
+                SpriteMask spriteMask = spriteRenderer.GetComponent<SpriteMask>();
+                if (spriteMask != null)
+                {
+                    spriteRenderer.gameObject.AddComponent<Mask>();
+                    Object.DestroyImmediate(spriteMask);
+                }
+
                 Object.DestroyImmediate(spriteRenderer);
+            }
+        }
+
+        [MenuItem("Utility/Editor/Convert child Transform To RectTransform")]
+        public static void ConvertTransformToRectTransform()
+        {
+            if (Selection.activeGameObject == null)
+                return;
+
+            Undo.RecordObject(Selection.activeGameObject, "Convert child Transform To RectTransform");
+            Transform[] transforms = Selection.activeGameObject.GetComponentsInChildren<Transform>();
+            foreach (Transform transform in transforms)
+            {
+                if (transform is RectTransform)
+                    continue;
+
+                transform.gameObject.AddComponent<RectTransform>();
+                Object.DestroyImmediate(transform);
             }
         }
 
