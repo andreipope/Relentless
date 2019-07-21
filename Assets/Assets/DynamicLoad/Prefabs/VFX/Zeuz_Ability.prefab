@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4749886044211248}
   - component: {fileID: 198643515695879686}
   - component: {fileID: 199750805670765494}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: PulseDarkAttacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4767,7 +4767,7 @@ GameObject:
   - component: {fileID: 4822811251889866}
   - component: {fileID: 198051811183973912}
   - component: {fileID: 199187624219701338}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9559,7 +9559,7 @@ GameObject:
   - component: {fileID: 4368630221685288}
   - component: {fileID: 198600073795356380}
   - component: {fileID: 199512799154330102}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14342,7 +14342,7 @@ GameObject:
   - component: {fileID: 4218139847555200}
   - component: {fileID: 198852006767346280}
   - component: {fileID: 199851733850979430}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Beam (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19098,7 +19098,7 @@ GameObject:
   - component: {fileID: 4755929997381078}
   - component: {fileID: 198857864411610442}
   - component: {fileID: 199292004439333216}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Beam (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23854,7 +23854,7 @@ GameObject:
   - component: {fileID: 4510821604046658}
   - component: {fileID: 198953969801522972}
   - component: {fileID: 199787841058748866}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Beam (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28610,7 +28610,7 @@ GameObject:
   - component: {fileID: 4310994574174080}
   - component: {fileID: 198644195639339826}
   - component: {fileID: 199363437500426408}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33402,7 +33402,7 @@ GameObject:
   - component: {fileID: 4832073907775098}
   - component: {fileID: 198428901550871782}
   - component: {fileID: 199794785589772482}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Lighting 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38167,7 +38167,7 @@ GameObject:
   - component: {fileID: 4132192329971864}
   - component: {fileID: 198300213820077664}
   - component: {fileID: 199299782142770932}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42950,7 +42950,7 @@ GameObject:
   - component: {fileID: 4646008912009024}
   - component: {fileID: 198880017938575344}
   - component: {fileID: 199046028228770028}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Lighting 1 (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47713,10 +47713,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4344021574239126}
-  - component: {fileID: 198489128578472084}
-  - component: {fileID: 199839102046430808}
-  m_Layer: 9
-  m_Name: ZeuZEnd
+  - component: {fileID: 4257572838783569240}
+  - component: {fileID: 4256248703302267796}
+  - component: {fileID: 1672492084955486263}
+  - component: {fileID: 542574312664291023}
+  m_Layer: 0
+  m_Name: Zeuz_Ability
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47730,7 +47732,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1325191198206814}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.009689093, y: -1.1, z: -0.64}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4749886044211248}
@@ -47767,7 +47769,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!198 &198489128578472084
+--- !u!198 &4257572838783569240
 ParticleSystem:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52429,7 +52431,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!199 &199839102046430808
+--- !u!199 &4256248703302267796
 ParticleSystemRenderer:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -52491,6 +52493,41 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &1672492084955486263
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325191198206814}
+  m_Enabled: 1
+  m_SortingLayerID: -500615965
+  m_SortingLayer: 7
+  m_SortingOrder: 31
+--- !u!114 &542574312664291023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325191198206814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: 
+  cardNameOfAbility: 0
+  delayBeforeEffect: 3
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  soundName: 
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
+  positionInfo:
+    type: 0
 --- !u!1 &1380328698205844
 GameObject:
   m_ObjectHideFlags: 0
@@ -52502,7 +52539,7 @@ GameObject:
   - component: {fileID: 4936582361104584}
   - component: {fileID: 198476346047102884}
   - component: {fileID: 199940978024836856}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57294,7 +57331,7 @@ GameObject:
   - component: {fileID: 4524139837831582}
   - component: {fileID: 198916571097893284}
   - component: {fileID: 199011106459670102}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Lighting 1 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62059,7 +62096,7 @@ GameObject:
   - component: {fileID: 4565059610275134}
   - component: {fileID: 198192805835943556}
   - component: {fileID: 199571694187391386}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Beam (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66815,7 +66852,7 @@ GameObject:
   - component: {fileID: 4980068532344370}
   - component: {fileID: 198648192660402338}
   - component: {fileID: 199348115059933314}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactPulse (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71580,7 +71617,7 @@ GameObject:
   - component: {fileID: 4342752973268982}
   - component: {fileID: 198375515425463652}
   - component: {fileID: 199783056268710720}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactPulse (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76345,7 +76382,7 @@ GameObject:
   - component: {fileID: 4783708193778308}
   - component: {fileID: 198878776330533300}
   - component: {fileID: 199718900852619040}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactPulse (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81110,7 +81147,7 @@ GameObject:
   - component: {fileID: 4307305025852724}
   - component: {fileID: 198223895776901784}
   - component: {fileID: 199585544275866702}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85893,7 +85930,7 @@ GameObject:
   - component: {fileID: 4896354755993272}
   - component: {fileID: 198564811422414788}
   - component: {fileID: 199984218006344418}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90676,7 +90713,7 @@ GameObject:
   - component: {fileID: 4414914038651346}
   - component: {fileID: 198212246516894658}
   - component: {fileID: 199497496860969234}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Lighting 1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95441,7 +95478,7 @@ GameObject:
   - component: {fileID: 4280408019072814}
   - component: {fileID: 198787908878754276}
   - component: {fileID: 199926449674029580}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Beam (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100197,7 +100234,7 @@ GameObject:
   - component: {fileID: 4651036757432726}
   - component: {fileID: 198386507452554962}
   - component: {fileID: 199187463136168636}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactPulse (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104962,7 +104999,7 @@ GameObject:
   - component: {fileID: 4949353839284674}
   - component: {fileID: 198891937280585838}
   - component: {fileID: 199084555800104730}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109754,7 +109791,7 @@ GameObject:
   - component: {fileID: 4179260920631688}
   - component: {fileID: 198290001997649590}
   - component: {fileID: 199880957799161646}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Lighting 1 (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114519,7 +114556,7 @@ GameObject:
   - component: {fileID: 4359721720847266}
   - component: {fileID: 198752143240689694}
   - component: {fileID: 199448601159424986}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactPulse (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119284,7 +119321,7 @@ GameObject:
   - component: {fileID: 4657865201007552}
   - component: {fileID: 198974521444998218}
   - component: {fileID: 199775373357345466}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124067,7 +124104,7 @@ GameObject:
   - component: {fileID: 4750046022467838}
   - component: {fileID: 198645559262125498}
   - component: {fileID: 199231594790420006}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Beam (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128823,7 +128860,7 @@ GameObject:
   - component: {fileID: 4175050104544200}
   - component: {fileID: 198844073600762466}
   - component: {fileID: 199965797150208724}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133615,7 +133652,7 @@ GameObject:
   - component: {fileID: 4794875057378790}
   - component: {fileID: 198087958493975352}
   - component: {fileID: 199781241641183984}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138407,7 +138444,7 @@ GameObject:
   - component: {fileID: 4238064677543710}
   - component: {fileID: 198348526412830818}
   - component: {fileID: 199417040622802224}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Lighting 1 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143172,7 +143209,7 @@ GameObject:
   - component: {fileID: 4799374546386440}
   - component: {fileID: 198922676117178714}
   - component: {fileID: 199703771082642576}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactPulse (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147937,7 +147974,7 @@ GameObject:
   - component: {fileID: 4170298615448122}
   - component: {fileID: 198047217403946220}
   - component: {fileID: 199560000649269102}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -22,10 +22,7 @@ namespace Loom.ZombieBattleground
             unitView.GameObject.SetActive(false);
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                        "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));
-                                                        
-            int cacheCullingMask = Camera.main.cullingMask;
-            Camera.main.cullingMask = 0;                                            
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));                                                        
 
             Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
 
@@ -40,7 +37,6 @@ namespace Loom.ZombieBattleground
 
             InternalTools.DoActionDelayed(() =>
             {                
-                Camera.main.cullingMask = cacheCullingMask;
                 cameraGroupTransform.SetParent(null);
                 cameraGroupTransform.position = Vector3.zero; 
                 

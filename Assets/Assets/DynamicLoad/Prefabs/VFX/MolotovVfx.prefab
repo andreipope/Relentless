@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4704648816351024869}
   - component: {fileID: 4871706009242554231}
   - component: {fileID: 4872804066345948595}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SparksBurst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4668,7 +4668,7 @@ GameObject:
   - component: {fileID: 4707930720659927729}
   - component: {fileID: 4871337989673916417}
   - component: {fileID: 4872840995477031147}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SmokeRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9285,7 +9285,7 @@ GameObject:
   - component: {fileID: 4707492205480172103}
   - component: {fileID: 4871546475645503245}
   - component: {fileID: 4870971670032947153}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: PulseBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14050,7 +14050,7 @@ GameObject:
   - component: {fileID: 4707528496838029563}
   - component: {fileID: 4871302593685565457}
   - component: {fileID: 4872837566876808947}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18649,7 +18649,7 @@ GameObject:
   - component: {fileID: 4707824154265045805}
   - component: {fileID: 4870684787829151949}
   - component: {fileID: 4871868597287288681}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ExplosionPowder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23431,6 +23431,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4707571010172815783}
   - component: {fileID: 4614225745580730051}
+  - component: {fileID: 8393390619367752365}
+  - component: {fileID: 7406111423937163009}
   m_Layer: 0
   m_Name: MolotovVfx
   m_TagString: Untagged
@@ -23473,6 +23475,41 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8393390619367752365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709073239552750765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Molotov
+  cardNameOfAbility: 3
+  delayBeforeEffect: 3
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  soundName: 
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
+  positionInfo:
+    type: 0
+--- !u!210 &7406111423937163009
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709073239552750765}
+  m_Enabled: 1
+  m_SortingLayerID: -1277327807
+  m_SortingLayer: 4
+  m_SortingOrder: 31
 --- !u!1 &4709667820482073939
 GameObject:
   m_ObjectHideFlags: 0
@@ -23484,7 +23521,7 @@ GameObject:
   - component: {fileID: 4704902218453308859}
   - component: {fileID: 4871319990241145335}
   - component: {fileID: 4872470731409171389}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28267,7 +28304,7 @@ GameObject:
   - component: {fileID: 4704836845044630719}
   - component: {fileID: 4871530797848994395}
   - component: {fileID: 4872526685051557095}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SmokeYellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37600,7 +37637,7 @@ GameObject:
   - component: {fileID: 4707609778631223589}
   - component: {fileID: 4870658162569680285}
   - component: {fileID: 4871052818970073955}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireHL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42208,7 +42245,7 @@ GameObject:
   - component: {fileID: 4707469901369919207}
   - component: {fileID: 4871351396805124863}
   - component: {fileID: 4872567339875026105}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51582,7 +51619,7 @@ GameObject:
   - component: {fileID: 4704889457916714771}
   - component: {fileID: 4870814579810619085}
   - component: {fileID: 4872621828860048723}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56289,7 +56326,7 @@ GameObject:
   - component: {fileID: 4704713910778413273}
   - component: {fileID: 4870744997327689557}
   - component: {fileID: 4872438140991672685}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SmokeRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60929,7 +60966,7 @@ GameObject:
   - component: {fileID: 4704600595957407749}
   - component: {fileID: 4871241306270121629}
   - component: {fileID: 4872624812864792427}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65604,7 +65641,7 @@ GameObject:
   - component: {fileID: 4704939959702268545}
   - component: {fileID: 4870845254860921197}
   - component: {fileID: 4872888911595337513}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SmokeRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70244,7 +70281,7 @@ GameObject:
   - component: {fileID: 4707636642044326923}
   - component: {fileID: 4892532323461611997}
   - component: {fileID: 4872521937108920621}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireFastUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74874,7 +74911,7 @@ GameObject:
   - component: {fileID: 4705061622122948601}
   - component: {fileID: 4871206400665002033}
   - component: {fileID: 4871142082215607423}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79581,7 +79618,7 @@ GameObject:
   - component: {fileID: 4704981942816492173}
   - component: {fileID: 4870782629804639883}
   - component: {fileID: 4872660295124110995}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireHL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84190,7 +84227,7 @@ GameObject:
   - component: {fileID: 4704720663071569299}
   - component: {fileID: 4892545995569733093}
   - component: {fileID: 4872765036206439361}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireHL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88799,7 +88836,7 @@ GameObject:
   - component: {fileID: 4707648120035802523}
   - component: {fileID: 4892566845328046153}
   - component: {fileID: 4872844136128404181}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SparksFieldStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93380,7 +93417,7 @@ GameObject:
   - component: {fileID: 4707891258734960201}
   - component: {fileID: 4870864999168232923}
   - component: {fileID: 4872466289402167323}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SmokeBlack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98047,7 +98084,7 @@ GameObject:
   - component: {fileID: 4704809936133378681}
   - component: {fileID: 4871289327404734557}
   - component: {fileID: 4871903769993490403}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FireMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
