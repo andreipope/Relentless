@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class ShammannArrivalUniqueAnimation : UniqueAnimation
+    public class ShamanArrivalUniqueAnimation : UniqueAnimation
     {
         public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
@@ -34,21 +34,22 @@ namespace Loom.ZombieBattleground
             Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
             cameraGroupTransform.localPosition = cameraLocalPosition;
 
-            InternalTools.DoActionDelayed(() =>
-            {                
-                cameraGroupTransform.SetParent(null);
-                cameraGroupTransform.position = Vector3.zero; 
-                
-                Object.Destroy(animationVFX);
-                
-                if (unitView != null)
-                {
-                    unitView.GameObject.SetActive(true);
-                    unitView.battleframeAnimator.Play(0, -1, 1);
-                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
-                }             
+            GameObject battleFrameParticles = unitView.Transform.Find("Walker_Arrival_VFX(Clone)/ScrapFlies").gameObject;
 
-                endArrivalCallback?.Invoke();                
+            InternalTools.DoActionDelayed(() =>
+            {
+                unitView.GameObject.SetActive(true);
+
+                battleFrameParticles.SetActive(false);
+                unitView.battleframeAnimator.Play(0, -1, 1);
+
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero;
+                Object.Destroy(animationVFX);
+
+                endArrivalCallback?.Invoke();
+
+                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                 IsPlaying = false;
 
