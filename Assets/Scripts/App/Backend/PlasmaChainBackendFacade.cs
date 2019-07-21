@@ -10,6 +10,8 @@ using Loom.ZombieBattleground.BackendCommunication;
 using log4net;
 using log4netUnitySupport;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
+using Loom.Nethereum.ABI.JsonDeserialisation;
+using Loom.Nethereum.ABI.Model;
 using Loom.Nethereum.Contracts;
 using Loom.Nethereum.Hex.HexTypes;
 using Loom.Nethereum.RPC.Eth.DTOs;
@@ -43,7 +45,7 @@ namespace Loom.ZombieBattleground.Iap
 
         private IDataManager _dataManager;
 
-        private Dictionary<IapContractType, TextAsset> _abiDictionary;
+        private readonly Dictionary<IapContractType, ContractABI> _contractTypeToAbi = new Dictionary<IapContractType, ContractABI>();
 
         private byte[] UserPrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
 
@@ -252,7 +254,7 @@ namespace Loom.ZombieBattleground.Iap
                 client,
                 GetContractAddress(contractType),
                 UserPlasmachainAddress,
-                _abiDictionary[contractType].text);
+                _contractTypeToAbi[contractType]);
         }
 
         private DAppChainClient CreateClient()
@@ -320,14 +322,14 @@ namespace Loom.ZombieBattleground.Iap
                 (IapContractType.TronPackFaucet, "Data/abi/TronLotteryABI")
             };
 
-            _abiDictionary = new Dictionary<IapContractType, TextAsset>();
+            Dictionary<IapContractType, TextAsset> contractTypeToAbiTextAsset = new Dictionary<IapContractType, TextAsset>();
             foreach ((IapContractType contractType, string path) in contractTypeToPath)
             {
                 TextAsset textAsset = _loadObjectsManager.GetObjectByPath<TextAsset>(path);
                 if (textAsset == null)
                     throw new Exception("Unable to load ABI at path " + path);
 
-                _abiDictionary.Add(contractType, textAsset);
+                contractTypeToAbiTextAsset.Add(contractType, textAsset);
             }
 
             (IapContractType contractType, Enumerators.MarketplaceCardPackType cardPackType)[] contractTypeToCardPackType =
@@ -353,7 +355,12 @@ namespace Loom.ZombieBattleground.Iap
                 if (textAsset == null)
                     throw new Exception("Unable to load ABI at path " + path);
 
-                _abiDictionary.Add(contractTypeToCardPackType[i].contractType, textAsset);
+                contractTypeToAbiTextAsset.Add(contractTypeToCardPackType[i].contractType, textAsset);
+            }
+
+            foreach (KeyValuePair<IapContractType, TextAsset> pair in contractTypeToAbiTextAsset)
+            {
+                _contractTypeToAbi.Add(pair.Key, new ABIDeserialiser().DeserialiseContract(pair.Value.text));
             }
         }
 

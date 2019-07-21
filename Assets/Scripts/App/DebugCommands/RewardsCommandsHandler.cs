@@ -135,6 +135,11 @@ namespace Loom.ZombieBattleground
                     await _plasmaChainBackendFacade.ClaimPacks(client, response.Receipt.FromProtobuf());
                 }
 
+                await _backendFacade.ConfirmPendingMintingTransactionReceipt(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    response.Receipt.TxId.FromProtobuf()
+                );
+
                 Debug.Log($"Packs added!");
             }
             catch (Exception e)
