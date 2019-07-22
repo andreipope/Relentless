@@ -22,22 +22,26 @@ namespace Loom.ZombieBattleground
             unitView.GameObject.SetActive(false);
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                        "Prefabs/VFX/UniqueArrivalAnimations/Blizzard_Arrival"));           
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/Blizzard_Arrival"));
 
             animationVFX.transform.Find("Walker_Arrival_VFX").position = unitView.PositionOfBoard + offset;
+
+            GameObject battleFrameParticles = unitView.Transform.Find("Walker_Arrival_VFX(Clone)/ScrapFlies").gameObject;
 
             InternalTools.DoActionDelayed(() =>
             {
                 Object.Destroy(animationVFX);
-                
+
                 if (unitView != null)
                 {
                     unitView.GameObject.SetActive(true);
+                    if(battleFrameParticles != null)
+                        battleFrameParticles.SetActive(false);
                     unitView.battleframeAnimator.Play(0, -1, 1);
                     BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
-                }             
+                }
 
-                endArrivalCallback?.Invoke();                
+                endArrivalCallback?.Invoke();
 
                 IsPlaying = false;
 
