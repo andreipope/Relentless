@@ -30,11 +30,23 @@ namespace Loom.ZombieBattleground
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
             InternalTools.DoActionDelayed(() =>
-            {
-                unitView.GameObject.SetActive(true);
-                unitView.battleframeAnimator.Play(0, -1, 1);
-
+            {      
                 Object.Destroy(animationVFX);
+                
+                if (unitView != null)
+                {
+                    unitView.GameObject.SetActive(true);
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+                    foreach (Transform child in unitView.battleframeAnimator.transform)
+                    {
+                        if (child.name == "ScrapFlies")
+                        {
+                            child.gameObject.SetActive(false);
+                            break;
+                        }
+                    }
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                }
 
                 endArrivalCallback?.Invoke();
 

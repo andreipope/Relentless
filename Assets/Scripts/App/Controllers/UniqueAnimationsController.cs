@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             switch (uniqueAnimationType)
             {
                 case Enumerators.UniqueAnimation.ShammannArrival:
-                    uniqueAnimation = new ShammannArrivalUniqueAnimation();
+                    uniqueAnimation = new ShamanArrivalUniqueAnimation();
                     break;
                 case Enumerators.UniqueAnimation.ZVirusArrival:
                     uniqueAnimation = new ZVirusArrivalUniqueAnimation();
