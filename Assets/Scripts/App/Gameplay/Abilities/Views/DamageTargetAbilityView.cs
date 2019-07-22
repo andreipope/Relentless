@@ -82,8 +82,11 @@ namespace Loom.ZombieBattleground
 
             soundClipTitle = string.Empty;
 
+            Vector3 offset = Vector3.zero;
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
+                //Debug.LogWarning("affect type =  " + Ability.AffectObjectType);
+                //Debug.LogWarning("target pos = " + Ability.TargetPlayer.AvatarObject.transform.position);
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
                 _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
@@ -97,19 +100,22 @@ namespace Loom.ZombieBattleground
                     _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
                     soundClipTitle = effectInfo.soundName;
                     delayBeforeSound = effectInfo.delayForSound;
+                    offset = effectInfo.offset;
                 }
 
-                CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
-                
+                CreateVfx(targetPosition + offset, true, _delayBeforeDestroyImpact, true);
+
                 if
                 (
-                    effectInfo != null && 
+                    effectInfo != null &&
                     (
                         effectInfo.cardName == "Harpoon" ||
-                        effectInfo.cardName == "Gargantua"
+                        effectInfo.cardName == "Gargantua" ||
+                        effectInfo.cardName == "Shovel Damage"
                     )
                 )
-                {                    
+                {
+                    Debug.LogWarning("come to shake");
                     Transform cameraVFXObj = VfxObject.transform.Find("!! Camera shake");
                     cameraVFXObj.transform.position = Vector3.zero;
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
@@ -121,7 +127,7 @@ namespace Loom.ZombieBattleground
                     Ability.VFXAnimationEnded += () =>
                     {
                         cameraGroupTransform.SetParent(null);
-                        cameraGroupTransform.position = Vector3.zero; 
+                        cameraGroupTransform.position = Vector3.zero;
                     };
                 }
 
