@@ -739,14 +739,16 @@ namespace Loom.ZombieBattleground.Common
             MountainArrival,
             GargantuaArrival,
             BlizzardArrival,
-            GoozillaArrival
+            GoozillaArrival,
+            VortexArrival
         }
 
         public enum CardNameOfAbility
         {
             None,
             Bulldozer,
-            Lawnmover
+            Lawnmover,
+            Molotov            
         }
 
         public enum AbilityEffectInfoPositionType

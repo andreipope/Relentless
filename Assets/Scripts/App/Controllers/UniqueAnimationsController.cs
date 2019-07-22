@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             switch (uniqueAnimationType)
             {
                 case Enumerators.UniqueAnimation.ShammannArrival:
-                    uniqueAnimation = new ShammannArrivalUniqueAnimation();
+                    uniqueAnimation = new ShamanArrivalUniqueAnimation();
                     break;
                 case Enumerators.UniqueAnimation.ZVirusArrival:
                     uniqueAnimation = new ZVirusArrivalUniqueAnimation();
@@ -67,6 +67,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.UniqueAnimation.GoozillaArrival:
                     uniqueAnimation = new GoozillaArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.VortexArrival:
+                    uniqueAnimation = new VortexArrivalUniqueAnimation();
                     break;
                 default:
                     throw new NotImplementedException(nameof(uniqueAnimationType) + " not implemented yet");

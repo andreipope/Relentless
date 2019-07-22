@@ -263,6 +263,7 @@ namespace Loom.ZombieBattleground
                 case Tab.None:
                     break;
                 case Tab.SelectDeck:
+                    _uiManager.GetPopup<ElementFilterPopup>().ResetSelectedFactionList();
                     HordeSelectDeckTab.InputFieldApplyFilter();
                     break;
                 case Tab.Editing:

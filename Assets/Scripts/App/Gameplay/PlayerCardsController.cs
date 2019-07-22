@@ -827,6 +827,7 @@ namespace Loom.ZombieBattleground
             CallLog($"{nameof(TakeControlOfUnit)}(CardModel unit = {unit})");
 
             unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit, false);
+            unit.OwnerPlayer.PlayerCardsController.InvokeBoardChanged();
             unit.Card.Owner = Player;
 
             _cardsOnBoard.Insert(ItemPosition.End, unit);

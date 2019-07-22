@@ -165,6 +165,13 @@ namespace Loom.ZombieBattleground
             SelectedCard = null;
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            BoardArrowController.CurrentBoardArrow = null;
+            BoardArrowController.SetStatusOfBoardArrowOnBoard(false);
+        }
+
         protected bool OpponentHasHeavyUnits()
         {
             return BoardCards?.FindAll(x => x.IsHeavyUnit && x.CurrentDefense > 0).Count > 0;

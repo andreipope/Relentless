@@ -226,8 +226,7 @@ namespace Loom.ZombieBattleground
                 OpenedPackCard openedPackCard = _openedCards[i];
                 Sequence hideSequence = DOTween.Sequence();
                 hideSequence.AppendInterval(i * 0.1f);
-                hideSequence.Append(
-                    openedPackCard.GameObject.transform.DOMove(CardHidePosition, CardHideAnimationDuration));
+                hideSequence.Append(openedPackCard.GameObject.transform.DOMove(CardHidePosition, CardHideAnimationDuration));
                 if (i == _openedCards.Count - 1)
                 {
                     hideSequence.AppendCallback(() => onEnd());
@@ -879,11 +878,10 @@ namespace Loom.ZombieBattleground
                                 _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your packs...");
                             }
 
-                            // Run these calls in parallel
-                            client.Configuration.AllowAsynchronousCalls = true;
-                            Task[] updatePackBalanceTasks =
-                                ShownPackTypes.Select(packType => UpdatePackBalanceAmount(client, packType)).ToArray();
-                            await Task.WhenAll(updatePackBalanceTasks);
+                            foreach (Enumerators.MarketplaceCardPackType packType in ShownPackTypes)
+                            {
+                                await Task.Run(() => UpdatePackBalanceAmount(client, packType));
+                            }
                         }
                     });
                 }
