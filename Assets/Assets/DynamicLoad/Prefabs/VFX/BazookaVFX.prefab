@@ -70718,7 +70718,9 @@ MonoBehaviour:
   delayForSound: 0
   offset: {x: 0, y: 0, z: 0}
   localOffset: {x: 0, y: 0, z: 0}
-  isRotate: 0
+  isRotate: 1
+  localPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
+  opponentPlayerAbilityEffectRotation: {x: 0, y: 0, z: 180}
   positionInfo:
     type: 0
 --- !u!1 &8259129832889432345
