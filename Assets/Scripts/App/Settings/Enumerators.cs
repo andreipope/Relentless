@@ -748,7 +748,7 @@ namespace Loom.ZombieBattleground.Common
             None,
             Bulldozer,
             Lawnmover,
-            Molotov            
+            Molotov
         }
 
         public enum AbilityEffectInfoPositionType
@@ -959,7 +959,9 @@ namespace Loom.ZombieBattleground.Common
             Life = 5,
             Toxic = 6,
             Water = 7,
+            [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
             Small = 8,
+            [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
             Minion = 9,
             Binance = 10,
             Tron = 11
