@@ -123,17 +123,17 @@ namespace Loom.ZombieBattleground
             switch (faction)
             {
                 case Enumerators.Faction.FIRE:
-                    return new Vector3(116f, -379f, 0f);
+                    return new Vector3(116f, -315f, 0f);
                 case Enumerators.Faction.WATER:
-                    return new Vector3(11f, -389f, 0f);
+                    return new Vector3(11f, -345f, 0f);
                 case Enumerators.Faction.EARTH:
-                    return new Vector3(-3f, -325f, 0f);
+                    return new Vector3(-3f, -275f, 0f);
                 case Enumerators.Faction.AIR:
-                    return new Vector3(-150f, -223f, 0f);
+                    return new Vector3(-150f, -200f, 0f);
                 case Enumerators.Faction.LIFE:
-                    return new Vector3(-42f, -219f, 0f);
+                    return new Vector3(-42f, -185f, 0f);
                 case Enumerators.Faction.TOXIC:
-                    return new Vector3(101f, -219f, 0f);
+                    return new Vector3(101f, -185f, 0f);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
             }
