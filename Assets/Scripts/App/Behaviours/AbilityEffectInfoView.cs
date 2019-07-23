@@ -29,6 +29,9 @@ namespace Loom.ZombieBattleground
 
         public bool isRotate = false;
 
+        public Vector3 localPlayerAbilityEffectRotation = Vector3.zero;
+        public Vector3 opponentPlayerAbilityEffectRotation = Vector3.zero;
+
         public AbilityInfoPositionBlock positionInfo;
     }
 

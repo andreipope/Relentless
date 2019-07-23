@@ -277,8 +277,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     versionData.PlasmachainLifePackContractAddress,
                     versionData.PlasmachainToxicPackContractAddress,
                     versionData.PlasmachainWaterPackContractAddress,
-                    versionData.PlasmachainSmallPackContractAddress,
-                    versionData.PlasmachainMinionPackContractAddress,
                     versionData.PlasmachainBinancePackContractAddress,
                     versionData.PlasmachainTronPackContractAddress,
                     versionData.PlasmachainFiatPurchaseContractAddress,

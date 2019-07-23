@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
         private BattlegroundController _battlegroundController;
 
         private List<BoardUnitView> _unitsViews;
+        
+        public Coroutine CorrectActionReportPanelCoroutine;
 
         #region BulldozerFields
 
@@ -78,11 +80,30 @@ namespace Loom.ZombieBattleground
                             cameraGroupTransform.SetParent(cameraVFXObj);
 
                             cameraGroupTransform.localPosition = targetPosition * -1;
+                            
+                            GameplayPage gameplayPage = GameClient.Get<IUIManager>().GetPage<GameplayPage>();
+                            Transform actionReportPivot = GameObject.Find("ActionReportPivot").transform;
+                            GameObject pivotParent = new GameObject("PivotParent");                    
+                            Vector3 actionReportPivotCachePos = actionReportPivot.position;
+                            actionReportPivot.SetParent(pivotParent.transform);
+                            CorrectActionReportPanelCoroutine = MainApp.Instance.StartCoroutine
+                            (
+                                gameplayPage.CorrectReportPanelDuringCameraShake()
+                            );
 
                             OnEventEnded += () =>
                             {
                                 cameraGroupTransform.SetParent(null);
                                 cameraGroupTransform.position = Vector3.zero;
+                                if (CorrectActionReportPanelCoroutine != null)
+                                {
+                                    MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
+                                }
+                                CorrectActionReportPanelCoroutine = null;
+                                actionReportPivot.SetParent(null);
+                                actionReportPivot.position = actionReportPivotCachePos;
+                                gameplayPage.SyncActionReportPanelPositionWithPivot();
+                                Object.Destroy(pivotParent);
                             };
 
                             opponentLineObject = VfxObject.transform.Find("VFX/RubbleUp/BurstToxic").gameObject;

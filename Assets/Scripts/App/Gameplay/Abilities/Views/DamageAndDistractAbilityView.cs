@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
         private List<BoardUnitView> _unitsViews;
 
         private BattlegroundController _battlegroundController;
+        
+        public Coroutine CorrectActionReportPanelCoroutine;
 
         #region LawnmowerFields
 
@@ -71,10 +73,29 @@ namespace Loom.ZombieBattleground
                     Vector3 cameraPosition = newTargetPosition * -1;
                     cameraGroupTransform.localPosition = new Vector3(cameraPosition.x, cameraGroupTransform.localPosition.y, cameraPosition.y);
 
+                    GameplayPage gameplayPage = GameClient.Get<IUIManager>().GetPage<GameplayPage>();
+                    Transform actionReportPivot = GameObject.Find("ActionReportPivot").transform;
+                    GameObject pivotParent = new GameObject("PivotParent");                    
+                    Vector3 actionReportPivotCachePos = actionReportPivot.position;
+                    actionReportPivot.SetParent(pivotParent.transform);
+                    CorrectActionReportPanelCoroutine = MainApp.Instance.StartCoroutine
+                    (
+                        gameplayPage.CorrectReportPanelDuringCameraShake()
+                    );
+
                     Ability.VFXAnimationEnded += () =>
                     {
                         cameraGroupTransform.SetParent(null);
                         cameraGroupTransform.position = Vector3.zero;
+                        if (CorrectActionReportPanelCoroutine != null)
+                        {
+                            MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
+                        }
+                        CorrectActionReportPanelCoroutine = null;
+                        actionReportPivot.SetParent(null);
+                        actionReportPivot.position = actionReportPivotCachePos;
+                        gameplayPage.SyncActionReportPanelPositionWithPivot();
+                        Object.Destroy(pivotParent);
                     };
 
                     _lineObject = VfxObject.transform.Find("BurstToxic").gameObject;
