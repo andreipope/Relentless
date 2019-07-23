@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 
         public event Action OnUpdateEvent;
 
+        private bool _targetsAreReady;
+
         private List<IBoardObject> _targets;
 
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -111,7 +113,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeDamage(bool exceptCaller = false)
+        private void PrepareTargets(bool exceptCaller = false)
         {
             _targets = new List<IBoardObject>();
 
@@ -147,6 +149,16 @@ namespace Loom.ZombieBattleground
             {
                 Damage = CardModel.CurrentDamage;
             }
+        }
+
+        private void TakeDamage(bool exceptCaller = false)
+        {
+            _targets = new List<IBoardObject>();
+
+            if (!_targetsAreReady)
+            {
+                PrepareTargets(exceptCaller);
+            }
 
             foreach(IBoardObject boardObject in _targets)
             {
@@ -160,6 +172,31 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
 
             InvokeActionTriggered(_targets);
+        }
+
+        private void PrepareTargetsBeforeDeath()
+        {
+            PrepareTargets();
+        }
+
+        protected override void PrepairingToDieHandler(IBoardObject from)
+        {
+            base.PrepairingToDieHandler(from);
+
+            PrepareTargetsBeforeDeath();
+        }
+
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            base.UnitHpChangedHandler(oldValue, newValue);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) 
+                return;
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                PrepareTargetsBeforeDeath();
+            }
         }
 
         public void OneActionCompleted(IBoardObject boardObject)
