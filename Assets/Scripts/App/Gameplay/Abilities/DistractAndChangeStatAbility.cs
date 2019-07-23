@@ -29,16 +29,22 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                DistractAndChangeStat(new List<CardModel>() { TargetUnit }, Defense, Damage);
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)
                 });
 
                 Debug.LogWarning("Invoke action triggered");
-                InvokeActionTriggered();
+                InvokeActionTriggered(TargetUnit);
             }
         }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+            DistractAndChangeStat(new List<CardModel>() { TargetUnit }, Defense, Damage);
+        }
+
 
         private void DistractAndChangeStat(List<CardModel> units, int defense, int attack)
         {
