@@ -149,6 +149,8 @@ namespace Loom.ZombieBattleground
             {
                 Damage = CardModel.CurrentDamage;
             }
+
+            _targetsAreReady = true;
         }
 
         private void TakeDamage(bool exceptCaller = false)
