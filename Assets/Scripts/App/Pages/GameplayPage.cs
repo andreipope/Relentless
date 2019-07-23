@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,6 +57,8 @@ namespace Loom.ZombieBattleground
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
+
+        private Transform _actionReportPivot, _actionReportPanel, _cameraGroupTransform;
 
         private TextMeshPro _playerDefenseText,
             _opponentDefenseText,
@@ -170,6 +174,9 @@ namespace Loom.ZombieBattleground
             _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
             _settingsButton = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
             _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
+
+            _actionReportPivot = GameObject.Find("ActionReportPivot").transform;
+            _actionReportPanel = _selfPage.transform.Find("ActionReportPanel");            
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
@@ -394,11 +401,32 @@ namespace Loom.ZombieBattleground
             
             if (_selfPage == null)
                 return;
-                
-            GameObject actionReportPanelObject = _selfPage.transform.Find("ActionReportPanel").gameObject;
-            Vector3 pos = GameObject.Find("ActionReportPivot").transform.position;
-            pos.z = actionReportPanelObject.transform.position.z;
-            actionReportPanelObject.transform.position = pos;
+
+            SyncActionReportPanelPositionWithPivot();
+        }
+
+        public void SyncActionReportPanelPositionWithPivot()
+        { 
+            Vector3 pos = _actionReportPivot.position;
+            pos.z = _actionReportPanel.position.z;
+            _actionReportPanel.position = pos;
+        }
+        
+        public IEnumerator CorrectReportPanelDuringCameraShake()
+        {
+            while(true)
+            {                
+                if ( _selfPage != null && _selfPage.activeInHierarchy && _actionReportPivot.parent != null)
+                {
+                    if (_cameraGroupTransform == null)
+                    {
+                        _cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                    }
+                    _actionReportPivot.parent.position = _cameraGroupTransform.position * -1f;
+                    SyncActionReportPanelPositionWithPivot();
+                }
+                yield return null;
+            }            
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)

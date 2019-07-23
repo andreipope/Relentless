@@ -253,6 +253,12 @@ namespace Loom.ZombieBattleground {
 
                 if (result.Match != null)
                 {
+                    _matchMetadata = new MatchMetadata(
+                        result.Match.Id,
+                        result.Match.Topics,
+                        result.Match.UseBackendGameLogic
+                    );
+
                     if (result.Match.Status == Match.Types.Status.Matching)
                     {
                         bool mustAccept = false;
@@ -358,12 +364,13 @@ namespace Loom.ZombieBattleground {
 
         protected async Task ConfirmMatch(FindMatchResponse findMatchResponse)
         {
+            if (_matchMetadata == null)
+                throw new Exception("Can't confirm match with matchMetadata == null");
+
             await SetState(MatchMakingState.Confirmed);
 
             Log.Debug("MatchConfirmed");
-
             MTwister.RandomInit((uint)findMatchResponse.Match.RandomSeed);
-
             MatchConfirmed?.Invoke(_matchMetadata);
         }
 

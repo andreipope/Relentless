@@ -31,6 +31,7 @@ namespace Loom.ZombieBattleground.Editor
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;
 
             PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
+            PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Release);
 #if USE_PRODUCTION_BACKEND
             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Master);
 #endif

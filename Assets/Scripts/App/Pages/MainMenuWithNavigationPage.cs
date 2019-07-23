@@ -83,8 +83,6 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
             _uiManager.DrawPopup<AreaBarPopup>();       
             _uiManager.DrawPopup<DeckSelectionPopup>();
-
-            AnimateOverlordPortrait(); 
             
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);

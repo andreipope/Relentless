@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2900889645855012579}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.203505, y: 9.84, z: 2.5}
+  m_LocalPosition: {x: 3.203505, y: 9.84, z: -2}
   m_LocalScale: {x: 1.0979968, y: 0.76360255, z: 0.9696539}
   m_Children:
   - {fileID: 2904544313709011079}
@@ -15096,7 +15096,9 @@ MonoBehaviour:
   delayForSound: 0
   offset: {x: 0, y: 0, z: 0}
   localOffset: {x: 0, y: 0, z: 0}
-  isRotate: 0
+  isRotate: 1
+  localPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
+  opponentPlayerAbilityEffectRotation: {x: 0, y: 0, z: 180}
   positionInfo:
     type: 0
 --- !u!1 &2901736250286256715

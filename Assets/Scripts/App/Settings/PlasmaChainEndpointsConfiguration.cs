@@ -23,8 +23,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string lifePackContractAddress,
             string toxicPackContractAddress,
             string waterPackContractAddress,
-            string smallPackContractAddress,
-            string minionPackContractAddress,
             string binancePackContractAddress,
             string tronPackContractAddress,
             string fiatPurchaseContractAddress,
@@ -44,8 +42,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             LifePackContractAddress = Address.FromString(lifePackContractAddress, ChainId);
             ToxicPackContractAddress = Address.FromString(toxicPackContractAddress, ChainId);
             WaterPackContractAddress = Address.FromString(waterPackContractAddress, ChainId);
-            SmallPackContractAddress = Address.FromString(smallPackContractAddress, ChainId);
-            MinionPackContractAddress = Address.FromString(minionPackContractAddress, ChainId);
             BinancePackContractAddress = Address.FromString(binancePackContractAddress, ChainId);
             TronPackContractAddress = Address.FromString(tronPackContractAddress, ChainId);
             FiatPurchaseContractAddress = Address.FromString(fiatPurchaseContractAddress, ChainId);
@@ -105,14 +101,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_waterpack_contract_address")]
         public Address WaterPackContractAddress { get; }
-
-        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
-        [JsonProperty("plasmachain_smallpack_contract_address")]
-        public Address SmallPackContractAddress { get; }
-
-        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
-        [JsonProperty("plasmachain_minionpack_contract_address")]
-        public Address MinionPackContractAddress { get; }
 
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_binancepack_contract_address")]

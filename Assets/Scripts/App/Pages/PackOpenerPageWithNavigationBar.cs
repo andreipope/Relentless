@@ -822,8 +822,6 @@ namespace Loom.ZombieBattleground
                 Enumerators.MarketplaceCardPackType.Life,
                 Enumerators.MarketplaceCardPackType.Toxic,
                 Enumerators.MarketplaceCardPackType.Water,
-                Enumerators.MarketplaceCardPackType.Small,
-                Enumerators.MarketplaceCardPackType.Minion,
                 Enumerators.MarketplaceCardPackType.Binance,
                 Enumerators.MarketplaceCardPackType.Tron
             };
@@ -984,8 +982,6 @@ namespace Loom.ZombieBattleground
                             Enumerators.MarketplaceCardPackType.Life,
                             Enumerators.MarketplaceCardPackType.Toxic,
                             Enumerators.MarketplaceCardPackType.Water,
-                            Enumerators.MarketplaceCardPackType.Small,
-                            Enumerators.MarketplaceCardPackType.Minion,
                             Enumerators.MarketplaceCardPackType.Binance,
                             Enumerators.MarketplaceCardPackType.Tron
                         };
