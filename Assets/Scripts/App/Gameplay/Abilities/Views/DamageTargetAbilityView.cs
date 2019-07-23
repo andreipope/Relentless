@@ -60,14 +60,34 @@ namespace Loom.ZombieBattleground
                 targetPosition += VfxObject.transform.right * localOffset.x;
                 targetPosition += VfxObject.transform.forward * localOffset.z;
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
-                InternalTools.DoActionDelayed(() =>
+                if( effectInfo != null && (effectInfo.cardName == "Gargantua") )
                 {
-                    VfxObject.transform.DOMove(targetPosition, durationOfMoving).OnComplete(ActionCompleted);
-                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
-                }, _delayBeforeMove);
-
+                    GameObject movingVfx = VfxObject;                    
+                    
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        movingVfx = Object.Instantiate(movingVfx);
+                        movingVfx.transform.position = targetPosition;
+                        
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            Object.Destroy(movingVfx);
+                        }, effectInfo.delayAfterEffect);
+                    }, effectInfo.delayBeforeEffect);
+                    
+                    ActionCompleted();
+                }
+                else
+                {  
+                    VfxObject = Object.Instantiate(VfxObject);
+                    VfxObject.transform.position = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        VfxObject.transform.DOMove(targetPosition, durationOfMoving).OnComplete(ActionCompleted);
+                        ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                    }, _delayBeforeMove);
+                }
+                
                 PlaySound(soundClipTitle, 0);
             }
             else
