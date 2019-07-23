@@ -1,3 +1,5 @@
+using System;
+
 namespace Loom.ZombieBattleground.Iap
 {
     public enum IapContractType
@@ -13,7 +15,9 @@ namespace Loom.ZombieBattleground.Iap
         LifePack,
         ToxicPack,
         WaterPack,
+        [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
         SmallPack,
+        [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
         MinionPack,
         BinancePack,
         TronPack,

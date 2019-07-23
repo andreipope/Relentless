@@ -83,10 +83,10 @@ namespace Loom.ZombieBattleground
             soundClipTitle = string.Empty;
 
             Vector3 offset = Vector3.zero;
+            bool isRotate = false;
+            Vector3 vfxRotation = Vector3.zero;
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                //Debug.LogWarning("affect type =  " + Ability.AffectObjectType);
-                //Debug.LogWarning("target pos = " + Ability.TargetPlayer.AvatarObject.transform.position);
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
                 _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
@@ -101,9 +101,14 @@ namespace Loom.ZombieBattleground
                     soundClipTitle = effectInfo.soundName;
                     delayBeforeSound = effectInfo.delayForSound;
                     offset = effectInfo.offset;
+                    isRotate = effectInfo.isRotate;
+                    vfxRotation = Ability.PlayerCallerOfAbility.IsLocalPlayer ?
+                        effectInfo.localPlayerAbilityEffectRotation :
+                        effectInfo.opponentPlayerAbilityEffectRotation;
                 }
 
                 CreateVfx(targetPosition + offset, true, _delayBeforeDestroyImpact, true);
+                VfxObject.transform.eulerAngles = vfxRotation;
 
                 if
                 (
@@ -115,7 +120,6 @@ namespace Loom.ZombieBattleground
                     )
                 )
                 {
-                    Debug.LogWarning("come to shake");
                     Transform cameraVFXObj = VfxObject.transform.Find("!! Camera shake");
                     cameraVFXObj.transform.position = Vector3.zero;
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
@@ -123,13 +127,20 @@ namespace Loom.ZombieBattleground
                     (
                        cameraVFXObj
                     );
+
                     cameraGroupTransform.localPosition = VfxObject.transform.position * -1;
+                    if (isRotate && !Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                    {
+                        cameraGroupTransform.localPosition = VfxObject.transform.position;
+                    }
+
                     Ability.VFXAnimationEnded += () =>
                     {
                         cameraGroupTransform.SetParent(null);
                         cameraGroupTransform.position = Vector3.zero;
                     };
                 }
+
 
                 PlaySound(soundClipTitle, delayBeforeSound);
             }

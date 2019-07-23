@@ -158,6 +158,7 @@ namespace Loom.ZombieBattleground.Iap
                     break;
                 case Enumerators.MarketplaceCardPackType.Tron:
                     faucetContractType = IapContractType.TronPackFaucet;
+                    openPackMethod = OpenPackWithLotteryMethod;
                     break;
                 default:
                     faucetContractType = IapContractType.CardFaucet;
@@ -342,8 +343,6 @@ namespace Loom.ZombieBattleground.Iap
                 (IapContractType.LifePack, Enumerators.MarketplaceCardPackType.Life),
                 (IapContractType.ToxicPack, Enumerators.MarketplaceCardPackType.Toxic),
                 (IapContractType.WaterPack, Enumerators.MarketplaceCardPackType.Water),
-                (IapContractType.SmallPack, Enumerators.MarketplaceCardPackType.Small),
-                (IapContractType.MinionPack, Enumerators.MarketplaceCardPackType.Minion),
                 (IapContractType.BinancePack, Enumerators.MarketplaceCardPackType.Binance),
                 (IapContractType.TronPack, Enumerators.MarketplaceCardPackType.Tron)
             };
@@ -390,10 +389,6 @@ namespace Loom.ZombieBattleground.Iap
                     return EndpointsConfiguration.ToxicPackContractAddress;
                 case IapContractType.WaterPack:
                     return EndpointsConfiguration.WaterPackContractAddress;
-                case IapContractType.SmallPack:
-                    return EndpointsConfiguration.SmallPackContractAddress;
-                case IapContractType.MinionPack:
-                    return EndpointsConfiguration.MinionPackContractAddress;
                 case IapContractType.BinancePack:
                     return EndpointsConfiguration.BinancePackContractAddress;
                 case IapContractType.TronPack:
@@ -427,10 +422,6 @@ namespace Loom.ZombieBattleground.Iap
                     return IapContractType.ToxicPack;
                 case Enumerators.MarketplaceCardPackType.Water:
                     return IapContractType.WaterPack;
-                case Enumerators.MarketplaceCardPackType.Small:
-                    return IapContractType.SmallPack;
-                case Enumerators.MarketplaceCardPackType.Minion:
-                    return IapContractType.MinionPack;
                 case Enumerators.MarketplaceCardPackType.Binance:
                     return IapContractType.BinancePack;
                 case Enumerators.MarketplaceCardPackType.Tron:

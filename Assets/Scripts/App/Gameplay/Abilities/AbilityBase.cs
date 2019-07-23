@@ -240,6 +240,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitDied += UnitDiedHandler;
                         AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
                         AbilityUnitOwner.UnitDefenseChanged += UnitHpChangedHandler;
+                        AbilityUnitOwner.UnitAboutToDie += UnitIsPreparingToDie;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
@@ -487,6 +488,10 @@ namespace Loom.ZombieBattleground
                     ChangeAuraStatusAction(false);
                 }
             }
+        }
+
+        protected virtual void UnitIsPreparingToDie()
+        {
         }
 
         protected virtual void ChangeRageStatusAction(bool rageStatus)

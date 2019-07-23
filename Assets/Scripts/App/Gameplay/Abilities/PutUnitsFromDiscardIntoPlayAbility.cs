@@ -57,6 +57,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void UnitIsPreparingToDie()
+        {
+            base.UnitIsPreparingToDie();
+
+            PrepareTargetsBeforeDeath();
+        }
+
         protected override void PrepairingToDieHandler(IBoardObject from)
         {
             base.PrepairingToDieHandler(from);

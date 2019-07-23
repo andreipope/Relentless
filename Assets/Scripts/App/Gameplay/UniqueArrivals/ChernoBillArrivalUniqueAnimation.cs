@@ -13,8 +13,6 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(0f, 0f, 0f);
-
             const float delayBeforeSpawn = 6f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
@@ -29,7 +27,9 @@ namespace Loom.ZombieBattleground
             Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
             cameraGroupTransform.SetParent(cameraVFXObj);
 
-            animationVFX.transform.position = unitView.PositionOfBoard + offset;
+            Vector3 vfxPosition = unitView.PositionOfBoard;
+            vfxPosition.x = 0f;
+            animationVFX.transform.position = vfxPosition;
             animationVFX.transform.Find("DestroyAllCards/Bubble").position = Vector3.zero;
 
             Vector3 cameraLocalPosition = animationVFX.transform.position * -1;

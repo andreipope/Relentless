@@ -57,8 +57,6 @@ namespace Loom.ZombieBattleground.Editor
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> lifePackAddresses = GetAddressesOfContract("ZBGStarterLifePack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> toxicPackAddresses = GetAddressesOfContract("ZBGStarterToxicPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> waterPackAddresses = GetAddressesOfContract("ZBGStarterWaterPack");
-            IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> smallPackAddresses = GetAddressesOfContract("ZBGSmallPack");
-            IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> minionPackAddresses = GetAddressesOfContract("ZBGMinionPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> binancePackAddresses = GetAddressesOfContract("ZBGBinancePack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> tronPackAddresses = GetAddressesOfContract("ZBGTronPack");
             IReadOnlyDictionary<MarketplacePlasmachainNetwork, string> fiatPurchaseAddresses = GetAddressesOfContract("FiatPurchase");
@@ -81,8 +79,6 @@ namespace Loom.ZombieBattleground.Editor
                         lifePackAddresses[network],
                         toxicPackAddresses[network],
                         waterPackAddresses[network],
-                        smallPackAddresses[network],
-                        minionPackAddresses[network],
                         binancePackAddresses[network],
                         tronPackAddresses[network],
                         fiatPurchaseAddresses[network],
