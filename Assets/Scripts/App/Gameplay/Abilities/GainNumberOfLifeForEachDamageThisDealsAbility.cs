@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -36,7 +35,7 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
@@ -52,7 +51,8 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !_isAttacker)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
         {
             Action(_damage);
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

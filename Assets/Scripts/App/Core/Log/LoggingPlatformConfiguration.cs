@@ -2,6 +2,7 @@ using System.Linq;
 using log4net.Core;
 using log4net.Filter;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Iap;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
 #if UNITY_EDITOR
@@ -25,6 +26,9 @@ namespace Loom.ZombieBattleground
                 Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
                 backendFacadeRpc.Level = Level.Warn;
 
+                Logger plasmaChainBackendFacade = Logging.GetLogger(nameof(PlasmachainBackendFacade) + "Rpc");
+                plasmaChainBackendFacade.Level = Level.Warn;
+
                 Logger customContractCallProxy = Logging.GetLogger(nameof(CustomContractCallProxy));
                 customContractCallProxy.Level = Level.Warn;
 
@@ -40,7 +44,8 @@ namespace Loom.ZombieBattleground
                 "A ping was received.",
                 "A pong to this ping has been sent.",
                 "The current output action has been changed",
-                "Not a WebSocket handshake response"
+                "Not a WebSocket handshake response",
+                "Could not produce class with ID" // harmless (for now) side effect of Strip Engine Code
             };
 
             return

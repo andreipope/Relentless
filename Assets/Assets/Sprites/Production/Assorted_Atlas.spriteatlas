@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Assorted_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -22,7 +23,7 @@ SpriteAtlas:
     platformSettings:
     - serializedVersion: 2
       m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 4096
+      m_MaxTextureSize: 2048
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 2
@@ -33,14 +34,15 @@ SpriteAtlas:
       m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
-      padding: 4
+      padding: 8
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
-      enableTightPacking: 1
+      enableRotation: 0
+      enableTightPacking: 0
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: aa4e962305253432cab7a8540615fee0, type: 3}
+    totalSpriteSurfaceArea: 16850645
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

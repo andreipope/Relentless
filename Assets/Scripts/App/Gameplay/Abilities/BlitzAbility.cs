@@ -3,7 +3,6 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,11 +34,11 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitModel> units = new List<BoardUnitModel>();
+                List<CardModel> units = new List<CardModel>();
 
                 if (PredefinedTargets != null)
                 {
-                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().ToList();
+                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<CardModel>().ToList();
                 }
                 else
                 {
@@ -59,7 +58,7 @@ namespace Loom.ZombieBattleground
                     units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
 
-                foreach (BoardUnitModel unit in units)
+                foreach (CardModel unit in units)
                 {
                     TakeBlitzToUnit(unit);
                 }
@@ -82,7 +81,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeBlitzToUnit(BoardUnitModel unit)
+        private void TakeBlitzToUnit(CardModel unit)
         {
             unit.ApplyBuff(Enumerators.BuffType.BLITZ);
         }

@@ -1,7 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -11,13 +10,23 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
-        private List<BoardUnitModel> _boardUnits = new List<BoardUnitModel>();
+        private List<CardModel> _boardUnits = new List<CardModel>();
 
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Defense = ability.Defense;
             Damage = ability.Damage;
+        }
+
+        public override void Deactivate()
+        {
+            //This ability must leave after the owner disappears to complete the "until end of turn" request
+        }
+
+        public override void Dispose()
+        {
+            //This ability must leave after the owner disappears to complete the "until end of turn" request
         }
 
         public override void Activate()
@@ -32,7 +41,8 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeActionTriggered();
         }
@@ -56,7 +66,8 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
@@ -69,7 +80,7 @@ namespace Loom.ZombieBattleground
 
             if (info != null)
             {
-                _boardUnits.Add((BoardUnitModel)info);
+                _boardUnits.Add((CardModel)info);
             }
             else
             {
@@ -95,32 +106,27 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in _boardUnits)
+            foreach (CardModel unit in _boardUnits)
             {
                 if (Damage != 0)
                 {
                     unit.DamageDebuffUntillEndOfTurn += Damage;
-                    int buffresult = unit.CurrentDamage + Damage;
 
-                    if (buffresult < 0)
-                    {
-                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
-                    }
-
-                    unit.AddToCurrentDamageHistory(unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.AddToCurrentDamageHistory(Damage, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = unit.DamageDebuffUntillEndOfTurn > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        ActionEffectType = Damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
                         Target = unit,
                         HasValue = true,
-                        Value = unit.DamageDebuffUntillEndOfTurn
+                        Value = Damage
                     });
                 }
 
                 if (Defense != 0)
                 {
                     unit.HpDebuffUntillEndOfTurn += Defense;
+
                     unit.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -135,10 +141,10 @@ namespace Loom.ZombieBattleground
 
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }
@@ -151,27 +157,28 @@ namespace Loom.ZombieBattleground
 
             base.TurnEndedHandler();
 
-            foreach (BoardUnitModel unit in _boardUnits)
+            foreach (CardModel unit in _boardUnits)
             {
                 if (unit == null)
                     continue;
 
                 if (unit.DamageDebuffUntillEndOfTurn != 0)
                 {
-                    unit.AddToCurrentDamageHistory(-unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
-                    unit.DamageDebuffUntillEndOfTurn = 0;
+                    unit.AddToCurrentDamageHistory(-Damage, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.DamageDebuffUntillEndOfTurn -= Damage;
                 }
 
                 if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.AddToCurrentDefenseHistory(-unit.HpDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
-                    unit.HpDebuffUntillEndOfTurn = 0;
+                    unit.AddToCurrentDefenseHistory(-Defense, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.HpDebuffUntillEndOfTurn -= Defense;
                 }
             }
 
             _boardUnits.Clear();
 
-            Deactivate();
+            base.Deactivate();
+            base.Dispose();
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -180,7 +187,7 @@ namespace Loom.ZombieBattleground
 
             Action();
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

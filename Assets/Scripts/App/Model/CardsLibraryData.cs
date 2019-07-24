@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground.Data
 {
     public class CardsLibraryData
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CardsLibraryData));
+
         public List<Faction> Factions { get; private set; }
 
         public IList<Card> Cards { get; private set; }
@@ -21,36 +24,67 @@ namespace Loom.ZombieBattleground.Data
             InitData();
         }
 
-        public Card GetCardFromName(string name)
+        public Card GetCardByName(string name)
         {
-            Card card = Cards.FirstOrDefault(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
-            if (card == null)
-                throw new Exception($"Card '{name}' not found");
+            Card card = Cards.FirstOrDefault(x =>
+                x.CardKey.Variant == Enumerators.CardVariant.Standard &&
+                String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase)
+            );
 
-            return card;
-        }
-        
-        public Card GetCardFromMouldId(MouldId mouldId)
-        {
-            Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
             if (card == null)
-                throw new Exception($"Card '{mouldId}' not found");
+                throw new KeyNotFoundException();
 
             return card;
         }
 
-        public string GetCardNameFromMouldId(MouldId mouldId)
+        public Card GetCardByCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
         {
-            Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
-            if (card == null)
-                throw new Exception($"Card '{mouldId}' not found");
+            (bool found, Card card) = TryGetCardByCardKey(cardKey, allowFallbackToNormalEdition);
+            if (!found)
+                throw new KeyNotFoundException();
 
-            return card.Name;
+            return card;
+        }
+
+        public (bool found, Card card) TryGetCardByCardKey(CardKey cardKey, bool allowFallbackToNormalEdition = false)
+        {
+            Card card = Cards.FirstOrDefault(x => x.CardKey == cardKey);
+            if (card != null)
+                return (true, card);
+
+            if (allowFallbackToNormalEdition)
+            {
+                card = Cards.FirstOrDefault(x => x.CardKey.MouldId == cardKey.MouldId);
+                if (card != null)
+                    return (true, card);
+            }
+
+            return (false, null);
+        }
+
+        public IReadOnlyList<Card> GetCardsByCardKeys(IReadOnlyList<CardKey> cardKeys, bool allowFallbackToNormalEdition = false)
+        {
+            // Convert card token IDs to actual cards
+            List<Card> cards = new List<Card>();
+            foreach (CardKey cardKey in cardKeys)
+            {
+                (bool found, Card card) = TryGetCardByCardKey(cardKey, allowFallbackToNormalEdition);
+                if (found)
+                {
+                    cards.Add(card);
+                }
+                else
+                {
+                    Log.Warn($"{nameof(GetCardsByCardKeys)}: Unknown card with CardKey {cardKey}");
+                    cards.Add(null);
+                }
+            }
+
+            return cards;
         }
 
         private void InitData()
         {
-            Cards = Cards.OrderBy(card => card.Cost).ToList();
             Factions =
                 Cards
                     .GroupBy(card => card.Faction)
@@ -77,6 +111,7 @@ namespace Loom.ZombieBattleground.Data
     public class Faction
     {
         public Enumerators.Faction Name { get; }
+
         public List<Card> Cards { get; }
 
         public Faction(Enumerators.Faction name, List<Card> cards)
@@ -94,6 +129,6 @@ namespace Loom.ZombieBattleground.Data
     public class CardList
     {
         [JsonProperty("cards")]
-        public List<Card> Cards;
+        public IList<Card> Cards;
     }
 }

@@ -1,26 +1,27 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
-using Loom.ZombieBattleground.Helpers;
 using TMPro;
+using log4net;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
-using static Loom.ZombieBattleground.OverlordExperienceManager;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class LevelUpPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LevelUpPopup));
         private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
 
         private const string _hideParameterName = "Hide";
 
         private ILoadObjectsManager _loadObjectsManager;
+
+        private IDataManager _dataManager;
 
         private IUIManager _uiManager;
 
@@ -32,13 +33,15 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _skillDescription;
 
-        private TextMeshProUGUI _message;
+        private TextMeshProUGUI _noRewardMessage;
 
         private HorizontalLayoutGroup _abilitiesGroup;
 
         private GameObject _rewardSkillObject;
 
-        private GameObject _rewardDisabledObject;
+        private GameObject _rewardBoosterPackObject;
+
+        private GameObject _noRewardObject;
 
         private List<AbilityViewItem> _abilities;
 
@@ -46,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         private Animator _backgroundAnimator, _containerAnimator;
 
-        private OverlordModel _selectedOverlord;
+        private OverlordUserInstance _selectedOverlord;
 
         public GameObject Self { get; private set; }
 
@@ -54,6 +57,7 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            _dataManager = GameClient.Get<IDataManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 
@@ -81,106 +85,111 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            throw new InvalidOperationException("Use Show with parameter");
+        }
+
+        public void Show(object data)
+        {
             if (Self != null)
                 return;
 
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LevelUpPopup"));
-            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+            EndMatchResults endMatchResults = (EndMatchResults) data;
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LevelUpPopup"), _uiManager.Canvas3.transform, false);
 
             _buttonOk = Self.transform.Find("Pivot/levelup_panel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
             _rewardSkillObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardSkill_Panel").gameObject;
+            _rewardBoosterPackObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardBoosterPack_Panel").gameObject;
 
-            _rewardDisabledObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardDisabled_Panel").gameObject;
+            _noRewardObject = Self.transform.Find("Pivot/levelup_panel/UI/NoReward_Panel").gameObject;
 
             _abilitiesGroup = _rewardSkillObject.transform.Find("Abilities").GetComponent<HorizontalLayoutGroup>();
 
-            _message = _rewardDisabledObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+            _noRewardMessage = _noRewardObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 
-            _currentLevel = Self.transform.Find("Pivot/levelup_panel/UI/Text_Level")
-                .GetComponent<TextMeshProUGUI>();
-
-            _skillName = _rewardSkillObject.transform.Find("SkillName")
-                .GetComponent<TextMeshProUGUI>();
-
-            _skillDescription = _rewardSkillObject.transform.Find("SkillDescription")
-                .GetComponent<TextMeshProUGUI>();
+            _currentLevel = Self.transform.Find("Pivot/levelup_panel/UI/Text_Level").GetComponent<TextMeshProUGUI>();
+            _skillName = _rewardSkillObject.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
+            _skillDescription = _rewardSkillObject.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
 
             _backgroundAnimator = Self.transform.Find("Background").GetComponent<Animator>();
             _containerAnimator = Self.transform.Find("Pivot").GetComponent<Animator>();
 
-            _backgroundAnimator.GetComponent<AnimationEventTriggering>().AnimationEventTriggered += AnimationEventTriggeredHandler;        
+            _backgroundAnimator.GetComponent<AnimationEventTriggering>().AnimationEventTriggered += AnimationEventTriggeredHandler;
 
             Self.SetActive(true);
 
-            int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
             IDataManager dataManager = GameClient.Get<IDataManager>();
 
-            int overlordId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).OverlordId;
-
-            _selectedOverlord = dataManager.CachedOverlordData.Overlords[overlordId];
-
-            _currentLevel.text = _selectedOverlord.Level.ToString();
+            _selectedOverlord = dataManager.CachedOverlordData.GetOverlordById(endMatchResults.OverlordId);
+            _currentLevel.text = _selectedOverlord.UserData.Level.ToString();
 
             _newOpenAbility = null;
 
-            FillInfo();
+            FillInfo(endMatchResults);
         }
 
-        public void Show(object data)
+        private void FillInfo(EndMatchResults endMatchResults)
         {
-            Show();
-        }
+            _noRewardObject.SetActive(false);
+            _rewardSkillObject.SetActive(false);
+            _rewardBoosterPackObject.SetActive(false);
 
-        private void FillInfo()
-        {
-            List<LevelReward> gotRewards = GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.GotRewards;
-
-            _rewardDisabledObject.SetActive(false);
-            _rewardSkillObject.SetActive(true);
-
-            foreach (LevelReward levelReward in gotRewards)
+            LevelReward levelReward = endMatchResults.LevelRewards.OrderBy(reward => reward.Level).FirstOrDefault();
+            switch (levelReward)
             {
-                if (levelReward != null)
-                {
-                    if (levelReward.SkillReward != null)
-                    {
-                        _rewardDisabledObject.SetActive(false);
-                        _rewardSkillObject.SetActive(true);
-
-                        FillRewardSkillInfo(levelReward.SkillReward.SkillIndex);
-
-                        AbilityInstanceOnSelectionChanged(_newOpenAbility);
-                    }
-                    else
-                    {
-                        if (gotRewards.FindAll(x => x.SkillReward != null).Count == 0)
-                        {
-                            _rewardDisabledObject.SetActive(true);
-                            _rewardSkillObject.SetActive(false);
-                            _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
-                        }
-                    }
-                }
+                case OverlordSkillRewardItem overlordSkillRewardItem:
+                    _rewardSkillObject.SetActive(true);
+                    FillRewardSkillInfo(overlordSkillRewardItem.SkillIndex);
+                    AbilityInstanceOnSelectionChanged(_newOpenAbility);
+                    break;
+                case BoosterPackRewardItem boosterPackRewardItem:
+                    _rewardBoosterPackObject.SetActive(true);
+                    FillRewardBoosterPackInfo(boosterPackRewardItem.Amount);
+                    break;
+                case null:
+                    _noRewardObject.SetActive(true);
+                    FillNoRewardInfo(endMatchResults.CurrentLevel);
+                    break;
             }
+        }
+
+        private void FillNoRewardInfo(int currentLevel)
+        {
+            if (currentLevel >= _dataManager.CachedOverlordLevelingData.MaxLevel)
+            {
+                _noRewardMessage.text = "You've collected all the rewards available for this champion!";
+            }
+            else
+            {
+                LevelReward nextLevelReward =
+                    _dataManager.CachedOverlordLevelingData.Rewards
+                        .OrderBy(reward => reward.Level)
+                        .FirstOrDefault(reward => reward.Level > currentLevel);
+
+                Assert.IsNotNull(nextLevelReward);
+                _noRewardMessage.text = $"Get next reward at level {nextLevelReward?.Level ?? 0}!";
+            }
+        }
+
+        private void FillRewardBoosterPackInfo(int amount)
+        {
+            // TODO: show amount?
         }
 
         private void FillRewardSkillInfo(int skillIndex)
         {
             ClearSkillInfo();
 
-            AbilityViewItem abilityInstance = null;
-            bool isDefault = false;
             for (int i = 0; i < _abilityListSize; i++)
             {
-                abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
+                AbilityViewItem abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
 
-                if (i < _selectedOverlord.Skills.Count && _selectedOverlord.Skills[i].Unlocked)
+                if (i < _selectedOverlord.Skills.Count && _selectedOverlord.Skills[i].UserData.IsUnlocked)
                 {
-                    abilityInstance.Skill = _selectedOverlord.Skills[i];
+                    abilityInstance.Skill = _selectedOverlord.Skills[i].Prototype;
                 }
-                isDefault = skillIndex == i;
+                bool isDefault = skillIndex == i;
                 abilityInstance.UpdateUIState(isDefault);
                 _abilities.Add(abilityInstance);
             }
@@ -204,8 +213,19 @@ namespace Loom.ZombieBattleground
 
         private void AbilityInstanceOnSelectionChanged(AbilityViewItem ability)
         {
-            _skillName.text = ability.Skill.Title;
-            _skillDescription.text = ability.Skill.Description;
+            //Frequent crash here
+            //this null check will allow QA to
+            //confirm if there's anything wrong when Skill == null
+            //visually
+            if (ability.Skill != null)
+            {
+                _skillName.text = ability.Skill.Title;
+                _skillDescription.text = ability.Skill.Description;
+            }
+            else
+            {
+                Log.Warn("Error: Ability Skill was null " + ability);
+            }
         }
 
         private void AnimationEventTriggeredHandler(string animationName)
@@ -247,7 +267,7 @@ namespace Loom.ZombieBattleground
 
             private readonly Transform _parentGameObject;
 
-            private OverlordSkill _skill;
+            private OverlordSkillPrototype _skill;
 
             private bool _isSelected;
 
@@ -276,7 +296,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            public OverlordSkill Skill
+            public OverlordSkillPrototype Skill
             {
                 get => _skill;
                 set

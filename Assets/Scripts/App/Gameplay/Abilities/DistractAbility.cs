@@ -43,10 +43,10 @@ namespace Loom.ZombieBattleground
                 }
             );
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()

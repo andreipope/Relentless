@@ -28,30 +28,42 @@ namespace ZombieBattleground.Editor.Runtime
             };
         }
 
-        public static void Draw(Vector3 position, int instanceId, string name = null)
+        public static void Draw(Vector3 position, int instanceId, string name = null, bool clipRect = true)
+        {
+            LinesCache.Clear();
+            LinesCache.Add($"Id: {instanceId}");
+            if (name != null)
+            {
+                LinesCache.Add($"Name: {name}");
+            }
+
+            DrawInternal(position, LinesCache, clipRect);
+        }
+
+        public static void DrawCustom(Vector3 position, IReadOnlyList<string> lines, bool clipRect = true)
+        {
+            DrawInternal(position, lines, clipRect);
+        }
+
+        private static void DrawInternal(Vector3 position, IReadOnlyList<string> lines, bool clipRect)
         {
             position += new Vector3(0, 0.5f);
             GizmosGuiHelper.StartGizmosGui();
             {
-                LinesCache.Clear();
-                LinesCache.Add($"Id: {instanceId}");
-                if (name != null)
-                {
-                    LinesCache.Add($"Name: {name}");
-                }
-
-                string joined = string.Join("\n", LinesCache);
-
+                string joined = string.Join("\n", lines);
                 GUIContentCache.text = joined;
                 Rect rect = HandleUtility.WorldPointToSizedRect(position, GUIContentCache, InfoBoxStyle);
                 rect.x -= rect.width * 0.5f;
-                rect = HandleTools.ClipRectToScreen(rect);
-
-                float lineHeight = rect.height / LinesCache.Count;
-
-                for (int i = 0; i < LinesCache.Count; i++)
+                if (clipRect)
                 {
-                    string line = LinesCache[i];
+                    rect = HandleTools.ClipRectToScreen(rect);
+                }
+
+                float lineHeight = rect.height / lines.Count;
+
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    string line = lines[i];
                     GUIContentCache.text = line;
                     Vector2 lineSize = InfoBoxStyle.CalcSize(GUIContentCache);
                     Rect lineRect = rect;

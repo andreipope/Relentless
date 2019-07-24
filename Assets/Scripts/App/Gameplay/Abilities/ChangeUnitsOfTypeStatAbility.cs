@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -46,10 +45,10 @@ namespace Loom.ZombieBattleground
 
         private void Action()
         {
-            IReadOnlyList<BoardUnitModel> unitsOnBoard =
+            IReadOnlyList<CardModel> unitsOnBoard =
                 PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction);
 
-            foreach (BoardUnitModel unit in unitsOnBoard)
+            foreach (CardModel unit in unitsOnBoard)
             {
                 if (unit == AbilityUnitOwner)
                     continue;
@@ -68,7 +67,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
                 }
 
-                BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                 CreateVfx(unitView.Transform.position, true);
             }
         }

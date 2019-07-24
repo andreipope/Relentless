@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
@@ -59,9 +58,9 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityEffectInfoPositionType.Target:
                         {
-                            foreach (BoardUnitModel unit in _opponent.CardsOnBoard)
+                            foreach (CardModel unit in _opponent.CardsOnBoard)
                             {
-                                BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                                BoardUnitView unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                                 position = unitView.Transform.position;
                                 CreateVfx(position, true, delayBeforeDestroy, true);
                             }

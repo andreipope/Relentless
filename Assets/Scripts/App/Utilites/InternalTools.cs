@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
-using Random = System.Random;
 
 namespace Loom.ZombieBattleground.Helpers
 {
@@ -133,8 +134,41 @@ namespace Loom.ZombieBattleground.Helpers
 
                 newValue += chars[i].ToString().ToLowerInvariant();
             }
-          
+
             return newValue;
+        }
+
+        /// <returns>Whether the wait ended because of timeout, false if completed normally.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static async Task<bool> WaitWithTimeout(float timeout, Func<bool> isCompletedFunc)
+        {
+            if (isCompletedFunc == null)
+                throw new ArgumentNullException(nameof(isCompletedFunc));
+
+            if (timeout <= 0)
+                throw new ArgumentOutOfRangeException(nameof(timeout));
+
+            if (isCompletedFunc())
+                return false;
+
+            double startTimestamp = Utilites.GetTimestamp();
+            bool timedOut = false;
+            await new WaitUntil(() =>
+            {
+                if (isCompletedFunc())
+                    return true;
+
+                if (Utilites.GetTimestamp() - startTimestamp > timeout)
+                {
+                    timedOut = true;
+                    return true;
+                }
+
+                return false;
+            });
+
+            return timedOut;
         }
 
         public static Sequence DoActionDelayed(TweenCallback action, float delay = 0f)
@@ -167,7 +201,7 @@ namespace Loom.ZombieBattleground.Helpers
         public static async global::System.Threading.Tasks.Task<T> GetJsonFromLink<T>(
             string uri,
             log4net.ILog log,
-            global::Newtonsoft.Json.JsonSerializerSettings jsonSerializerSettings)
+            JsonSerializerSettings jsonSerializerSettings)
         {
             T result = default(T);
 
@@ -180,7 +214,14 @@ namespace Loom.ZombieBattleground.Helpers
             {
                 try
                 {
-                    result = global::Newtonsoft.Json.JsonConvert.DeserializeObject<T>(request.downloadHandler.text, jsonSerializerSettings);
+                    if (jsonSerializerSettings != null)
+                    {
+                        result = JsonConvert.DeserializeObject<T>(request.downloadHandler.text, jsonSerializerSettings);
+                    }
+                    else
+                    {
+                        result = JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
+                    }
                 }
                 catch (Exception e)
                 {

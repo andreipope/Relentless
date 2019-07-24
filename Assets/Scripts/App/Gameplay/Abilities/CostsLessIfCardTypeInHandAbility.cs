@@ -1,7 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Loom.ZombieBattleground
@@ -41,29 +40,29 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (!PlayerCallerOfAbility.CardsInHand.Contains(BoardUnitModel))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(CardModel))
                 return;
 
             int gooCost = PlayerCallerOfAbility.CardsInHand
-                .FindAll(x => x.Prototype.Faction == Faction && x != BoardUnitModel).Count * Value;
+                .FindAll(x => x.Prototype.Faction == Faction && x != CardModel).Count * Value;
             CardsController.SetGooCostOfCardInHand(
                 PlayerCallerOfAbility,
-                BoardUnitModel,
-                BoardUnitModel.Prototype.Cost + gooCost,
-                BoardCardView
+                CardModel,
+                CardModel.Prototype.Cost + gooCost,
+                BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel)
             );
         }
         
-        private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
+        private void CardPlayedHandler(CardModel cardModel, int position)
         {
-            if (boardUnitModel != BoardUnitModel)
+            if (cardModel != CardModel)
                 return;
 
             PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 
-        private void HandChangedHandler(int obj)
+        protected override void HandChangedHandler(int count)
         {
             Action();
         }

@@ -41,11 +41,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeHeavyToUnits(List<BoardUnitModel> units)
+        private void TakeHeavyToUnits(List<CardModel> units)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in units)
+            foreach (CardModel unit in units)
             {
                 if (unit.IsHeavyUnit)
                     continue;
@@ -61,10 +61,10 @@ namespace Loom.ZombieBattleground
 
             if (targetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
             }

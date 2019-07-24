@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System;
 using Loom.ZombieBattleground.Common;
 
@@ -23,12 +21,12 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public bool HasUniqueAnimation(BoardUnitModel boardUnitModel)
+        public bool HasUniqueAnimation(CardModel cardModel)
         {
-            return boardUnitModel.Card.Prototype.UniqueAnimation != Enumerators.UniqueAnimation.None;
+            return cardModel.Card.Prototype.UniqueAnimation != Enumerators.UniqueAnimation.None;
         }
 
-        public void PlayUniqueArrivalAnimation(BoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback, Action endArrivalCallback)
+        public void PlayUniqueArrivalAnimation(IBoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             UniqueAnimation animation = GetUniqueAnimationByType(card.Prototype.UniqueAnimation);
             animation.Play(boardObject, startGeneralArrivalCallback, endArrivalCallback);
@@ -41,7 +39,7 @@ namespace Loom.ZombieBattleground
             switch (uniqueAnimationType)
             {
                 case Enumerators.UniqueAnimation.ShammannArrival:
-                    uniqueAnimation = new ShammannArrivalUniqueAnimation();
+                    uniqueAnimation = new ShamanArrivalUniqueAnimation();
                     break;
                 case Enumerators.UniqueAnimation.ZVirusArrival:
                     uniqueAnimation = new ZVirusArrivalUniqueAnimation();
@@ -57,6 +55,21 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.UniqueAnimation.ChernoBillArrival:
                     uniqueAnimation = new ChernoBillArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.MountainArrival:
+                    uniqueAnimation = new MountainArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.GargantuaArrival:
+                    uniqueAnimation = new GargantuaArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.BlizzardArrival:
+                    uniqueAnimation = new BlizzardArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.GoozillaArrival:
+                    uniqueAnimation = new GoozillaArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimation.VortexArrival:
+                    uniqueAnimation = new VortexArrivalUniqueAnimation();
                     break;
                 default:
                     throw new NotImplementedException(nameof(uniqueAnimationType) + " not implemented yet");

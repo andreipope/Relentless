@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,24 +21,27 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
-        protected override void UnitDamagedHandler(BoardObject from)
+        protected override void UnitDamagedHandler(IBoardObject from, bool fromGettingAttacked = false)
         {
             base.UnitDamagedHandler(from);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
-            if (from is BoardUnitModel unit) 
+            if (from is CardModel unit)
             {
                 if (unit.HasBuffShield)
                     return;
-                    
+
+                if (CardModel.CurrentDamage <= 0 || from is CardModel && Mathf.Min(CardModel.CurrentDamage, ((CardModel) from).MaximumDamageFromAnySource) <= 0)
+                    return;
+
                 unit.Stun(Enumerators.StunType.FREEZE, Value);
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         {
                             new PastActionsPopup.TargetEffectParam()

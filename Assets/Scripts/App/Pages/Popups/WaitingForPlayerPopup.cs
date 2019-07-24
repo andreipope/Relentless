@@ -1,18 +1,10 @@
 using System;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using System.Linq;
 using System.Collections.Generic;
-
-
-using Loom.ZombieBattleground.Data;
-using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
-
-using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
@@ -132,9 +124,9 @@ namespace Loom.ZombieBattleground
         {
             if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan)
             {
-                List<BoardUnitModel> cardsToRemove = new List<BoardUnitModel>();
+                List<CardModel> cardsToRemove = new List<CardModel>();
                 bool found;
-                foreach (BoardUnitModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand)
+                foreach (CardModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand)
                 {
                     found = false;
                     foreach (Protobuf.InstanceId cardNotMulligan in mulligan.MulliganedCards)
@@ -153,12 +145,12 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
-                foreach (BoardUnitModel card in cardsToRemove)
+                foreach (CardModel card in cardsToRemove)
                 {
                     _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
-                    OpponentHandCard opponentHandCard = battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == card.InstanceId);
-                    battlegroundController.OpponentHandCards.Remove(opponentHandCard);
-                    opponentHandCard.Dispose();
+                    OpponentHandCardView opponentHandCardView = battlegroundController.GetCardViewByModel<OpponentHandCardView>(card);
+                    battlegroundController.UnregisterCardView(opponentHandCardView);
+                    opponentHandCardView.Dispose();
                     _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
                 }
 

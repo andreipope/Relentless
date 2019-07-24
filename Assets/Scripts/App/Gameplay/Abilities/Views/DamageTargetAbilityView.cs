@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -31,7 +32,7 @@ namespace Loom.ZombieBattleground
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
-                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
+                _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
@@ -59,14 +60,34 @@ namespace Loom.ZombieBattleground
                 targetPosition += VfxObject.transform.right * localOffset.x;
                 targetPosition += VfxObject.transform.forward * localOffset.z;
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
-                InternalTools.DoActionDelayed(() =>
+                if( effectInfo != null && (effectInfo.cardName == "Gargantua") )
                 {
-                    VfxObject.transform.DOMove(targetPosition, durationOfMoving).OnComplete(ActionCompleted);
-                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
-                }, _delayBeforeMove);
-
+                    GameObject movingVfx = VfxObject;                    
+                    
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        movingVfx = Object.Instantiate(movingVfx);
+                        movingVfx.transform.position = targetPosition;
+                        
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            Object.Destroy(movingVfx);
+                        }, effectInfo.delayAfterEffect);
+                    }, effectInfo.delayBeforeEffect);
+                    
+                    ActionCompleted();
+                }
+                else
+                {  
+                    VfxObject = Object.Instantiate(VfxObject);
+                    VfxObject.transform.position = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        VfxObject.transform.DOMove(targetPosition, durationOfMoving).OnComplete(ActionCompleted);
+                        ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                    }, _delayBeforeMove);
+                }
+                
                 PlaySound(soundClipTitle, 0);
             }
             else
@@ -81,10 +102,13 @@ namespace Loom.ZombieBattleground
 
             soundClipTitle = string.Empty;
 
+            Vector3 offset = Vector3.zero;
+            bool isRotate = false;
+            Vector3 vfxRotation = Vector3.zero;
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
-                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
+                _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
@@ -96,9 +120,47 @@ namespace Loom.ZombieBattleground
                     _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
                     soundClipTitle = effectInfo.soundName;
                     delayBeforeSound = effectInfo.delayForSound;
+                    offset = effectInfo.offset;
+                    isRotate = effectInfo.isRotate;
+                    vfxRotation = Ability.PlayerCallerOfAbility.IsLocalPlayer ?
+                        effectInfo.localPlayerAbilityEffectRotation :
+                        effectInfo.opponentPlayerAbilityEffectRotation;
                 }
 
-                CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
+                CreateVfx(targetPosition + offset, true, _delayBeforeDestroyImpact, true);
+                VfxObject.transform.eulerAngles = vfxRotation;
+
+                if
+                (
+                    effectInfo != null &&
+                    (
+                        effectInfo.cardName == "Harpoon" ||
+                        effectInfo.cardName == "Gargantua" ||
+                        effectInfo.cardName == "Shovel Damage"
+                    )
+                )
+                {
+                    Transform cameraVFXObj = VfxObject.transform.Find("!! Camera shake");
+                    cameraVFXObj.transform.position = Vector3.zero;
+                    Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                    cameraGroupTransform.SetParent
+                    (
+                       cameraVFXObj
+                    );
+
+                    cameraGroupTransform.localPosition = VfxObject.transform.position * -1;
+                    if (isRotate && !Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                    {
+                        cameraGroupTransform.localPosition = VfxObject.transform.position;
+                    }
+
+                    Ability.VFXAnimationEnded += () =>
+                    {
+                        cameraGroupTransform.SetParent(null);
+                        cameraGroupTransform.position = Vector3.zero;
+                    };
+                }
+
 
                 PlaySound(soundClipTitle, delayBeforeSound);
             }
@@ -129,7 +191,7 @@ namespace Loom.ZombieBattleground
 
         private void SetRotation(Vector3 targetPosition)
         {
-            float angle = AngleBetweenVector3(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position, targetPosition);
+            float angle = AngleBetweenVector3(_battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position, targetPosition);
             VfxObject.transform.eulerAngles = new Vector3(VfxObject.transform.eulerAngles.x, VfxObject.transform.eulerAngles.y, angle);
         }
     }

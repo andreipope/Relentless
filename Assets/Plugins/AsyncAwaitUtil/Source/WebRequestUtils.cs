@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -7,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityAsyncAwaitUtil;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Plugins.AsyncAwaitUtil.Source
@@ -36,9 +34,13 @@ namespace Plugins.AsyncAwaitUtil.Source
                 //The web request will be completed early with "Aborted error",
                 //Will need to throw here, to indicate that the task was aborted
                 cancellationToken.ThrowIfCancellationRequested();
-                
-                return new HttpResponseMessage((HttpStatusCode) request.responseCode, request.downloadHandler.data,
-                    request.GetResponseHeaders());
+
+                return new HttpResponseMessage(
+                    (HttpStatusCode) request.responseCode,
+                    request.downloadHandler.data,
+                    request.error,
+                    request.GetResponseHeaders()
+                );
             }
         }
         
@@ -192,16 +194,22 @@ namespace Plugins.AsyncAwaitUtil.Source
     public class HttpResponseMessage
     {
         public byte[] Data { get; }
-        
+
         public HttpStatusCode StatusCode { get; }
-        
+
+        public string Error { get; }
+
         public Dictionary<string, string> ResponseHeaders { get; }
 
-        public HttpResponseMessage(HttpStatusCode statusCode, byte[] data, 
-            Dictionary<string, string> responseHeaders = null)
+        public HttpResponseMessage(
+            HttpStatusCode statusCode,
+            byte[] data,
+            string error,
+            Dictionary<string, string> responseHeaders )
         {
             StatusCode = statusCode;
             Data = data;
+            Error = error;
             ResponseHeaders = responseHeaders;
         }
         

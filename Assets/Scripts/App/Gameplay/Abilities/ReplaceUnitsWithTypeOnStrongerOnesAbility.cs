@@ -3,13 +3,12 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class ReplaceUnitsWithTypeOnStrongerOnesAbility : AbilityBase
     {
-        private List<BoardUnitModel> _boardUnits;
+        private List<CardModel> _boardUnits;
         private List<BoardUnitView> _boardUnitsViews;
         private List<BoardUnitView> _replaceBoardUnitsViews;
         private List<ReplaceUnitInfo> _replaceUnitInfos;
@@ -25,7 +24,7 @@ namespace Loom.ZombieBattleground
             Faction = ability.Faction;
             TargetTypes = ability.Targets;
 
-            _boardUnits = new List<BoardUnitModel>();
+            _boardUnits = new List<CardModel>();
             _replaceUnitInfos = new List<ReplaceUnitInfo>();
             _replaceBoardUnitsViews = new List<BoardUnitView>();
             _boardUnitsViews = new List<BoardUnitView>();
@@ -124,9 +123,9 @@ namespace Loom.ZombieBattleground
         {
             if (PredefinedTargets != null && PredefinedTargets.Count > 0)
             {
-                foreach (BoardUnitModel unit in _boardUnits)
+                foreach (CardModel unit in _boardUnits)
                 {
-                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                     unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit);
                     
                     BattlegroundController.DeactivateAllAbilitiesOnUnit(unit);
@@ -149,8 +148,8 @@ namespace Loom.ZombieBattleground
             {
                 foreach (ParametrizedAbilityBoardObject boardObject in PredefinedTargets)
                 {
-                    BoardUnitModel unit = boardObject.BoardObject as BoardUnitModel;
-                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    CardModel unit = boardObject.BoardObject as CardModel;
+                    BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                     _boardUnitsViews.Add(unitView);
                     _replaceUnitInfos.Add(new ReplaceUnitInfo()
                     {
@@ -163,9 +162,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                foreach (BoardUnitModel unit in _boardUnits)
+                foreach (CardModel unit in _boardUnits)
                 {
-                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                     _boardUnitsViews.Add(unitView);
                     ReplaceUnitInfo replaceUnitInfo = new ReplaceUnitInfo()
                     {

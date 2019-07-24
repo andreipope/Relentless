@@ -1,4 +1,3 @@
-using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.UI;
 

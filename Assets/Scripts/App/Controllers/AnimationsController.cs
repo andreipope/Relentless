@@ -1,10 +1,8 @@
 using System;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
@@ -89,13 +87,31 @@ namespace Loom.ZombieBattleground
 
         public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCardView boardCardView)
         {
-            boardCardView.DrawCardFromOpponentDeckToPlayer();
+            _battlegroundController.RegisterCardView(boardCardView);
+
+            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
+            boardCardView.Transform.localScale = Vector3.zero;
+            boardCardView.Transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
+
+            animator.enabled = true;
+            animator.StopPlayback();
+            animator.Play("MoveCardFromOpponentDeckToPlayerHand");
+
+           _timerManager.AddTimer(
+                x =>
+                {
+                    animator.enabled = false;
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                },
+                null,
+                2f);
         }
 
-        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCard boardCardView)
+        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCardView boardCardView)
         {
-            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
+            _battlegroundController.RegisterCardView(boardCardView);
 
+            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
             boardCardView.Transform.localScale = Vector3.zero;
             boardCardView.Transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
 
@@ -107,9 +123,6 @@ namespace Loom.ZombieBattleground
                 x =>
                 {
                     animator.enabled = false;
-
-                    _battlegroundController.OpponentHandCards.Insert(ItemPosition.End, boardCardView);
-
                     _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
                 },
                 null,

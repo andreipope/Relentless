@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
@@ -25,9 +24,9 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                BoardUnitModel unit = (BoardUnitModel)info;
+                CardModel unit = (CardModel)info;
 
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                Vector3 targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 

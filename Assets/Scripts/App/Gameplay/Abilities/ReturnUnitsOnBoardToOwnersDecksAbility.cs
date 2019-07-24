@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -28,11 +27,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnitModel> units = new List<BoardUnitModel>();
+            List<CardModel> units = new List<CardModel>();
             units.AddRange(GameplayManager.CurrentPlayer.CardsOnBoard);
             units.AddRange(GameplayManager.OpponentPlayer.CardsOnBoard);
 
-            foreach (BoardUnitModel unit in units)
+            foreach (CardModel unit in units)
             {
                 ReturnBoardUnitToDeck(unit);
             }
@@ -40,7 +39,7 @@ namespace Loom.ZombieBattleground
             units.Clear();
         }
 
-        private void ReturnBoardUnitToDeck(BoardUnitModel unit)
+        private void ReturnBoardUnitToDeck(CardModel unit)
         {
             if (AbilityUnitOwner != null && unit == AbilityUnitOwner || unit == null)
                 return;

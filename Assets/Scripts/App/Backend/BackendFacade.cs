@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Numerics;
 using Loom.Client;
 using Loom.Google.Protobuf;
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using Newtonsoft.Json;
-using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using System.Text;
 using log4net;
 using log4netUnitySupport;
 
@@ -18,19 +15,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
-        private IRpcClient _reader;
+        public const string MatchEventNamePrefix = "match";
+        public const string UserEventNamePrefix = "user";
+
         private IContractCallProxy _contractCallProxy;
-        private Func<Contract, IContractCallProxy> _contractCallProxyFactory;
+        private Func<RawChainEventContract, IContractCallProxy> _contractCallProxyFactory;
 
-        public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
+        public delegate void ContractCreatedEventHandler(RawChainEventContract oldContract, RawChainEventContract newContract);
 
-        public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
+        public delegate void PlayerActionEventReceivedHandler(PlayerActionEventData playerActionEventData);
+
+        public delegate void UserAutoCardCollectionSyncEventReceivedHandler(UserAutoCardCollectionSyncEventData userAutoCardCollectionSyncEventData);
+
+        public delegate void UserFullCardCollectionSyncEventReceivedHandler(UserFullCardCollectionSyncEventData userFullCardCollectionSyncEventData);
 
         public event ContractCreatedEventHandler ContractCreated;
 
-        public BackendEndpoint BackendEndpoint { get; set; }
+        public BackendEndpoint BackendEndpoint { get; private set; }
 
-        public Contract Contract { get; private set; }
+        public RawChainEventContract Contract { get; private set; }
 
         public bool IsConnected => Contract != null &&
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
@@ -42,21 +45,26 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public ILog RpcLog { get; }
 
-        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
         {
-            BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
-            _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
             Log = log ?? throw new ArgumentNullException(nameof(log));
             RpcLog = rpcLog ?? throw new ArgumentNullException(nameof(rpcLog));
+            SetBackendEndpoint(backendEndpoint);
+            _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
+        }
+
+        public void SetBackendEndpoint(BackendEndpoint backendEndpoint)
+        {
+            BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
+            Log.Info("Reader Host: " + BackendEndpoint.ReaderHost);
+            Log.Info("Writer Host: " + BackendEndpoint.WriterHost);
+            Log.Info("Auth Host: " + BackendEndpoint.AuthHost);
+            Log.Info("Vault Host: " + BackendEndpoint.VaultHost);
+            Log.Info("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Init()
         {
-            Log.Info("Auth Host: " + BackendEndpoint.AuthHost);
-            Log.Info("Reader Host: " + BackendEndpoint.ReaderHost);
-            Log.Info("Writer Host: " + BackendEndpoint.WriterHost);
-            Log.Info("Vault Host: " + BackendEndpoint.VaultHost);
-            Log.Info("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
@@ -88,7 +96,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     .WithWebSocket(BackendEndpoint.WriterHost)
                     .Create();
 
-            _reader =
+            IRpcClient reader =
                 RpcClientFactory
                     .Configure()
                     .WithLogger(logger)
@@ -97,7 +105,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             DAppChainClient client = new DAppChainClient(
                 writer,
-                _reader,
+                reader,
                 clientConfiguration,
                 chainClientCallExecutor
                 )
@@ -116,9 +124,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();
-            Address contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
-            Contract oldContract = Contract;
-            Contract = new Contract(client, contractAddr, callerAddr);
+            Address contractAddress = await client.ResolveContractAddressAsync("ZombieBattleground");
+            RawChainEventContract oldContract = Contract;
+            Contract = new RawChainEventContract(client, contractAddress, callerAddr);
 
             _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract);
             ContractCreated?.Invoke(oldContract, Contract);
@@ -153,6 +161,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await _contractCallProxy.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
+        }
+
+        private const string RequestUserFullCardCollectionSyncMethod = "RequestUserFullCardCollectionSync";
+
+        public async Task RequestUserFullCardCollectionSync(string userId)
+        {
+            RequestUserFullCardCollectionSyncRequest request = new RequestUserFullCardCollectionSyncRequest
+            {
+                UserId = userId
+            };
+
+            await _contractCallProxy.CallAsync(RequestUserFullCardCollectionSyncMethod, request);
         }
 
         #endregion
@@ -190,12 +210,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
         }
 
-        public async Task DeleteDeck(string userId, long deckId)
+        public async Task DeleteDeck(string userId, DeckId deckId)
         {
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId,
+                DeckId = deckId.Id,
                 Version = BackendEndpoint.DataVersion
             };
 
@@ -231,28 +251,42 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Overlords
 
-        private const string OverlordsList = "ListOverlords";
+        private const string ListOverlordUserInstancesMethod = "ListOverlordUserInstances";
+        private const string GetOverlordUserInstanceMethod = "GetOverlordUserInstance";
 
-        public async Task<ListOverlordsResponse> GetOverlordList(string userId)
+        public async Task<ListOverlordUserInstancesResponse> ListOverlordUserInstances(string userId)
         {
-            ListOverlordsRequest request = new ListOverlordsRequest
+            ListOverlordUserInstancesRequest request = new ListOverlordUserInstancesRequest
             {
-                UserId = userId
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordUserInstancesResponse>(ListOverlordUserInstancesMethod, request);
         }
 
-        private const string GlobalOverlordsList = "ListOverlordLibrary";
-
-        public async Task<ListOverlordLibraryResponse> GetGlobalOverlordsList()
+        public async Task<GetOverlordUserInstanceResponse> GetOverlordUserInstance(string userId, OverlordId overlordId)
         {
-            ListOverlordLibraryRequest request = new ListOverlordLibraryRequest
+            GetOverlordUserInstanceRequest request = new GetOverlordUserInstanceRequest
+            {
+                UserId = userId,
+                OverlordId = overlordId.Id,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetOverlordUserInstanceResponse>(GetOverlordUserInstanceMethod, request);
+        }
+
+        private const string GetOverlordLevelingDataMethod = "GetOverlordLevelingData";
+
+        public async Task<GetOverlordLevelingDataResponse> GetOverlordLevelingData()
+        {
+            GetOverlordLevelingDataRequest request = new GetOverlordLevelingDataRequest
             {
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListOverlordLibraryResponse>(GlobalOverlordsList, request);
+            return await _contractCallProxy.StaticCallAsync<GetOverlordLevelingDataResponse>(GetOverlordLevelingDataMethod, request);
         }
 
         #endregion
@@ -260,6 +294,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region Login
 
         private const string CreateAccountMethod = "CreateAccount";
+        private const string LoginMethod = "Login";
 
         public async Task SignUp(string userId)
         {
@@ -272,312 +307,20 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _contractCallProxy.CallAsync(CreateAccountMethod, req);
         }
 
+        public async Task<LoginResponse> Login(string userId)
+        {
+            Protobuf.LoginRequest req = new Protobuf.LoginRequest
+            {
+                Version = BackendEndpoint.DataVersion,
+                UserId = userId
+            };
+
+            return await _contractCallProxy.CallAsync<LoginResponse>(LoginMethod, req);
+        }
+
         #endregion
 
-        #region Auth
-
-        private const string userInfoEndPoint = "/user/info";
-
-        private const string loginEndPoint = "/auth/email/login";
-
-        private const string signupEndPoint = "/auth/email/game_signup";
-
-        private const string forgottenPasswordEndPoint = "/auth/mlink/generate";
-
-        private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
-
-        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
-
-        private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
-
-        public async Task<UserInfo> GetUserInfo(string accessToken)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + userInfoEndPoint;
-            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + accessToken);
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
-
-            UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
-                httpResponseMessage.ReadToEnd(),
-
-                // FIXME: backend should return valid version numbers at all times
-                new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase))
-            );
-
-            return userInfo;
-        }
-
-        public async Task<LoginData> InitiateLogin(string email, string password)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + loginEndPoint;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
-
-            LoginRequest loginRequest = new LoginRequest();
-            loginRequest.email = email;
-            loginRequest.password = password;
-            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
-            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
-            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
-
-            Log.Debug(httpResponseMessage.ReadToEnd());
-            LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
-                httpResponseMessage.ReadToEnd());
-            return loginData;
-        }
-
-        public async Task<RegisterData> InitiateRegister(string email, string password)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + signupEndPoint;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
-
-            LoginRequest loginRequest = new LoginRequest();
-            loginRequest.email = email;
-            loginRequest.password = password;
-            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
-            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
-            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ToString());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
-
-            RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
-                httpResponseMessage.ReadToEnd());
-            return registerData;
-        }
-
-        public async Task<bool> InitiateForgottenPassword(string email)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email + "&kind=signup";
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception(
-                    $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
-
-            return true;
-        }
-
-        public async Task<CreateVaultTokenData> CreateVaultToken(string otp, string accessToken)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenEndPoint;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
-
-            VaultTokenRequest vaultTokenRequest = new VaultTokenRequest();
-            vaultTokenRequest.authy_token = otp;
-            vaultTokenRequest.access_token = accessToken;
-
-            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
-            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
-
-            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
-                httpResponseMessage.ReadToEnd());
-            return vaultTokenData;
-        }
-
-        public async Task<CreateVaultTokenData> CreateVaultTokenForNon2FAUsers(string accessToken)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenForNon2FAUsersEndPoint;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
-
-            VaultTokenNon2FARequest vaultTokenRequest = new VaultTokenNon2FARequest();
-            vaultTokenRequest.access_token = accessToken;
-
-            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
-            Log.Debug(JsonConvert.SerializeObject(vaultTokenRequest));
-            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
-
-            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
-                httpResponseMessage.ReadToEnd());
-            return vaultTokenData;
-        }
-
-        public async Task<GetVaultDataResponse> GetVaultData(string vaultToken)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.GET;
-            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
-
-            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
-            webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode.ToString() == Constants.VaultEmptyErrorCode)
-                {
-                    throw new Exception(httpResponseMessage.StatusCode.ToString());
-                }
-                else
-                {
-                    throw new Exception($"{nameof(GetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
-                }
-            }
-
-            GetVaultDataResponse getVaultDataResponse = JsonConvert.DeserializeObject<GetVaultDataResponse>(
-                httpResponseMessage.ReadToEnd());
-            return getVaultDataResponse;
-        }
-
-        public async Task<bool> SetVaultData(string vaultToken, string privateKey)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.POST;
-            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
-
-            VaultPrivateKeyRequest vaultPrivateKeyRequest = new VaultPrivateKeyRequest();
-            vaultPrivateKeyRequest.privatekey = privateKey;
-
-            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultPrivateKeyRequest));
-            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
-            webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                throw new Exception($"{nameof(SetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
-            }
-
-            return true;
-        }
-
-        public async Task<BackendEndpoint> GetServerURLs()
-        {
-            const string queryURLsEndPoint = "/zbversion";
-
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = "https://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
-
-            Log.Debug(webrequestCreationInfo.Url);
-
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ReadToEnd());
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetServerURLs)} failed with error code {httpResponseMessage.StatusCode}");
-
-            ServerUrlsResponse serverInfo = JsonConvert.DeserializeObject<ServerUrlsResponse>(
-                httpResponseMessage.ReadToEnd()
-            );
-
-            return new BackendEndpoint(
-                serverInfo.version.auth_url,
-                serverInfo.version.read_url,
-                serverInfo.version.write_url,
-                serverInfo.version.vault_url,
-                serverInfo.version.data_version,
-                serverInfo.version.is_maintenace_mode,
-                serverInfo.version.is_force_update,
-                false
-            );
-        }
-
-        private struct ServerUrlsResponse
-        {
-            public ServerUrlsData version;
-        }
-
-        private struct ServerUrlsData
-        {
-            public int id;
-            public int major;
-            public int minor;
-            public int patch;
-            public string environment;
-            public string auth_url;
-            public string read_url;
-            public string write_url;
-            public string vault_url;
-            public string data_version;
-            public bool is_maintenace_mode;
-            public bool is_force_update;
-        }
-
-        private struct LoginRequest
-        {
-            public string email;
-            public string password;
-        }
-
-        private struct VaultTokenRequest
-        {
-            public string authy_token;
-            public string access_token;
-        }
-
-        private struct VaultTokenNon2FARequest
-        {
-            public string access_token;
-        }
-
-        private struct VaultPrivateKeyRequest
-        {
-            public string privatekey;
-        }
-
-        private struct BetaKeyValidationResponse
-        {
-            [JsonProperty(PropertyName = "is_valid")]
-            public bool IsValid;
-        }
-
-#endregion
-
-
-#region PVP
+        #region PVP
 
         private const string FindMatchMethod = "FindMatch";
         private const string CancelFindMatchMethod = "CancelFindMatch";
@@ -586,10 +329,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
+        private const string AddSoloExperienceMethod = "AddSoloExperience";
         private const string AcceptMatchMethod = "AcceptMatch";
         private const string KeepAliveStatusMethod = "KeepAlive";
 
-        public event PlayerActionDataReceivedHandler PlayerActionDataReceived;
+        public event PlayerActionEventReceivedHandler PlayerActionEventReceived;
+
+        public event UserAutoCardCollectionSyncEventReceivedHandler UserAutoCardCollectionSyncEventReceived;
+
+        public event UserFullCardCollectionSyncEventReceivedHandler UserFullCardCollectionSyncEventReceived;
 
         public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
         {
@@ -604,7 +352,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(
             string userId,
-            long deckId,
+            DeckId deckId,
             Address? customGameModeAddress,
             IList<string> pvpTags,
             bool useBackendGameLogic,
@@ -615,7 +363,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 RegistrationData = new PlayerProfileRegistrationData
                 {
                     UserId = userId,
-                    DeckId = deckId,
+                    DeckId = deckId.Id,
                     Version = BackendEndpoint.DataVersion,
                     Tags =
                     {
@@ -685,23 +433,37 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
         }
 
-        public async Task SubscribeEvent(IList<string> topics)
+        public async Task SubscribeToEvents(string userId, IList<string> topics)
         {
-            await UnsubscribeEvent();
-            await _reader.SubscribeAsync(EventHandler, topics);
+            await UnsubscribeFromAllEvents(userId);
+            Contract.EventReceived += EventHandler;
+            topics = new List<string>(topics);
+            topics.AddRange(GetPersistentUserIdEventTopics(userId));
+            await Contract.Client.SubscribeToEvents(topics);
         }
 
-        public async Task UnsubscribeEvent()
+        public async Task UnsubscribeFromAllEvents(string userId)
         {
+            Contract.EventReceived -= EventHandler;
             try
             {
-                await _reader.UnsubscribeAsync(EventHandler);
+                HashSet<string> unsubscribedTopics = new HashSet<string>(Contract.Client.SubscribedTopics);
+                unsubscribedTopics.ExceptWith(GetPersistentUserIdEventTopics(userId));
+                await Contract.Client.UnsubscribeFromAllEvents();
+            }
+            catch (RpcClientException rpcClientException) when (rpcClientException.Message.Contains("Subscription not found"))
+            {
             }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.SilentReportException(e);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
             }
+        }
+
+        public string GetMatchTopicName(long matchId)
+        {
+            return MatchEventNamePrefix + ":" + matchId;
         }
 
         public async Task SendPlayerAction(PlayerActionRequest request)
@@ -725,19 +487,128 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
-        //attempt to implement a one message action policy
-        private byte[] previousData;
-        private void EventHandler(object sender, JsonRpcEventData e)
+        public async Task<AddSoloExperienceResponse> AddSoloExperience(
+            string userId,
+            OverlordId overlordId,
+            DeckId deckId,
+            long experience,
+            bool isWin
+            )
         {
-            if (previousData == null || !previousData.SequenceEqual(e.Data)) {
-                previousData = e.Data;
-                PlayerActionDataReceived?.Invoke(e.Data);
+            AddSoloExperienceRequest request = new AddSoloExperienceRequest
+            {
+                Version = BackendEndpoint.DataVersion,
+                UserId = userId,
+                OverlordId = overlordId.Id,
+                Experience = experience,
+                IsWin = isWin,
+                DeckId = deckId.Id
+            };
+
+            return await _contractCallProxy.CallAsync<AddSoloExperienceResponse>(AddSoloExperienceMethod, request);
+        }
+
+        private HashSet<string> GetPersistentUserIdEventTopics(string userId)
+        {
+            return new HashSet<string>
+            {
+                UserEventNamePrefix + ":" + userId
+            };
+        }
+
+        //attempt to implement a one message action policy
+        private RawChainEventArgs _previousEventArgs;
+
+        private async void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
+        {
+            try
+            {
+
+                if (_previousEventArgs != null &&
+                    _previousEventArgs.BlockHeight == rawChainEventArgs.BlockHeight &&
+                    _previousEventArgs.CallerAddress == rawChainEventArgs.CallerAddress &&
+                    _previousEventArgs.Topics.SequenceEqual(rawChainEventArgs.Topics) &&
+                    _previousEventArgs.Data.SequenceEqual(rawChainEventArgs.Data)
+                )
+                    return;
+
+                _previousEventArgs = rawChainEventArgs;
+
+                bool ParseAndInvokeMatchEvent(IReadOnlyList<string> topicSplit)
+                {
+                    if (topicSplit.Count != 2)
+                        return false;
+
+                    long matchId = Convert.ToInt64(topicSplit[1]);
+                    PlayerActionEvent @event = PlayerActionEvent.Parser.ParseFrom(rawChainEventArgs.Data);
+                    PlayerActionEventData eventData = new PlayerActionEventData(matchId, @event);
+                    PlayerActionEventReceived?.Invoke(eventData);
+
+                    return true;
+                }
+
+                bool ParseAndInvokeUserEvent(IReadOnlyList<string> topicSplit)
+                {
+                    if (topicSplit.Count != 2)
+                        return false;
+
+                    UserEvent userEvent = UserEvent.Parser.ParseFrom(rawChainEventArgs.Data);
+                    switch (userEvent.EventCase)
+                    {
+                        case UserEvent.EventOneofCase.AutoCardCollectionSync:
+                        {
+                            UserAutoCardCollectionSyncEventData eventData = new UserAutoCardCollectionSyncEventData(userEvent.UserId);
+                            UserAutoCardCollectionSyncEventReceived?.Invoke(eventData);
+                            return true;
+                        }
+                        case UserEvent.EventOneofCase.FullCardCollectionSync:
+                        {
+                            UserFullCardCollectionSyncEventData eventData = new UserFullCardCollectionSyncEventData(userEvent.UserId);
+                            UserFullCardCollectionSyncEventReceived?.Invoke(eventData);
+                            return true;
+                        }
+                        case UserEvent.EventOneofCase.None:
+                        default:
+                            return false;
+                    }
+                }
+
+                if (ScenePlaybackDetector.IsPlaying)
+                {
+                    await Awaiters.NextFrame;
+                }
+
+                bool isParsed = false;
+                foreach (string topic in rawChainEventArgs.Topics)
+                {
+                    string[] topicSplit = topic.Split(':');
+                    if (topicSplit.Length == 0)
+                        continue;
+
+                    switch (topicSplit[0])
+                    {
+                        case MatchEventNamePrefix:
+                            isParsed = ParseAndInvokeMatchEvent(topicSplit);
+                            break;
+                        case UserEventNamePrefix:
+                            isParsed = ParseAndInvokeUserEvent(topicSplit);
+                            break;
+                    }
+                }
+
+                if (!isParsed)
+                {
+                    Log.Error("Unexpected event with topics: " + Utilites.FormatCallLogList(rawChainEventArgs.Topics));
+                }
+            } catch (Exception e)
+            {
+                Log.Error($"Exception in {nameof(EventHandler)}:", e);
             }
         }
 
-#endregion
+        #endregion
 
-#region Custom Game Modes
+        #region Custom Game Modes
 
         private const string ListGameModesMethod = "ListGameModes";
         private const string CallCustomGameModeFunctionMethod = "CallCustomGameModeFunction";
@@ -772,21 +643,158 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
 #endregion
 
-#region RewardTutorial
-        private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
-        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
+        #region Notifications
+        private const string GetNotificationsMethod = "GetNotifications";
+        private const string ClearNotificationsMethod = "ClearNotifications";
+
+        public async Task<GetNotificationsResponse> GetNotifications(string userId)
         {
-            Log.Debug("GetRewardTutorialCompletedResponse");
-            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
-            return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
+            GetNotificationsRequest request = new GetNotificationsRequest
+            {
+                UserId = userId
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetNotificationsResponse>(GetNotificationsMethod, request);
         }
 
-        private const string RewardTutorialClaimMethod = "ConfirmRewardTutorialClaimed";
-        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed()
+        public async Task<ClearNotificationsResponse> ClearNotifications(string userId, IEnumerable<int> notificationIds)
         {
-            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest();
-            return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
+            ClearNotificationsRequest request = new ClearNotificationsRequest
+            {
+                UserId = userId,
+                NotificationIds = { notificationIds }
+            };
+
+            return await _contractCallProxy.CallAsync<ClearNotificationsResponse>(ClearNotificationsMethod, request);
         }
-#endregion
+
+        #endregion
+
+        #region Rewards
+
+        public async Task<GetPendingMintingTransactionReceiptsResponse> GetPendingMintingTransactionReceipts(string userId)
+        {
+            GetPendingMintingTransactionReceiptsRequest request = new GetPendingMintingTransactionReceiptsRequest
+            {
+                UserId = userId,
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetPendingMintingTransactionReceiptsResponse>("GetPendingMintingTransactionReceipts", request);
+        }
+
+        public async Task ConfirmPendingMintingTransactionReceipt(string userId, BigInteger txId)
+        {
+            ConfirmPendingMintingTransactionReceiptRequest request = new ConfirmPendingMintingTransactionReceiptRequest
+            {
+                UserId = userId,
+                TxId = txId.ToProtobufUInt()
+            };
+
+            await _contractCallProxy.CallAsync("ConfirmPendingMintingTransactionReceipt", request);
+        }
+
+        #endregion
+
+        #region Debug
+
+        public async Task<string> DebugGetUserIdByAddress(Address address)
+        {
+            DebugGetUserIdByAddressRequest request = new DebugGetUserIdByAddressRequest
+            {
+                Address = address.ToProtobufAddress()
+            };
+
+            return (await _contractCallProxy.StaticCallAsync<UserIdContainer>("DebugGetUserIdByAddress", request)).UserId;
+        }
+
+        public async Task<DebugGetPendingCardAmountChangeItemsResponse> DebugGetPendingCardAmountChangeItems(Address address)
+        {
+            DebugGetPendingCardAmountChangeItemsRequest request = new DebugGetPendingCardAmountChangeItemsRequest
+            {
+                Address = address.ToProtobufAddress()
+            };
+
+            return await _contractCallProxy.StaticCallAsync<DebugGetPendingCardAmountChangeItemsResponse>("DebugGetPendingCardAmountChangeItems", request);
+        }
+
+        public async Task<DebugMintBoosterPackReceiptResponse> DebugMintBoosterPackReceipt(
+            BigInteger userId,
+            int boosterAmount,
+            int superAmount,
+            int airAmount,
+            int earthAmount,
+            int fireAmount,
+            int lifeAmount,
+            int toxicAmount,
+            int waterAmount,
+            int smallAmount,
+            int minionAmount,
+            int binanceAmount
+            )
+        {
+            DebugMintBoosterPackReceiptRequest request = new DebugMintBoosterPackReceiptRequest
+            {
+                UserId = userId.ToProtobufUInt(),
+                BoosterAmount = (ulong) boosterAmount,
+                SuperAmount = (ulong) superAmount,
+                AirAmount = (ulong) airAmount,
+                EarthAmount = (ulong) earthAmount,
+                FireAmount = (ulong) fireAmount,
+                LifeAmount = (ulong) lifeAmount,
+                ToxicAmount = (ulong) toxicAmount,
+                WaterAmount = (ulong) waterAmount,
+                SmallAmount = (ulong) smallAmount,
+                MinionAmount = (ulong) minionAmount,
+                BinanceAmount = (ulong) binanceAmount,
+            };
+
+            return await _contractCallProxy.CallAsync<DebugMintBoosterPackReceiptResponse>("DebugMintBoosterPackReceipt", request);
+        }
+
+        public async Task DebugCheatSetFullCardCollection(string userId)
+        {
+            DebugCheatSetFullCardCollectionRequest request = new DebugCheatSetFullCardCollectionRequest
+            {
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            await _contractCallProxy.CallAsync("DebugCheatSetFullCardCollection", request);
+        }
+
+        #endregion
+
+        public struct PlayerActionEventData
+        {
+            public long MatchId { get; }
+
+            public PlayerActionEvent Event { get; }
+
+            public PlayerActionEventData(long matchId, PlayerActionEvent @event)
+            {
+                MatchId = matchId;
+                Event = @event;
+            }
+        }
+
+        public struct UserAutoCardCollectionSyncEventData
+        {
+            public string UserId { get; }
+
+            public UserAutoCardCollectionSyncEventData(string userId)
+            {
+                UserId = userId;
+            }
+        }
+
+        public struct UserFullCardCollectionSyncEventData
+        {
+            public string UserId { get; }
+
+            public UserFullCardCollectionSyncEventData(string userId)
+            {
+                UserId = userId;
+            }
+        }
     }
 }

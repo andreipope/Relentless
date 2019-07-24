@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -22,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         CreditsData CachedCreditsData { get; set; }
 
+        Data.OverlordLevelingData CachedOverlordLevelingData { get; set; }
+
         ConfigData ConfigData { get; set; }
 
         UserInfo UserInfo { get; set; }
@@ -31,6 +32,8 @@ namespace Loom.ZombieBattleground
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);
+
+        Task LoadCache(Enumerators.CacheDataType type);
 
         TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType);
 

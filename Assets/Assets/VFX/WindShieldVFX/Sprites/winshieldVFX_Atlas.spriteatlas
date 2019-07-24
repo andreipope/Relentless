@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: winshieldVFX_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -44,6 +45,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: fcc45523c18f146d8b357e92627bb98a, type: 3}
     - {fileID: 2800000, guid: 0711a026c789d4cd9acc0d4da8c019c3, type: 3}
     - {fileID: 2800000, guid: 2dbc7df626672450e838b63594f23aea, type: 3}
+    totalSpriteSurfaceArea: 40960
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

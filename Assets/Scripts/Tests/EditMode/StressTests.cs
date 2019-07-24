@@ -3,20 +3,16 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 namespace Loom.ZombieBattleground.Test
@@ -91,12 +87,11 @@ namespace Loom.ZombieBattleground.Test
                     foreach (MultiplayerDebugClient client in clients)
                     {
                         AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                        client.BackendFacade.PlayerActionDataReceived += async bytes =>
+                        client.BackendFacade.PlayerActionEventReceived += async playerActionEventData =>
                         {
-                            PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
                             bool? isLocalPlayer =
-                                playerActionEvent.PlayerAction != null ?
-                                    playerActionEvent.PlayerAction.PlayerId == client.UserDataModel.UserId :
+                                playerActionEventData.Event.PlayerAction != null ?
+                                    playerActionEventData.Event.PlayerAction.PlayerId == client.UserDataModel.UserId :
                                     (bool?) null;
 
                             if (isLocalPlayer != null)
@@ -156,7 +151,7 @@ namespace Loom.ZombieBattleground.Test
 
             try
             {
-                clients.ForEach(client => client.DeckId = 1);
+                clients.ForEach(client => client.DeckId = new DeckId(1));
 
                 await Task.WhenAll(
                     clients
@@ -208,7 +203,7 @@ namespace Loom.ZombieBattleground.Test
                             {
                                 Log.Info("waiting for " + delay + "s");
                                 await Task.Delay((int) (delay * 1000f));
-                                await client.MatchMakingFlowController.Start(1, null, null, false, null);
+                                await client.MatchMakingFlowController.Start(new DeckId(1), null, null, false, null);
                             });
                         })
                         .ToArray()

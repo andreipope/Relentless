@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSkill : OwnableBoardObject, ISkillIdOwner
+    public class BoardSkill : IOwnableBoardObject, ISkillIdOwner
     {
         public event Action<BoardSkill, List<ParametrizedAbilityBoardObject>> SkillUsed;
 
@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject SelfObject;
 
-        public OverlordSkill Skill;
+        public OverlordSkillPrototype Skill;
 
         public List<Enumerators.UnitSpecialStatus> BlockedUnitStatusTypes;
 
@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ITutorialManager _tutorialManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private readonly PlayerController _playerController;
 
         private readonly SkillsController _skillsController;
@@ -35,11 +37,11 @@ namespace Loom.ZombieBattleground
 
         private readonly BattlegroundController _battlegroundController;
 
+        private ActionsQueueController _actionsQueueController;
+
         private readonly GameObject _glowObject;
 
         private readonly GameObject _fightTargetingArrowPrefab;
-
-        private int _initialCooldown;
 
         private readonly Animator _shutterAnimator;
 
@@ -53,8 +55,6 @@ namespace Loom.ZombieBattleground
 
         private bool _isAlreadyUsed;
 
-        private bool _singleUse;
-
         private OnBehaviourHandler _behaviourHandler;
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
@@ -63,18 +63,16 @@ namespace Loom.ZombieBattleground
 
         public SkillId SkillId { get; }
 
-        public override Player OwnerPlayer { get; }
+        public Player OwnerPlayer { get; }
 
-        public BoardSkill(GameObject obj, Player player, OverlordSkill skillInfo, bool isPrimary)
+        public BoardSkill(GameObject obj, Player player, OverlordSkillPrototype skillPrototype, bool isPrimary)
         {
             SelfObject = obj;
-            Skill = skillInfo;
+            Skill = skillPrototype;
             OwnerPlayer = player;
             IsPrimary = isPrimary;
 
-            _initialCooldown = skillInfo.InitialCooldown;
-            _cooldown = skillInfo.Cooldown;
-            _singleUse = skillInfo.SingleUse;
+            _cooldown = skillPrototype.Cooldown;
 
             BlockedUnitStatusTypes = new List<Enumerators.UnitSpecialStatus>();
 
@@ -88,11 +86,13 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
             _glowObject.SetActive(false);
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
             _isOpen = false;
         }
 
-        public bool IsSkillReady => _cooldown == 0 && (!_singleUse || !_isAlreadyUsed);
+        public bool IsSkillReady => _cooldown == 0 && (!Skill.SingleUse || !_isAlreadyUsed);
 
         public bool IsUsing { get; private set; }
 
@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
 
         public void SetCoolDown(int coolDownValue)
         {
-            if (_isAlreadyUsed && _singleUse)
+            if (_isAlreadyUsed && Skill.SingleUse)
                 return;
 
             _cooldown = coolDownValue;
@@ -172,7 +172,9 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
-                    BoardObject target = parametrizedAbilityObjects[0].BoardObject;
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+
+                    IBoardObject target = parametrizedAbilityObjects[0].BoardObject;
 
                     Action callback = () =>
                     {
@@ -181,14 +183,15 @@ namespace Loom.ZombieBattleground
                             case Player player:
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
-                            case BoardUnitModel boardUnitModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                            case CardModel cardModel:
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(cardModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
                         }
 
                         EndDoSkill(parametrizedAbilityObjects);
+                        skillUsageAction.TriggerActionExternally();
                     };
 
                     FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(SelfObject.transform, target, action: callback);
@@ -207,7 +210,10 @@ namespace Loom.ZombieBattleground
         public void StartDoSkill(bool localPlayerOverride = false)
         {
             if (!IsSkillCanUsed())
+            {
+                CancelTargetingArrows();
                 return;
+            }
 
             if (OwnerPlayer.IsLocalPlayer && !localPlayerOverride)
             {
@@ -243,37 +249,48 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
+        public GameplayActionQueueAction EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
+            {                
+                CancelTargetingArrows();
                 return null;
-
+            }
+            
             IsLocal = isLocal;
 
             return _gameplayManager
                 .GetController<ActionsQueueController>()
-                .AddNewActionInToQueue(
-                    (parameter, completeCallback) =>
+                .EnqueueAction(
+                    completeCallback =>
                     {
+                        _battlegroundController.IsOnShorterTime = false;
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
+                        CancelTargetingArrows();
                     },
-                    Enumerators.QueueActionType.OverlordSkillUsage);
+                    Enumerators.QueueActionType.OverlordSkillUsage, startupTime:0f);
         }
 
         public void UseSkill()
         {
             SetHighlightingEnabled(false);
-            _cooldown = _initialCooldown;
+            _cooldown = Skill.InitialCooldown;
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
             _isAlreadyUsed = true;
-            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+
+
 
             if (OwnerPlayer.IsLocalPlayer)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
             }
+
+            _overlordExperienceManager.ReportExperienceAction(
+                Enumerators.ExperienceActionType.UseOverlordAbility,
+                OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchMatchExperienceInfo : _overlordExperienceManager.OpponentMatchMatchExperienceInfo
+            );
 
             if (_gameplayManager.UseInifiniteAbility)
             {
@@ -281,7 +298,7 @@ namespace Loom.ZombieBattleground
                 SetCoolDown(0);
             }
 
-            if(_singleUse)
+            if(Skill.SingleUse)
             {
                 _coolDownTimer.Close();
             }
@@ -398,7 +415,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (!_singleUse || !_isAlreadyUsed)
+            if (!Skill.SingleUse || !_isAlreadyUsed)
             {
                 _coolDownTimer.SetAngle(_cooldown);
             }
@@ -416,7 +433,7 @@ namespace Loom.ZombieBattleground
             }
             if (!_usedInThisTurn)
             {
-                _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
+                _cooldown = Mathf.Clamp(_cooldown - 1, 0, Skill.InitialCooldown);
             }
 
             _usedInThisTurn = false;
@@ -506,7 +523,7 @@ namespace Loom.ZombieBattleground
 
         private bool IsSkillCanUsed()
         {
-            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
+            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn || (OwnerPlayer.IsLocalPlayer && _actionsQueueController.RootQueue.GetChildCount() > 0) ||
                 (_tutorialManager.IsTutorial && !_tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn.Contains(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed)))
             {
                 return false;
@@ -565,7 +582,7 @@ namespace Loom.ZombieBattleground
 
             private readonly TextMeshPro _descriptionText;
 
-            public OverlordAbilityInfoObject(OverlordSkill skill, Transform parent, Vector3 position)
+            public OverlordAbilityInfoObject(OverlordSkillPrototype skill, Transform parent, Vector3 position)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

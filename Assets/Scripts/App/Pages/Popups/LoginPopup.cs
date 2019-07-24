@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Loom.Newtonsoft.Json;
+using Loom.ZombieBattleground.Data;
 using UnityEngine.EventSystems;
 
 namespace Loom.ZombieBattleground
@@ -44,6 +45,8 @@ namespace Loom.ZombieBattleground
         private INetworkActionManager _networkActionManager;
 
         private BackendFacade _backendFacade;
+
+        private AuthApiFacade _authApiFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -117,6 +120,8 @@ namespace Loom.ZombieBattleground
 
         private int _onEnterInputIndex = -1;
 
+        private bool _gotFullCardCollectionSyncEvent;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -124,6 +129,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _authApiFacade = GameClient.Get<AuthApiFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
@@ -227,7 +233,7 @@ namespace Loom.ZombieBattleground
 
             _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
                 (int)KeyCode.Return, null, OnInputDownEnterButton);
-                
+
             OnShowPopupEvent?.Invoke();
         }
 
@@ -271,7 +277,7 @@ namespace Loom.ZombieBattleground
             _confirmFieldRegister.text = _password;
         }
 
-        public void Logout() 
+        public void Logout()
         {
             Show();
             SetLoginAsGuestState();
@@ -405,16 +411,31 @@ namespace Loom.ZombieBattleground
             CreateVaultTokenData vaultTokenData = new CreateVaultTokenData();
             try
             {
+                UserDataModel userDataModel = _backendDataControlMediator.UserDataModel;
                 if (noOTP)
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _authApiFacade.CreateVaultTokenForNon2FAUsers(userDataModel.AccessToken);
                 }
                 else
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _authApiFacade.CreateVaultToken(_OTPFieldOTP.text, userDataModel.AccessToken);
                 }
-                GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
-                _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
+
+                GetVaultDataResponse vaultDataData = await _authApiFacade.GetVaultData(vaultTokenData.auth.client_token);
+                _backendDataControlMediator.UserDataModel =
+                    new UserDataModel(
+                        userDataModel.UserId,
+                        userDataModel.UserIdNumber,
+                        Convert.FromBase64String(vaultDataData.data.privatekey)
+                    )
+                    {
+                        IsValid = userDataModel.IsValid,
+                        IsRegistered = userDataModel.IsRegistered,
+                        Email = userDataModel.Email,
+                        Password = userDataModel.Password,
+                        GUID = userDataModel.GUID,
+                        AccessToken = userDataModel.AccessToken
+                    };
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
@@ -447,13 +468,13 @@ namespace Loom.ZombieBattleground
                 CreateVaultTokenData vaultTokenData;
                 if (noOTP)
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = await _authApiFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
                 }
                 else
                 {
                     vaultTokenData = vaultPreviousData;
                 }
-                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
+                bool setVaultTokenResponse = await _authApiFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
@@ -470,7 +491,7 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                await _backendFacade.InitiateForgottenPassword(_emailFieldForgot.text);
+                await _authApiFacade.InitiateForgottenPassword(_emailFieldForgot.text);
 
                 SetUIState(LoginState.SuccessForgotPassword);
             }
@@ -487,7 +508,7 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                RegisterData registerData = await _backendFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
+                RegisterData registerData = await _authApiFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
 
                 SetLoginFieldsData(_emailFieldRegister.text, _passwordFieldRegister.text);
 
@@ -529,25 +550,28 @@ namespace Loom.ZombieBattleground
                         byte[] privateKey;
                         byte[] publicKey;
                         LoginData loginData;
-                        string userId;
+                        string fullUserId;
                         int authyId = 0;
                         string accessToken = "";
 
-                        string GUID = _lastGUID ?? Guid.NewGuid().ToString();
+                        string guid = _lastGUID ?? Guid.NewGuid().ToString();
 
+                        BigInteger userId;
                         if (isGuest)
                         {
-                            GenerateKeysAndUserFromGUID(GUID,
-                                out byte[] privateKeyFromGuID,
-                                out byte[] publicKeyFromGuID,
-                                out string userIDFromGuID);
-                            privateKey = privateKeyFromGuID;
-                            publicKey = publicKeyFromGuID;
-                            userId = userIDFromGuID;
+                            GenerateKeysAndUserFromGUID(guid,
+                                out byte[] privateKeyFromGuid,
+                                out byte[] publicKeyFromGuid,
+                                out string fullUserIdFromGuid,
+                                out BigInteger userIdFromGuid);
+                            privateKey = privateKeyFromGuid;
+                            publicKey = publicKeyFromGuid;
+                            fullUserId = fullUserIdFromGuid;
+                            userId = userIdFromGuid;
                         }
                         else
                         {
-                            loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
+                            loginData = await _authApiFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
 
                             string payload = loginData.accessToken.Split('.')[1];
 
@@ -559,20 +583,21 @@ namespace Loom.ZombieBattleground
 
                             accessToken = loginData.accessToken;
 
-                            userId = "ZombieSlayer_" + accessTokenData.user_id;
-                            GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
+                            fullUserId = "ZombieSlayer_" + accessTokenData.user_id;
+                            GenerateKeysAndUserFromUserID(fullUserId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
 
                             privateKey = privateKeyFromUserId;
                             publicKey = publicKeyFromUserID;
+                            userId = accessTokenData.user_id;
                         }
 
-                        UserDataModel userDataModel = new UserDataModel(userId, privateKey)
+                        UserDataModel userDataModel = new UserDataModel(fullUserId, userId, privateKey)
                         {
                             IsValid = false,
                             IsRegistered = !isGuest,
                             Email = _emailFieldLogin.text,
                             Password = _passwordFieldLogin.text,
-                            GUID = GUID,
+                            GUID = guid,
                             AccessToken = accessToken
                         };
 
@@ -647,6 +672,7 @@ namespace Loom.ZombieBattleground
             {
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
+
                         await _backendDataControlMediator.LoginAndLoadData();
 
                         _backendDataControlMediator.UserDataModel.IsValid = true;
@@ -689,10 +715,11 @@ namespace Loom.ZombieBattleground
         {
             _lastErrorMessage = errorMessage;
             SetUIState(LoginState.ValidationFailed);
-        } 
+        }
 
         private async void SuccessfulLogin()
         {
+            bool tutorialBegan = false;
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
@@ -717,21 +744,29 @@ namespace Loom.ZombieBattleground
                         savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
                     }
 
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = savedTutorialDeck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
                     if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
                     {
                         _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
-                        string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
-                        QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
-                        questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
+                        if(_uiManager.GetPopup<YouWonYouLostPopup>().Self == null)
+                        {
+                            string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                            QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+                            questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
 
-                        _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                            _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                        }
+                        else
+                        {
+                            _tutorialManager.SkipTutorial();
+                        }
                     }
                     else
                     {
+                        tutorialBegan = true;
                         await GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                     }
                 }
@@ -749,6 +784,20 @@ namespace Loom.ZombieBattleground
             {
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
+
+            (int? notificationId, EndMatchResults endMatchResults) =
+                await GameClient.Get<IOverlordExperienceManager>().GetEndMatchResultsFromEndMatchNotification();
+
+            if(endMatchResults != null && !tutorialBegan)
+            {
+                if(_uiManager.GetPopup<QuestionPopup>().Self != null)
+                {
+                    _tutorialManager.SkipTutorial();
+                    _uiManager.HidePopup<QuestionPopup>();
+                }
+                _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { endMatchResults.IsWin });
+            }
+
             Hide();
             OnLoginSuccess?.Invoke();
         }
@@ -805,7 +854,7 @@ namespace Loom.ZombieBattleground
 #elif UNITY_STANDALONE_OSX
                     Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlMac);
 #elif UNITY_STANDALONE_WIN
-                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPC);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPc);
 #else
                     Log.Warn("Version Mismatched");
 #endif
@@ -899,22 +948,9 @@ namespace Loom.ZombieBattleground
         private async void WarningPopupClosedOnAutomatedLogin()
         {
             _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupClosedOnAutomatedLogin;
-            try
-            {
-                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
-                {
-                    _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Info(e.Message);
-                _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
-            }
-            finally
-            {
-                SetUIState(_lastPopupState);
-            }
+
+            await _backendDataControlMediator.UpdateEndpointsFromZbVersion();
+            SetUIState(_lastPopupState);
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)
@@ -932,22 +968,21 @@ namespace Loom.ZombieBattleground
         }
 
         private void GenerateKeysAndUserFromGUID(
-            string guID, out byte[] privateKey, out byte[] publicKey, out string userId)
+            string guid, out byte[] privateKey, out byte[] publicKey, out string fullUserId, out BigInteger userId)
         {
             string guidKey =
                 CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID))) +
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guid))) +
                 CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID)));
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guid)));
 
             byte[] seedByte = CryptoUtils.HexStringToBytes(guidKey);
 
-            BigInteger userIdNumber = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
-            userIdNumber = BigInteger.Abs(userIdNumber);
-            userId = "ZombieSlayer_" + userIdNumber;
+            userId = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
+            userId = BigInteger.Abs(userId);
+            fullUserId = "ZombieSlayer_" + userId;
 
             privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
-
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }
 

@@ -1,30 +1,34 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.Google.Protobuf.Collections;
+using System.Numerics;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Iap;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Data
 {
     public static class FromProtobufExtensions
     {
+        public static CardKey FromProtobuf(this Protobuf.CardKey cardKey)
+        {
+            return new CardKey(new MouldId(cardKey.MouldId), (Enumerators.CardVariant) cardKey.Variant);
+        }
+
         public static CollectionCardData FromProtobuf(this CardCollectionCard cardCollection)
         {
-            return new CollectionCardData
-            (
-                new MouldId(cardCollection.MouldId),
+            return new CollectionCardData(
+                cardCollection.CardKey.FromProtobuf(),
                 (int) cardCollection.Amount
             );
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
         {
-            return new CollectionData
-            {
-                Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
-            };
+            CollectionData collectionData = new CollectionData();
+            collectionData.Cards.AddRange(getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList());
+            return collectionData;
         }
 
         public static DecksData FromProtobuf(this ListDecksResponse listDecksResponse)
@@ -42,8 +46,7 @@ namespace Loom.ZombieBattleground.Data
 
             if (unit.Parameter != null)
             {
-                parameter = new Unit.ParameterType
-                (
+                parameter = new Unit.ParameterType(
                     unit.Parameter.Damage,
                     unit.Parameter.Defense,
                     unit.Parameter.CardName
@@ -89,32 +92,61 @@ namespace Loom.ZombieBattleground.Data
                 ability.ChoosableAbilities.Select(c => c.FromProtobuf()).ToList(),
                 ability.Defense2,
                 ability.Cost,
-                (Enumerators.CardKind)ability.TargetCardKind,
-                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList()
+                (Enumerators.CardKind) ability.TargetCardKind,
+                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription) g).ToList()
             );
         }
 
-        public static OverlordModel FromProtobuf(this Protobuf.Overlord overlord)
+        public static OverlordUserInstance FromProtobuf(this Protobuf.OverlordUserInstance overlordUserInstance)
         {
-            return new OverlordModel(
-                (int) overlord.OverlordId,
-                overlord.Icon,
-                overlord.Name,
-                overlord.ShortDescription,
-                overlord.LongDescription,
-                overlord.Experience,
-                (int) overlord.Level,
-                (Enumerators.Faction) overlord.Faction,
-                overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                (Enumerators.Skill)overlord.PrimarySkill,
-                (Enumerators.Skill)overlord.SecondarySkill
+            OverlordPrototype prototype = overlordUserInstance.Prototype.FromProtobuf();
+            HashSet<long> unlockedSkillIds = new HashSet<long>(overlordUserInstance.UserData.UnlockedSkillIds);
+
+            List<OverlordSkillUserInstance> skillUserInstances = new List<OverlordSkillUserInstance>();
+            foreach (OverlordSkillPrototype skillPrototype in prototype.Skills)
+            {
+                OverlordSkillUserInstance skillUserInstance =
+                    new OverlordSkillUserInstance(
+                        skillPrototype,
+                        new OverlordSkillUserData(unlockedSkillIds.Contains(skillPrototype.Id.Id))
+                    );
+
+                skillUserInstances.Add(skillUserInstance);
+            }
+
+            return new OverlordUserInstance(
+                prototype,
+                overlordUserInstance.UserData.FromProtobuf(),
+                skillUserInstances
             );
         }
 
-        public static OverlordSkill FromProtobuf(this Protobuf.Skill skill)
+        public static OverlordPrototype FromProtobuf(this Protobuf.OverlordPrototype overlordPrototype)
         {
-            return new OverlordSkill(
-                (int)skill.Id,
+            return new OverlordPrototype(
+                new OverlordId(overlordPrototype.Id),
+                overlordPrototype.Icon,
+                overlordPrototype.Name,
+                overlordPrototype.ShortDescription,
+                overlordPrototype.LongDescription,
+                (Enumerators.Faction) overlordPrototype.Faction,
+                overlordPrototype.Skills.Select(skill => skill.FromProtobuf()).ToList(),
+                overlordPrototype.InitialDefense
+            );
+        }
+
+        public static OverlordUserData FromProtobuf(this Protobuf.OverlordUserData overlordUserData)
+        {
+            return new OverlordUserData(
+                (int) overlordUserData.Level,
+                overlordUserData.Experience
+            );
+        }
+
+        public static OverlordSkillPrototype FromProtobuf(this Protobuf.OverlordSkillPrototype skill)
+        {
+            return new OverlordSkillPrototype(
+                new SkillId(skill.Id),
                 skill.Title,
                 skill.IconPath,
                 skill.Description,
@@ -123,11 +155,10 @@ namespace Loom.ZombieBattleground.Data
                 skill.Value,
                 skill.Damage,
                 skill.Count,
-                (Enumerators.Skill) skill.Skill_,
+                (Enumerators.Skill) skill.Skill,
                 skill.SkillTargets.Select(t => (Enumerators.SkillTarget) t).ToList(),
                 (Enumerators.UnitSpecialStatus) skill.TargetUnitSpecialStatus,
                 skill.TargetFactions.Select(t => (Enumerators.Faction) t).ToList(),
-                skill.Unlocked,
                 skill.CanSelectTarget,
                 skill.SingleUse
             );
@@ -144,18 +175,18 @@ namespace Loom.ZombieBattleground.Data
         public static Deck FromProtobuf(this Protobuf.Deck deck)
         {
             return new Deck(
-                deck.Id,
-                (int) deck.OverlordId,
+                new DeckId(deck.Id),
+                new OverlordId(deck.OverlordId),
                 deck.Name,
                 deck.Cards.Select(card => card.FromProtobuf()).ToList(),
-                (Enumerators.Skill)deck.PrimarySkill,
-                (Enumerators.Skill)deck.SecondarySkill
+                (Enumerators.Skill) deck.PrimarySkill,
+                (Enumerators.Skill) deck.SecondarySkill
             );
         }
 
         public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
         {
-            return new DeckCardData(new MouldId(card.MouldId), (int) card.Amount);
+            return new DeckCardData(card.CardKey.FromProtobuf(), (int) card.Amount);
         }
 
         public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
@@ -186,7 +217,7 @@ namespace Loom.ZombieBattleground.Data
         public static Card FromProtobuf(this Protobuf.Card card)
         {
             return new Card(
-                new MouldId(card.MouldId),
+                card.CardKey.FromProtobuf(),
                 card.Name,
                 card.Cost,
                 card.Description,
@@ -208,7 +239,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static CardInstanceSpecificData FromProtobuf(this Protobuf.CardInstanceSpecificData card)
         {
-           return new CardInstanceSpecificData(
+            return new CardInstanceSpecificData(
                 card.Damage,
                 card.Defense,
                 (Enumerators.Faction) card.Faction,
@@ -229,9 +260,103 @@ namespace Loom.ZombieBattleground.Data
                 );
         }
 
-        public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
+        public static InstanceId FromProtobuf(this Protobuf.InstanceId id)
         {
-            return new InstanceId(cardInstance.Id);
+            return new InstanceId(id.Id);
+        }
+
+        public static ExperienceAction FromProtobuf(this Protobuf.ExperienceAction experienceAction)
+        {
+            return new ExperienceAction(
+                (Enumerators.ExperienceActionType) experienceAction.Action,
+                experienceAction.Experience
+            );
+        }
+
+        public static LevelReward FromProtobuf(this Protobuf.LevelReward levelReward)
+        {
+            switch (levelReward.RewardCase)
+            {
+                case Protobuf.LevelReward.RewardOneofCase.SkillReward:
+                    return new OverlordSkillRewardItem(levelReward.Level, levelReward.SkillReward.SkillIndex);
+                case Protobuf.LevelReward.RewardOneofCase.BoosterPackReward:
+                    return new BoosterPackRewardItem(levelReward.Level, levelReward.BoosterPackReward.Amount);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static OverlordLevelingData FromProtobuf(this Protobuf.OverlordLevelingData overlordLevelingData)
+        {
+            return new OverlordLevelingData(
+                overlordLevelingData.Rewards.Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.ExperienceActions.Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.Fixed,
+                overlordLevelingData.ExperienceStep,
+                overlordLevelingData.GooRewardStep,
+                overlordLevelingData.MaxLevel
+            );
+        }
+
+        public static Notification FromProtobuf(this Protobuf.Notification notification)
+        {
+            switch (notification.Type)
+            {
+                case NotificationType.Types.Enum.EndMatch:
+                    NotificationEndMatch notificationEndMatch = notification.EndMatch;
+                    return new EndMatchNotification(
+                        notification.Id,
+                        Utilites.UnixTimeStampToDateTime(notification.CreatedAt),
+                        notification.Seen,
+                        new DeckId(notificationEndMatch.DeckId),
+                        new OverlordId(notificationEndMatch.OverlordId),
+                        notificationEndMatch.OldLevel,
+                        notificationEndMatch.OldExperience,
+                        notificationEndMatch.NewLevel,
+                        notificationEndMatch.NewExperience,
+                        notificationEndMatch.IsWin,
+                        notificationEndMatch.Rewards.Select(reward => reward.FromProtobuf()).ToList()
+                    );
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static BigInteger FromProtobuf(this Client.Protobuf.BigUInt bigUInt)
+        {
+            byte[] rawBytes = bigUInt.Value.ToByteArray();
+
+            // +1 so that the last element is 0, which forces BigInteger to treat data as unsigned
+            byte[] bytes = new byte[rawBytes.Length + 1];
+            Array.Copy(rawBytes, bytes, rawBytes.Length);
+
+            // Swap endianness
+            Array.Reverse(bytes, 0, rawBytes.Length);
+
+            return new BigInteger(bytes);
+        }
+
+        public static AuthFiatApiFacade.TransactionReceipt FromProtobuf(this MintingTransactionReceipt transactionReceipt)
+        {
+            return new AuthFiatApiFacade.TransactionReceipt(
+                new AuthFiatApiFacade.TransactionReceipt.VerifySignResult(
+                    transactionReceipt.VerifyHash.Hash.ToByteArray(),
+                    transactionReceipt.VerifyHash.Signature.ToByteArray()
+                ),
+                transactionReceipt.UserId.FromProtobuf(),
+                (uint) transactionReceipt.Booster,
+                (uint) transactionReceipt.Super,
+                (uint) transactionReceipt.Air,
+                (uint) transactionReceipt.Earth,
+                (uint) transactionReceipt.Fire,
+                (uint) transactionReceipt.Life,
+                (uint) transactionReceipt.Toxic,
+                (uint) transactionReceipt.Water,
+                (uint) transactionReceipt.Small,
+                (uint) transactionReceipt.Minion,
+                (uint) transactionReceipt.Binance,
+                transactionReceipt.TxId.FromProtobuf()
+            );
         }
     }
 }

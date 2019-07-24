@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Text;
-using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using DG.Tweening;
 using log4net;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Iap;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityEngine.Purchasing;
-using UnityEngine.Purchasing.Security;
 using Object = UnityEngine.Object;
-using Convert = System.Convert;
-using Newtonsoft.Json;
+using OneOf;
+using OneOf.Types;
+using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground
 {
@@ -26,620 +22,544 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ShopWithNavigationPage));
 
+        private const float IapInitializationTimeout = 12;
+
         private IUIManager _uiManager;
-        
+
         private ILoadObjectsManager _loadObjectsManager;
-        
+
         private GameObject _selfPage;
 
-        private List<Button> _itemButtonList;
+        private List<ShopItem> _items = new List<ShopItem>();
 
-        private List<TextMeshProUGUI> _textItemNameList,
-                                      _textItemPriceList;
+        private State _state, _unfinishedState;
 
-        private FiatBackendManager.FiatProduct _productData;
+        private FiatValidationData _fiatValidationData;
 
-        private string _currencyPrefix;
-        
+        private PlasmachainBackendFacade _plasmaChainBackendFacade;
+
+        private IapMediator _iapMediator;
+
         #region IUIElement
-        
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
 
-            _itemButtonList = new List<Button>();
-            _textItemNameList = new List<TextMeshProUGUI>();
-            _textItemPriceList = new List<TextMeshProUGUI>();
-
-            InitPurchaseLogic();
-            LoadProductData();         
+            _iapMediator = GameClient.Get<IapMediator>();
         }
 
-        public void Update()
-        {
-        }
+        public void Update() { }
 
-        public void Show()
+        public async void Show()
         {
-            _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
+            SubscribeIapEvents();
+
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"), _uiManager.Canvas.transform, false);
 
             UpdatePageScaleToMatchResolution();
-            
+
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
             _uiManager.DrawPopup<AreaBarPopup>();
-            
-            if(!CheckIfProductDataAvailable())
+
+            if (_iapMediator.InitializationState != IapInitializationState.Initialized)
             {
-                ReloadProductData();
-                _uiManager.DrawPopup<WarningPopup>($"Cannot load product data\n Please try again");                
-                return;
+                bool initializationSuccess = await InitializeStore();
+                if (!initializationSuccess)
+                    return;
             }
-            LoadItems();
+
+            bool claimingSuccess = await ClaimPendingPurchases();
+            if (!claimingSuccess)
+                return;
+
+            ChangeState(State.WaitForInput);
+            CreateItems();
         }
-        
+
         public void Hide()
         {
             Dispose();
-        
+
+            _uiManager.HidePopup<SideMenuPopup>();
+            _uiManager.HidePopup<AreaBarPopup>();
+            _uiManager.HidePopup<LoadingOverlayPopup>();
+
             if (_selfPage == null)
                 return;
-        
+
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
-            
-            _uiManager.HidePopup<SideMenuPopup>();
-            _uiManager.HidePopup<AreaBarPopup>();
         }
-        
+
         public void Dispose()
         {
-            if (_itemButtonList != null)
-                _itemButtonList.Clear();  
-                
-            if (_textItemNameList != null)
-                _textItemNameList.Clear();  
-                
-            if (_textItemPriceList != null)
-                _textItemPriceList.Clear();  
+            UnsubscribeIapEvents();
+            foreach (ShopItem item in _items)
+            {
+                item.Dispose();
+            }
+
+            _items.Clear();
         }
-        
+
         #endregion
-        
+
         #region UI Handler
-        
-        private void BuyButtonHandler( int id )
+
+#pragma warning disable 1998
+        private async void BuyButtonHandler(Product product)
+#pragma warning restore 1998
         {
-            #if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
-            _uiManager.DrawPopup<LoadingFiatPopup>("Activating Purchase...");
-            _inAppPurchaseManager.BuyProductID(_productData.packs[id].store_id);
-            #else
+            Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
+#if UNITY_IOS || UNITY_ANDROID
+            ChangeState(State.Purchasing);
+            _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
+
+            async void OnIapMediatorOnPurchasingResultReceived(OneOf<PurchaseEventArgs, IapPlatformStorePurchaseError> oneOf)
+            {
+                // Wait until we get a result for the product we are buying
+                bool matchingProduct = false;
+                oneOf.Switch(
+                    args => matchingProduct = args.purchasedProduct.Equals(product),
+                    error => matchingProduct = error.Product.Equals(product)
+                    );
+
+                if (!matchingProduct)
+                    return;
+
+                _iapMediator.PurchasingResultReceived -= OnIapMediatorOnPurchasingResultReceived;
+                await _iapMediator.ClaimStorePurchases();
+            }
+
+            _iapMediator.PurchasingResultReceived += OnIapMediatorOnPurchasingResultReceived;
+            OneOf<Success, IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException> buyProductResult =
+                await _iapMediator.InitiatePurchase(product);
+#else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
-            #endif
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?");
+#endif
         }
-        
+
         private void ConfirmRedirectMarketplaceLink(bool status)
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectMarketplaceLink;
-            if(status)
+            if (status)
             {
                 Application.OpenURL(Constants.MarketPlaceLink);
             }
         }
-        
-#endregion
-        
+
+        #endregion
+
+        private void ChangeState(State newState)
+        {
+            Assert.IsFalse(_selfPage == null);
+
+            if (_state == newState)
+                return;
+
+            Log.Info($"ChangeState: prev:{_state.ToString()} next:{newState.ToString()}");
+
+            _state = newState;
+            switch (_state)
+            {
+                case State.Undefined:
+                    break;
+                case State.InitializingStore:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Initializing store...");
+                    break;
+                case State.ClaimingPendingPurchases:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Checking for purchases...");
+                    break;
+                case State.WaitForInput:
+                    _uiManager.HidePopup<LoadingOverlayPopup>();
+                    break;
+                case State.InitiatedPurchase:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
+                    break;
+                case State.Purchasing:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Processing Purchase...");
+                    break;
+                case State.RequestFiatValidation:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Processing payment...");
+                    break;
+                case State.RequestFiatTransaction:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs");
+                    break;
+                case State.RequestPack:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs.");
+                    break;
+                case State.WaitForRequestPackResponse:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs..");
+                    break;
+                case State.RequestFiatClaim:
+                    _unfinishedState = _state;
+                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs...");
+                    break;
+                case State.TransitionToPackOpener:
+                    _unfinishedState = State.Undefined;
+                    OnFinishRequestPack();
+                    break;
+                default:
+                    throw new InvalidEnumArgumentException(nameof(_state), (int) _state, typeof(State));
+            }
+        }
+
         private void UpdatePageScaleToMatchResolution()
         {
-            float screenRatio = (float)Screen.width/Screen.height;
-            if(screenRatio < 1.76f)
+            float screenRatio = (float) Screen.width / Screen.height;
+            if (screenRatio < 1.76f)
             {
                 _selfPage.transform.localScale = Vector3.one * 0.93f;
             }
-        } 
-        
-        private bool CheckIfProductDataAvailable()
-        {
-            return _productData != null;
         }
-        
-        private async void ReloadProductData()
+
+        private void CreateItems()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"Loading products data");
-            await LoadProductData();
-            _uiManager.HidePopup<LoadingFiatPopup>();
+            Transform root = _selfPage.transform.Find("Panel_Content/Mask/Group_Packs");
+            foreach (Product product in _iapMediator.Products)
+            {
+                ShopItem shopItem = new ShopItem(root, _loadObjectsManager, _iapMediator, product);
+                shopItem.Button.onClick.AddListener(() =>
+                {
+                    PlayClickSound();
+                    BuyButtonHandler(product);
+                });
+
+                _items.Add(shopItem);
+            }
+        }
+
+        #region Purchasing Logic
+
+        private async Task<bool> InitializeStore()
+        {
+            ChangeState(State.InitializingStore);
+
+            Action<string> onFail = (s) =>
+            {
+                _iapMediator.Initialized -= IapMediatorOnInitialized;
+                _iapMediator.InitializationFailed -= IapMediatorOnInitializationFailed;
+                FailAndGoToMainMenu(s);
+            };
+
+            _iapMediator.Initialized += IapMediatorOnInitialized;
+            _iapMediator.InitializationFailed += IapMediatorOnInitializationFailed;
+
+            // If initialization did start successfully, we need to wait for an event to get the results of initialization.
+            // Initialization is asynchronous and will only fail due to misconfiguration.
+            // This means that in case of, for example, missing internet connectivity, no event will fire,
+            // and the initialization will remain in "Initializing state".
+            // We handle this by giving the IAP platform a timeout to initialize, and if timeout ends,
+            // propose the user to try again later (when IAP might already initialize itself by then).
+
+            bool gotInitializationResult = false;
+            OneOf<InitializationFailureReason, IapException> failure = default;
+
+            void IapMediatorOnInitialized()
+            {
+                Log.Debug("IapMediatorOnInitialized");
+                gotInitializationResult = true;
+                _iapMediator.Initialized -= IapMediatorOnInitialized;
+                _iapMediator.InitializationFailed -= IapMediatorOnInitializationFailed;
+            }
+
+            void IapMediatorOnInitializationFailed(OneOf<InitializationFailureReason, IapException> innerFailure)
+            {
+                gotInitializationResult = true;
+                _iapMediator.Initialized -= IapMediatorOnInitialized;
+                _iapMediator.InitializationFailed -= IapMediatorOnInitializationFailed;
+                failure = innerFailure;
+            }
+
+            if (_iapMediator.InitializationState == IapInitializationState.NotInitialized ||
+                _iapMediator.InitializationState == IapInitializationState.Failed)
+            {
+                // Start initialization and check if it fails on the first step
+                OneOf<Success, IapException> iapInitializeResult = await _iapMediator.BeginInitialization();
+
+                if (!iapInitializeResult.IsT0)
+                {
+                    Log.Warn("Failed to initialize store: " + iapInitializeResult.Value);
+                    onFail(null);
+                    return false;
+                }
+            }
+
+            double timestamp = Utilites.GetTimestamp();
+            bool isInitializationTimeout = false;
+            await new WaitUntil(() =>
+            {
+                isInitializationTimeout = Utilites.GetTimestamp() - timestamp > IapInitializationTimeout;
+                return isInitializationTimeout || gotInitializationResult;
+            });
+
+            if (isInitializationTimeout)
+            {
+                Log.Warn("Store initialization timed out");
+                onFail(null);
+                return false;
+            }
+
+            if (_iapMediator.InitializationState == IapInitializationState.Failed)
+            {
+                Log.Warn("Store initialization failed: " + failure);
+
+                string message = null;
+                if (failure.IsT0)
+                {
+                    switch (failure.AsT0)
+                    {
+                        case InitializationFailureReason.PurchasingUnavailable:
+                            message =
+                                "Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.";
+                            break;
+                        case InitializationFailureReason.NoProductsAvailable:
+                        case InitializationFailureReason.AppNotKnown:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                onFail(message);
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<bool> ClaimPendingPurchases()
+        {
+            ChangeState(State.ClaimingPendingPurchases);
+            const string error = "Failed to claim pending purchases. Please try again.";
+
+            OneOf<Success, IapPurchaseProcessingError, IapException> claimStorePurchases = await _iapMediator.ClaimStorePurchases();
+            if (!claimStorePurchases.IsT0)
+            {
+                Log.Warn(claimStorePurchases);
+                FailAndGoToMainMenu(error);
+                return false;
+            }
+
+            ChangeState(State.ClaimingPendingPurchases);
+            OneOf<Success, IapPurchaseProcessingError, IapException> claimMarketplacePurchases = await _iapMediator.ClaimMarketplacePurchases();
+            if (!claimMarketplacePurchases.IsT0)
+            {
+                Log.Warn(claimMarketplacePurchases);
+                FailAndGoToMainMenu(error);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void FailAndGoToMainMenu(string customMessage = null)
+        {
+            _uiManager.HidePopup<LoadingOverlayPopup>();
+            _uiManager.DrawPopup<WarningPopup>(customMessage ?? "Failed to initialize store.\n Please try again");
+            ChangeState(State.Undefined);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
 
-        private void LoadItems()
+        private void SubscribeIapEvents()
         {
-            string path = "Panel_Content/Mask/Group_Packs";
-            
-            _itemButtonList.Clear();
-            _textItemNameList.Clear();
-            _textItemPriceList.Clear();
-
-            int maxPackObject = _selfPage.transform.Find(path).childCount;
-            
-            for (int i = 0; i < _productData.packs.Length && i < maxPackObject; ++i)
-            {
-                int index = i;
-                
-                Button button = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Button_Pack").GetComponent<Button>();
-                button.transform.parent.gameObject.SetActive(true);
-                _itemButtonList.Add(button);
-                button.onClick.AddListener(()=>
-                {
-                    PlayClickSound();
-                    BuyButtonHandler(index);
-                });
-
-                FiatBackendManager.FiatProductPack packData = _productData.packs[i];
-                
-                TextMeshProUGUI textName = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_PackName").GetComponent<TextMeshProUGUI>();
-                textName.text = packData.display_name;
-                _textItemNameList.Add(textName);
-                
-                TextMeshProUGUI textPrice = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_Price").GetComponent<TextMeshProUGUI>();
-                textPrice.text = _currencyPrefix + (packData.price / (float)_productData.unit_percent).ToString("n2");
-                _textItemPriceList.Add(textPrice);
-            }
-        }
-        
-        private async Task LoadProductData()
-        {
-            FiatBackendManager.FiatProductResponse fiatProductResponse;
-            try
-            {
-                fiatProductResponse = await _fiatBackendManager.CallFiatProducts();
-            }
-            catch(Exception e)
-            {
-                Log.Info($"{nameof(_fiatBackendManager.CallFiatProducts)} failed: {e.Message}");                
-                return;
-            }
-
-            try
-            {
-#if UNITY_ANDROID
-                _productData = fiatProductResponse.products.First(x => x.store == "PlayStore");
-#elif UNITY_IOS
-                _productData = fiatProductResponse.products.First(x => x.store == "AppStore");
-#else
-                _productData = fiatProductResponse.products.First(x => x.store == "MarketPlace"); 
-#endif
-            }
-            catch(Exception e)
-            {
-                Log.Info($"Parsing product data failed: {e.Message}");                
-                return;
-            }
-
-            _currencyPrefix = string.Equals(_productData.currency, "USD") ? "$" : "";
+            _iapMediator.PurchaseStateChanged += IapMediatorOnPurchaseStateChanged;
         }
 
-#region Purchasing Logic
-
-#if UNITY_IOS || UNITY_ANDROID
-        private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
-        private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
-#endif
-        
-        private IInAppPurchaseManager _inAppPurchaseManager;
-
-        private FiatBackendManager _fiatBackendManager;
-
-        private FiatPlasmaManager _fiatPlasmaManager;
-        
-        private Action _finishRequestPack;
-
-        public void InitPurchaseLogic()
+        private void UnsubscribeIapEvents()
         {
-            _fiatBackendManager = GameClient.Get<FiatBackendManager>();
-            _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
-            
-            _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
-#if UNITY_IOS || UNITY_ANDROID
-            _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            _inAppPurchaseManager.PurchaseFailedOrCanceled += OnPurchaseFailedOrCanceled;
-            _finishRequestPack = OnFinishRequestPack;
-#endif
-        }
-        
-#if UNITY_IOS || UNITY_ANDROID
-        private async void RequestFiatValidationGoogle()
-        {
-            Log.Info($"{nameof(RequestFiatValidationGoogle)}");
-            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
-            
-            FiatBackendManager.FiatValidationResponse response = null;
-            try
-            {
-                response = await _fiatBackendManager.CallFiatValidationGoogle
-                (
-                    _fiatValidationDataGoogleStore.productId,
-                    _fiatValidationDataGoogleStore.purchaseToken,
-                    _fiatValidationDataGoogleStore.transactionId,
-                    _fiatValidationDataGoogleStore.storeName
-                );        
-            }
-            catch(Exception e)
-            {
-                Log.Info($"{nameof(RequestFiatValidationGoogle)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupRequestFiatValidationGoogle;
-                _uiManager.HidePopup<LoadingFiatPopup>();
-                return;
-            }  
-            
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestFiatTransaction();         
-        }
-        
-        private void WarningPopupRequestFiatValidationGoogle()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestFiatValidationGoogle;
-
-            RequestFiatValidationGoogle();
-        }
-
-        private async void RequestFiatValidationApple()
-        {
-            Log.Info($"{nameof(RequestFiatValidationApple)}");
-            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
-            
-            FiatBackendManager.FiatValidationResponse response = null;
-            try
-            {
-                response = await _fiatBackendManager.CallFiatValidationApple
-                (
-                    _fiatValidationDataAppleStore.productId,
-                    _fiatValidationDataAppleStore.transactionId,
-                    _fiatValidationDataAppleStore.receiptData,
-                    _fiatValidationDataAppleStore.storeName
-                );    
-            }
-            catch(Exception e)
-            {
-                Log.Info($"{nameof(RequestFiatValidationApple)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupRequestFiatValidationApple;
-                _uiManager.HidePopup<LoadingFiatPopup>();
-                return;
-            }  
-            
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestFiatTransaction();     
-        }
-        
-        private void WarningPopupRequestFiatValidationApple()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestFiatValidationApple;
-
-            RequestFiatValidationApple();
-        }
-        
-        private async void RequestFiatTransaction()
-        {
-            Log.Info($"{nameof(RequestFiatTransaction)}");
-            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
-            
-            List<FiatBackendManager.FiatTransactionResponse> recordList = null;
-            try
-            {
-                recordList = await _fiatBackendManager.CallFiatTransaction();
-            }
-            catch(Exception e)
-            {
-                Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupRequestFiatTransaction;
-                _uiManager.HidePopup<LoadingFiatPopup>();
-                return;
-            }
-            
-            recordList.Sort( (FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB)=>
-            {
-                return resB.TxID - resA.TxID;
-            });
-            string log = "TxID: ";
-            foreach( var i in recordList)
-            {
-                log += i.TxID + ", ";
-            }
-            Log.Debug(log);
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestPack(recordList);            
-        }
-        
-        private void WarningPopupRequestFiatTransaction()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestFiatTransaction;
-
-            RequestFiatTransaction();
-        }
-        
-        private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
-        {            
-            Log.Debug("START REQUEST for packs");
-            List<FiatBackendManager.FiatTransactionResponse> requestList = new List<FiatBackendManager.FiatTransactionResponse>();
-            for (int i = 0; i < sortedRecordList.Count; ++i)
-            {
-                requestList.Add(sortedRecordList[i]);
-            }
-
-            for (int i = 0; i < requestList.Count; ++i)
-            {
-                FiatBackendManager.FiatTransactionResponse record = requestList[i];
-
-                Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
-                _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
-
-                string eventResponse = "";
-
-                eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
-                Log.Debug($"Contract [requestPacks] success call.");
-                Log.Debug($"EVENT RESPONSE: {eventResponse}");
-                if (!string.IsNullOrEmpty(eventResponse))
-                {
-                    Log.Debug("FINISH REQUEST for packs");
-                    await _fiatBackendManager.CallFiatClaim
-                    (
-                        record.UserId,
-                        new List<int>
-                        {
-                            record.TxID
-                        }
-                    );                    
-                }
-            }
-            
-            _finishRequestPack();
+            _iapMediator.PurchaseStateChanged -= IapMediatorOnPurchaseStateChanged;
         }
 
         private async void OnFinishRequestPack()
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
-            await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
-            _uiManager.DrawPopup<LoadingFiatPopup>($"Success!");
+            _uiManager.DrawPopup<LoadingOverlayPopup>($"Successfully request for pack(s).");
             await Task.Delay(TimeSpan.FromSeconds(1f));
-            _uiManager.HidePopup<LoadingFiatPopup>();
+            _uiManager.HidePopup<LoadingOverlayPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
-        
-        private void OnProcessPurchase(PurchaseEventArgs args)
+
+        private bool HandlePurchaseFailureReason(PurchaseFailureReason error)
         {
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            Product product = args.purchasedProduct;
-
-            Log.Debug("OnProcessPurchase");
-            Log.Debug($"productId {product.definition.id}");
-            Log.Debug($"receipt {args.purchasedProduct.receipt}");
-            Log.Debug($"transactionID {product.transactionID}");
-            Log.Debug($"storeSpecificId {product.definition.storeSpecificId}");
-
-#if UNITY_ANDROID
-            _fiatValidationDataGoogleStore = new FiatValidationDataGoogleStore();      
-            _fiatValidationDataGoogleStore.productId = product.definition.id;
-            _fiatValidationDataGoogleStore.purchaseToken = ParsePurchaseTokenFromPlayStoreReceipt(args.purchasedProduct.receipt);
-            _fiatValidationDataGoogleStore.transactionId = product.transactionID;
-            _fiatValidationDataGoogleStore.storeName = "GooglePlay";
-
-            RequestFiatValidationGoogle();  
-#elif UNITY_IOS
-            _fiatValidationDataAppleStore = new FiatValidationDataAppleStore();
-            _fiatValidationDataAppleStore.productId = product.definition.id;
-            _fiatValidationDataAppleStore.transactionId = ParseTransactionIdentifierFromAppStoreReceipt(args);
-            _fiatValidationDataAppleStore.receiptData = ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
-            _fiatValidationDataAppleStore.storeName = "AppleStore";
-            RequestFiatValidationApple();
-#endif
-        }
-
-        private void OnPurchaseFailedOrCanceled()
-        {
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            OpenAlertDialog("Purchasing failed or canceled.");
-        }
-        
-        private string ParseTransactionIdentifierFromAppStoreReceipt(PurchaseEventArgs e)
-        {
-            var validator = new CrossPlatformValidator(GooglePlayTangle.Data(),
-                    AppleTangle.Data(), Application.identifier);
-        
-            var result = validator.Validate(e.purchasedProduct.receipt);
-            Log.Info("Receipt is valid. Contents:");
-            int count = 0;
-            foreach (IPurchaseReceipt productReceipt in result) {
-                Log.Info($"productReceipt {count}");
-                ++count;
-                Log.Info($"productReceipt.productID: {productReceipt.productID}");
-                Log.Info($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
-                Log.Info($"productReceipt.transactionID: {productReceipt.transactionID}");
-
-                if (productReceipt is AppleInAppPurchaseReceipt apple) {
-                    Log.Info($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
-                    Log.Info($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
-                    Log.Info($"apple.cancellationDate: {apple.cancellationDate}");
-                    Log.Info($"apple.quantity: {apple.quantity}");
-                }
-
-                return productReceipt.transactionID;
-            }
-            return "";
-        }
-
-        private string ParsePayloadFromAppStoreReceipt(string receiptString)
-        {
-            string payload = "";   
-            try
+            switch (error)
             {
-                IAPReceipt2 receipt = JsonConvert.DeserializeObject<IAPReceipt2>(receiptString);                
-                
-                Log.Debug("IAPReceipt");
-                string log = "";
-                log += "receipt.TransactionID: " + receipt.TransactionID;
-                log += "\n";
-                log += "receipt.Store: " + receipt.Store;
-                log += "\n";
-                log += "Payload: " + receipt.Payload;
-                Log.Debug(log);
-                payload = receipt.Payload;
+                case PurchaseFailureReason.Unknown:
+                    // Happens at least when user enters incorrect password on iOS, should be safe to ignore?
+                    return true;
+                case PurchaseFailureReason.UserCancelled:
+                    // Don't show error on user cancel
+                    return true;
+                case PurchaseFailureReason.ExistingPurchasePending:
+                    OpenAlertDialog("Purchase for this product is already in progress. Please try again.");
+                    return true;
+                case PurchaseFailureReason.PaymentDeclined:
+                    OpenAlertDialog("Payment was declined.");
+                    return true;
+                case PurchaseFailureReason.PurchasingUnavailable:
+                    OpenAlertDialog("Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.");
+                    return true;
+                case PurchaseFailureReason.ProductUnavailable:
+                case PurchaseFailureReason.SignatureInvalid:
+                case PurchaseFailureReason.DuplicateTransaction:
+                    // Those cases don't happen normally, so fallthrough to the next error handler
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
-                string logText = "";
-                string payloadToCut = payload;
-                Log.Debug("PAYLOAD START");
-                int count = 0;
-                while( !string.IsNullOrEmpty(payloadToCut))
-                {
-                    int lengthAmount = 200;
-                    if(payloadToCut.Length > lengthAmount)
+        private void IapMediatorOnPurchaseStateChanged(
+            IapPurchaseState state,
+            OneOf<IapPlatformStorePurchaseError, IapPurchaseProcessingError, IapException>? failure)
+        {
+            switch (state)
+            {
+                case IapPurchaseState.Undefined:
+                    break;
+                case IapPurchaseState.Failed:
+                    ChangeState(State.WaitForInput);
+                    Assert.IsTrue(failure != null);
+
+                    Log.Warn("Error while processing purchase: " + failure.Value);
+
+                    if (failure.Value.IsT0)
                     {
-                        logText = payloadToCut.Substring(0, lengthAmount);
-                        payloadToCut = payloadToCut.Substring(lengthAmount);
+                        if (HandlePurchaseFailureReason(failure.Value.AsT0.FailureReason))
+                            return;
                     }
-                    else
-                    {
-                        logText = payloadToCut;
-                        payloadToCut = "";
-                    }
-                    ++count;
-                    Log.Debug( $"{count}: {logText}");
-                }
-                Log.Debug("PAYLOAD END");
+
+                    string failureString = "";
+                    failure.Value.Switch(
+                        error => failureString = error.FailureReason.ToString(),
+                        error => failureString = error.ToString(),
+                        exception => failureString = exception.Message
+                    );
+
+                    OpenAlertDialog("Error while processing purchase: " + failureString);
+                    break;
+                case IapPurchaseState.StorePurchaseInitiated:
+                    ChangeState(State.InitiatedPurchase);
+                    break;
+                case IapPurchaseState.StorePurchaseProcessing:
+                    ChangeState(State.Purchasing);
+                    break;
+                case IapPurchaseState.RequestingFiatValidation:
+                    ChangeState(State.RequestFiatValidation);
+                    break;
+                case IapPurchaseState.RequestingFiatTransaction:
+                    ChangeState(State.RequestFiatTransaction);
+                    break;
+                case IapPurchaseState.RequestingPack:
+                    ChangeState(State.RequestPack);
+                    break;
+                case IapPurchaseState.Finished:
+                    ChangeState(State.WaitForInput);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
-            catch
-            {
-                Log.Info("Cannot deserialize args.purchasedProduct.receipt");
-            }
-            return payload;
         }
 
-        private string ParsePurchaseTokenFromPlayStoreReceipt( string receiptString  )
-        {
-            string payload = "";   
-            string purchaseToken = "";
-            
-            try
-            {
-                IAPReceipt2 receipt = JsonConvert.DeserializeObject<IAPReceipt2>(receiptString);                
-                
-                Log.Debug("IAPReceipt");
-                string log = "";
-                log += "receipt.TransactionID: " + receipt.TransactionID;
-                log += "\n";
-                log += "receipt.Store: " + receipt.Store;
-                log += "\n";
-                log += "Payload: " + receipt.Payload;
-                Log.Debug(log);
-                payload = receipt.Payload;
-            }
-            catch
-            {
-                Log.Info("Cannot deserialize args.purchasedProduct.receipt");
-            }
-            
-            if( !string.IsNullOrEmpty(payload) )
-            {
-                string json = "";
-                try
-                {
-                    ReceiptPayloadStr rPayload = JsonConvert.DeserializeObject<ReceiptPayloadStr>(payload);
-                    Log.Debug("json: " + rPayload.json);
-                    json = rPayload.json;
-                }
-                catch
-                {
-                    Log.Info("Cannot deserialize payload str");
-                }
-                
-                if (!string.IsNullOrEmpty(json))
-                {
-                    try
-                    {
-                        ReceiptJSON rJson = JsonConvert.DeserializeObject<ReceiptJSON>(json);
-                        purchaseToken = rJson.purchaseToken;
-                        Log.Debug("purchaseToken: " + purchaseToken);
-                    }
-                    catch
-                    {
-                        Log.Info("Cannot deserialize rJson");
-                    }
-                }
-            }
+        #endregion
 
-            return purchaseToken;
-        }
-        
-        public class FiatValidationDataGoogleStore
-        {
-            public string productId;
-            public string purchaseToken;
-            public string transactionId;
-            public string storeName;
-        }
-        
-        public class FiatValidationDataAppleStore
-        {
-            public string productId;
-            public string transactionId;
-            public string receiptData;
-            public string storeName;
-        }
-
-        public class IAPReceipt
-        {
-            public string Store;
-            public string TransactionID;
-            public ReceiptPayload Payload;
-        }
-        public class IAPReceipt2
-        {
-            public string Store;
-            public string TransactionID;
-            public string Payload;
-        }
-        public class ReceiptPayload
-        {
-            public ReceiptJSON json;
-        }
-         public class ReceiptPayloadStr
-        {
-            public string json;
-        }
-        public class ReceiptJSON
-        {
-            public string productId;
-            public string purchaseToken;
-        }
-#endif
-        
-#endregion
-        
-#region Util
+        #region Util
 
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
-        
+
         public void OpenAlertDialog(string msg)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
-                false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CHANGE_SCREEN,
+                    Constants.SfxSoundVolume,
+                    false,
+                    false,
+                    true);
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
-#endregion
+        #endregion
+
+        private enum State
+        {
+            Undefined,
+            InitializingStore,
+            ClaimingPendingPurchases,
+            WaitForInput,
+            InitiatedPurchase,
+            Purchasing,
+            RequestFiatValidation,
+            RequestFiatTransaction,
+            RequestPack,
+            WaitForRequestPackResponse,
+            RequestFiatClaim,
+            TransitionToPackOpener
+        }
+
+        private class ShopItem
+        {
+            public GameObject GameObject { get; }
+
+            public Button Button { get; }
+
+            public TextMeshProUGUI NameText { get; }
+
+            public TextMeshProUGUI PriceText { get; }
+
+            public ShopItem(Transform parent, ILoadObjectsManager loadObjectsManager, IapMediator iapMediator, Product product)
+            {
+                GameObject = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Shop_Item_Pack"), parent);
+                NameText = GameObject.transform.Find("Text_PackName").GetComponent<TextMeshProUGUI>();
+                PriceText = GameObject.transform.Find("Text_Price").GetComponent<TextMeshProUGUI>();
+                Button = GameObject.transform.Find("Button").GetComponent<Button>();
+
+                NameText.text = iapMediator.ProcessProductTitle(product.metadata.localizedTitle);
+
+                // Pretty-format the price
+                CultureInfo currencyCulture = CurrencyUtility.GetCultureFromIsoCurrencyCode(product.metadata.isoCurrencyCode);
+                string priceText = null;
+                if (currencyCulture != null)
+                {
+                    // Other symbols are not supported by the current font
+                    string[] allowedCurrencySymbols =
+                    {
+                        "$", "€", "£"
+                    };
+
+                    if (allowedCurrencySymbols.Contains(currencyCulture.NumberFormat.CurrencySymbol))
+                    {
+                        priceText = String.Format(currencyCulture, "{0:C}", product.metadata.localizedPrice);
+                    }
+                }
+
+                if (priceText == null)
+                {
+                    priceText = $"{product.metadata.localizedPrice:0.00} {product.metadata.isoCurrencyCode}";
+                }
+
+                PriceText.text = priceText;
+            }
+
+            public void Dispose()
+            {
+                Object.Destroy(GameObject);
+            }
+        }
     }
 }

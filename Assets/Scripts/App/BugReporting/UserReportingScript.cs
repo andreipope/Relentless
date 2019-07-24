@@ -11,7 +11,6 @@ using log4net;
 using log4net.Appender;
 using Loom.ZombieBattleground.Common;
 using SharpCompress.Archives.Zip;
-using SharpCompress.Common;
 using SharpCompress.Writers;
 using TMPro;
 using Unity.Cloud.UserReporting;
@@ -21,6 +20,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CompressionLevel = SharpCompress.Compressors.Deflate.CompressionLevel;
+using CompressionType = SharpCompress.Common.CompressionType;
 
 /// <summary>
 /// Represents a behavior for working with the user reporting client.
@@ -47,12 +47,6 @@ public class UserReportingScript : MonoBehaviour
     #endregion
 
     #region Fields
-
-    /// <summary>
-    /// Gets or sets the user report button used to create a user report.
-    /// </summary>
-    [Tooltip("The user report button used to create a user report.")]
-    public Button UserReportButton;
 
     public Button BugReportFormCancelButton;
 
@@ -258,7 +252,7 @@ public class UserReportingScript : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(transform.root.gameObject);
 
-#if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
+#if (!UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER) && !DISABLE_CRASH_REPORTER
         Application.logMessageReceived += OnLogMessageReceived;
 #endif
     }
@@ -436,9 +430,29 @@ public class UserReportingScript : MonoBehaviour
 
         // Attempt to get match id
         long? matchId = null;
-        if (GameClient.Get<IMatchManager>()?.MatchType == Enumerators.MatchType.PVP)
+        string callMetricsJson = null;
+        if (GameClient.InstanceExists)
         {
-            matchId = GameClient.Get<IPvPManager>()?.MatchMetadata?.Id;
+            if (GameClient.Get<IMatchManager>()?.MatchType == Enumerators.MatchType.PVP)
+            {
+                matchId = GameClient.Get<IPvPManager>()?.MatchMetadata?.Id;
+            }
+
+            // Attempt to get all metrics
+            try
+            {
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                IDataManager dataManager = GameClient.Get<IDataManager>();
+                if (backendFacade.ContractCallProxy is ThreadedContractCallProxyWrapper threadedCallProxy &&
+                    threadedCallProxy.WrappedProxy is CustomContractCallProxy timeMetricsCallProxy)
+                {
+                    callMetricsJson = dataManager.SerializeToJson(timeMetricsCallProxy.MethodToCallRoundabouts, true);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn("Error while getting call metrics:" + e);
+            }
         }
 
         // Kill everything else to make sure no more exceptions are being thrown
@@ -479,20 +493,9 @@ public class UserReportingScript : MonoBehaviour
             }
 
             // Call metrics
-            try
+            if (callMetricsJson != null)
             {
-                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
-                IDataManager dataManager = GameClient.Get<IDataManager>();
-                if (backendFacade.ContractCallProxy is ThreadedContractCallProxyWrapper threadedCallProxy &&
-                    threadedCallProxy.WrappedProxy is CustomContractCallProxy timeMetricsCallProxy)
-                {
-                    string callMetricsJson = dataManager.SerializeToJson(timeMetricsCallProxy.MethodToCallRoundabouts, true);
-                    AddTextAttachment(br, CustomContractCallProxy.CallMetricsFileName, callMetricsJson, "application/json");
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Warn("Error while getting call metrics:" + e);
+                AddTextAttachment(br, CustomContractCallProxy.CallMetricsFileName, callMetricsJson, "application/json");
             }
 
             // HTML log

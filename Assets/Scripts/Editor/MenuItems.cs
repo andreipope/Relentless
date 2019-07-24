@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Assets.Editor.BugReporting;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Loom.ZombieBattleground.Editor.Tools;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -27,12 +27,6 @@ namespace Loom.ZombieBattleground.Editor
         #endregion
 
         #region Bug Reporting
-
-        [MenuItem("Utility/Bug Reporting/Dev Log Window")]
-        public static void ShowWindow()
-        {
-            EditorWindow.GetWindow(typeof(DevLogWindow));
-        }
 
         [MenuItem("Utility/Bug Reporting/Throw Exception")]
         public static void ThrowException()
@@ -245,6 +239,13 @@ namespace Loom.ZombieBattleground.Editor
             BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
         }
 
+        [MenuItem("Utility/Build/Force DynamicLoad assets to 'main' AssetBundle")]
+        public static void CheckDynamicLoadAssetBundle()
+        {
+            List<AssetImporter> modified = AssetBundleFolderValidator.ForceAssetBundleInFolder("Assets/Assets/DynamicLoad", "main");
+            Debug.Log("Assets forced to 'main' bundle:\n" + String.Join("\n", modified.Select(a => a.assetPath)));
+        }
+
         private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
         {
             BuildAssetBundles(buildTarget);
@@ -358,6 +359,22 @@ namespace Loom.ZombieBattleground.Editor
             }
 
             Selection.objects = selection.ToArray();
+        }
+
+        [MenuItem("Utility/Editor/Apply Scale To Rect Transform")]
+        public static void ApplyScaleToRectTransforms()
+        {
+            RectTransform[] rectTransforms = Selection.transforms.OfType<RectTransform>().ToArray();
+            Undo.RecordObjects(rectTransforms, "Apply Scale To Rect Transform");
+            foreach (RectTransform rectTransform in rectTransforms)
+            {
+                Vector2 sizeDelta = rectTransform.sizeDelta;
+                sizeDelta.x *= rectTransform.localScale.x;
+                sizeDelta.y *= rectTransform.localScale.y;
+                rectTransform.sizeDelta = sizeDelta;
+
+                rectTransform.localScale = Vector3.one;
+            }
         }
 
         #endregion scene hierarchy Utility

@@ -12,15 +12,15 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
-        private ActionsQueueController _actionsQueueController;
+        private IOverlordExperienceManager _overlordExperienceManager;
+
+        private ActionsReportController _actionsReportController;
 
         private AbilitiesController _abilitiesController;
 
         private BattlegroundController _battlegroundController;
 
         private VfxController _vfxController;
-
-        private Dictionary<Enumerators.Faction, Enumerators.Faction> _strongerElemental, _weakerElemental;
 
         public void Dispose()
         {
@@ -30,13 +30,12 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
-            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-            FillStrongersAndWeakers();
         }
 
         public void Update()
@@ -47,7 +46,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void AttackPlayerByUnit(BoardUnitModel attackingUnitModel, Player attackedPlayer)
+        public void AttackPlayerByUnit(CardModel attackingUnitModel, Player attackedPlayer)
         {
             int damageAttacking = attackingUnitModel.CurrentDamage;
 
@@ -62,7 +61,7 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeAttacked, attackingUnitModel.TutorialObjectId);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAttackOverlord,
                 Caller = attackingUnitModel,
@@ -85,7 +84,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0, bool hasCounterAttack = true)
+        public void AttackUnitByUnit(CardModel attackingUnitModel, CardModel attackedUnitModel, int additionalDamage = 0, bool hasCounterAttack = true)
         {
             int damageAttacked = 0;
             int damageAttacking;
@@ -97,16 +96,34 @@ namespace Loom.ZombieBattleground
                 int additionalDamageAttacked =
                     _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
+                int finalDamageAttacked = 0;
+                int finalDamageAttacking = 0;
+
+                damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
+
+                finalDamageAttacked = Mathf.Min(damageAttacked, Mathf.Max(attackingUnitModel.MaximumDamageFromAnySource, 0));
+
+                if (finalDamageAttacked > 0 && attackingUnitModel.HasBuffShield)
+                {
+                    damageAttacked = 0;
+                    finalDamageAttacked = 0;
+                    attackingUnitModel.HasUsedBuffShield = true;
+                }
+
                 damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
-                if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
+                finalDamageAttacking = Mathf.Min(damageAttacking, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0));
+
+                if (finalDamageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damageAttacking = 0;
+                    finalDamageAttacking = 0;
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
+
+                attackedUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacking,
                     Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -116,25 +133,17 @@ namespace Loom.ZombieBattleground
                     attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
                 }
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackedUnitModel), -finalDamageAttacking);
 
-                attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
-                attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
+                attackedUnitModel.InvokeUnitDamaged(attackingUnitModel, true);
+                attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, finalDamageAttacking, true);
 
                 if (hasCounterAttack)
                 {
                     if (attackedUnitModel.CurrentDefense > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
                     {
-                        damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
-
-                        if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
-                        {
-                            damageAttacked = 0;
-                            attackingUnitModel.HasUsedBuffShield = true;
-                        }
-
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        attackingUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource),
+                        attackingUnitModel.AddToCurrentDefenseHistory(-finalDamageAttacked,
                     Enumerators.ReasonForValueChange.Attack);
 
                         if (attackingUnitModel.CurrentDefense <= 0)
@@ -142,14 +151,14 @@ namespace Loom.ZombieBattleground
                             attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
                         }
 
-                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
+                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackingUnitModel), -finalDamageAttacked);
 
-                        attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
-                        attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
+                        attackingUnitModel.InvokeUnitDamaged(attackedUnitModel, false);
+                        attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, finalDamageAttacked, false);
                     }
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                     ActionType = Enumerators.ActionType.CardAttackCard,
                     Caller = attackingUnitModel,
@@ -160,7 +169,7 @@ namespace Loom.ZombieBattleground
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                             Target = attackedUnitModel,
                             HasValue = true,
-                            Value = -damageAttacking
+                            Value = -finalDamageAttacking
                         }
                     }
                 });
@@ -172,30 +181,31 @@ namespace Loom.ZombieBattleground
                     _gameplayManager.PlayerMoves.AddPlayerMove(
                         new PlayerMove(
                             Enumerators.PlayerActionType.AttackOnUnit,
-                            new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking))
+                            new AttackUnit(attackingUnitModel, attackedUnitModel, finalDamageAttacked, finalDamageAttacking))
                         );
                 }
             }
         }
 
-        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnitModel attackedUnitModel, int modifier, int damageOverride = -1)
+        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, CardModel attackedUnitModel, int modifier, int damageOverride = -1)
         {
             if (attackedUnitModel != null)
             {
                 int damage = damageOverride != -1 ? damageOverride : skill.Skill.Value + modifier;
 
-                if (damage > 0 && attackedUnitModel.HasBuffShield)
+                if (Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)) > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnitModel.UseShieldFromBuff();
+                    attackedUnitModel.HasUsedBuffShield = true;
+                    attackedUnitModel.ResolveBuffShield();
                 }
-                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Prototype.Faction;
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damage);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackedUnitModel), -damage);
             }
         }
 
@@ -227,7 +237,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnitModel healedCreature)
+        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, CardModel healedCreature)
         {
             if (healedCreature != null)
             {
@@ -237,37 +247,35 @@ namespace Loom.ZombieBattleground
         }
 
         public void AttackUnitByAbility(
-            object attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
+            IBoardObject attacker, AbilityData ability, CardModel attackedUnitModel, int damageOverride = -1)
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
             if (attackedUnitModel != null)
             {
-                if (damage > 0 && attackedUnitModel.HasBuffShield)
+                if (Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)) > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnitModel.UseShieldFromBuff();
+                    attackedUnitModel.HasUsedBuffShield = true;
+                    attackedUnitModel.ResolveBuffShield();
                 }
 
                 switch (attacker)
                 {
-                    case BoardUnitModel model:
+                    case CardModel model:
                         attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
-                        break;
-                    case BoardItem item:
-                        attackedUnitModel.LastAttackingSetType = item.Model.Prototype.Faction;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, Mathf.Max(attackedUnitModel.MaximumDamageFromAnySource, 0)),
                     Enumerators.ReasonForValueChange.AbilityDamage);
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }
 
-        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
+        public void AttackPlayerByAbility(IBoardObject attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
@@ -284,7 +292,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer, int value = -1)
+        public void HealPlayerByAbility(IBoardObject healer, AbilityData ability, Player healedPlayer, int value = -1)
         {
             int healValue = ability.Value;
 
@@ -301,7 +309,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
+        public void HealUnitByAbility(IBoardObject healer, AbilityData ability, CardModel healedCreature, int value = -1)
         {
             int healValue = ability.Value;
 
@@ -312,62 +320,18 @@ namespace Loom.ZombieBattleground
             {
                 healedCreature.AddToCurrentDefenseHistory(Mathf.Clamp(healValue, 0, healedCreature.MaxCurrentDefense),
                     Enumerators.ReasonForValueChange.AbilityBuff);
-            } 
-        }
-
-        public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)
-        {
-            if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentDefense == 0)
-            {
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillMinion);
             }
         }
 
-        private void FillStrongersAndWeakers()
+        public void CheckOnKillEnemyZombie(CardModel attackedUnit)
         {
-            _strongerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
+            if (attackedUnit.CurrentDefense == 0)
             {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.AIR
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.FIRE
-                }
-            };
-
-            _weakerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
-            {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
-                }
-            };
+                _overlordExperienceManager.ReportExperienceAction(
+                    Enumerators.ExperienceActionType.KillMinion,
+                    attackedUnit.OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchMatchExperienceInfo : _overlordExperienceManager.OpponentMatchMatchExperienceInfo
+                    );
+            }
         }
     }
 }

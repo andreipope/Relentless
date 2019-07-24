@@ -36,20 +36,24 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
         private INetworkActionManager _networkActionManager;
         private bool _isReconnecting;
+        private int _stateChangeSequenceNumber;
 
         public bool IsAppPaused { get; private set; }
-        
+
         public event Action ConnectionStatusDidUpdate;
 
         public Enumerators.AppState AppState { get; set; }
 
         public void ChangeAppState(Enumerators.AppState stateTo, bool force = false)
         {
+            Log.Debug($"{nameof(ChangeAppState)} - stateTo: {stateTo}{(!force && AppState == stateTo ? ", ignored" : "")}");
             if (!force)
             {
                 if (AppState == stateTo)
                     return;
             }
+
+            int currentSequenceNumber = _stateChangeSequenceNumber;
 
             switch (stateTo)
             {
@@ -67,60 +71,54 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                    _uiManager.SetPage<MainMenuWithNavigationPage>(); 
+                    _uiManager.SetPage<MainMenuWithNavigationPage>();
                     break;
                 case Enumerators.AppState.OVERLORD_SELECTION:
                     _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                     HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
+                    // TODO : Not sure when to reach here
+                    //hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
                     break;
-                case Enumerators.AppState.HordeSelection:                
-                    _uiManager.SetPage<HordeSelectionWithNavigationPage>(); 
+                case Enumerators.AppState.HordeSelection:
+                    _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                     CheckIfPlayAgainOptionShouldBeAvailable();
-                    break;                    
+                    break;
                 case Enumerators.AppState.ARMY:
                     _uiManager.SetPage<ArmyWithNavigationPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeSelectionWithNavigationPage>();
-                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);                    
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                     break;
-                case Enumerators.AppState.SHOP:                    
-                    if (Constants.EnableShopPage)
+                case Enumerators.AppState.SHOP:
+                    if (String.IsNullOrEmpty(_backendDataControlMediator.UserDataModel.AccessToken))
                     {
-                        if (string.IsNullOrEmpty(
-                            _backendDataControlMediator.UserDataModel.AccessToken
-                        ))
-                        {   
-                            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
-                            loginPopup.Show();
-                            return;
-                        }
-                        
-                        _uiManager.SetPage<ShopWithNavigationPage>();
+                        LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                        loginPopup.Show();
+                        return;
                     }
-                    else
-                    {
-                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    }
+
+                    _uiManager.SetPage<ShopWithNavigationPage>();
                     break;
                 case Enumerators.AppState.PACK_OPENER:
-                    if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
+                    if (GameClient.Get<ITutorialManager>().IsTutorial || !String.IsNullOrEmpty(_backendDataControlMediator.UserDataModel.AccessToken))
                     {
                         _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
                     }
                     else
                     {
-                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                        loginPopup.Show();
                         return;
                     }
+
                     break;
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
                 case Enumerators.AppState.PlaySelection:
                     _uiManager.SetPage<MainMenuWithNavigationPage>();
-                    _uiManager.DrawPopup<GameModePopup>(); 
+                    _uiManager.DrawPopup<GameModePopup>();
                     break;
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
@@ -135,14 +133,23 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);
             }
 
-            _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;
+            if (currentSequenceNumber == _stateChangeSequenceNumber)
+            {
+                _previousState = AppState;
+                AppState = stateTo;
+                _stateChangeSequenceNumber++;
 
-            AppState = stateTo;
-
-            UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+                Log.Debug($"{nameof(ChangeAppState)} - App state: " + AppState);
+                UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+            }
+            else
+            {
+                // This can happen if the page has changed the state when showing (i.e. when an error happened)
+                Log.Debug($"{nameof(ChangeAppState)} - App state already changed to " + AppState);
+            }
         }
 
-        private void CheckIfPlayAgainOptionShouldBeAvailable() 
+        private void CheckIfPlayAgainOptionShouldBeAvailable()
         {
             if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -214,10 +221,10 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
-        
+
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            if (state == RpcConnectionState.Connected)
+            if (!UnitTestDetector.IsRunningUnitTests && state == RpcConnectionState.Connected)
             {
                 _isReconnecting = false;
             }
@@ -294,6 +301,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<MatchMakingPopup>().ForceCancelAndHide();
             _uiManager.HidePopup<CardInfoPopup>();
             _uiManager.HidePopup<TutorialAvatarPopup>();
+            _uiManager.HidePopup<LoginPopup>();
             if (!_isReconnecting)
             {
                 _uiManager.HidePopup<ConnectionPopup>();
@@ -308,7 +316,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                    ChangeAppState(Enumerators.AppState.MAIN_MENU, true);
                 }
             }
 
@@ -372,7 +380,7 @@ namespace Loom.ZombieBattleground
             UpdateConnectionStatus();
         }
 
-        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
+        private void LoomManagerOnContractCreated(RawChainEventContract oldContract, RawChainEventContract newContract)
         {
             if (oldContract != null)
             {
@@ -405,6 +413,7 @@ namespace Loom.ZombieBattleground
                         };
                         actions[1] = () => { };
 
+                        _uiManager.HidePopup<CardInfoWithSearchPopup>();
                         _uiManager.DrawPopup<ConfirmationPopup>(actions);
                     }
                 }

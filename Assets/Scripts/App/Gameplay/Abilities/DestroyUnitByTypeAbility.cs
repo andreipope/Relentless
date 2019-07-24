@@ -1,7 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,7 +19,8 @@ namespace Loom.ZombieBattleground
 
         private void SendAction()
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
@@ -36,10 +36,10 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController.DestroyBoardUnit(TargetUnit);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                     }
             });
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         protected override void InputEndedHandler()

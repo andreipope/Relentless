@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Loom.Client;
 using Loom.Google.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -24,7 +22,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public const string CallMetricsFileName = "CallMetrics.json";
 
-        public Contract Contract { get; }
+        public RawChainEventContract Contract { get; }
 
         public bool EnableLogs { get; set; }
 
@@ -38,7 +36,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private readonly Dictionary<int, double> _callNumberToExecutionTimestamp = new Dictionary<int, double>();
 
-        public CustomContractCallProxy(Contract contract, bool enableLogs, bool storeCallMetrics)
+        public CustomContractCallProxy(RawChainEventContract contract, bool enableLogs, bool storeCallMetrics)
         {
             _dataManager = GameClient.Get<IDataManager>();
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));

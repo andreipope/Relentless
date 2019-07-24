@@ -20,7 +20,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+                AbilityProcessingAction?.TriggerActionExternally();
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                 InvokeActionTriggered(GetOpponentOverlord());
             }
@@ -38,10 +39,10 @@ namespace Loom.ZombieBattleground
                     new ParametrizedAbilityBoardObject(TargetUnit)
                 });
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -60,7 +61,7 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in GetOpponentOverlord().CardsOnBoard)
+            foreach (CardModel unit in GetOpponentOverlord().CardsOnBoard)
             {
                 unit.Stun(Enumerators.StunType.FREEZE, Value);
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -70,16 +71,16 @@ namespace Loom.ZombieBattleground
                 });
             }
             
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = TargetEffects
             });
 
             InvokeUseAbilityEvent();
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
     }

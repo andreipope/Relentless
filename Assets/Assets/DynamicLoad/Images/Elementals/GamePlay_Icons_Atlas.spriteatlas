@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: GamePlay_Icons_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -57,6 +58,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: e16d58630393f3d43a494ff2c0b48346, type: 3}
     - {fileID: 2800000, guid: 436b0ca95fe13134aad46f0cabf16e16, type: 3}
     - {fileID: 2800000, guid: 7aaa19dd44ea5704788b37e22f0a5287, type: 3}
+    totalSpriteSurfaceArea: 2554806
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -67,6 +69,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a3f48f72ec6829b4fa6c9f9540ada84a, type: 3}
   - {fileID: 21300000, guid: ed4f0b928404544f580d81939096b0bf, type: 3}
   - {fileID: 21300000, guid: 69c452b267ca98a4b9c20aab5c745c3c, type: 3}
+  - {fileID: 21300000, guid: 8502f9d2986c4443faef49d385637015, type: 3}
   - {fileID: 21300000, guid: ab8541f2b02c92645b5c468f23883a40, type: 3}
   - {fileID: 21300000, guid: 4dcd221362c47474b91e13d2e2f4b84b, type: 3}
   - {fileID: 21300000, guid: e16d58630393f3d43a494ff2c0b48346, type: 3}
@@ -75,17 +78,20 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6860f6856da3c504f891fb7fb8550a62, type: 3}
   - {fileID: 21300000, guid: b8c42985c7d8b4949910dc514737070b, type: 3}
   - {fileID: 21300000, guid: a19db395a75f258488b26838e8ab8931, type: 3}
+  - {fileID: 21300000, guid: 6b8515065e70a4339b9028b4fe651a37, type: 3}
   - {fileID: 21300000, guid: ac124736d509c41fe8bdcc2854824bf5, type: 3}
   - {fileID: 21300000, guid: 7bb4dbd79a9d13f4587e4a350cad40cb, type: 3}
   - {fileID: 21300000, guid: c998f908a5464ac478a2295de35ab663, type: 3}
   - {fileID: 21300000, guid: 0c5cdd08718a66b42a11819cf3da17e8, type: 3}
   - {fileID: 21300000, guid: ea5288487ae848041998c78326af1199, type: 3}
+  - {fileID: 21300000, guid: ebc1e7884f25249f98dbcc315464f22d, type: 3}
   - {fileID: 21300000, guid: 7c062b096b2e35e43a938fbc76368343, type: 3}
   - {fileID: 21300000, guid: a77524a9b5999414f83e96370ff48a36, type: 3}
   - {fileID: 21300000, guid: 2b7cd8a9957edff4e98cef2ccfec39e4, type: 3}
   - {fileID: 21300000, guid: 436b0ca95fe13134aad46f0cabf16e16, type: 3}
   - {fileID: 21300000, guid: e52c39b9933ee0f4aaac534712c96a3e, type: 3}
   - {fileID: 21300000, guid: 0d3e1af96ca3843d9972666be74ec265, type: 3}
+  - {fileID: 21300000, guid: 7844211a146be4e4ea094968278e2c76, type: 3}
   - {fileID: 21300000, guid: 023df80b5ef91b74ea047106a8cd1bd8, type: 3}
   - {fileID: 21300000, guid: ceaa083be222e4f6ea4788c2360369a3, type: 3}
   - {fileID: 21300000, guid: db2a60abb37e4b945a3f06e17a741fc7, type: 3}
@@ -110,6 +116,7 @@ SpriteAtlas:
   - battleground_mechanic_icon_feral_large
   - tab_fire
   - battleground_mechanic_icon_turn_large
+  - rank_icon_officer
   - Icon_element_earth_noborder
   - battleground_mechanic_icon_swingx_large
   - Icon_element_tool_noborder
@@ -118,17 +125,20 @@ SpriteAtlas:
   - Icon_element_air_noborder
   - battleground_mechanic_icon_entry_large
   - battleground_mechanic_icon_distract_large
+  - rank_icon_commander
   - tab_water
   - battleground_mechanic_icon_devour_large
   - battleground_mechanic_icon_end_large
   - battleground_mechanic_icon_flash_large
   - battleground_rank_icon_general_large
+  - rank_icon_minion
   - battleground_rank_icon_commander_large
   - battleground_mechanic_icon_reanimate_large
   - battleground_mechanic_icon_delayedx_large
   - icon_element_toxic_noborder
   - battleground_mechanic_icon_ragex_large
   - tab_earth
+  - rank_icon_general
   - battleground_mechanic_icon_death_large
   - tab_air
   - icon_element_life_noborder

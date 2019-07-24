@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Opencoding.CommandHandlerSystem;
-using UnityEngine;
 
 static class QuickPlayCommandsHandler
 {
@@ -30,10 +28,10 @@ static class QuickPlayCommandsHandler
     [CommandHandler(Description = "Print Settings for QuickPlay")]
     private static void Print()
     {
-        int playerDeckId = _uiManager.GetPage<GameplayPage>().CurrentDeckId;
+        DeckId playerDeckId = _uiManager.GetPage<GameplayPage>().CurrentDeckId;
         string playerDeckName = _dataManager.CachedDecksData.Decks.First(deck => deck.Id == playerDeckId).Name;
 
-        int opponentDeckId = _gameplayManager.OpponentDeckId;
+        DeckId opponentDeckId = _gameplayManager.OpponentDeckId;
 
         string opponentDeckName = _dataManager.CachedAiDecksData.Decks.First(deck => deck.Deck.Id == opponentDeckId).Deck.Name;
 
@@ -49,17 +47,17 @@ static class QuickPlayCommandsHandler
             deck => deck.Id == _uiManager.GetPage<GameplayPage>().CurrentDeckId);
         if (index == -1)
         {
-            int lastPlayerDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+            DeckId lastPlayerDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = lastPlayerDeckId;
-            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _dataManager.CachedDecksData.Decks[lastPlayerDeckId];
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _dataManager.CachedDecksData.Decks.Single(deck => deck.Id == lastPlayerDeckId);
         }
         else
         {
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _dataManager.CachedDecksData.Decks[index];
         }
 
-        int opponentDeckId = _gameplayManager.OpponentIdCheat;
-        if (opponentDeckId == -1)
+        DeckId opponentDeckId = _gameplayManager.OpponentIdCheat;
+        if (opponentDeckId == null)
         {
             Log.Error("Select Opponent Deck ID");
             return;
@@ -84,7 +82,7 @@ static class QuickPlayCommandsHandler
             return;
         }
 
-        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_dataManager.CachedDecksData.Decks[index].Id;
+        _uiManager.GetPage<GameplayPage>().CurrentDeckId = _dataManager.CachedDecksData.Decks[index].Id;
     }
 
     [CommandHandler(Description = "Set which enemy horde to fight with. Accepts deck name.")]
@@ -97,7 +95,7 @@ static class QuickPlayCommandsHandler
             return;
         }
 
-        _gameplayManager.OpponentIdCheat = (int)_dataManager.CachedAiDecksData.Decks[index].Deck.Id;
+        _gameplayManager.OpponentIdCheat = _dataManager.CachedAiDecksData.Decks[index].Deck.Id;
     }
 
     public static IEnumerable<string> PlayerDecksName()

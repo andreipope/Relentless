@@ -2,7 +2,10 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,9 +13,9 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
-        private ICameraManager _cameraManager;
-
-        private List<BoardUnitModel> _unitsViews;
+        private List<BoardUnitView> _unitsViews;
+        
+        public Coroutine CorrectActionReportPanelCoroutine;
 
         #region BulldozerFields
 
@@ -21,21 +24,20 @@ namespace Loom.ZombieBattleground
         private GameObject playerLineObject;
 
         private GameObject _cardDissapearingPrefab;
+
+        private event Action OnEventEnded;
         #endregion
 
         public DestroyUnitsAbilityView(DestroyUnitsAbility ability) : base(ability)
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
 
-            _cameraManager = GameClient.Get<ICameraManager>();
-
-            _unitsViews = new List<BoardUnitModel>();
+            _unitsViews = new List<BoardUnitView>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
-            _unitsViews = (List<BoardUnitModel>)info;
-
+            List<CardModel> units = info as List<CardModel>;
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
             Vector3 offset = Vector3.zero;
@@ -60,24 +62,67 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                Vector3 targetPosition = Vector3.zero;
+                Vector3 targetPosition = Vector3.zero + offset;
 
                 switch (cardNameOfAbility)
                 {
                     case Enumerators.CardNameOfAbility.None:
                         {
-                            CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
+                            CreateVfx(targetPosition, true, delayBeforeDestroy, true);
                         }
                         break;
                     case Enumerators.CardNameOfAbility.Bulldozer:
                         {
-                            CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                            opponentLineObject = VfxObject.transform.Find("RubbleUp/RubbleSeq").gameObject;
-                            playerLineObject = VfxObject.transform.Find("Rubble/RubbleSeq").gameObject;
+                            CreateVfx(targetPosition, true, delayBeforeDestroy, true);
 
-                            _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing/Tears").gameObject;
+                            Transform cameraVFXObj = VfxObject.transform.Find("Camera Anim/!! Camera shake");
+                            Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                            cameraGroupTransform.SetParent(cameraVFXObj);
+
+                            cameraGroupTransform.localPosition = targetPosition * -1;
+                            
+                            GameplayPage gameplayPage = GameClient.Get<IUIManager>().GetPage<GameplayPage>();
+                            Transform actionReportPivot = GameObject.Find("ActionReportPivot").transform;
+                            GameObject pivotParent = new GameObject("PivotParent");                    
+                            Vector3 actionReportPivotCachePos = actionReportPivot.position;
+                            actionReportPivot.SetParent(pivotParent.transform);
+                            CorrectActionReportPanelCoroutine = MainApp.Instance.StartCoroutine
+                            (
+                                gameplayPage.CorrectReportPanelDuringCameraShake()
+                            );
+
+                            OnEventEnded += () =>
+                            {
+                                cameraGroupTransform.SetParent(null);
+                                cameraGroupTransform.position = Vector3.zero;
+                                if (CorrectActionReportPanelCoroutine != null)
+                                {
+                                    MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
+                                }
+                                CorrectActionReportPanelCoroutine = null;
+                                actionReportPivot.SetParent(null);
+                                actionReportPivot.position = actionReportPivotCachePos;
+                                gameplayPage.SyncActionReportPanelPositionWithPivot();
+                                Object.Destroy(pivotParent);
+                            };
+
+                            opponentLineObject = VfxObject.transform.Find("VFX/RubbleUp/BurstToxic").gameObject;
+                            playerLineObject = VfxObject.transform.Find("VFX/Rubble/BurstToxic").gameObject;
+
+                            _cardDissapearingPrefab = VfxObject.transform.Find("VFX/CardsDissapearing").gameObject;
+                            _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                             Ability.OnUpdateEvent += OnUpdateEventHandler;
+                        }
+                        break;
+                    case Enumerators.CardNameOfAbility.Molotov:
+                        {
+                            _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
+                            foreach(BoardUnitView unitView in _unitsViews)
+                            {
+                                targetPosition = unitView.Transform.position;
+                                CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
+                            }                            
                         }
                         break;
                     default:
@@ -96,21 +141,23 @@ namespace Loom.ZombieBattleground
             BoardUnitView unitView;
             for (int i = 0; i < _unitsViews.Count; i++)
             {
-                unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(_unitsViews[i]);
+                unitView = _unitsViews[i];
 
                 if (unitView == null || unitView is default(BoardUnitView))
+                {
                     continue;
+                }
 
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
-                    if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
+                    if (playerLineObject.transform.position.x > unitView.Transform.position.x - 3f)
                     {
                         DestroyUnit(unitView);
                     }
                 }
                 else
                 {
-                    if (opponentLineObject.transform.position.x + 1f < unitView.Transform.position.x)
+                    if (opponentLineObject.transform.position.x - 3f < unitView.Transform.position.x)
                     {
                         DestroyUnit(unitView);
                     }
@@ -118,7 +165,8 @@ namespace Loom.ZombieBattleground
             }
 
             if(_unitsViews.Count == 0)
-            {
+            {                
+                OnEventEnded?.Invoke();
                 Ability.OnUpdateEvent -= OnUpdateEventHandler;
             }
         }
@@ -126,8 +174,7 @@ namespace Loom.ZombieBattleground
         private void DestroyUnit(BoardUnitView unit)
         {
             CreateSubParticle(unit.Transform.position);
-            _unitsViews.Remove(unit.Model);
-            _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+            _unitsViews.Remove(unit);
             if (!unit.Model.HasBuffShield)
             {
                 unit.ChangeModelVisibility(false);

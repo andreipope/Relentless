@@ -4,22 +4,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
+using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using CardList = Loom.ZombieBattleground.Data.CardList;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 
@@ -29,7 +26,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(DataManager));
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings =
+        private static readonly JsonSerializerSettings StrictJsonSerializerSettings =
             JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
 
         private ILocalizationManager _localizationManager;
@@ -59,7 +56,7 @@ namespace Loom.ZombieBattleground
         {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData(new List<Card>());
-            CachedOverlordData = new OverlordData(new List<OverlordModel>());
+            CachedOverlordData = new OverlordData(new List<Data.OverlordUserInstance>());
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData(new List<Deck>());
             CachedAiDecksData = new AIDecksData();
@@ -83,6 +80,8 @@ namespace Loom.ZombieBattleground
 
         public CreditsData CachedCreditsData { get; set; }
 
+        public Data.OverlordLevelingData CachedOverlordLevelingData { get; set; }
+
         public ConfigData ConfigData { get; set; }
 
         public UserInfo UserInfo { get; set; }
@@ -96,11 +95,8 @@ namespace Loom.ZombieBattleground
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
             {
-                await LoadCachedData((Enumerators.CacheDataType) i);
+                await LoadCache((Enumerators.CacheDataType) i);
             }
-
-            // FIXME: remove next line after fetching collection from backend is implemented
-            FillFullCollection();
 
             _localizationManager.ApplyLocalization();
 
@@ -109,7 +105,7 @@ namespace Loom.ZombieBattleground
                 CachedUserLocalData.Tutorial = false;
             }
 
-            GameClient.Get<IApplicationSettingsManager>().ApplySettings();
+            await GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             //GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
 
@@ -130,15 +126,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     data = SerializePersistentObject(CachedUserLocalData);
                     break;
-                case Enumerators.CacheDataType.OVERLORDS_DATA:
-                    data = SerializePersistentObject(CachedOverlordData);
-                    break;
+#if DEVELOPMENT
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     data = SerializePersistentObject(CachedCollectionData);
                     break;
-#if DEVELOPMENT
-                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                     data = SerializePersistentObject(CachedCardsLibraryData);
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                     data = SerializePersistentObject(new CardList{ Cards = CachedCardsLibraryData.Cards });
                      break;
                  case Enumerators.CacheDataType.CREDITS_DATA:
                      data = SerializePersistentObject(CachedCreditsData);
@@ -176,6 +169,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+
         }
 
         public void Init()
@@ -191,47 +185,14 @@ namespace Loom.ZombieBattleground
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
+            CheckVersion();
             LoadLocalCachedData();
 
             GameClient.Get<ISoundManager>().ApplySoundData();
-
-            CheckVersion();
         }
 
         public void Update()
         {
-        }
-
-        private uint GetMaxCopiesValue(Data.Card card, Enumerators.Faction setName)
-        {
-            Enumerators.CardRank rank = card.Rank;
-            uint maxCopies;
-
-            if (setName == Enumerators.Faction.ITEM)
-            {
-                maxCopies = Constants.CardItemMaxCopies;
-                return maxCopies;
-            }
-
-            switch (rank)
-            {
-                case Enumerators.CardRank.MINION:
-                    maxCopies = Constants.CardMinionMaxCopies;
-                    break;
-                case Enumerators.CardRank.OFFICER:
-                    maxCopies = Constants.CardOfficerMaxCopies;
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    maxCopies = Constants.CardCommanderMaxCopies;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    maxCopies = Constants.CardGeneralMaxCopies;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return maxCopies;
         }
 
         private void CheckVersion()
@@ -255,6 +216,8 @@ namespace Loom.ZombieBattleground
 
         private void DeleteVersionFile()
         {
+            PlayerPrefs.DeleteAll();
+
             FileInfo[] files = _dir.GetFiles();
             foreach (FileInfo file in files)
             {
@@ -271,11 +234,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ConfirmDeleteDeckReceivedHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
-        }
-
         private void ShowLoadDataFailMessage(string msg)
         {
             // Crash fast on CI
@@ -287,7 +245,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<LoginPopup>().SetValidationFailed(msg);
         }
 
-        private async Task LoadCachedData(Enumerators.CacheDataType type)
+        public async Task LoadCache(Enumerators.CacheDataType type)
         {
             switch (type)
             {
@@ -295,10 +253,14 @@ namespace Loom.ZombieBattleground
                     string cardsLibraryFilePath = GetPersistentDataPath(_cacheDataFileNames[type]);
 
                     List<Card> cardList;
-                    if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
+                    bool allowLocalCardLibrary = ConfigData.SkipBackendCardData;
+#if ALLOW_LOCAL_CARD_LIBRARY
+                    allowLocalCardLibrary = true;
+#endif
+                    if (allowLocalCardLibrary && File.Exists(cardsLibraryFilePath))
                     {
                         Log.Warn("===== Loading Card Library from persistent data ===== ");
-                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
+                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards.ToList();
                     }
                     else
                     {
@@ -313,52 +275,27 @@ namespace Loom.ZombieBattleground
                             throw;
                         }
                     }
+                    //cardList.Sort((card1, card2) => CardKey.Comparer.Compare(card1.CardKey, card2.CardKey));
                     CachedCardsLibraryData = new CardsLibraryData(cardList);
 
                     break;
                 case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
                     {
-                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
-                        {
-                            CachedOverlordData = DeserializeObjectFromPersistentData<OverlordData>(GetPersistentDataPath(_cacheDataFileNames[type]));
-                        }
-                        else
-                        {
-                            ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
-                        }
+                        ListOverlordUserInstancesResponse overlordsList = await _backendFacade.ListOverlordUserInstances(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Overlords Data");
+                        ShowLoadDataFailMessage("Issue with Loading Champions Data");
                         throw;
                     }
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
-                        bool isLoadedFromFile = false;
-                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
-                        {
-                            try
-                            {
-                                CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
-                                isLoadedFromFile = true;
-                            }
-                            catch (JsonSerializationException)
-                            {
-                                // Gracefully handle old incompatible data
-                            }
-                        }
-
-                        if (!isLoadedFromFile)
-                        {
-                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedCollectionData = getCollectionResponse.FromProtobuf();
-                        }
-
-                        await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+                        GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedCollectionData = getCollectionResponse.FromProtobuf();
                     }
                     catch (Exception)
                     {
@@ -394,6 +331,18 @@ namespace Loom.ZombieBattleground
                     catch (Exception)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
+                        throw;
+                    }
+                    break;
+                case Enumerators.CacheDataType.OVERLORD_LEVELING_DATA:
+                    try
+                    {
+                        GetOverlordLevelingDataResponse overlordLevelingData = await _backendFacade.GetOverlordLevelingData();
+                        CachedOverlordLevelingData = overlordLevelingData.OverlordLeveling.FromProtobuf();
+                    }
+                    catch (Exception)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Champions Leveling Data");
                         throw;
                     }
                     break;
@@ -434,9 +383,6 @@ namespace Loom.ZombieBattleground
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Constants.LocalBuffsTooltipDataFileName
                 },
                 {
-                    Enumerators.CacheDataType.OVERLORDS_DATA, Constants.LocalOverlordsDataFileName
-                },
-                {
                     Enumerators.CacheDataType.COLLECTION_DATA, Constants.LocalCollectionDataFileName
                 }
             };
@@ -471,13 +417,13 @@ namespace Loom.ZombieBattleground
             return JsonConvert.SerializeObject(
                 obj,
                 indented ? Formatting.Indented : Formatting.None,
-                JsonSerializerSettings
+                StrictJsonSerializerSettings
             );
         }
 
         public T DeserializeFromJson<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<T>(json, StrictJsonSerializerSettings);
         }
 
         public string GetPersistentDataPath(string fileName)
@@ -501,35 +447,9 @@ namespace Loom.ZombieBattleground
             return EncryptData(data);
         }
 
-        private void FillFullCollection()
-        {
-            CachedCollectionData = new CollectionData
-            {
-                Cards = new List<CollectionCardData>()
-            };
-
-            foreach (Data.Faction set in CachedCardsLibraryData.Factions)
-            {
-                foreach (Data.Card card in set.Cards)
-                {
-                    CachedCollectionData.Cards.Add(
-                        new CollectionCardData
-                        (
-                            card.MouldId,
-                            (int) GetMaxCopiesValue(card, set.Name)
-                        ));
-                }
-            }
-        }
-
         public async Task LoadZbVersionData()
         {
-            string zbVersionParsedLink = Constants.ZbVersionLink.Replace(Constants.EnvironmentPointText,
-                        BackendEndpointsContainer.Endpoints.FirstOrDefault(point => point.Value == GameClient.GetDefaultBackendEndpoint()).
-                        Key.ToString().ToLowerInvariant());
-
-            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(
-                $"{GameClient.GetDefaultBackendEndpoint().AuthHost}{zbVersionParsedLink}", Log, JsonSerializerSettings);
+            ZbVersion = await GameClient.Get<AuthApiFacade>().GetZbVersionData(GameClient.GetDefaultBackendPurpose());
         }
     }
 }

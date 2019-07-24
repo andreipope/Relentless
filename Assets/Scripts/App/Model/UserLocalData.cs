@@ -9,10 +9,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.Language AppLanguage;
 
         public bool Tutorial = true;
-
-        public bool TutorialRewardClaimed = false;
-
-        public int LastSelectedDeckId;
+        public DeckId LastSelectedDeckId;
 
         public bool AgreedTerms = false;
 
@@ -46,7 +43,7 @@ namespace Loom.ZombieBattleground.Data
         public void Reset()
         {
             AppLanguage = Enumerators.Language.NONE;
-            LastSelectedDeckId = -1;
+            LastSelectedDeckId = new DeckId(-1);
             OpenedFirstPack = false;
             CurrentTutorialId = 0;
             MusicVolume = 0.3f;

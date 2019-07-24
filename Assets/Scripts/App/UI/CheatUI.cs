@@ -6,7 +6,6 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEditor;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -26,9 +25,12 @@ namespace Loom.ZombieBattleground
 
         private void OnGUI()
         {
+            if (_pvpManager == null)
+                return;
+
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 160);
             GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
@@ -63,7 +65,7 @@ namespace Loom.ZombieBattleground
                 if (GUILayout.Button("Find Match"))
                 {
                     Deck deck = _dataManager.CachedDecksData.Decks[0];
-                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = deck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
                     GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                     GameClient.Get<IMatchManager>().FindMatch();
@@ -116,6 +118,7 @@ namespace Loom.ZombieBattleground
 
         private void Update()
         {
+            Debug.developerConsoleVisible = false;
             foreach (Action updateBind in _updateBinds)
             {
                 updateBind();
@@ -147,7 +150,7 @@ namespace Loom.ZombieBattleground
                 if (_cheatUI._pvpManager.DebugCheats.CustomDeck == null)
                 {
                     _cheatUI._pvpManager.DebugCheats.CustomDeck =
-                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
+                        new Deck(new DeckId(-1), new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
                 }
 
                 foreach (Card card in cardsLibraryData.Cards)
@@ -212,8 +215,8 @@ namespace Loom.ZombieBattleground
                                 GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
                                 _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
                             }
-
                             GUILayout.EndHorizontal();
+
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
@@ -227,9 +230,9 @@ namespace Loom.ZombieBattleground
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
-                                            if (!customDeck.Cards.Any(deckCard => deckCard.MouldId == card.MouldId))
+                                            if (!customDeck.Cards.Any(deckCard => deckCard.CardKey == card.CardKey))
                                             {
-                                                DeckCardData deckCardData = new DeckCardData(card.MouldId, 0);
+                                                DeckCardData deckCardData = new DeckCardData(card.CardKey, 0);
                                                 customDeck.Cards.Add(deckCardData);
                                             }
                                         }
@@ -260,10 +263,10 @@ namespace Loom.ZombieBattleground
                         customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
 
                         GUILayout.Label("Overlord Id");
-                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.Id.ToString());
                         if (int.TryParse(overlordIdString, out int newOverlordId))
                         {
-                            customDeck.OverlordId = newOverlordId;
+                            customDeck.OverlordId = new OverlordId(newOverlordId);
                         }
                     }
                     GUILayout.EndVertical();
@@ -289,7 +292,7 @@ namespace Loom.ZombieBattleground
 
                 GUILayout.BeginHorizontal();
                 {
-                    string cardName = _cheatUI._dataManager.CachedCardsLibraryData.GetCardFromMouldId(deckCard.MouldId).Name;
+                    string cardName = _cheatUI._dataManager.CachedCardsLibraryData.GetCardByCardKey(deckCard.CardKey).Name;
                     if (!_cardNameToDescription.TryGetValue(cardName, out string cardDescription))
                     {
                         customDeck.Cards.Remove(deckCard);
@@ -306,30 +309,30 @@ namespace Loom.ZombieBattleground
                     {
                         deckCard.Amount++;
                     }
-    
+
                     if (GUILayout.Button("-", GUILayout.Width(30)))
                     {
                         deckCard.Amount = Mathf.Max(deckCard.Amount - 1, 0);
                     }
-    
+
                     GUILayout.Space(5f);
-    
+
                     GUI.enabled = deckCardIndex > 0;
                     if (GUILayout.Button("↑", GUILayout.Width(30)))
                     {
                         MoveCard(-1);
                     }
-    
+
                     GUI.enabled = deckCardIndex < customDeck.Cards.Count - 1;
                     if (GUILayout.Button("↓", GUILayout.Width(30)))
                     {
                         MoveCard(1);
                     }
-    
+
                     GUI.enabled = true;
-    
+
                     GUILayout.Space(5f);
-    
+
                     if (GUILayout.Button("X", GUILayout.Width(30)))
                     {
                         customDeck.Cards.Remove(deckCard);

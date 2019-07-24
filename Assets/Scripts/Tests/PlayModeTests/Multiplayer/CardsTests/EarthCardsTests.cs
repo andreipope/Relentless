@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     {
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Rocky()
         {
             return AsyncTest(async () =>
@@ -64,8 +64,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(value, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id)).BuffedDefense);
-                    Assert.AreEqual(value, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab1Id)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab1Id)).BuffedDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Duzt()
         {
             return AsyncTest(async () =>
@@ -97,8 +97,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasHeavy);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasHeavy);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -129,8 +129,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -235,8 +235,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlabId)).HasHeavy);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponenZlabId)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlabId)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponenZlabId)).HasHeavy);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -325,7 +325,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerHotId, ItemPosition.Start);
                            player.CardPlay(playerHot2Id, ItemPosition.Start);
-                           player.CardPlay(playerProtectorId, ItemPosition.Start, playerHot2Id);
+                           player.CardPlay(playerProtectorId, ItemPosition.Start, playerHotId);
                        },
                        opponent => {},
                        player => {}
@@ -335,8 +335,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(value, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHot2Id)).BuffedDefense);
-                    Assert.AreEqual(value, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHotId)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHotId)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHotId)).BuffedDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -368,13 +368,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent => {
                         opponent.LetsThink(10);
                         opponent.AssertInQueue(() => {
-                            Assert.AreEqual(5, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
+                            Assert.AreEqual(5, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
                         });
                     },
                     player => {
                         player.LetsThink(10);
                         player.AssertInQueue(() => {
-                            Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
+                            Assert.AreEqual(3, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
                         });
                     },
                     opponent => {}
@@ -417,10 +417,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(6, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDefense);
-                    Assert.AreEqual(6, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDefense);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
+                    Assert.AreEqual(6, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDefense);
+                    Assert.AreEqual(6, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDefense);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -507,8 +507,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(value, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).BuffedDefense);
-                    Assert.AreEqual(value, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).BuffedDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -549,9 +549,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerHardyModel = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
+                    CardModel playerHardyModel = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
                     Assert.AreEqual(5, playerHardyModel.CurrentDefense);
-                    BoardUnitModel opponentHardyModel = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId));
+                    CardModel opponentHardyModel = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId));
                     Assert.AreEqual(5, opponentHardyModel.CurrentDefense);
                 };
 
@@ -692,10 +692,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerZlab1Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab1Id));
-                    BoardUnitModel playerZlab2Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab2Id));
-                    BoardUnitModel opponentZlab1Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab1Id));
-                    BoardUnitModel opponentZlab2Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id));
+                    CardModel playerZlab1Unit = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab1Id));
+                    CardModel playerZlab2Unit = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab2Id));
+                    CardModel opponentZlab1Unit = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab1Id));
+                    CardModel opponentZlab2Unit = ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id));
 
                     Assert.AreEqual(playerZlab1Unit.Card.Prototype.Defense, playerZlab1Unit.CurrentDefense);
                     Assert.AreEqual(playerZlab1Unit.Card.Prototype.Damage, playerZlab1Unit.CurrentDamage);
@@ -789,8 +789,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -903,8 +903,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDefense);
-                    Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDefense);
+                    Assert.AreEqual(7, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDefense);
+                    Assert.AreEqual(7, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -944,8 +944,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(10, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
-                    Assert.AreEqual(10, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDamage);
+                    Assert.AreEqual(10, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
+                    Assert.AreEqual(10, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDamage);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -954,7 +954,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Zolid()
         {
             return AsyncTest(async () =>
@@ -979,8 +979,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1033,10 +1033,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerDefenderId)).CurrentDamage);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerDefenderId)).IsHeavyUnit);
-                    Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentDefenderId)).CurrentDamage);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentDefenderId)).IsHeavyUnit);
+                    Assert.AreEqual(7, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerDefenderId)).CurrentDamage);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerDefenderId)).IsHeavyUnit);
+                    Assert.AreEqual(7, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentDefenderId)).CurrentDamage);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentDefenderId)).IsHeavyUnit);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1095,10 +1095,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMountainId)).Prototype.Defense - value,
-                        ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMountainId)).CurrentDefense);
-                    Assert.AreEqual(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMountainId)).Prototype.Defense - value,
-                        ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMountainId)).CurrentDefense);
+                    Assert.AreEqual(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMountainId)).Prototype.Defense - value,
+                        ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMountainId)).CurrentDefense);
+                    Assert.AreEqual(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMountainId)).Prototype.Defense - value,
+                        ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMountainId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -1149,12 +1149,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunk1Id)).HasHeavy);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunk2Id)).HasHeavy);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunk1Id)).HasHeavy);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunk2Id)).HasHeavy);
-                    Assert.IsFalse(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerGaeaId)).HasHeavy);
-                    Assert.IsFalse(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentGaeaId)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunk1Id)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunk2Id)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunk1Id)).HasHeavy);
+                    Assert.IsTrue(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunk2Id)).HasHeavy);
+                    Assert.IsFalse(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerGaeaId)).HasHeavy);
+                    Assert.IsFalse(((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentGaeaId)).HasHeavy);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1163,7 +1163,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
         public IEnumerator Zpike()
         {
             return AsyncTest(async () =>
@@ -1211,8 +1210,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZquallId);
-                    BoardUnitModel opponentUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZquallId);
+                    CardModel playerUnit = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZquallId);
+                    CardModel opponentUnit = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZquallId);
                     Assert.IsNull(playerUnit);
                     Assert.IsNull(opponentUnit);
                 };

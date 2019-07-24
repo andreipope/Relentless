@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        { 
+        {
             ANY,
             ONLY_DIFFERENT
         }
@@ -361,14 +361,17 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA
+            BUFFS_TOOLTIP_DATA,
+            OVERLORD_LEVELING_DATA,
         }
 
         public enum CardKind
         {
             UNDEFINED,
             CREATURE,
-            ITEM
+            ITEM,
+            [Obsolete("", true)]
+            SPELL = ITEM
         }
 
         public enum CardPackType
@@ -485,7 +488,9 @@ namespace Loom.ZombieBattleground.Common
 
         public enum Faction
         {
-            Undefined,
+            Undefined = 0,
+            [Obsolete("", true)]
+            NONE = 0,
             FIRE,
             WATER,
             EARTH,
@@ -730,14 +735,20 @@ namespace Loom.ZombieBattleground.Common
             ZeuzArrival,
             CerberusArrival,
             TzunamyArrival,
-            ChernoBillArrival
+            ChernoBillArrival,
+            MountainArrival,
+            GargantuaArrival,
+            BlizzardArrival,
+            GoozillaArrival,
+            VortexArrival
         }
 
         public enum CardNameOfAbility
         {
             None,
             Bulldozer,
-            Lawnmover
+            Lawnmover,
+            Molotov
         }
 
         public enum AbilityEffectInfoPositionType
@@ -765,15 +776,18 @@ namespace Loom.ZombieBattleground.Common
             RankBuff,
             AbilityUsage,
             UnitDeath,
-            WholeBoardUpdate,
-            PlayerBoardUpdate,
-            OpponentBoardUpdate,
             OverlordSkillUsage,
+            OverlordSkillUsageBlocker,
             AbilityUsageBlocker,
-            StopTurn,
+            AbilityTargetingBlocker,
+            StopTurnPart1Prepare,
+            StopTurnPart2InvokePlayerTurnEnded,
+            StopTurnPart3Finish,
             EndMatch,
             UnitCombat,
-            LeaveMatch
+            LeaveMatch,
+            InitUnitCombat,
+            CardPlayBlocker
         }
 
         public enum TooltipAlign
@@ -872,6 +886,7 @@ namespace Loom.ZombieBattleground.Common
 
             CardPackOpened,
             CardPackCollected,
+            CardOpenerClosedOpenCardsScreen,
 
             CardDragged,
             CardRemoved,
@@ -933,7 +948,7 @@ namespace Loom.ZombieBattleground.Common
             AbovePopups,
             AboveUI
         }
-        
+
         public enum MarketplaceCardPackType
         {
             Booster = 0,
@@ -944,8 +959,12 @@ namespace Loom.ZombieBattleground.Common
             Life = 5,
             Toxic = 6,
             Water = 7,
+            [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
             Small = 8,
-            Minion = 9            
+            [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
+            Minion = 9,
+            Binance = 10,
+            Tron = 11
         }
 
         public enum TutorialStepType
@@ -959,6 +978,36 @@ namespace Loom.ZombieBattleground.Common
             Attack,
             AbilityBuff,
             AbilityDamage
+        }
+
+        public enum ReasonForInstanceIdChange
+        {
+            Reanimate,
+            BackToDeck,
+            BackToHand,
+            BackFromGraveyard
+        }
+        public enum CardSetType
+        {
+            Basic,
+            KickStarter,
+            Season1,
+            Season2
+        }
+
+        public enum CardVariant
+        {
+            Standard = 0,
+            Backer = 1,
+            Limited = 2,
+            Binance = 3,
+            Tron = 4
+        }
+
+        public enum CardCollectionPageType
+        {
+            Army,
+            DeckEditing
         }
     }
 }

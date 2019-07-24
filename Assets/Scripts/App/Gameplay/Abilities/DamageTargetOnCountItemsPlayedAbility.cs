@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,7 +9,7 @@ namespace Loom.ZombieBattleground
     {
         private int _damage;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         public DamageTargetOnCountItemsPlayedAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -33,10 +32,10 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                _targets = new List<BoardObject>() { AffectObjectType == Enumerators.AffectObjectType.Player ?
-                                                    (BoardObject)TargetPlayer : TargetUnit };
-
-                _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != BoardUnitModel).Count;
+                _targets = new List<IBoardObject> {
+                    AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit
+                };
+                _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != CardModel).Count;
 
                 if (PredefinedTargets != null)
                 {
@@ -54,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         private void PrepareToDamage()
         {
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
 
             if (PredefinedTargets != null)
             {
@@ -71,7 +70,7 @@ namespace Loom.ZombieBattleground
                     _targets.Add(GetOpponentOverlord());
                 }
 
-                _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != BoardUnitModel).Count;
+                _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != CardModel).Count;
             }
 
             InvokeActionTriggered(_targets);
@@ -80,15 +79,15 @@ namespace Loom.ZombieBattleground
         private void DamageTargets()
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
-            foreach (BoardObject target in _targets)
+            foreach (IBoardObject target in _targets)
             {
                 switch (target)
                 {
-                    case BoardUnitModel boardUnit:
-                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, _damage);
+                    case CardModel boardUnit:
+                        BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, _damage);
                         break;
                     case Player player:
-                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, _damage);
                         break;
                 }
 
@@ -103,10 +102,10 @@ namespace Loom.ZombieBattleground
 
             if (_targets.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
 

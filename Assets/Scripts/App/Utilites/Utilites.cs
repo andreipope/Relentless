@@ -1,30 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Loom.Client.Protobuf;
-using Loom.Google.Protobuf.Reflection;
-using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
-
 #if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Build.Reporting;
-using UnityEditor.SceneManagement;
+
 #endif
 
 namespace Loom.ZombieBattleground
@@ -54,6 +43,16 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
+        public static Vector3 ToVector3(this FloatVector3 vector)
+        {
+            return new Vector3(vector.X, vector.Y, vector.Z);
+        }
+
+        public static FloatVector3 ToFloatVector3(this Vector3 vector)
+        {
+            return new FloatVector3(vector.x, vector.y, vector.z);
+        }
+
         public static string LimitStringLength(string str, int maxLength)
         {
             if (str.Length < maxLength)
@@ -67,6 +66,14 @@ namespace Loom.ZombieBattleground
             return new TimeSpan(DateTime.UtcNow.Ticks).TotalSeconds;
         }
 
+        public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
         public static GameObject[] CollectAllSceneRootGameObjects(GameObject dontDestroyOnLoadGameObject)
         {
             Scene[] scenes = new Scene[SceneManager.sceneCount];
@@ -75,7 +82,7 @@ namespace Loom.ZombieBattleground
                 scenes[i] = SceneManager.GetSceneAt(i);
             }
 
-            return 
+            return
                 scenes
                     .Concat(new[]
                     {
@@ -86,21 +93,46 @@ namespace Loom.ZombieBattleground
                     .ToArray();
         }
 
-        public static string JsonPrettyPrint(string json)
-        {
-            return JToken.Parse(json).ToString(Formatting.Indented);
-        }
-
         public static string FormatCallLogList<T>(IList<T> list)
         {
+            if (list == null)
+            {
+                return "[list is null]";
+            }
+
             return $"[({list.Count} items) {String.Join(", ", list)}]";
         }
 
-        public static string FormatCallLogList<T>(IReadOnlyList<T> list)
+        public static string FormatCallLogList<T>(IEnumerable<T> list)
         {
-            return $"[({list.Count} items) {String.Join(", ", list)}]";
+            if (list == null)
+            {
+                return "[list is null]";
+            }
+
+            return $"[({list.Count()} items) {String.Join(", ", list)}]";
         }
-        
+
+        public static bool SequenceEqual(this byte[] array1, byte[] array2)
+        {
+            if (array1 == null)
+                throw new ArgumentNullException(nameof(array1));
+
+            if (array2 == null)
+                throw new ArgumentNullException(nameof(array2));
+
+            if (array1.Length != array2.Length)
+                return false;
+
+            for (int i = 0; i < array1.Length; i++)
+            {
+                if (array1[i] != array2[i])
+                    return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Waits for the task to complete for up to <paramref name="timeoutMilliseconds"/>
         /// and returns whether it completed in time.

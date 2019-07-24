@@ -1,6 +1,7 @@
 using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -25,8 +26,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            ToPlayer = AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
-
             InvokeUseAbilityEvent();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
@@ -35,7 +34,7 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        protected override void UnitKilledUnitHandler(BoardUnitModel unit)
+        protected override void UnitKilledUnitHandler(CardModel unit)
         {
             if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;
@@ -66,7 +65,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
@@ -79,11 +78,13 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && ToPlayer
-                    .CardsOnBoard.FindAll(x => x.UnitSpecialStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
+            ToPlayer = AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : AbilityUnitOwner.OwnerPlayer;
+
+            if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && GetAliveUnits(ToPlayer
+                    .CardsOnBoard).ToList().FindAll(x => x.UnitSpecialStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (Faction != 0 && ToPlayer.CardsOnBoard
+            else if (Faction != 0 && GetAliveUnits(ToPlayer.CardsOnBoard).ToList()
                     .FindAll(card => card.Card.Prototype.Faction == Faction &&
                         card != AbilityUnitOwner &&
                         card.CurrentDefense > 0 &&
@@ -95,15 +96,15 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card != BoardUnitModel.Card).Count;
+                cardsCount = GetAliveUnits(ToPlayer.PlayerCardsController.CardsOnBoard).ToList().FindAll(model => model.Card != CardModel.Card).Count;
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
             {
-                cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card.InstanceCard.Faction == Faction).Count;
+                cardsCount = GetAliveUnits(ToPlayer.PlayerCardsController.CardsOnBoard).ToList().FindAll(model => model.Card.InstanceCard.Faction == Faction).Count;
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
             {
-                cardsCount = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                cardsCount = GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
             }
 
             if (AbilityTargets.Count > 0)

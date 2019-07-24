@@ -6,7 +6,6 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -15,13 +14,13 @@ namespace Loom.ZombieBattleground
     public class DeckGeneratorController : IController
     {
         private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionWithNavigationPage));
-    
+
         private IDataManager _dataManager;
-        
+
         private BackendFacade _backendFacade;
-        
+
         private BackendDataControlMediator _backendDataControlMediator;
-        
+
         private IAnalyticsManager _analyticsManager;
 
         private INetworkActionManager _networkActionManager;
@@ -38,7 +37,7 @@ namespace Loom.ZombieBattleground
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _networkActionManager = GameClient.Get<INetworkActionManager>();
         }
-        
+
         public void Update()
         {
 
@@ -48,18 +47,15 @@ namespace Loom.ZombieBattleground
         {
 
         }
-        
+
         public void ResetAll()
         {
 
         }
 
-        public async void ProcessAddDeck(Deck deck, OverlordModel overlord)
+        public async void ProcessAddDeck(Deck deck)
         {
-            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
-            deck.OverlordId = overlord.OverlordId;
-            deck.PrimarySkill = overlord.PrimarySkill;
-            deck.SecondarySkill = overlord.SecondarySkill;
+            GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Saving Deck . . .");
 
             bool success = false;
             try
@@ -67,7 +63,7 @@ namespace Loom.ZombieBattleground
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-                        deck.Id = newDeckId;
+                        deck.Id = new DeckId(newDeckId);
                         _dataManager.CachedDecksData.Decks.Add(deck);
                         _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                         Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
@@ -80,7 +76,7 @@ namespace Loom.ZombieBattleground
 
                         success = true;
 
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId =  deck.Id;
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
@@ -99,14 +95,14 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 FinishAddDeck?.Invoke(success, deck);
             }
         }
 
         public async void ProcessEditDeck(Deck deck)
         {
-            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
+            GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Saving Deck . . .");
             bool success = false;
             try
             {
@@ -127,7 +123,7 @@ namespace Loom.ZombieBattleground
                         Log.Info(" ====== Edit Deck Successfully ==== ");
                         success = true;
 
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = deck.Id;
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                     },
                     keepCurrentAppState: true,
@@ -156,23 +152,22 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 FinishEditDeck?.Invoke(success, deck);
             }
         }
 
         public async Task ProcessDeleteDeck(Deck deck)
         {
-            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Deleting Deck . . .");
+            GameClient.Get<IUIManager>().DrawPopup<LoadingOverlayPopup>("Deleting Deck . . .");
             bool success = false;
             try
             {
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         _dataManager.CachedDecksData.Decks.Remove(deck);
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = new DeckId(-1);
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                        await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                         await _backendFacade.DeleteDeck(
                             _backendDataControlMediator.UserDataModel.UserId,
@@ -196,7 +191,7 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
+                GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
                 FinishDeleteDeck?.Invoke(success, deck);
             }
         }
@@ -230,19 +225,38 @@ namespace Loom.ZombieBattleground
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
-            Enumerators.Faction faction = overlord.Faction;
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            Enumerators.Faction faction = overlord.Prototype.Faction;
 
-            Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
-            List<Card> creatureCards = overlordElementSet.Cards.ToList();
-            List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
+            // Prioritize cards of the champion's faction, allow cards from other factions,
+            // except the faction the champion is weak against.
+
+            IReadOnlyList<Card> collectionCards =
+                _dataManager.CachedCardsLibraryData.GetCardsByCardKeys(collectionData.Cards.Select(card => card.CardKey).ToList());
+
+            Enumerators.Faction factionWeakAgainst = Constants.FactionAgainstDictionary[faction];
+            List<Card> cardsOverlordFactionFirst =
+                collectionCards
+                    .Where(card => card.Faction != factionWeakAgainst)
+                    .OrderByDescending(card => card.Faction == faction)
+                    .ToList();
+
+            List<Card> creatureCards =
+                cardsOverlordFactionFirst
+                    .Where(card => card.Kind == Enumerators.CardKind.CREATURE)
+                    .ToList();
+
+            List<Card> itemCards =
+                cardsOverlordFactionFirst
+                    .Where(card => card.Kind == Enumerators.CardKind.ITEM)
+                    .ToList();
 
             List<Card> availableCreatureCardList = new List<Card>();
             foreach (Card card in creatureCards)
             {
                 int amount = GetCardsAmount
                 (
-                    card.MouldId,
+                    card.CardKey,
                     collectionData
                 );
 
@@ -258,7 +272,7 @@ namespace Loom.ZombieBattleground
             {
                 int amount = GetCardsAmount
                 (
-                    card.MouldId,
+                    card.CardKey,
                     collectionData
                 );
 
@@ -306,7 +320,7 @@ namespace Loom.ZombieBattleground
 
                 int randomIndex = Random.Range(0, availableCardList.Count);
                 Card card = availableCardList[randomIndex];
-                deck.AddCard(card.MouldId);
+                deck.AddCard(card.CardKey);
                 availableCardList.Remove(card);
 
                 amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
@@ -347,7 +361,7 @@ namespace Loom.ZombieBattleground
                     cardsToAdd.Add(card);
                     cardList.Remove(card);
                     creatureCardList.Remove(card);
-                    
+
                     if(cost >= 1 && cost <= 3 )
                     {
                         ++countCardOneToThreeCost;
@@ -368,7 +382,7 @@ namespace Loom.ZombieBattleground
                                           .Concat(cardSortByGooCost[2])
                                           .Concat(cardSortByGooCost[3])
                                           .ToList();
-                                          
+
             for (int i = 0; i < 7 - countCardOneToThreeCost && cardZeroToThreeCostList.Count > 0; ++i)
             {
                 int randIndex = Random.Range(0, cardZeroToThreeCostList.Count);
@@ -384,7 +398,7 @@ namespace Loom.ZombieBattleground
                                           .Concat(cardSortByGooCost[6])
                                           .Concat(cardSortByGooCost[7])
                                           .ToList();
-            
+
             for (int i = 0; i < 12 - countCardFourToSevenCost && cardFourToSevenCostList.Count > 0; ++i)
             {
                 int randIndex = Random.Range(0, cardFourToSevenCostList.Count);
@@ -399,7 +413,7 @@ namespace Loom.ZombieBattleground
                                           .Concat(cardSortByGooCost[9])
                                           .Concat(cardSortByGooCost[10])
                                           .ToList();
-            
+
             for (int i = 0; i < 4 - countCardEightToTenCost && cardEightToTenCostList.Count > 0; ++i)
             {
                 int randIndex = Random.Range(0, cardEightToTenCostList.Count);
@@ -412,7 +426,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < 7; ++i)
             {
-                if (itemCardList.Count < 0)
+                if (itemCardList.Count == 0)
                     break;
 
                 Card card = itemCardList[Random.Range(0, itemCardList.Count)];
@@ -437,7 +451,7 @@ namespace Loom.ZombieBattleground
             cardsToAdd = cardsToAdd.OrderBy(x => x.Faction).ThenBy(x => x.Cost).ToList();
             foreach(Card card in cardsToAdd)
             {
-                deck.AddCard(card.MouldId);
+                deck.AddCard(card.CardKey);
             }
         }
 
@@ -447,8 +461,8 @@ namespace Loom.ZombieBattleground
             foreach(Card card in cards)
             {
                 CollectionCardData item = new CollectionCardData(
-                    card.MouldId,
-                    GetCardsAmount(card.MouldId, collectionData)
+                    card.CardKey,
+                    GetCardsAmount(card.CardKey, collectionData)
                 );
                 availableCardList.Add(item);
             }
@@ -460,9 +474,9 @@ namespace Loom.ZombieBattleground
             deck.Cards.Clear();
         }
 
-        private int GetCardsAmount(MouldId mouldId, CollectionData collectionData)
+        private int GetCardsAmount(CardKey cardKey, CollectionData collectionData)
         {
-            return collectionData.GetCardData(mouldId).Amount;
+            return collectionData.GetCardData(cardKey).Amount;
         }
 
         public void OpenAlertDialog(string msg)

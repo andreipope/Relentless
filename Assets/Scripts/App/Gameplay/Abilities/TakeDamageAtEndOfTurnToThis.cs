@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -36,11 +35,10 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility)
                 return;
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
             Action();

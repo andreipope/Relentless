@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
@@ -39,9 +38,9 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                foreach (BoardUnitModel unit in Ability.PlayerCallerOfAbility.CardsOnBoard)
+                foreach (CardModel unit in Ability.PlayerCallerOfAbility.CardsOnBoard)
                 {
-                    BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    BoardUnitView unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                     Vector3 targetPosition = unitView.Transform.position;
                     VfxObject = Object.Instantiate(VfxObject);
                     VfxObject.transform.SetParent(unitView.Transform, false);

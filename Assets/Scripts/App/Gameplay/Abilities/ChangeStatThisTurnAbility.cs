@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             HandleTargets();
+
+            InvokeActionTriggered();
         }
 
         protected override void TurnStartedHandler()
@@ -44,7 +46,7 @@ namespace Loom.ZombieBattleground
 
         private void HandleTargets()
         {
-            List<BoardUnitModel> targets = new List<BoardUnitModel>();
+            List<CardModel> targets = new List<CardModel>();
 
             foreach (Enumerators.Target target in AbilityTargets)
             {
@@ -68,30 +70,41 @@ namespace Loom.ZombieBattleground
         {
             foreach(ChangedStatInfo changedStatInfo in _affectedUnits)
             {
-                changedStatInfo.BoardUnitModel.AddToCurrentDefenseHistory(changedStatInfo.RemovedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
-                changedStatInfo.BoardUnitModel.AddToCurrentDamageHistory(changedStatInfo.RemovedAttack, Enumerators.ReasonForValueChange.AbilityBuff);
+                changedStatInfo.ForcedValue.Enabled = false;
+
+                if (changedStatInfo.ChangedAttack)
+                {
+                    changedStatInfo.CardModel.InvokeDamageChanged(changedStatInfo.ForcedValue.ValueInteger, changedStatInfo.CardModel.CurrentDamage);
+                }
+
+                if (changedStatInfo.ChangedDefense)
+                {
+                    changedStatInfo.CardModel.InvokeDamageChanged(changedStatInfo.ForcedValue.ValueInteger, changedStatInfo.CardModel.CurrentDefense);
+                }
             }
 
             _affectedUnits.Clear();
         }
 
-        private void SetStatsOfUnits(List<BoardUnitModel> units, int defense, int damage)
+        private void SetStatsOfUnits(List<CardModel> units, int defense, int damage)
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             ChangedStatInfo changedStatInfo;
-            foreach (BoardUnitModel unit in units)
+            foreach (CardModel unit in units)
             {
-                changedStatInfo = new ChangedStatInfo()
-                {
-                    BoardUnitModel = unit,
-                    RemovedAttack = damage != 0 ? unit.CurrentDamage - damage : 0,
-                    RemovedDefense = defense != 0 ? unit.CurrentDefense - defense : 0
-                };
-
                 if (defense != 0)
                 {
-                    unit.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff, forced: true);
+
+                    changedStatInfo = new ChangedStatInfo()
+                    {
+                        CardModel = unit,
+                        ForcedValue = unit.FindFirstForcedValueInValueHistory(unit.CurrentDefenseHistory),
+                        ChangedDefense = true
+                    };
+
+                    _affectedUnits.Add(changedStatInfo);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
@@ -104,7 +117,16 @@ namespace Loom.ZombieBattleground
 
                 if (damage != 0)
                 {
-                    unit.AddToCurrentDamageHistory(-changedStatInfo.RemovedAttack, Enumerators.ReasonForValueChange.AbilityBuff);;
+                    unit.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff, forced: true);
+
+                    changedStatInfo = new ChangedStatInfo()
+                    {
+                        CardModel = unit,
+                        ForcedValue = unit.FindFirstForcedValueInValueHistory(unit.CurrentDamageHistory),
+                        ChangedAttack = true
+                    };
+
+                    _affectedUnits.Add(changedStatInfo);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
@@ -114,16 +136,14 @@ namespace Loom.ZombieBattleground
                         Value = damage
                     });
                 }
-
-                _affectedUnits.Add(changedStatInfo);
             }
 
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }
@@ -131,11 +151,13 @@ namespace Loom.ZombieBattleground
 
         class ChangedStatInfo
         {
-            public BoardUnitModel BoardUnitModel;
+            public CardModel CardModel;
 
-            public int RemovedDefense;
+            public ValueHistory ForcedValue;
 
-            public int RemovedAttack;
+            public bool ChangedDefense;
+
+            public bool ChangedAttack;
         }
     }
 }

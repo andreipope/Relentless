@@ -1,17 +1,14 @@
 #if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using UnityEditor;
 using UnityEngine;
 using CardList = Loom.ZombieBattleground.Data.CardList;
-using Logger = Loom.WebSocketSharp.Logger;
 
 namespace Loom.ZombieBattleground.Helpers.Tools
 {
@@ -143,8 +140,8 @@ namespace Loom.ZombieBattleground.Helpers.Tools
                 vfxInfo = abilityInfo.VisualEffectsToPlay[i];
                 Enumerators.VisualEffectType newVfxTypEnum = (Enumerators.VisualEffectType) EditorGUILayout.EnumPopup("Type: ", vfxInfo.Type);
 
-                vfxInfo.ForceSetType(newVfxTypEnum);
-                vfxInfo.ForceSetPath(GUILayout.TextField(vfxInfo.Path, EditorStyles.textField));
+                vfxInfo = new AbilityData.VisualEffectInfo(newVfxTypEnum, GUILayout.TextField(vfxInfo.Path, EditorStyles.textField));
+                abilityInfo.VisualEffectsToPlay[i] = vfxInfo;
 
                 if (EditorGUILayout.DropdownButton(new GUIContent("Delete", "delete vfx"), FocusType.Passive))
                 {

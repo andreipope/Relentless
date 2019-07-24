@@ -2,7 +2,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -43,7 +42,7 @@ namespace Loom.ZombieBattleground
 
             _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;
 
-            switch (BoardUnitModel.Card.Prototype.MouldId.Id)
+            switch (CardModel.Card.Prototype.CardKey.MouldId.Id)
             {
                 case 41:
                     _gameMechanicType = Enumerators.GameMechanicDescription.SuperSerum;
@@ -91,7 +90,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility)
                 return;
 
             TurnEndedEvent?.Invoke();
@@ -105,7 +104,7 @@ namespace Loom.ZombieBattleground
             {
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position, true, 5f);
+                CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(TargetUnit).Transform.position, true, 5f);
 
                 TargetUnit.RemoveGameMechanicDescriptionFromUnit(_gameMechanicType);
             }

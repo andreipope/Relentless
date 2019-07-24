@@ -5,7 +5,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -15,7 +14,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCardView : IBoardUnitView
+    public abstract class BoardCardView : ICardView
     {
         public int CardsAmountDeckEditing;
         
@@ -51,6 +50,8 @@ namespace Loom.ZombieBattleground
 
         protected SpriteRenderer BackgroundSprite;
 
+        protected SpriteRenderer RankIconSprite;
+
         protected GameObject DistibuteCardObject;
 
         protected TextMeshPro CostText;
@@ -83,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         private bool _hasDestroyed = false;
 
-        public BoardCardView(GameObject selfObject, BoardUnitModel boardUnitModel)
+        public BoardCardView(GameObject selfObject, CardModel cardModel)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             SoundManager = GameClient.Get<ISoundManager>();
@@ -104,6 +105,7 @@ namespace Loom.ZombieBattleground
             GlowObject = Transform.Find("GlowContainer/Glow").gameObject;
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
+            RankIconSprite = Transform.Find("RankIcon").GetComponent<SpriteRenderer>();
 
             CostText = Transform.Find("GooText").GetComponent<TextMeshPro>();
             NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
@@ -131,8 +133,7 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
 
-            Model = boardUnitModel;
-            //Model.ResetToInitial();
+            Model = cardModel;
 
             NameText.text = Model.Card.Prototype.Name;
             BodyText.text = Model.Card.Prototype.Description;
@@ -143,8 +144,8 @@ namespace Loom.ZombieBattleground
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.Rank);
 
             string setName = Model.Card.Prototype.Faction.ToString();
-
-            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
+            string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
 
             if (!string.IsNullOrEmpty(Model.Card.Prototype.Frame))
             {
@@ -152,6 +153,7 @@ namespace Loom.ZombieBattleground
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
+            RankIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(rankName);
             Model.CardPictureWasUpdated += PictureUpdatedEvent;
             PictureUpdatedEvent();
 
@@ -193,7 +195,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject costHighlightObject { get; protected set; }
 
-        public BoardUnitModel Model { get; }
+        public CardModel Model { get; }
 
         public HandBoardCard HandBoardCard { get; set; }
         
@@ -349,28 +351,6 @@ namespace Loom.ZombieBattleground
             _hasDestroyed = true;
             Object.Destroy(GameObject);
             Model.CardPictureWasUpdated -= PictureUpdatedEvent;
-        }
-
-        public void DrawCardFromOpponentDeckToPlayer()
-        {
-            GameObject.transform.localScale = Vector3.zero;
-
-            GameObject.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
-
-            CardAnimator.enabled = true;
-            CardAnimator.StopPlayback();
-            CardAnimator.Play("MoveCardFromOpponentDeckToPlayerHand");
-
-            TimerManager.AddTimer(
-                x =>
-                {
-                    CardAnimator.enabled = false;
-
-                    BattlegroundController.PlayerHandCards.Insert(ItemPosition.End, this);
-                    BattlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                },
-                null,
-                2f);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)
@@ -624,7 +604,7 @@ namespace Loom.ZombieBattleground
 
         protected void UpdatePositionOnHand()
         {
-            if (IsPreview || _hasDestroyed)
+            if (IsPreview || _hasDestroyed || GameObject == null)
                 return;
 
             Transform.DOScale(ScaleOnHand, 0.5f);
@@ -702,12 +682,13 @@ namespace Loom.ZombieBattleground
 
         private void PictureUpdatedEvent()
         {
-            PictureSprite.sprite = Model.CardPicture;
+            if(PictureSprite != null)
+                PictureSprite.sprite = Model.CardPicture;
         }
 
         public override string ToString()
         {
-            return $"({nameof(Model)}: {Model})";
+            return $"([{GetType().Name}] {nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

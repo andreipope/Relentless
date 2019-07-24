@@ -1,4 +1,3 @@
-using System;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -6,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using UnityEngine.Experimental.PlayerLoop;
 using DG.Tweening;
 
 namespace Loom.ZombieBattleground
@@ -122,14 +120,14 @@ namespace Loom.ZombieBattleground
             Enumerators.SoundType soundType = _isWin ? Enumerators.SoundType.WON_POPUP : Enumerators.SoundType.LOST_POPUP;
             _soundManager.PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);  
 
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             
             _imageOverlordPortrait = Self.transform.Find("Moving_Panel/Image_OverlordPortrait").GetComponent<Image>();
             _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
             (
-                overlord.Faction
+                overlord.Prototype.Faction
             );
             
             _textDeckName = Self.transform.Find("Moving_Panel/Text_DeckName").GetComponent<TextMeshProUGUI>();
@@ -245,15 +243,11 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
-                    if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
-                    {
-                        await GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
-                    } 
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }

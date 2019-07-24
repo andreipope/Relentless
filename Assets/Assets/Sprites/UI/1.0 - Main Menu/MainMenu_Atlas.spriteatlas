@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: MainMenu_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -41,6 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 352a82a412b4a492d9ff53a6bd3c9d66, type: 3}
+    totalSpriteSurfaceArea: 1546571
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -53,6 +55,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 40c10ed8e6bd84d33a2f8e838ed3b18d, type: 3}
   - {fileID: 21300000, guid: 3089405974eda4490a97be9c1b3d796a, type: 3}
   - {fileID: 21300000, guid: a25b5379ef7fb406fb467cf753707583, type: 3}
+  - {fileID: 21300000, guid: 4c9d7189f08ed4a4aab31b733c2eddfd, type: 3}
   - {fileID: 21300000, guid: da3fe3e97523c4d2082e9591b612788c, type: 3}
   - {fileID: 21300000, guid: ab47374e6c14045c398b73d95e8b62a0, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -65,6 +68,7 @@ SpriteAtlas:
   - deck_icons_tray
   - battle_txt
   - main_menu_arrow_pressed
+  - icon_newdeck
   - battle_disable
   - battle_pressed
   m_Tag: MainMenu_Atlas

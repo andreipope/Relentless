@@ -1,15 +1,14 @@
 ﻿using Loom.Chaos.NaCl;
 using System;
 using System.Security.Cryptography;
-using System.Text;
+using Loom.Org.BouncyCastle.Crypto.Digests;
 
 namespace Loom.Client
 {
     public static class CryptoUtils
     {
         private static readonly RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
-        private static readonly RIPEMD160 ripemd160 = RIPEMD160.Create();
-        private static readonly SHA256Managed sha256Managed = new SHA256Managed();
+        private static readonly RipeMD160Digest ripeMd160Digest = new RipeMD160Digest();
 
         /// <summary>
         /// Generates a cryptographically strong sequence of random bytes.
@@ -95,16 +94,7 @@ namespace Loom.Client
 
         public static string BytesToHexString(byte[] bytes)
         {
-            var hex = new StringBuilder(bytes.Length * 2);
-            string alphabet = "0123456789ABCDEF";
-
-            foreach (byte b in bytes)
-            {
-                hex.Append(alphabet[(int) (b >> 4)]);
-                hex.Append(alphabet[(int) (b & 0xF)]);
-            }
-
-            return hex.ToString();
+            return CryptoBytes.ToHexStringUpper(bytes);
         }
 
         /// <summary>
@@ -129,15 +119,15 @@ namespace Loom.Client
         /// <returns>Array of bytes representing a local address.</returns>
         public static byte[] LocalAddressFromPublicKey(byte[] publicKey)
         {
-            lock (ripemd160)
+            lock (ripeMd160Digest)
             {
-                return ripemd160.ComputeHash(publicKey);
-            }
-        }
+                ripeMd160Digest.Reset();
+                ripeMd160Digest.BlockUpdate(publicKey, 0, publicKey.Length);
 
-        public static byte[] CalculateSha256Hash(byte[] bytes)
-        {
-            return sha256Managed.ComputeHash(bytes);
+                byte[] address = new byte[ripeMd160Digest.GetDigestSize()];
+                ripeMd160Digest.DoFinal(address, 0);
+                return address;
+            }
         }
     }
 }

@@ -4,8 +4,6 @@ using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -40,7 +38,7 @@ namespace Loom.ZombieBattleground
             {
                 IReadOnlyList<HandBoardCard> targets =
                     PredefinedTargets
-                        .Select(x => x.BoardObject as BoardUnitModel)
+                        .Select(x => x.BoardObject as CardModel)
                         .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
                         .ToList();
 
@@ -68,7 +66,7 @@ namespace Loom.ZombieBattleground
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    IReadOnlyList<BoardUnitModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE);
+                    IReadOnlyList<CardModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;
@@ -87,10 +85,10 @@ namespace Loom.ZombieBattleground
                     .ToList()
             );
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
@@ -112,7 +110,7 @@ namespace Loom.ZombieBattleground
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                Target = boardCardView,
+                Target = boardCardView.Model,
             });
         }
     }

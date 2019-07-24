@@ -3,13 +3,11 @@
 using UnityEngine;
 using System.IO;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
-using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
 using System.Linq;
 using UnityEditor;
@@ -111,26 +109,6 @@ namespace Loom.ZombieBattleground
             _loadedAssetBundles.Add(name, request.assetBundle);
         }
 
-        public IEnumerator LoadFromCacheAndDownload(string name, string link, int bundleVersion)
-        {
-            while (!Caching.ready)
-                yield return null;
-
-            string url = Path.Combine(link, name);
-            using (WWW www = WWW.LoadFromCacheOrDownload(url, bundleVersion))
-            {
-                yield return www;
-
-                if (!string.IsNullOrEmpty(www.error))
-                {
-                    throw new Exception("WWW download had an error:" + www.error);
-                }
-
-                _loadedAssetBundles.Add(name, www.assetBundle);
-                www.assetBundle.Unload(false);
-            }
-        }
-
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
         private void PrepareAssetPaths()
         {
@@ -183,8 +161,10 @@ namespace Loom.ZombieBattleground
         private T Load<T>(string fileName, AssetBundle assetBundle, string bundleName)
             where T : UnityEngine.Object
         {
+#if !(UNITY_EDITOR && SKIP_ASSET_BUNDLE_LOAD)
             if (assetBundle != null)
                 return assetBundle.LoadAsset<T>(fileName);
+#endif
 
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             fileName = fileName.ToLowerInvariant();

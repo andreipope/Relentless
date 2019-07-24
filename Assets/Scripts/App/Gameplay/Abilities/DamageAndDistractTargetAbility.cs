@@ -32,7 +32,8 @@ namespace Loom.ZombieBattleground
 
         private void SendAction()
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
@@ -44,16 +45,14 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardItem;
-
-            BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
-
             BattlegroundController.DistractUnit(TargetUnit);
+            
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, TargetUnit, Damage);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -70,7 +69,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         protected override void VFXAnimationEndedHandler()

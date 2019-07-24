@@ -30,11 +30,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnitModel> cards = new List<BoardUnitModel>();
+            List<CardModel> cards = new List<CardModel>();
 
             if (PredefinedTargets != null)
             {
-                cards.AddRange(PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>());
+                cards.AddRange(PredefinedTargets.Select(x => x.BoardObject).Cast<CardModel>());
             }
             else
             {
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
             {
                 List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitModel boardUnit in cards)
+                foreach (CardModel boardUnit in cards)
                 {
                     CardsController.DiscardCardFromHand(boardUnit);
 
@@ -72,10 +72,10 @@ namespace Loom.ZombieBattleground
                     });
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
 

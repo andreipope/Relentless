@@ -1,4 +1,3 @@
-using System;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -7,7 +6,6 @@ using DG.Tweening;
 using log4net;
 using Object = UnityEngine.Object;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {
@@ -85,10 +83,8 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
             _uiManager.DrawPopup<AreaBarPopup>();       
             _uiManager.DrawPopup<DeckSelectionPopup>();
-
-            AnimateOverlordPortrait(); 
             
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);
 
             _uiManager.GetPopup<DeckSelectionPopup>().SelectDeckEvent += OnSelectDeckEvent;
@@ -143,7 +139,12 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            StartMatch();        
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                SetGameMode(GameMode.SOLO);
+            }
+
+            StartMatch();
         }
 
         private void ButtonChangeModeHandler()
@@ -163,12 +164,12 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
             }
 
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetLastSelectedDeckFromCache();
             if (deck == null)
             {
                 deck = _uiManager.GetPopup<DeckSelectionPopup>().GetDefaultDeck();
             }
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
+            _uiManager.GetPage<GameplayPage>().CurrentDeckId = deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
             GameClient.Get<IMatchManager>().FindMatch();
 

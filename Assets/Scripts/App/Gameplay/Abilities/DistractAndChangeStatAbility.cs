@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -28,19 +29,28 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                DistractAndChangeStat(new List<BoardUnitModel>() { TargetUnit }, Defense, Damage);
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)
                 });
+
+                Debug.LogWarning("Invoke action triggered");
+                InvokeActionTriggered(TargetUnit);
             }
         }
 
-        private void DistractAndChangeStat(List<BoardUnitModel> units, int defense, int attack)
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+            DistractAndChangeStat(new List<CardModel>() { TargetUnit }, Defense, Damage);
+        }
+
+
+        private void DistractAndChangeStat(List<CardModel> units, int defense, int attack)
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel boardUnit in units)
+            foreach (CardModel boardUnit in units)
             {
                 BattlegroundController.DistractUnit(boardUnit);
 
@@ -81,10 +91,10 @@ namespace Loom.ZombieBattleground
 
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }

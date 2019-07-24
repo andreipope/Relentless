@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
                 GetParameters(out int defense, out int attack);
                 ChangeStatsOfTarget(TargetUnit, defense, attack);
 
+                InvokeActionTriggered(TargetUnit);
+                
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)
@@ -80,7 +82,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
@@ -106,11 +108,6 @@ namespace Loom.ZombieBattleground
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
-            {
-                ResetAffectedUnits();
-            }
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
@@ -130,7 +127,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ChangeStatsOfPlayerAllyCards(-Defense, -Attack, false);
+                ResetAffectedUnits();
                 _affectedUnits.Clear();
             }
         }
@@ -139,8 +136,17 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
+
+            for (int i = _affectedUnits.Count-1; i >= 0; i--)
+            {
+                if (_affectedUnits[i].CardModel.OwnerPlayer != AbilityUnitOwner.OwnerPlayer)
+                {
+                    RemoveBuffFromUnit(_affectedUnits[i].ModifiedDamage, _affectedUnits[i].ModifiedDefense, _affectedUnits[i]);
+                    _affectedUnits.Remove(_affectedUnits[i]);
+                }
+            }
 
             ChangeStatsOfPlayerAllyCards(Defense, Attack, false, _affectedUnits);
         }
@@ -151,8 +157,36 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
             {
-                ResetAffectedUnits();
+                int oldAttack = 0;
+                int oldDefense = 0;
+                CardStatInfo cardStat = null;
+                if (_affectedUnits.Count > 0) 
+                {
+                    oldAttack = _affectedUnits[0].ModifiedDamage;
+                    oldDefense = _affectedUnits[0].ModifiedDefense;
+                    cardStat = _affectedUnits[0];
+                }
+                _affectedUnits.Clear();
                 ChangeStatsToItself();
+                RemoveBuffFromUnit(oldAttack, oldDefense, cardStat);
+            }
+        }
+
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA && !(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo))
+                return;
+
+            ResetAffectedUnits();
+            _affectedUnits.Clear();
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                PlayerCurrentGooChangedHandler(AbilityUnitOwner.OwnerPlayer.CurrentGoo);
+            }
+            else
+            {
+                ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
             }
         }
 
@@ -162,23 +196,23 @@ namespace Loom.ZombieBattleground
             int attack;
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay)
             {
-                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(
-                                item => item != BoardUnitModel).Count +
-                            GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                int count = GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard).ToList().FindAll(
+                                item => item != CardModel).Count +
+                            GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
             }
             else if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
             {
-                int count = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+                int count = GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
             {
-                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(item => item != AbilityUnitOwner).Count;
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(item => item != AbilityUnitOwner).Where(x => !x.IsDead && x.IsUnitActive && x.CurrentDefense > 0).ToList().Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
@@ -191,7 +225,7 @@ namespace Loom.ZombieBattleground
 
                 _affectedUnits.Add(new CardStatInfo()
                 {
-                    BoardUnitModel = AbilityUnitOwner,
+                    CardModel = AbilityUnitOwner,
                     ModifiedDamage = attack,
                     ModifiedDefense = defense
                 });
@@ -203,10 +237,10 @@ namespace Loom.ZombieBattleground
 
             ChangeStatsOfTarget(AbilityUnitOwner, defense, attack);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -225,32 +259,30 @@ namespace Loom.ZombieBattleground
 
         private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
         {
-            List<BoardUnitModel> units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.ToList();
+            List<CardModel> units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.ToList();
 
             if(filterUnits != null)
             {
-                filterUnits = filterUnits.Where(unit => !unit.BoardUnitModel.IsReanimated).ToList();
-
-                filterUnits.ForEach((unit) => units.Remove(unit.BoardUnitModel));
+                filterUnits.ForEach((unit) => units.Remove(unit.CardModel));
             }
 
-            foreach (BoardUnitModel unit in units)
+            foreach (CardModel unit in units)
             {
-                if (!withCaller && unit == BoardUnitModel)
+                if (!withCaller && unit == CardModel)
                     continue;
 
                 ChangeStatsOfTarget(unit, defense, damage);
 
                 _affectedUnits.Add(new CardStatInfo()
                 {
-                    BoardUnitModel = unit,
+                    CardModel = unit,
                     ModifiedDamage = damage,
                     ModifiedDefense = defense
                 });
             }
         }
         
-        private void ChangeStatsOfTarget(BoardUnitModel unit, int defense, int damage)
+        private void ChangeStatsOfTarget(CardModel unit, int defense, int damage)
         {
             unit.BuffedDefense += defense;
             unit.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
@@ -272,25 +304,39 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void RemoveBuffFromUnit(int attack, int defense, CardStatInfo cardStat)
+        {
+            if (cardStat == null)
+                return;
+
+            cardStat.CardModel.BuffedDefense =
+                Mathf.Clamp(cardStat.CardModel.BuffedDefense - defense, 0, 999);
+            cardStat.CardModel.AddToCurrentDefenseHistory(-defense, Enumerators.ReasonForValueChange.AbilityBuff);
+
+            cardStat.CardModel.BuffedDamage =
+                Mathf.Clamp(cardStat.CardModel.BuffedDamage - attack, 0, 999);
+            cardStat.CardModel.AddToCurrentDamageHistory(-attack, Enumerators.ReasonForValueChange.AbilityBuff);
+        }
+
         private void ResetAffectedUnits()
         {
             foreach(CardStatInfo cardStat in _affectedUnits)
             {
-                cardStat.BoardUnitModel.BuffedDefense =
-                    Mathf.Clamp(cardStat.BoardUnitModel.BuffedDefense - cardStat.ModifiedDefense, 0, 999);
-                cardStat.BoardUnitModel.AddToCurrentDefenseHistory(-cardStat.ModifiedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
-
-                cardStat.BoardUnitModel.BuffedDamage =
-                    Mathf.Clamp(cardStat.BoardUnitModel.BuffedDamage - cardStat.ModifiedDamage, 0, 999);
-                cardStat.BoardUnitModel.AddToCurrentDamageHistory(-cardStat.ModifiedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
+                RemoveBuffFromUnit(cardStat.ModifiedDamage, cardStat.ModifiedDefense, cardStat);
             }
 
             _affectedUnits.Clear();
         }
 
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+            TargetUnit.IsPlayable = true;
+        }
+
         class CardStatInfo
         {
-            public BoardUnitModel BoardUnitModel;
+            public CardModel CardModel;
             public int ModifiedDamage;
             public int ModifiedDefense;
         }

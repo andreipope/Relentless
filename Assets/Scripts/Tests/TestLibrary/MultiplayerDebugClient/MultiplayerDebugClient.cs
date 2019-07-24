@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using log4net;
 using log4net.Core;
@@ -11,12 +11,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
-using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
-using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
-using ILogger = log4net.Core.ILogger;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -39,7 +35,7 @@ namespace Loom.ZombieBattleground.Test
         private List<string> _pvpTags = new List<string>();
         private DebugCheatsConfiguration _debugCheats = new DebugCheatsConfiguration();
         private Address? _customGameAddress;
-        private long _deckId;
+        private DeckId _deckId;
 
         private double? _lastTimeSinceStartup;
         private double _keepAliveTimer;
@@ -102,7 +98,7 @@ namespace Loom.ZombieBattleground.Test
             set => _customGameAddress = value;
         }
 
-        public long DeckId
+        public DeckId DeckId
         {
             get => _deckId;
             set => _deckId = value;
@@ -114,18 +110,19 @@ namespace Loom.ZombieBattleground.Test
             set => _debugCheats = value;
         }
 
-        public MultiplayerDebugClient(string name = null)
+        public MultiplayerDebugClient(string name = null, BigInteger? userIdNumber = null)
         {
+            userIdNumber = userIdNumber ?? new BigInteger(Guid.NewGuid().ToByteArray().Concat(new byte[] { 0 }).ToArray());
+
             UserDataModel = new UserDataModel(
-                "DebugClient_" +
-                (name != null ? name + "_" : "") +
-                Guid.NewGuid(),
+                "DebugClient_" + (name != null ? name + "_" : "") + userIdNumber,
+                userIdNumber.Value,
                 CryptoUtils.GeneratePrivateKey()
             );
         }
 
         public async Task Start(
-            Func<Contract, IContractCallProxy> contractCallProxyFactory,
+            Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory,
             DAppChainClientConfiguration clientConfiguration,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
@@ -170,6 +167,7 @@ namespace Loom.ZombieBattleground.Test
             _keepAliveTimer = 0f;
             if (BackendFacade != null)
             {
+                await BackendFacade.UnsubscribeFromAllEvents(_userDataModel.UserId);
                 BackendFacade.Dispose();
 
                 BackendFacade = null;
@@ -194,7 +192,7 @@ namespace Loom.ZombieBattleground.Test
             double deltaTime = timeSinceStartup - _lastTimeSinceStartup.Value;
             _lastTimeSinceStartup = timeSinceStartup;
 
-            if (MatchMakingFlowController != null && _backendFacade.IsConnected)
+            if (MatchMakingFlowController != null && _backendFacade != null && _backendFacade.IsConnected)
             {
                 await MatchMakingFlowController.Update((float) deltaTime);
 
@@ -204,7 +202,10 @@ namespace Loom.ZombieBattleground.Test
                     if (_keepAliveTimer <= 0f)
                     {
                         _keepAliveTimer = KeepAliveInterval;
-                        await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
+                        if (_backendFacade.IsConnected)
+                        {
+                            await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
+                        }
                     }
                 }
             }

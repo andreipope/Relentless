@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Linq;
-using DG.Tweening;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
+﻿using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

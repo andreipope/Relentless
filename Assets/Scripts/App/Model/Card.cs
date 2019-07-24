@@ -6,66 +6,62 @@ using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public class Card : ICard
+    public class Card : IReadOnlyCard
     {
-        private readonly List<AbilityData> _abilities;
+        [JsonProperty(Order = 1)]
+        public CardKey CardKey { get; }
 
-        [JsonProperty]
-        public MouldId MouldId { get; set; }
+        [JsonProperty(Order = 4)]
+        public string Name { get; }
 
-        [JsonProperty]
-        public string Name { get; protected set; }
+        [JsonProperty(Order = 13)]
+        public int Cost { get; }
 
-        [JsonProperty]
-        public int Cost { get; set; }
+        [JsonProperty(Order = 5)]
+        public string Description { get; }
 
-        [JsonProperty]
-        public string Description { get; protected set; }
+        [JsonProperty(Order = 6)]
+        public string FlavorText { get; }
 
-        [JsonProperty]
-        public string FlavorText { get; protected set; }
+        [JsonProperty(Order = 7)]
+        public string Picture { get; }
 
-        [JsonProperty]
-        public string Picture { get; protected set; }
+        [JsonProperty(Order = 11)]
+        public int Damage { get;  }
 
-        [JsonProperty]
-        public int Damage { get; protected set; }
+        [JsonProperty(Order = 12)]
+        public int Defense { get; }
 
-        [JsonProperty]
-        public int Defense { get; protected set; }
+        [JsonProperty(Order = 3)]
+        public Enumerators.Faction Faction { get; }
 
-        [JsonProperty]
-        public Enumerators.Faction Faction { get; set; }
+        [JsonProperty(Order = 10)]
+        public string Frame { get; }
 
-        [JsonProperty]
-        public string Frame { get; protected set; }
+        [JsonProperty(Order = 2)]
+        public Enumerators.CardKind Kind { get; }
 
-        [JsonProperty]
-        public Enumerators.CardKind Kind { get; protected set; }
+        [JsonProperty(Order = 8)]
+        public Enumerators.CardRank Rank { get; }
 
-        [JsonProperty]
-        public Enumerators.CardRank Rank { get; protected set; }
+        [JsonProperty(Order = 9)]
+        public Enumerators.CardType Type { get; }
 
-        [JsonProperty]
-        public Enumerators.CardType Type { get; protected set; }
+        [JsonProperty(Order = 15)]
+        public IReadOnlyList<AbilityData> Abilities { get; }
 
-        [JsonProperty]
-        public IList<AbilityData> Abilities => _abilities;
+        [JsonProperty(Order = 14)]
+        public PictureTransform PictureTransform { get; }
 
-        [JsonProperty]
-        public PictureTransform PictureTransform { get; protected set; }
+        [JsonProperty(Order = 16)]
+        public Enumerators.UniqueAnimation UniqueAnimation { get; }
 
-        [JsonProperty]
-        public Enumerators.UniqueAnimation UniqueAnimation { get; protected set; }
-
-        [JsonProperty]
-        public bool Hidden { get; protected set; }
-
-        IReadOnlyList<AbilityData> IReadOnlyCard.Abilities => _abilities;
+        [JsonProperty(Order = 17)]
+        public bool Hidden { get; }
 
         [JsonConstructor]
         public Card(
-            MouldId mouldId,
+            CardKey cardKey,
             string name,
             int cost,
             string description,
@@ -78,13 +74,13 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardKind kind,
             Enumerators.CardRank rank,
             Enumerators.CardType type,
-            List<AbilityData> abilities,
+            IReadOnlyList<AbilityData> abilities,
             PictureTransform pictureTransform,
             Enumerators.UniqueAnimation uniqueAnimation,
             bool hidden
             )
         {
-            MouldId = mouldId;
+            CardKey = cardKey;
             Name = name;
             Cost = cost;
             Description = description;
@@ -97,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             Kind = kind;
             Rank = rank;
             Type = type;
-            _abilities = abilities ?? new List<AbilityData>();
+            Abilities = abilities ?? new List<AbilityData>();
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
@@ -105,7 +101,7 @@ namespace Loom.ZombieBattleground.Data
 
         public Card(IReadOnlyCard sourceCard)
         {
-            MouldId = sourceCard.MouldId;
+            CardKey = sourceCard.CardKey;
             Name = sourceCard.Name;
             Cost = sourceCard.Cost;
             Description = sourceCard.Description;
@@ -118,7 +114,7 @@ namespace Loom.ZombieBattleground.Data
             Kind = sourceCard.Kind;
             Rank = sourceCard.Rank;
             Type = sourceCard.Type;
-            _abilities =
+            Abilities =
                 sourceCard.Abilities
                     .Select(a => new AbilityData(a))
                     .ToList();
@@ -129,21 +125,23 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(Faction)}: {Faction})";
+            return $"({nameof(Name)}: {Name}, {nameof(CardKey)}: {CardKey}, {nameof(Faction)}: {Faction})";
         }
     }
 
     public class PictureTransform
     {
         [JsonProperty]
-        public FloatVector3 Position { get; protected set; } = FloatVector3.Zero;
+        public FloatVector3 Position { get; } = FloatVector3.Zero;
+
         [JsonProperty]
-        public FloatVector3 Scale { get; protected set; } = new FloatVector3(0.38f);
+        public FloatVector3 Scale { get; } = new FloatVector3(0.38f);
 
         public PictureTransform()
         {
         }
 
+        [JsonConstructor]
         public PictureTransform(FloatVector3 position, FloatVector3 scale)
         {
             Position = position;

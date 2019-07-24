@@ -21,7 +21,9 @@ namespace Loom.ZombieBattleground
 
         public event Action FixedUpdateEvent;
 
+#if UNITY_EDITOR
         public event Action OnDrawGizmosCalled;
+#endif
 
         public event Action<Action<bool>> ApplicationWantsToQuit;
 
@@ -42,7 +44,16 @@ namespace Loom.ZombieBattleground
         {
             if (Instance == this)
             {
-                GameClient.Instance.InitServices();
+                try
+                {
+                    GameClient.Instance.InitServices();
+                }
+                catch (Exception)
+                {
+                    // Nothing we can do here, just crash quickly
+                    Destroy(gameObject);
+                    throw;
+                }
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 
@@ -79,7 +90,8 @@ namespace Loom.ZombieBattleground
 
         private void OnDestroy()
         {
-            GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
+            // FIXME: Mixpanel crashes when sending events during app shutdown
+            //GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
 
             if (Instance == this)
             {

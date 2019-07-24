@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
 
         public class SpecificBattlegroundOverlordInfo
         {
-            public int OverlordId;
+            public OverlordId OverlordId;
             public int Defense;
             public int MaximumDefense;
             public int CurrentGoo;
@@ -201,13 +201,13 @@ namespace Loom.ZombieBattleground
                 CardsInDeck = new List<OverlordCardInfo>();
                 CardsOnBoard = new List<UnitOnBoardInfo>();
 
-                MaximumDefense = Constants.DefaultPlayerHp;
+                MaximumDefense = Constants.TutorialDefaultOverlordDefense;
                 Defense = MaximumDefense;
 
                 MaximumGoo = Constants.DefaultPlayerGoo;
                 CurrentGoo = MaximumGoo;
 
-                OverlordId = 0;
+                OverlordId = new OverlordId(0);
             }
         }
 
@@ -389,8 +389,8 @@ namespace Loom.ZombieBattleground
 
         public CollectionCardData ToCollectionCardData(IDataManager dataManager)
         {
-            Card card = dataManager.CachedCardsLibraryData.GetCardFromName(CardName);
-            return new CollectionCardData(card.MouldId, Amount);
+            Card card = dataManager.CachedCardsLibraryData.GetCardByName(CardName);
+            return new CollectionCardData(card.CardKey, Amount);
         }
     }
 

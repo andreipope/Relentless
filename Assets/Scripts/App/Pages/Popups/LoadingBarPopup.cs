@@ -1,7 +1,4 @@
-﻿using System;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

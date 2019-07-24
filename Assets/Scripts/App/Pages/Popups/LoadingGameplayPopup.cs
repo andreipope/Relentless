@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class LoadingGameplayPopup : IUIPopup
+    public class     LoadingGameplayPopup : IUIPopup
     {
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
             _progressBar = Self.transform.Find("ProgresBar/Fill").GetComponent<Image>();
 
             int randomSprite = Random.Range(0, _backgroundSprites.Length);
-            _backgroundImage.sprite = _backgroundSprites[randomSprite];
+            //_backgroundImage.sprite = _backgroundSprites[randomSprite];
 
             _progressBar.fillAmount = 0f;
         }

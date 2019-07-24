@@ -1,8 +1,12 @@
 {
     "name": "Opencoding.Console.Misc",
     "references": [],
+    "optionalUnityReferences": [],
     "includePlatforms": [],
-    "excludePlatforms": [
-        "iOS"
-    ]
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }

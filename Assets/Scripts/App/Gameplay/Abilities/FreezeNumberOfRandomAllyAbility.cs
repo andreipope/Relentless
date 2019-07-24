@@ -4,7 +4,6 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -14,7 +13,7 @@ namespace Loom.ZombieBattleground
 
         public int Turns { get; }
 
-        private List<BoardObject> _allies;
+        private List<IBoardObject> _allies;
 
         public FreezeNumberOfRandomAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -37,9 +36,10 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            _allies = new List<BoardObject>();
+            _allies = new List<IBoardObject>();
 
             if (PredefinedTargets != null)
             {
@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         player.Stun(Enumerators.StunType.FREEZE, Turns);
                         break;
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         unit.Stun(Enumerators.StunType.FREEZE, Turns);
                         break;
                     default:
@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                     .ToList()
             );
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

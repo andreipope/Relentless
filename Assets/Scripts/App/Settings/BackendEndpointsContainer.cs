@@ -4,7 +4,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class BackendEndpointsContainer
     {
-        public static readonly Dictionary<BackendPurpose, BackendEndpoint> Endpoints =
+        public static readonly string CurrentStagingDataVersion = "v26";
+
+        public static readonly IReadOnlyDictionary<BackendPurpose, BackendEndpoint> Endpoints =
             new Dictionary<BackendPurpose, BackendEndpoint>
             {
                 {
@@ -14,23 +16,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://127.0.0.1:46658/queryws",
                         "ws://127.0.0.1:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v18",
+                        CurrentStagingDataVersion,
                         false,
                         false,
-                        false
+                        false,
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {
-                    BackendPurpose.BranchTesting,
+                    BackendPurpose.Development,
                     new BackendEndpoint(
                         "https://stage-auth.loom.games",
-                        "ws://battleground-testnet-asia2.dappchains.com:46658/queryws",
-                        "ws://battleground-testnet-asia2.dappchains.com:46658/websocket",
+                        "ws://52.220.194.13:46658/queryws",
+                        "ws://52.220.194.13:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v3",
+                        CurrentStagingDataVersion,
                         false,
                         false,
-                        false
+                        false,
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {
@@ -40,10 +44,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-staging.dappchains.com:46658/queryws",
                         "ws://gamechain-staging.dappchains.com:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v18",
+                        CurrentStagingDataVersion,
                         false,
                         false,
-                        false
+                        false,
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Staging]
                     )
                 },
                 {
@@ -56,9 +61,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "v7",
                         false,
                         false,
-                        true
+                        true,
+                        PlasmachainEndpointConfigurationsContainer.EndpointConfigurations[BackendPurpose.Production]
                     )
-                },
+                }
             };
     }
 }

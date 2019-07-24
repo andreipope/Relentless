@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             // FIXME: why are we hardcoding card names??
-            if (CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfOverlord.Faction ||
+            if (CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfOverlord.Prototype.Faction ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
                 string clipTitle = CardOwnerOfAbility.Name.Replace(" ", "_");
@@ -49,10 +49,10 @@ namespace Loom.ZombieBattleground
 
                 PlayerCallerOfAbility.CurrentGoo += Value;
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()

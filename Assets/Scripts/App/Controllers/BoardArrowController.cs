@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Helpers;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -53,7 +52,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public T DoAutoTargetingArrowFromTo<T>(Transform from, BoardObject to, float delayTillDestroyArrow = 1f,
+        public T DoAutoTargetingArrowFromTo<T>(Transform from, IBoardObject to, float delayTillDestroyArrow = 1f,
                                                Action action = null, bool isManuallyDoAction = false) where T : BoardArrow
         {
             if (isManuallyDoAction)

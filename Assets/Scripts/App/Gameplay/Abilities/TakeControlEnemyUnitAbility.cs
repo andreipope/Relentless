@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,9 +9,9 @@ namespace Loom.ZombieBattleground
     {
         private int Count { get; }
 
-        public List<BoardUnitModel> MovedUnits => _movedUnits;
+        public List<CardModel> MovedUnits => _movedUnits;
 
-        private List<BoardUnitModel> _movedUnits;
+        private List<CardModel> _movedUnits;
 
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -31,12 +30,12 @@ namespace Loom.ZombieBattleground
             {
                 if (PredefinedTargets != null)
                 {
-                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList()
+                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as CardModel).ToList()
                         .FindAll(card => card.CurrentDefense > 0 && !card.IsDead));
                 }
                 else
                 {
-                    TakeControlEnemyUnit(GetRandomEnemyUnits(Count));
+                    TakeControlEnemyUnit(GetRandomUnits(GetAliveUnits(GetOpponentOverlord().CardsOnBoard).ToList(), Count));
                 }
             }
         }
@@ -47,15 +46,15 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                TakeControlEnemyUnit(new List<BoardUnitModel>() { TargetUnit });
+                TakeControlEnemyUnit(new List<CardModel>() { TargetUnit });
             }
         }
 
-        private void TakeControlEnemyUnit(List<BoardUnitModel> units)
+        private void TakeControlEnemyUnit(List<CardModel> units)
         {
-            _movedUnits = new List<BoardUnitModel>();
+            _movedUnits = new List<CardModel>();
 
-            foreach (BoardUnitModel unit in units)
+            foreach (CardModel unit in units)
             {
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
@@ -68,7 +67,7 @@ namespace Loom.ZombieBattleground
 
         private void TakeControlEnemyUnitEnded()
         {
-            foreach (BoardUnitModel unit in _movedUnits)
+            foreach (CardModel unit in _movedUnits)
             {
                 BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit);
             }

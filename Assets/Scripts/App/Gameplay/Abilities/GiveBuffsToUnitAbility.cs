@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void GiveBuffsToUnit(BoardUnitModel unit)
+        private void GiveBuffsToUnit(CardModel unit)
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
             Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None;
@@ -92,10 +92,10 @@ namespace Loom.ZombieBattleground
 
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }

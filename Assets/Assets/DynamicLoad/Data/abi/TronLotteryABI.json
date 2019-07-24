@@ -1,0 +1,465 @@
+[
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "TRON_DECIMAL",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "endBackersPeriod",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isFaucetEnable",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "TRON_TARGET",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "boosterType",
+        "type": "uint256"
+      },
+      {
+        "name": "rarity",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDroprates",
+    "outputs": [
+      {
+        "name": "cardList",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "boosterType",
+        "type": "uint8"
+      }
+    ],
+    "name": "openBoosterPack",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_target",
+        "type": "uint256"
+      },
+      {
+        "name": "_total",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateDifficultyBE",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "boosterType",
+        "type": "uint256"
+      },
+      {
+        "name": "rarity",
+        "type": "uint256"
+      },
+      {
+        "name": "cardList",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "setupDroprates",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "elementTypes",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "TRON_BONUS",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_target",
+        "type": "uint256"
+      },
+      {
+        "name": "_total",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateDifficultyLE",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "validators",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "name": "cardAddress",
+        "type": "address"
+      },
+      {
+        "name": "packsAddr",
+        "type": "address[11]"
+      },
+      {
+        "name": "tronTokenAddr",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "cardList",
+        "type": "uint256[5]"
+      },
+      {
+        "indexed": false,
+        "name": "packOwner",
+        "type": "address"
+      }
+    ],
+    "name": "CardsInPack",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "elementType",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "maxMatch",
+        "type": "uint256"
+      }
+    ],
+    "name": "LotteryWinner",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "boosterType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "winnerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "maxMatch",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "bonusWei",
+        "type": "uint256"
+      }
+    ],
+    "name": "TranferBonusToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "cardId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "boosterType",
+        "type": "uint8"
+      }
+    ],
+    "name": "GeneratedCard",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "cardId",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpgradedCardToBE",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "cardId",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpgradedCardToLE",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "target",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "total",
+        "type": "uint256"
+      }
+    ],
+    "name": "LimitedDifficultyChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "target",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "total",
+        "type": "uint256"
+      }
+    ],
+    "name": "BackerDifficultyChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "boosterTypes",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "rarity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "cardList",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "DropratesSet",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_elementType",
+        "type": "uint256"
+      },
+      {
+        "name": "cardList",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "setupElementTypes",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "boosterType",
+        "type": "uint8"
+      }
+    ],
+    "name": "openPackWithLottery",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "status",
+        "type": "bool"
+      }
+    ],
+    "name": "toggleFaucet",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "newBonus",
+        "type": "uint256[3]"
+      }
+    ],
+    "name": "setBonus",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "newValidator",
+        "type": "address"
+      }
+    ],
+    "name": "addValidator",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

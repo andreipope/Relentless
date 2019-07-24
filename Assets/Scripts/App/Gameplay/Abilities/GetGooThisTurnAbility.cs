@@ -1,7 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -47,7 +45,7 @@ namespace Loom.ZombieBattleground
             AddGooOnThisTurn();
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
@@ -58,7 +56,7 @@ namespace Loom.ZombieBattleground
 
         private void AddGooOnThisTurn()
         {
-            PlayerCallerOfAbility.CurrentGoo = Mathf.Clamp(PlayerCallerOfAbility.CurrentGoo + Count, 0, Constants.MaximumPlayerGoo);
+            PlayerCallerOfAbility.CurrentGoo = PlayerCallerOfAbility.CurrentGoo + Count;
         }
     }
 }

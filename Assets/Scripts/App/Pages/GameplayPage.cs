@@ -1,9 +1,12 @@
 using System;
+using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,33 +48,17 @@ namespace Loom.ZombieBattleground
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
 
-        public PlayerManaBarItem PlayerManaBar
-        {
-            get
-            {
-                return _playerManaBar;
-            }
-        }
+        public PlayerManaBarItem PlayerManaBar => _playerManaBar;
 
-        public PlayerManaBarItem OpponentManaBar
-        {
-            get
-            {
-                return _opponentManaBar;
-            }
-        }
+        public PlayerManaBarItem OpponentManaBar => _opponentManaBar;
 
-        public GameObject Self
-        {
-            get
-            {
-                return _selfPage;
-            }
-        }
+        public GameObject Self => _selfPage;
 
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
+
+        private Transform _actionReportPivot, _actionReportPanel, _cameraGroupTransform;
 
         private TextMeshPro _playerDefenseText,
             _opponentDefenseText,
@@ -93,14 +80,13 @@ namespace Loom.ZombieBattleground
 
         private GameObject _endTurnButton;
 
-        public int CurrentDeckId { get; set; }
+        public DeckId CurrentDeckId { get; set; }
 
         private IMatchManager _matchManager;
 
         private IPvPManager _pvpManager;
 
-        private OverlordModel _playerOverlord,
-                     _opponentOverlord;
+        private OverlordUserInstance _playerOverlord, _opponentOverlord;
 
         public void Init()
         {
@@ -143,6 +129,8 @@ namespace Loom.ZombieBattleground
 
             _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
             _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
+            
+            ApplicationSettingsManager.OnResolutionChanged += UpdateActionReportPanelPosition;
         }
 
         public void Hide()
@@ -187,11 +175,18 @@ namespace Loom.ZombieBattleground
             _settingsButton = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
             _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
 
+            _actionReportPivot = GameObject.Find("ActionReportPivot").transform;
+            _actionReportPanel = _selfPage.transform.Find("ActionReportPanel");            
+
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
-
-            _reportGameActionsPanel = new PastActionReportPanel(_selfPage.transform.Find("ActionReportPanel").gameObject);
+            
+            UpdateActionReportPanelPosition();
+            _reportGameActionsPanel = new PastActionReportPanel
+            (
+                _selfPage.transform.Find("ActionReportPanel").gameObject
+            );
 
             if (_zippingVfx == null)
             {
@@ -222,8 +217,8 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            int overlordId = -1;
-            int overlordHeroId = -1;
+            OverlordId? overlordId = null;
+            OverlordId? overlordHeroId = null;
 
             switch (_matchManager.MatchType)
             {
@@ -237,16 +232,18 @@ namespace Loom.ZombieBattleground
                     {
                         overlordId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).OverlordId;
 
-                        List<Data.AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
+                        List<AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
 
-                        Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
-
+                        AIDeck opponentDeck =
+                            _gameplayManager.OpponentIdCheat.Id == -1 ?
+                                decks[Random.Range(0, decks.Count)] :
+                                decks.Single(deck => deck.Deck.Id == _gameplayManager.OpponentIdCheat);
 
                         overlordHeroId = opponentDeck.Deck.OverlordId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
-                        _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
+                        _gameplayManager.OpponentDeckId = _gameplayManager.OpponentPlayerDeck.Id;
 
-                        _gameplayManager.OpponentIdCheat = -1;
+                        _gameplayManager.OpponentIdCheat = new DeckId(-1);
 
                         if(_gameplayManager.IsTutorial && _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
                         {
@@ -263,13 +260,13 @@ namespace Loom.ZombieBattleground
                     {
                         if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            overlordId = (int)playerState.Deck.OverlordId;
+                            overlordId = new OverlordId(playerState.Deck.OverlordId);
                         }
                         else
                         {
-                            overlordHeroId = (int)playerState.Deck.OverlordId;
+                            overlordHeroId = new OverlordId(playerState.Deck.OverlordId);
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
-                            _gameplayManager.OpponentDeckId = -1;
+                            _gameplayManager.OpponentDeckId = new DeckId(-1);
                         }
                     }
                     break;
@@ -277,14 +274,14 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (overlordId == -1)
-                throw new Exception($"{nameof(overlordId)} == -1");
+            if (overlordId == null)
+                throw new Exception($"{nameof(overlordId)} == null");
 
-            if (overlordHeroId == -1)
-                throw new Exception($"{nameof(overlordHeroId)} == -1");
+            if (overlordHeroId == null)
+                throw new Exception($"{nameof(overlordHeroId)} == null");
 
-            _playerOverlord = _dataManager.CachedOverlordData.Overlords[overlordId];
-            _opponentOverlord = _dataManager.CachedOverlordData.Overlords[overlordHeroId];
+            _playerOverlord = _dataManager.CachedOverlordData.GetOverlordById(overlordId.Value);
+            _opponentOverlord = _dataManager.CachedOverlordData.GetOverlordById(overlordHeroId.Value);
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture =
@@ -319,7 +316,7 @@ namespace Loom.ZombieBattleground
             if (_playerOverlord != null)
             {
                 SetOverlordInfo(_playerOverlord, Constants.Player);
-                string playerNameText = _playerOverlord.FullName;
+                string playerNameText = _playerOverlord.Prototype.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
                 {
                     playerNameText = _backendDataControlMediator.UserDataModel.UserId;
@@ -333,7 +330,7 @@ namespace Loom.ZombieBattleground
                 SetOverlordInfo(_opponentOverlord, Constants.Opponent);
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
-                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.FullName;
+                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.Prototype.FullName;
             }
 
             _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
@@ -344,10 +341,10 @@ namespace Loom.ZombieBattleground
             _isPlayerInited = true;
         }
 
-        public void SetOverlordInfo(OverlordModel overlord, string objectName)
+        public void SetOverlordInfo(OverlordUserInstance overlord, string objectName)
         {
             Texture2D overlordTexture =
-                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Faction + "_EXP");
+                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Prototype.Faction + "_EXP");
             Transform overlordObjectTransform = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
 
             Material overlordAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
@@ -365,7 +362,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetupSkills(OverlordSkill primary, OverlordSkill secondary, bool isOpponent)
+        public void SetupSkills(OverlordSkillPrototype primary, OverlordSkillPrototype secondary, bool isOpponent)
         {
             if (isOpponent)
             {
@@ -383,7 +380,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetupSkills(OverlordSkill skillPrim, OverlordSkill skillSecond, GameObject skillPrimary, GameObject skillSecondary)
+        private void SetupSkills(OverlordSkillPrototype skillPrim, OverlordSkillPrototype skillSecond, GameObject skillPrimary, GameObject skillSecondary)
         {
             if (skillPrim != null)
             {
@@ -398,6 +395,39 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async void UpdateActionReportPanelPosition()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            
+            if (_selfPage == null)
+                return;
+
+            SyncActionReportPanelPositionWithPivot();
+        }
+
+        public void SyncActionReportPanelPositionWithPivot()
+        { 
+            Vector3 pos = _actionReportPivot.position;
+            pos.z = _actionReportPanel.position.z;
+            _actionReportPanel.position = pos;
+        }
+        
+        public IEnumerator CorrectReportPanelDuringCameraShake()
+        {
+            while(true)
+            {                
+                if ( _selfPage != null && _selfPage.activeInHierarchy && _actionReportPivot.parent != null)
+                {
+                    if (_cameraGroupTransform == null)
+                    {
+                        _cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+                    }
+                    _actionReportPivot.parent.position = _cameraGroupTransform.position * -1f;
+                    SyncActionReportPanelPositionWithPivot();
+                }
+                yield return null;
+            }            
+        }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {

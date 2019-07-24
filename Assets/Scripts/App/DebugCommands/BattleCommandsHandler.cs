@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Opencoding.CommandHandlerSystem;
@@ -19,8 +20,10 @@ static class BattleCommandsHandler
     private static CardsController _cardsController;
     private static AIController _aiController;
     private static IDataManager _dataManager;
-    private static IOverlordExperienceManager _overlordManager;
+    private static IOverlordExperienceManager _overlordExperienceManager;
     private static IUIManager _uiManager;
+    private static BackendFacade _backendFacade;
+    private static BackendDataControlMediator _backendDataControlMediator;
 
     public static void Initialize()
     {
@@ -28,13 +31,16 @@ static class BattleCommandsHandler
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _dataManager = GameClient.Get<IDataManager>();
-        _overlordManager = GameClient.Get<IOverlordExperienceManager>();
+        _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
         _uiManager = GameClient.Get<IUIManager>();
+        _backendFacade = GameClient.Get<BackendFacade>();
+        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         _skillController = _gameplayManager.GetController<SkillsController>();
         _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
         _aiController = _gameplayManager.GetController<AIController>();
         _boardController = _gameplayManager.GetController<BoardController>();
+
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
@@ -113,10 +119,10 @@ static class BattleCommandsHandler
             return;
         }
 
-        BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
-        if (boardUnitModel != null)
+        CardModel cardModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (cardModel != null)
         {
-            player.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
+            player.PlayerCardsController.AddCardFromDeckToHand(cardModel);
         }
         else
         {
@@ -200,61 +206,12 @@ static class BattleCommandsHandler
         player.CurrentGoo = gooAmount;
     }
 
-    [CommandHandler(Description = "Adds xp to an overlord. ")]
-    private static void AddXP([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int xpAmount)
-    {
-        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords.Find(x => x.Name == overlordName);
-
-        if (overlord == null)
-        {
-            Log.Error("Overlord not found");
-            return;
-        }
-
-        if (xpAmount <= 0)
-        {
-            Log.Error("Xp Amount should be higher than zero");
-            return;
-        }
-
-        _overlordManager.InitializeExperienceInfoInMatch(overlord);
-
-        _overlordManager.ApplyExperience(overlord, xpAmount);
-        if (overlord.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
-        {
-            _uiManager.DrawPopup<LevelUpPopup>();
-        }
-    }
-
-    [CommandHandler(Description = "Adds xp to an overlord. ")]
-    private static void SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
-    {
-        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords
-            .Find(x => x.Name == overlordName);
-
-        if (overlord == null)
-        {
-            Log.Error("Overlord not found");
-            return;
-        }
-
-        if (level <= 0 || level > 20)
-        {
-            Log.Error("Level cant be set less than 1 nor max than 20");
-            return;
-        }
-
-        overlord.Level = level;
-
-        _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-    }
-
     public static IEnumerable<string> OverlordsNames()
     {
         string[] overlordNames = new string[_dataManager.CachedOverlordData.Overlords.Count];
         for (var i = 0; i < _dataManager.CachedOverlordData.Overlords.Count; i++)
         {
-            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Name;
+            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Prototype.Name;
         }
         return overlordNames;
     }
@@ -269,8 +226,31 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
         player.PlayerCardsController.CreateNewCardAndAddToHand(card);
+    }
+
+    [CommandHandler(Description = "AI Draw - Draw Card from Library with Card Name")]
+    private static void AIDraw(string cardName)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        Player opponentPlayer = _gameplayManager.OpponentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
+        {
+            Log.Error("Please Wait For Your Turn");
+            return;
+        }
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
+        CardModel cardModelInDeck = opponentPlayer.PlayerCardsController.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (cardModelInDeck == null)
+        {
+            opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
+        }
+        else
+        {
+            AIController aiController = _gameplayManager.GetController<AIController>();
+            aiController.PlayCardOnBoard(cardModelInDeck);
+        }
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -317,9 +297,9 @@ static class BattleCommandsHandler
             return;
         }
 
-        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
-        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
-        _aiController.PlayCardOnBoard(boardUnitModel, true);
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardByName(cardName));
+        CardModel cardModel = opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
+        _aiController.PlayCardOnBoard(cardModel, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -332,12 +312,12 @@ static class BattleCommandsHandler
             return;
         }
 
-        BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
-        if (boardUnitModel != null)
+        CardModel cardModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (cardModel != null)
         {
-            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
-            boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
-            _aiController.PlayCardOnBoard(boardUnitModel, true);
+            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(cardModel);
+            cardModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+            _aiController.PlayCardOnBoard(cardModel, true);
         }
         else
         {
@@ -417,22 +397,23 @@ static class BattleCommandsHandler
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
         Card prototype = new Card(unit.Model.Card.Prototype);
-        WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
-        BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
-        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
+        InstanceId updatedId = new InstanceId(unit.Model.InstanceId.Id, Enumerators.ReasonForInstanceIdChange.BackFromGraveyard);
+        WorkingCard workingCard = new WorkingCard(prototype, prototype, player, id:updatedId);
+        CardModel cardModel = new CardModel(workingCard);
+        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, cardModel);
 
         player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
-        player.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
-        _battlegroundController.RegisterBoardUnitView(player, newUnit);
+        player.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
+        _battlegroundController.RegisterCardView(newUnit, player);
 
-        _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
+        _boardController.UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.CardsOnBoard), true, null);
     }
 
     private static void RevertAttackOnUnit(IMove move)
     {
         AttackUnit obj = (AttackUnit) move;
 
-        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(obj.AttackingUnitModel);
+        BoardUnitView attackingUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(obj.AttackingUnitModel);
         if (attackingUnitView.GameObject == null)
         {
             GetCardFromGraveyard(attackingUnitView, _gameplayManager.CurrentPlayer);
@@ -520,7 +501,7 @@ static class BattleCommandsHandler
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
             unit.AddToCurrentDefenseHistory(-playOverlordSkill.Skill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
@@ -535,7 +516,7 @@ static class BattleCommandsHandler
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -558,7 +539,7 @@ static class BattleCommandsHandler
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertHealUnityBySkill(unit, playOverlordSkill.Skill);
         }
@@ -568,7 +549,7 @@ static class BattleCommandsHandler
 
     private static void RevertIceBolt(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
             unit.RevertStun();
@@ -582,7 +563,7 @@ static class BattleCommandsHandler
         {
             player.RevertStun();
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.RevertStun();
         }
@@ -592,7 +573,7 @@ static class BattleCommandsHandler
 
     private static void RevertRabies(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.SetInitialUnitType();
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -605,7 +586,7 @@ static class BattleCommandsHandler
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -615,7 +596,7 @@ static class BattleCommandsHandler
 
     private static void RevertStoneSkin(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
             unit.AddToCurrentDefenseHistory(-playOverlordSkill.Skill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
@@ -635,10 +616,11 @@ static class BattleCommandsHandler
     private static void RevertPush(PlayOverlordSkill playOverlordSkill)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
-        WorkingCard workingCard = targetUnit.Card;
+        CardModel targetUnit = (CardModel)playOverlordSkill.Targets[0].BoardObject;
 
-        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == workingCard);
+        BoardCardView card =
+            _battlegroundController.GetCardViewByModel<BoardCardView>(
+                _gameplayManager.CurrentPlayer.CardsInHand.First(x => x == targetUnit));
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -651,7 +633,7 @@ static class BattleCommandsHandler
 
     private static void RevertToxicPowerAttack(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
@@ -667,7 +649,7 @@ static class BattleCommandsHandler
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -680,9 +662,9 @@ static class BattleCommandsHandler
         player.Defense += boardSkill.Skill.Value;
     }
 
-    private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
+    private static void RevertAttackOnUnitBySkill(CardModel unitModel, BoardSkill boardSkill)
     {
-        BoardUnitModel creature = unitModel;
+        CardModel creature = unitModel;
         creature.AddToCurrentDefenseHistory(boardSkill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
     }
 
@@ -694,7 +676,7 @@ static class BattleCommandsHandler
         player.Defense -= boardSkill.Skill.Value;
     }
 
-    private static void RevertHealUnityBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
+    private static void RevertHealUnityBySkill(CardModel unitModel, BoardSkill boardSkill)
     {
         if (unitModel == null)
             return;
@@ -707,9 +689,21 @@ static class BattleCommandsHandler
     {
         foreach (var skill in _gameplayManager.CurrentPlayer.SelfOverlord.Skills)
         {
-            skill.Unlocked = true;
+            skill.UserData.IsUnlocked = true;
         }
+    }
 
-        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+    [CommandHandler(Description = "Show Player and Opponent XP")]
+    private static void ShowPlayerAndOpponentXP()
+    {
+        Debug.Log("Player Experience = " + _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived);
+        Debug.Log("Opponent Experience = " + _overlordExperienceManager.OpponentMatchMatchExperienceInfo.ExperienceReceived);
+    }
+
+    [CommandHandler(Description = "Set Player and Opponent XP")]
+    private static void SetPlayerAndOpponentXP(int playerExperience, int opponentExperience)
+    {
+        _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived = playerExperience;
+        _overlordExperienceManager.OpponentMatchMatchExperienceInfo.ExperienceReceived = opponentExperience;
     }
 }

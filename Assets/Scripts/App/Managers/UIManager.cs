@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class UIManager : IService, IUIManager
     {
-        private List<IUIPopup> _uiPopups;
+        public List<IUIPopup> UiPopups { get; set; }
 
         public List<IUIElement> Pages { get; private set; }
 
@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
                 page.Dispose();
             }
 
-            foreach (IUIPopup popup in _uiPopups)
+            foreach (IUIPopup popup in UiPopups)
             {
                 popup.Dispose();
             }
@@ -32,7 +32,6 @@ namespace Loom.ZombieBattleground
             CanvasScaler = Canvas.GetComponent<CanvasScaler>();
 
             Pages = new List<IUIElement>();
-            Pages.Add(new LoadingPage());          
             Pages.Add(new GameplayPage());
             Pages.Add(new PvPSelectionPage());
             Pages.Add(new CustomGameModeListPage());
@@ -49,48 +48,50 @@ namespace Loom.ZombieBattleground
                 page.Init();
             }
 
-            _uiPopups = new List<IUIPopup>();
-            _uiPopups.Add(new CardInfoPopup());
-            _uiPopups.Add(new DesintigrateCardPopup());
-            _uiPopups.Add(new WarningPopup());
-            _uiPopups.Add(new QuestionPopup());
-            _uiPopups.Add(new TutorialAvatarPopup());
-            _uiPopups.Add(new PreparingForBattlePopup());
-            _uiPopups.Add(new LevelUpPopup());
-            _uiPopups.Add(new YourTurnPopup());
-            _uiPopups.Add(new ConfirmationPopup());
-            _uiPopups.Add(new LoadingGameplayPopup());
-            _uiPopups.Add(new PlayerOrderPopup());
+            UiPopups = new List<IUIPopup>();
+            UiPopups.Add(new CardInfoPopup());
+            UiPopups.Add(new DesintigrateCardPopup());
+            UiPopups.Add(new WarningPopup());
+            UiPopups.Add(new QuestionPopup());
+            UiPopups.Add(new TutorialAvatarPopup());
+            UiPopups.Add(new PreparingForBattlePopup());
+            UiPopups.Add(new LevelUpPopup());
+            UiPopups.Add(new YourTurnPopup());
+            UiPopups.Add(new ConfirmationPopup());
+            UiPopups.Add(new LoadingGameplayPopup());
+            UiPopups.Add(new PlayerOrderPopup());
             //Hide for current Beta release
-            //_uiPopups.Add(new TermsPopup());
-            _uiPopups.Add(new LoginPopup());
-            _uiPopups.Add(new MatchMakingPopup());
-            _uiPopups.Add(new ConnectionPopup());         
-            _uiPopups.Add(new PastActionsPopup());
-            _uiPopups.Add(new UpdatePopup());
-            _uiPopups.Add(new MulliganPopup());
-            _uiPopups.Add(new LoadDataMessagePopup());
-            _uiPopups.Add(new LoadingFiatPopup());
-            _uiPopups.Add(new TutorialProgressInfoPopup());
-            _uiPopups.Add(new RewardPopup());
-            _uiPopups.Add(new WaitingForPlayerPopup());
-            _uiPopups.Add(new TutorialSkipPopup());
-            _uiPopups.Add(new SideMenuPopup());
-            _uiPopups.Add(new AreaBarPopup());
-            _uiPopups.Add(new DeckSelectionPopup());
-            _uiPopups.Add(new GameModePopup());
-            _uiPopups.Add(new YouWonYouLostPopup());
-            _uiPopups.Add(new ElementFilterPopup());
-            _uiPopups.Add(new CardFilterPopup());
-            _uiPopups.Add(new CardInfoWithSearchPopup());
-            _uiPopups.Add(new MySettingPopup());
-            _uiPopups.Add(new LoadingBarPopup());
-            _uiPopups.Add(new CreditPopup());
-            _uiPopups.Add(new SettingsWithCreditsPopup());
-            _uiPopups.Add(new YouWonYouLostWithRewardPopup());
-            _uiPopups.Add(new InternetConnectionPopup());
+            //UiPopups.Add(new TermsPopup());
+            UiPopups.Add(new LoginPopup());
+            UiPopups.Add(new MatchMakingPopup());
+            UiPopups.Add(new ConnectionPopup());         
+            UiPopups.Add(new PastActionsPopup());
+            UiPopups.Add(new UpdatePopup());
+            UiPopups.Add(new MulliganPopup());
+            UiPopups.Add(new LoadDataMessagePopup());
+            UiPopups.Add(new LoadingOverlayPopup());
+            UiPopups.Add(new TutorialProgressInfoPopup());
+            UiPopups.Add(new RewardPopup());
+            UiPopups.Add(new WaitingForPlayerPopup());
+            UiPopups.Add(new TutorialSkipPopup());
+            UiPopups.Add(new SideMenuPopup());
+            UiPopups.Add(new AreaBarPopup());
+            UiPopups.Add(new DeckSelectionPopup());
+            UiPopups.Add(new GameModePopup());
+            UiPopups.Add(new YouWonYouLostPopup());
+            UiPopups.Add(new ElementFilterPopup());
+            UiPopups.Add(new CardInfoWithSearchPopup());
+            UiPopups.Add(new MySettingPopup());
+            UiPopups.Add(new LoadingBarPopup());
+            UiPopups.Add(new CreditPopup());
+            UiPopups.Add(new SettingsWithCreditsPopup());
+            UiPopups.Add(new YouWonYouLostWithRewardPopup());
+            UiPopups.Add(new InternetConnectionPopup());
+            UiPopups.Add(new SelectOverlordAbilitiesPopup());
+            UiPopups.Add(new SelectOverlordPopup());
+            UiPopups.Add(new RenamePopup());
 
-            foreach (IUIPopup popup in _uiPopups)
+            foreach (IUIPopup popup in UiPopups)
             {
                 popup.Init();
             }
@@ -103,7 +104,7 @@ namespace Loom.ZombieBattleground
                 page.Update();
             }
 
-            foreach (IUIPopup popup in _uiPopups)
+            foreach (IUIPopup popup in UiPopups)
             {
                 popup.Update();
             }
@@ -129,7 +130,7 @@ namespace Loom.ZombieBattleground
 
         public void HideAllPopups()
         {
-            foreach (IUIPopup popup in _uiPopups)
+            foreach (IUIPopup popup in UiPopups)
             {
                 popup.Hide();
             }
@@ -184,7 +185,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
-                if (popup is WarningPopup || popup is ConnectionPopup || popup is QuestionPopup)
+                if (popup is WarningPopup || popup is ConnectionPopup || popup is QuestionPopup || popup is LoadingOverlayPopup)
                     return;
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
@@ -203,9 +204,9 @@ namespace Loom.ZombieBattleground
         public T GetPopup<T>()
             where T : IUIPopup
         {
-            for (int i = 0; i < _uiPopups.Count; i++)
+            for (int i = 0; i < UiPopups.Count; i++)
             {
-                if (_uiPopups[i] is T popup)
+                if (UiPopups[i] is T popup)
                     return popup;
             }
 
@@ -226,7 +227,7 @@ namespace Loom.ZombieBattleground
 
         public void DrawPopupByName(string name, object data = null)
         {
-            foreach (IUIPopup popup in _uiPopups)
+            foreach (IUIPopup popup in UiPopups)
             {
                 if (popup.GetType().Name == name)
                 {

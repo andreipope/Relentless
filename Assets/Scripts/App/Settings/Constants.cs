@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.19";
+        internal const string CurrentVersionBase = "0.1.26";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -17,8 +18,6 @@ namespace Loom.ZombieBattleground.Common
         internal const string LocalBuffsTooltipDataFileName = "buffs_tooltip_data.json";
 
         internal const string LocalConfigDataFileName = "config_data.json";
-
-        internal const string LocalOverlordsDataFileName = "overlords_data.json";
 
         internal const string LocalCollectionDataFileName = "collection_data.json";
 
@@ -78,7 +77,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
-        internal const int DefaultPlayerHp = 50;
+        internal const int TutorialDefaultOverlordDefense = 50;
 
         internal const int DefaultPlayerGoo = 0;
 
@@ -141,7 +140,11 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float TurnTime = 120;
+        internal const float TurnTime = 70;
+
+        internal const float ShortTurnTime = 15;
+
+        internal const int MaxDecksCount = 10;
 
         public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
@@ -165,7 +168,9 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int BackendCallTimeout = 10000;
 
-        internal const float QueueActionTimeout = 60f;    
+        internal const int PlasmachainCallTimeout = 20000;
+
+        internal const float QueueActionTimeout = 60f;
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
@@ -175,11 +180,13 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
-        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
+        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.25f, 0.25f, 0.25f);
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
+        public const string ErrorMessageForMaxDecks =
+            "You can't have more than 10 decks, delete 1 or more decks and try again.";
 
         public const bool MulliganEnabled = true;
 
@@ -191,9 +198,9 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool UsingCardTooltips = false;
 
-        public const bool RankSystemEnabled = false;
+        public static readonly bool RankSystemEnabled = false;
 
-        public const bool GameStateValidationEnabled =
+        public static readonly bool GameStateValidationEnabled =
 #if UNITY_EDITOR
             true;
 #else
@@ -210,34 +217,45 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage =
-#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
-            true;
-#else
-            false;
-#endif
+        internal const string BackendPurposeOverrideValuePlayerPrefsKey = "RL_BackendPurposeOverride";
 
-        internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
-        internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
-        internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
-        internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
-        
+        internal const string ForceUseAuthPlayerPrefsKey = "RL_ForceUseAuth";
+
         internal const int LastTutorialId = 8;
 
-        internal const string MarketPlaceLink = "https://loom.games/en/browse";
-        
+        internal const string MarketPlaceLink = "https://loom.games/en/purchase";
+
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 
         internal const string SupportLink = "https://loom.freshdesk.com/support/home";
 
         internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
 
-        internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
-
-        internal const string EnvironmentPointText = "%environment_point%";
-              
         internal const int MinimumMemorySize = 2048;
-        
+
         internal const float MinimumMemoryThresholdPercentage = 0.85f;
+
+        internal static Dictionary<Enumerators.Faction, Enumerators.Faction> FactionAgainstDictionary =
+            new Dictionary<Enumerators.Faction, Enumerators.Faction>
+            {
+                {
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
+                },
+                {
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
+                },
+                {
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
+                },
+                {
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
+                },
+                {
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
+                },
+                {
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
+                }
+            };
     }
 }

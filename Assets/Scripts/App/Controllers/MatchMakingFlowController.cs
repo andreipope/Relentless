@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
 namespace Loom.ZombieBattleground {
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground {
         private MatchMakingState _state = MatchMakingState.NotStarted;
         private MatchMetadata _matchMetadata;
         private float _currentWaitingTime;
-        private long _deckId;
+        private DeckId _deckId;
         private Address? _customGameModeAddress;
         private IList<string> _tags;
         private bool _useBackendGameLogic;
@@ -51,16 +51,7 @@ namespace Loom.ZombieBattleground {
 
         public MatchMakingState State => _state;
 
-        public MatchMetadata MatchMetadata
-        {
-            get
-            {
-                if (_state != MatchMakingState.Confirmed)
-                    throw new Exception($"Must be in {nameof(MatchMakingState.Confirmed)} state");
-
-                return _matchMetadata;
-            }
-        }
+        public MatchMetadata MatchMetadata => _matchMetadata;
 
         public bool IsMatchmakingInProcess
         {
@@ -88,7 +79,7 @@ namespace Loom.ZombieBattleground {
         protected CancellationTokenSource CancellationTokenSource => _cancellationTokenSource;
 
         public async Task Start(
-            long deckId,
+            DeckId deckId,
             Address? customGameModeAddress,
             IList<string> tags,
             bool useBackendGameLogic,
@@ -187,7 +178,7 @@ namespace Loom.ZombieBattleground {
                 );
 
                 await SetState(MatchMakingState.WaitingForOpponent);
-                await _backendFacade.SubscribeEvent(result.Match.Topics.ToList());
+                await _backendFacade.SubscribeToEvents(_userDataModel.UserId, result.Match.Topics.ToList());
             }
             catch (Exception e)
             {
@@ -208,6 +199,12 @@ namespace Loom.ZombieBattleground {
 
                 if (result.Match != null)
                 {
+                    _matchMetadata = new MatchMetadata(
+                        result.Match.Id,
+                        result.Match.Topics,
+                        result.Match.UseBackendGameLogic
+                    );
+
                     if (result.Match.Status == Match.Types.Status.Matching)
                     {
                         bool mustAccept = false;
@@ -256,6 +253,12 @@ namespace Loom.ZombieBattleground {
 
                 if (result.Match != null)
                 {
+                    _matchMetadata = new MatchMetadata(
+                        result.Match.Id,
+                        result.Match.Topics,
+                        result.Match.UseBackendGameLogic
+                    );
+
                     if (result.Match.Status == Match.Types.Status.Matching)
                     {
                         bool mustAccept = false;
@@ -300,7 +303,7 @@ namespace Loom.ZombieBattleground {
                     }
                     else
                     {
-                        await _backendFacade.UnsubscribeEvent();
+                        await _backendFacade.UnsubscribeFromAllEvents(_userDataModel.UserId);
                         await Restart();
                     }
                 }
@@ -361,19 +364,13 @@ namespace Loom.ZombieBattleground {
 
         protected async Task ConfirmMatch(FindMatchResponse findMatchResponse)
         {
-            _matchMetadata = new MatchMetadata(
-                findMatchResponse.Match.Id,
-                findMatchResponse.Match.Topics,
-                findMatchResponse.Match.Status,
-                findMatchResponse.Match.UseBackendGameLogic
-            );
+            if (_matchMetadata == null)
+                throw new Exception("Can't confirm match with matchMetadata == null");
 
             await SetState(MatchMakingState.Confirmed);
 
             Log.Debug("MatchConfirmed");
-            
             MTwister.RandomInit((uint)findMatchResponse.Match.RandomSeed);
-
             MatchConfirmed?.Invoke(_matchMetadata);
         }
 

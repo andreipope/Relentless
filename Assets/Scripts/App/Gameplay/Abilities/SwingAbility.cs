@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 
         private int _targetIndex;
 
-        private BoardUnitModel _unit;
+        private CardModel _unit;
 
         public SwingAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -28,9 +28,10 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            _unit = (BoardUnitModel) info;
+            _unit = (CardModel) info;
            
             if (_unit != null)
             {
@@ -38,20 +39,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitModel)
+            if (info is CardModel)
             {
                 Action(info);
             }
         }
 
-        private void TakeDamageToUnit(BoardUnitModel unit)
+        private void TakeDamageToUnit(CardModel unit)
         {
             int damage = Value;
             if (damage == 0)
@@ -66,12 +67,12 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
  
-            foreach(BoardUnitModel unit in BattlegroundController.GetAdjacentUnitsToUnit(_unit))
+            foreach(CardModel unit in BattlegroundController.GetAdjacentUnitsToUnit(_unit))
             {
                 TakeDamageToUnit(unit);
             }
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

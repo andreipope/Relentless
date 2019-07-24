@@ -2,7 +2,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -58,11 +57,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ReturnTargetToHand(BoardUnitModel unit)
+        private void ReturnTargetToHand(CardModel unit)
         {
+            int currentCost = unit.CurrentCost;
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
             {
-                Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                Vector3 unitPosition = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
 
                 CreateVfx(unitPosition, true, 3f, true);
 
@@ -75,18 +75,23 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
             {
-                unit.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+                BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
 
-                if (PlayerCallerOfAbility.IsLocalPlayer)
+                if (cardView != null)
                 {
-                    BattlegroundController.PlayerHandCards.FirstOrDefault(card => card.Model == BoardUnitModel).UpdateCardCost();
+                    unit.AddToCurrentCostHistory((currentCost - unit.CurrentCost) + Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+
+                    if (PlayerCallerOfAbility.IsLocalPlayer)
+                    {
+                        cardView.UpdateCardCost();
+                    }
                 }
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -98,7 +103,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ReturnDeadTargetToHand(BoardUnitModel unit)
+        private void ReturnDeadTargetToHand(CardModel unit)
         {
             unit.ResetToInitial();
 

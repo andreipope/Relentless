@@ -3,10 +3,10 @@ using Loom.ZombieBattleground.Protobuf;
 using Loom.Google.Protobuf;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
         private IAppStateManager _appStateManager;
         private bool _isExecutingTask;
+        private volatile bool _isUpdating;
 
         public int QueuedTaskCount => (_tasks?.Count ?? 0) + (_isExecutingTask ? 1 : 0);
 
@@ -34,6 +35,10 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
+            if (_isUpdating)
+                return;
+
+            _isUpdating = true;
             while (_tasks.Count > 0)
             {
                 _isExecutingTask = true;
@@ -46,11 +51,20 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    completedTask.SetException(e);
+                    try
+                    {
+                        completedTask.SetException(e);
+                    }
+                    catch (Exception e2)
+                    {
+                        Log.Warn($"The impossible exception occured, thread id {Thread.CurrentThread.ManagedThreadId}, queue count: {_tasks.Count}, completedTask: {completedTask}, e: \n[{e}]\n\n\ne2: \n[{e2}]");
+                    }
                 }
 
                 _isExecutingTask = false;
             }
+
+            _isUpdating = false;
         }
 
         public Task EnqueueMessage(IMessage request)
@@ -203,22 +217,23 @@ namespace Loom.ZombieBattleground
             IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
             ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
 
-            if (gameplayManager.CurrentPlayer == null)
-                return;
-
             if (connectionPopup.Self == null)
             {
-                Func<Task> connectFuncInGame = () =>
+                if (gameplayManager.CurrentPlayer != null)
                 {
-                    Clear();
-                    gameplayManager.CurrentPlayer.ThrowLeaveMatch();
-                    gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
-                    connectionPopup.Hide();
-                    return Task.CompletedTask;
-                };
+                    Func<Task> connectFuncInGame = () =>
+                    {
+                        Clear();
+                        gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                        gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                        GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                        connectionPopup.Hide();
+                        return Task.CompletedTask;
+                    };
 
-                connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                    connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                }
+
                 connectionPopup.Show();
                 connectionPopup.ShowFailedInGamePlay();
             }

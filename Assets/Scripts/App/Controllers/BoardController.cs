@@ -1,17 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -85,22 +77,15 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
-            UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
+            UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
         {
+            const float Duration = 0.4f;
+
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
-
-            if(_battlegroundController.HasUnitInAttackingState(units))
-            {
-                InternalTools.DoActionDelayed(() =>
-                {
-                    UpdateBoard(units, isBottom, boardUpdated, skipIndex);
-                }, Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f);
-                return;
-            }
 
             List<UnitPositionOnBoard> newPositions = GetPositionsForUnits(units, isBottom);
 
@@ -110,7 +95,6 @@ namespace Loom.ZombieBattleground
             updateSequence.Id = _sequenceUniqueId;
 
             Tween tween;
-            const float Duration = 0.4f;
 
             for (int i = 0; i < newPositions.Count; i++)
             {
@@ -155,8 +139,7 @@ namespace Loom.ZombieBattleground
         public Vector2 GetCorrectPositionOfUnitOnBoard(Player player, BoardUnitView boardUnitView)
         {
             UnitPositionOnBoard unitPositionOnBoard =
-                GetPositionsForUnits(_battlegroundController.GetBoardUnitViewsFromModels(
-                                        player.PlayerCardsController.CardsOnBoard),
+                GetPositionsForUnits(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard),
                                      player.IsLocalPlayer).Find(item => item.BoardUnitView == boardUnitView);
 
             if (unitPositionOnBoard != null)

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -10,7 +9,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private const int CountOfStun = 1;
 
@@ -19,7 +18,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -38,7 +37,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
 
@@ -66,16 +65,16 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            foreach (BoardObject boardObject in _targets)
+            foreach (IBoardObject boardObject in _targets)
             {
                 switch (boardObject)
                 {
                     case Player player:
-                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
                         player.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
-                    case BoardUnitModel unit:
-                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                    case CardModel unit:
+                        BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
                         unit.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     default:

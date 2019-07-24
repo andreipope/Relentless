@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using UnityEngine.Experimental.PlayerLoop;
 
 namespace Loom.ZombieBattleground
 {
@@ -39,8 +36,8 @@ namespace Loom.ZombieBattleground
         };
 
         public List<Enumerators.Faction> SelectedFactionList;
-                                    
-        private List<Enumerators.Faction> _cacheSelectedFactionList;
+
+        private List<Enumerators.Faction> _tempSelectedFactionList;
 
         #region IUIPopup
 
@@ -55,7 +52,7 @@ namespace Loom.ZombieBattleground
             {
                 SelectedFactionList.Add(faction);
             }
-            _cacheSelectedFactionList = SelectedFactionList.ToList();
+            _tempSelectedFactionList = new List<Enumerators.Faction>();
         }
 
         public void Dispose()
@@ -86,35 +83,36 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ElementFilterPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
-            
+
             _imageGlow = Self.transform.Find("Image_glow").GetComponent<Image>();
             _imageGlow.gameObject.SetActive(false);
-            
-            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();                        
+
+            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
-            
-            _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();                        
+
+            _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
 
             _buttonElementsDictionary.Clear();
+
+            _tempSelectedFactionList = SelectedFactionList.ToList();
+
             foreach(Enumerators.Faction faction in AvailableFactionList)
             {
                 Button buttonElementIcon = Self.transform.Find("Group_ElementIcons/Button_element_"+faction.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
-                (()=> 
+                (()=>
                     {
                         PlayClickSound();
-                        ButtonElementIconHandler(faction); 
+                        ButtonElementIconHandler(faction);
                     }
                 );
 
                 _buttonElementsDictionary.Add(faction, buttonElementIcon);
                 UpdateFactionButtonDisplay(faction);
             }
-
-            LoadCache();   
         }
-        
+
         public void Show(object data)
         {
             Show();
@@ -126,6 +124,15 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
+        public void ResetSelectedFactionList()
+        {
+            SelectedFactionList.Clear();
+            foreach(Enumerators.Faction faction in AvailableFactionList)
+            {
+                SelectedFactionList.Add(faction);
+            }
+        }
+
         #region Buttons Handlers
 
         private void ButtonCloseHandler()
@@ -133,65 +140,60 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             Hide();
         }
-        
+
         private void ButtonSaveHandler()
         {
             PlayClickSound();
             Hide();
-            SaveCache();
+            SaveSelectedFactions();
             ActionPopupHiding?.Invoke();
         }
-        
+
         private void ButtonElementIconHandler(Enumerators.Faction faction)
         {
             SetSelectedFaction
             (
                 faction,
-                !SelectedFactionList.Contains(faction)
-            );          
+                !_tempSelectedFactionList.Contains(faction)
+            );
         }
 
         #endregion
-        
+
         private void SetSelectedFaction(Enumerators.Faction faction, bool status)
         {
             if(status)
             {
-                if(!SelectedFactionList.Contains(faction))
+                if(!_tempSelectedFactionList.Contains(faction))
                 {
-                    SelectedFactionList.Add(faction);
+                    _tempSelectedFactionList.Add(faction);
                 }
-            }       
+            }
             else
             {
-                if(SelectedFactionList.Contains(faction))
+                if(_tempSelectedFactionList.Contains(faction))
                 {
-                    SelectedFactionList.Remove(faction);
+                    _tempSelectedFactionList.Remove(faction);
                 }
             }
             UpdateFactionButtonDisplay(faction);
         }
-        
+
         private void UpdateFactionButtonDisplay(Enumerators.Faction faction)
         {
             _buttonElementsDictionary[faction].GetComponent<Image>().color =
-                SelectedFactionList.Contains(faction) ? Color.white : Color.gray;
-        }
-        
-        private void SaveCache()
-        {
-            _cacheSelectedFactionList = SelectedFactionList.ToList();
-        }
-        
-        private void LoadCache()
-        {
-            SelectedFactionList = _cacheSelectedFactionList.ToList();
+                _tempSelectedFactionList.Contains(faction) ? Color.white : Color.gray;
         }
 
-        public void PlayClickSound()
+        private void SaveSelectedFactions()
+        {
+            SelectedFactionList = _tempSelectedFactionList.ToList();
+        }
+
+        private void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-        }        
-           
+        }
+
     }
 }

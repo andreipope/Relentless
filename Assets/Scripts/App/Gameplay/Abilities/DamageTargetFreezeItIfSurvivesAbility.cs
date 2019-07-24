@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                DamageTarget(AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit);
+                DamageTarget(AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit);
             }
         }
 
@@ -37,14 +37,14 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitModel> units;
+                List<CardModel> units;
                 if (PredefinedTargets != null)
                 {
-                    units = PredefinedTargets.Select(x => (x.BoardObject as BoardUnitModel)).ToList();
+                    units = PredefinedTargets.Select(x => (x.BoardObject as CardModel)).ToList();
                 }
                 else
                 {
-                    units = GetRandomEnemyUnits(1);
+                    units = GetRandomUnits(GetAliveUnits(GetOpponentOverlord().CardsOnBoard).ToList(), 1);
                 }
                 if (units.Count > 0)
                 {
@@ -53,12 +53,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void DamageTarget(BoardObject boardObject)
+        private void DamageTarget(IBoardObject boardObject)
         {
-            object caller = GetCaller();
-
-            BoardObject target = null;
-
+            IBoardObject caller = AbilityUnitOwner;
+            IBoardObject target;
             Enumerators.ActionType actionType;
 
             bool isFreezed = false;
@@ -76,7 +74,7 @@ namespace Loom.ZombieBattleground
                         isFreezed = true;
                     }
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.AttackUnitByAbility(caller, AbilityData, unit);
                     target = unit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
@@ -116,10 +114,10 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }

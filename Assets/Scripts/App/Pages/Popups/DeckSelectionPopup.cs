@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
-using DG.Tweening;
 using log4net;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,31 +22,27 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
-        private ISoundManager _soundManager;
-
         private IDataManager _dataManager;
 
         private ITutorialManager _tutorialManager;
 
         private TextMeshProUGUI _textDeckName;
 
-        private GameObject _glowBorderVFX;
-
         private Button _buttonLeft, _buttonRight;
 
         private GameObject _deckIconPrefab;
 
-        private List<GameObject> _createdDeckIconList;
+        private List<DeckIcon> _createdDeckIconList;
 
         private Transform _deckIconGroup;
 
-        private const float _deckIconScaleNormal = 0.7178f;
+        private const float DeckIconScaleNormal = 0.7178f;
 
-        private const float _deckIconScaleSelected = 1f;
+        private const float DeckIconScaleSelected = 1f;
 
         private List<Deck> _deckList;
-        
-        private int _selectDeckIndex;
+
+        private DeckId _selectedDeckId;
 
         private List<Vector3> _deckIconPositionList;
 
@@ -58,7 +52,6 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
@@ -67,6 +60,7 @@ namespace Loom.ZombieBattleground
                 if (Self != null)
                 {
                     ReloadDeckDataAndDisplay();
+                    SelectDeckEvent?.Invoke(GetSelectedDeck());
                 }
             };
 
@@ -99,15 +93,14 @@ namespace Loom.ZombieBattleground
                 return;
 
             Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DeckSelectionPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DeckSelectionPopup"),
+                _uiManager.Canvas2.transform,
+                false);
 
             _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");
 
             _textDeckName = Self.transform.Find("Text_DeckName").GetComponent<TextMeshProUGUI>();
             _deckIconGroup = Self.transform.Find("Panel_DeckContent/Group");
-            
-            _glowBorderVFX = Self.transform.Find("Image_DeckIcon_Glow").gameObject;
 
             _buttonRight = Self.transform.Find("Button_Right").GetComponent<Button>();
             _buttonLeft = Self.transform.Find("Button_Left").GetComponent<Button>();
@@ -136,81 +129,66 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
-        public void ReloadDeckDataAndDisplay()
+
+        private void ReloadDeckDataAndDisplay()
         {
             LoadDefaultDeckData();
             LoadDeckObjects();
-            UpdateSelectedDeckDisplay
-            (
-                GetSelectedDeck()
-            );
+            UpdateSelectedDeckDisplay();
         }
 
         #region Deck Data
 
         private void LoadDefaultDeckData()
         {
-            int defaultSelectedDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
 
-            if (defaultSelectedDeckId > _dataManager.CachedDecksData.Decks.Count)
-            {
-                defaultSelectedDeckId = 1;
-            }
-            if (_dataManager.CachedDecksData.Decks.Count > 0)
-            {
-                defaultSelectedDeckId = Mathf.Clamp(defaultSelectedDeckId, 1, defaultSelectedDeckId);
-            }
-            
-            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
-            
             if(selectedDeck == null && _dataManager.CachedDecksData.Decks.Count > 0)
             {
                 selectedDeck = _dataManager.CachedDecksData.Decks[0];
             }
 
             _deckList = new List<Deck>();
-            _deckList.AddRange(_dataManager.CachedDecksData.Decks);
+            HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+            _deckList.AddRange(hordeSelection.GetDeckList());
 
             if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 && _deckList.Count > 0)
             {
-                _deckList.Remove(_deckList[0]);
                 selectedDeck = _deckList[_deckList.Count - 1];
             }
 
-            UpdateSelectedDeckData(selectedDeck);
-        }       
+            SaveLastSelectedDeckId(selectedDeck);
+        }
 
-        private void UpdateSelectedDeckData(Deck deck)
+        private void SaveLastSelectedDeckId(Deck deck)
         {
-            if (deck == null || _dataManager.CachedDecksData.Decks == null)
+            _selectedDeckId = deck.Id;
+            SaveLastSelectedDeckId();
+        }
+
+        private void SaveLastSelectedDeckId()
+        {
+            if (_dataManager.CachedDecksData.Decks == null)
             {
-                Log.Warn($"deck: {deck} or CachedDecksData.Decks: {_dataManager.CachedDecksData.Decks} is null! Data was loaded incorrectly!");
+                Log.Warn($"CachedDecksData.Decks: {_dataManager.CachedDecksData.Decks} is null! Data was loaded incorrectly!");
                 return;
             }
 
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
-            if ((_tutorialManager.IsTutorial || _tutorialManager.BattleShouldBeWonBlocker) && _deckList.Count > 0)
-            {
-                _selectDeckIndex = _deckList.IndexOf(deck);
-            }
-            else
-            {
-                _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
-            }
         }
 
-        private void UpdateSelectedDeckData(int deckId)
+        private Deck GetSelectedDeck()
         {
-            UpdateSelectedDeckData
-            (
-                _deckList.Find(x => x.Id == deckId)
-            );
+            if (_deckList != null && _deckList.Count > 0)
+            {
+                return _deckList.Find(x => x.Id.Equals(_selectedDeckId));
+            }
+
+            return _dataManager.CachedDecksData.Decks.Find(x => x.Id.Equals(_selectedDeckId));
         }
 
-        public Deck GetSelectedDeck()
+        public Deck GetLastSelectedDeckFromCache()
         {
             if (_deckList != null && _deckList.Count > 0)
             {
@@ -218,6 +196,11 @@ namespace Loom.ZombieBattleground
             }
 
             return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+        }
+
+        private int GetSelectedDeckIndex()
+        {
+            return _deckList.FindIndex(x => x.Id.Equals(_selectedDeckId));
         }
 
         public Deck GetDefaultDeck()
@@ -230,35 +213,26 @@ namespace Loom.ZombieBattleground
             return _deckList;
         }
 
-        private OverlordModel GetOverlordDataFromDeck(Deck deck)
+        private void SetSelectedDeckIdByIndex(int newIndex)
         {
-            int overlordId = deck.OverlordId;
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[overlordId];
-            return overlord;
-        }
-        
-        private void SetSelectedDeckIndex(int newIndex)
-        {
-            Deck selectedDeck = _deckList[newIndex];
+            SaveLastSelectedDeckId(_deckList[newIndex]);
+            UpdateSelectedDeckDisplay();
 
-            UpdateSelectedDeckData(selectedDeck);
-            UpdateSelectedDeckDisplay(selectedDeck);
-
-            SelectDeckEvent?.Invoke(selectedDeck);
+            SelectDeckEvent?.Invoke(GetSelectedDeck());
         }
 
         private void SwitchSelectedDeckIndex(int direction)
-        {  
+        {
             if (direction == 0)
                 return;
-                
+
             if (_deckList.Count <= 0)
             {
                 Log.Info("No deck in list");
                 return;
             }
-            
-            int nextIndex = _selectDeckIndex + direction;
+
+            int nextIndex = GetSelectedDeckIndex() + direction;
             if(nextIndex >= _deckList.Count)
             {
                 nextIndex = 0;
@@ -267,7 +241,7 @@ namespace Loom.ZombieBattleground
                 nextIndex = _deckList.Count - 1;
             }
 
-            SetSelectedDeckIndex(nextIndex);
+            SetSelectedDeckIdByIndex(nextIndex);
         }
 
         #endregion
@@ -277,30 +251,27 @@ namespace Loom.ZombieBattleground
         private void LoadDeckObjects()
         {
             DisposeCreatedObject();
-            _createdDeckIconList = new List<GameObject>();
-            
+            _createdDeckIconList = new List<DeckIcon>();
+
             for (int i = 0; i < _deckList.Count; i++)
             {
-                GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
-                deckIcon.transform.SetParent(_deckIconGroup);
-                deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
+                GameObject deckIconObj = Object.Instantiate(_deckIconPrefab, _deckIconGroup, false);
+                deckIconObj.transform.localScale = Vector3.one * DeckIconScaleNormal;
 
-                Deck deck = _deckList[i];
-                deckIcon.GetComponent<Image>().sprite = GetDeckIconSprite
-                ( 
-                    GetOverlordDataFromDeck(deck).Faction
-                );
-                
+                DeckIcon deckIcon = new DeckIcon(_deckList[i].Id);
+                deckIcon.Init(deckIconObj);
+                deckIcon.SetDeckIcon();
+
                 _createdDeckIconList.Add(deckIcon);
 
+                MultiPointerClickHandler multiPointerClickHandler = deckIconObj.AddComponent<MultiPointerClickHandler>();
                 int index = i;
-                MultiPointerClickHandler multiPointerClickHandler = deckIcon.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.SingleClickReceived += ()=>
                 {
                     if (_tutorialManager.IsTutorial)
                         return;
 
-                    SetSelectedDeckIndex(index);
+                    SetSelectedDeckIdByIndex(index);
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
@@ -309,55 +280,62 @@ namespace Loom.ZombieBattleground
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                    hordeSelection.AssignCurrentDeck(index);
+
+                    Deck selectedDeck = _deckList.Find(deck => deck.Id == deckIcon.DeckId);
+                    hordeSelection.SelectedDeckId = (int)selectedDeck.Id.Id;
+                    hordeSelection.CurrentEditDeck = selectedDeck;
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                 };
             }
 
             AddNewDeckButton();
         }
-        
+
         private void AddNewDeckButton()
         {
-            GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
-            deckIcon.transform.SetParent(_deckIconGroup);
-            deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
-            
-            deckIcon.GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>
-            (
-                "Images/UI/MainMenu/DeckIcons/icon_newdeck"
-            );
-            
+            GameObject deckIconObj = Object.Instantiate(_deckIconPrefab, _deckIconGroup, false);
+            deckIconObj.transform.localScale = Vector3.one * DeckIconScaleNormal;
+
+            DeckIcon deckIcon = new DeckIcon(null);
+            deckIcon.Init(deckIconObj);
+            deckIcon.SetDeckIcon();
+
             _createdDeckIconList.Add(deckIcon);
-            
-            deckIcon.AddComponent<MultiPointerClickHandler>().SingleClickReceived += ()=>
+
+            deckIconObj.AddComponent<MultiPointerClickHandler>().SingleClickReceived += ()=>
             {
                 if (_tutorialManager.IsTutorial)
                     return;
 
+                if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
+                {
+                    _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                    return;
+                }
+
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
-                _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab
-                (
-                    HordeSelectionWithNavigationPage.Tab.SelectOverlord
-                );
+                HordeSelectionWithNavigationPage deckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+                deckPage.HordeSelectDeckTab.OpenOverlordSelectionPopup();
             };
         }
 
-        private void UpdateSelectedDeckDisplay(Deck selectedDeck)
+        private void UpdateSelectedDeckDisplay()
         {
+            Deck selectedDeck = GetSelectedDeck();
+            int deckIndex = GetSelectedDeckIndex();
             _textDeckName.text = selectedDeck.Name;
-            OverlordModel selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
-            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Faction);
+            OverlordUserInstance selectedOverlord = DataUtilities.GetOverlordDataFromDeck(selectedDeck);
+            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Prototype.Faction);
 
             int middleFrameIndex = _deckIconPositionList.Count / 2;
-            int shiftIndex = _selectDeckIndex - middleFrameIndex;
-            
+            int shiftIndex = deckIndex - middleFrameIndex;
+
             int frameIndex;
             GameObject deckIcon;
-            float scale;            
+            float scale;
             for (int i = 0; i < _createdDeckIconList.Count; ++i)
             {
-                deckIcon = _createdDeckIconList[i];
+                deckIcon = _createdDeckIconList[i].GetGameObject();
                 frameIndex = i - shiftIndex;
                 if(frameIndex < 0 || frameIndex >= _deckIconPositionList.Count)
                 {
@@ -367,40 +345,19 @@ namespace Loom.ZombieBattleground
                 {
                     deckIcon.SetActive(true);
                     deckIcon.transform.position = _deckIconPositionList[frameIndex];
-                    scale = (i == _selectDeckIndex) ? _deckIconScaleSelected : _deckIconScaleNormal;
+                    scale = i == deckIndex ? DeckIconScaleSelected : DeckIconScaleNormal;
                     deckIcon.transform.localScale = Vector3.one * scale;
                 }
-            }            
-        }
-
-        public Sprite GetDeckIconSprite(Enumerators.Faction faction)
-        {
-            switch(faction)
-            {
-                case Enumerators.Faction.AIR:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_air");
-                case Enumerators.Faction.EARTH:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_earth");
-                case Enumerators.Faction.FIRE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_fire");
-                case Enumerators.Faction.WATER:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_water");
-                case Enumerators.Faction.TOXIC:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_toxic");
-                case Enumerators.Faction.LIFE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_life");                 
-                default:
-                    return null;
             }
         }
-        
+
         private void DisposeCreatedObject()
         {
             if(_createdDeckIconList != null)
             {
-                foreach( GameObject icon in _createdDeckIconList)
+                for(int i =_createdDeckIconList.Count-1; i>=0; i--)
                 {
-                    Object.Destroy(icon);
+                    Object.Destroy(_createdDeckIconList[i].GetGameObject());
                 }
                 _createdDeckIconList.Clear();
                 _createdDeckIconList = null;
@@ -418,7 +375,7 @@ namespace Loom.ZombieBattleground
 
             SwitchSelectedDeckIndex(1);
         }
-        
+
         private void ButtonLeftHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonLeft.name))
@@ -428,5 +385,41 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+    }
+
+
+    public class DeckIcon
+    {
+        public DeckId? DeckId;
+        public Image OverlordImage;
+
+        private GameObject Self;
+
+        public DeckIcon(DeckId? deckId)
+        {
+            DeckId = deckId;
+        }
+
+        public void Init(GameObject obj)
+        {
+            Self = obj;
+            OverlordImage = Self.GetComponent<Image>();
+        }
+
+        public void SetDeckIcon()
+        {
+            OverlordImage.gameObject.SetActive(DeckId != null);
+
+            if (DeckId != null)
+            {
+                Enumerators.Faction faction = DataUtilities.GetOverlordDataFromDeck((DeckId) DeckId).Prototype.Faction;
+                OverlordImage.sprite = DataUtilities.GetOverlordDeckIcon(faction);
+            }
+        }
+
+        public GameObject GetGameObject()
+        {
+            return Self;
+        }
     }
 }

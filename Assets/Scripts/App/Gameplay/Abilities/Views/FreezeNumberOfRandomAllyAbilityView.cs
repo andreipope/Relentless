@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using System;
 using System.Collections.Generic;
@@ -10,19 +9,19 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
-        private List<BoardObject> _allies;
+        private List<IBoardObject> _allies;
 
         public FreezeNumberOfRandomAllyAbilityView(FreezeNumberOfRandomAllyAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
-            _allies = new List<BoardObject>();
+            _allies = new List<IBoardObject>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
             if (info != null)
             {
-                _allies = (List<BoardObject>)info;
+                _allies = (List<IBoardObject>)info;
             }
             ActionCompleted();
         }
@@ -46,8 +45,8 @@ namespace Loom.ZombieBattleground
                             targetPosition = Utilites.CastVfxPosition(player.AvatarObject.transform.position);
                             CreateVfx(targetPosition, true, 5f, true);
                             break;
-                        case BoardUnitModel unit:
-                            targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position);
+                        case CardModel unit:
+                            targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position);
                             CreateVfx(targetPosition, true, 5f);
                             break;
                         default:

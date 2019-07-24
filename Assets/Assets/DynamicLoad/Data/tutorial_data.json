@@ -8,7 +8,7 @@
           "Id": 0,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "EnemyOverlord",
-          "Description": "Enemy Overlord Defense",
+          "Description": "Enemy Champion Defense",
           "Position": {
             "X": 1,
             "Y": 4.1,
@@ -20,7 +20,7 @@
           "Id": 1,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "PlayerOverlord",
-          "Description": "Your Overlord Defense",
+          "Description": "Your Champion Defense",
           "Position": {
             "Z": 0
           },
@@ -30,7 +30,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Def: How much damage this zombie can take.",
+          "Description": "Def: How much damage this creature can take.",
           "Position": {
             "X": 1.38,
             "Y": 0.87,
@@ -41,7 +41,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "CenterRight",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Atk: How much damage this zombie deals.",
+          "Description": "Atk: How much damage this creature deals.",
           "Position": {
             "X": -1.3,
             "Y": 0.87,
@@ -67,7 +67,7 @@
           "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow my deck while you learn the ropes.",
+            "Description": "Welcome!\n\nSince you're new around here, I'll let you borrow my deck while you learn the ropes.",
             "AboveUI": false,
             "DescriptionTooltipCloseText": "GOT IT"
           }
@@ -77,7 +77,7 @@
           "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Destroy the enemy overlord to win!",
+            "Description": "Destroy the enemy Champion to win!",
             "AboveUI": false,
             "DescriptionTooltipCloseText": "LET'S BEGIN"
           }
@@ -164,7 +164,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My minion cannot attack yet. So I'm done for now.",
+              "Description": "My creature cannot attack yet. So I'm done for now.",
               "Duration": 4
             }
           ],
@@ -205,7 +205,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Let's attack that zombie."
+              "Description": "Let's attack that creature."
             }
           ],
           "ConnectedTurnIndex": 4,
@@ -601,7 +601,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Turn that zombie into ash!"
+                "Description": "Turn that creature into ash!"
               }
             },
             {
@@ -611,7 +611,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Summon more minions!"
+                "Description": "Summon more creatures!"
               }
             }
           ],
@@ -657,7 +657,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "NO, get the Overlord!"
+                "Description": "NO, get the Champion!"
               }
             },
             {
@@ -666,7 +666,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "My minion is itching for battle!"
+                "Description": "My creature is itching for battle!"
               }
             }
           ],
@@ -773,23 +773,23 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
           "TutorialTooltipOwner": "UI",
-          "Description": "Add cards to your deck by dragging them to the top.",
+          "Description": "Add cards to your deck by dragging them to the right.",
           "Position": {
-            "X": 3.6,
-            "Y": 0,
+            "X": -1.34,
+            "Y": -2.76,
             "Z": 0
           },
           "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 1,
-          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipAlign": "TopMiddle",
           "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
-            "X": 4.05,
-            "Y": 4.7,
+            "X": 9.19,
+            "Y": 2.93,
             "Z": 0
           },
           "TutorialTooltipLayer": "AbovePages"
@@ -801,8 +801,8 @@
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
-            "X": 3.6,
-            "Y": 0,
+            "X": -1.4,
+            "Y": -3,
             "Z": 0
           },
           "TutorialTooltipLayer": "AbovePages"
@@ -823,10 +823,10 @@
           "Id": 4,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "UI",
-          "Description": "Later on, you can select this text to rename your Deck.",
+          "Description": "Later on, you can click this button to rename your Deck.",
           "Position": {
-            "X": -4,
-            "Y": 4.35,
+            "X": 7.1,
+            "Y": 5,
             "Z": 0
           },
           "TutorialTooltipLayer": "AbovePages"
@@ -838,7 +838,7 @@
           "TutorialTooltipOwner": "UI",
           "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
-            "X": 0,
+            "X": 5.6,
             "Y": 0,
             "Z": 0
           },
@@ -933,7 +933,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialUIElementOwnerName": "Button_OpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 2.5
@@ -951,11 +951,97 @@
             "Button_MyPacks",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
             "Button_Login",
-            "PackContent"
+            "PackContent",
+            "Button_ClosePackOpener"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_ClosePackOpener"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 3,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_OpenNextPack",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_ClosePackOpener"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardOpenerClosedOpenCardsScreen",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_OpenNextPack"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 3,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_ClosePackOpener",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
           ]
         },
         {
@@ -967,7 +1053,7 @@
             "Button_Shop",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_MyPacks",
             "Button_Setting",
@@ -1008,6 +1094,8 @@
             "Button_Edit",
             "Button_Delete",
             "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck",
             "Button_LeftArrow",
             "Button_RightArrow",
             "Image_ButtonBackTray"
@@ -1027,27 +1115,11 @@
           ]
         },
         {
-          "ActionToEndThisStep": "HordeTabChanged",
+          "ActionToEndThisStep": "ScreenChanged",
           "TutorialStepType": "MenuStep",
+          "OpenScreen": "SelectOverlordPopup",
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_RightArrow",
-            "Button_LeftArrow",
-            "Button_Auto",
-            "Image_ButtonBackTray",
-            "Button_DeckIcon_0",
-            "Button_DeckIcon_1",
-            "Button_DeckIcon_2",
-            "Button_DeckIcon_3",
-            "Button_DeckIcon_4",
-            "Button_DeckIcon_5"
+            "Button_Cancel"
           ],
           "HandPointers": [
             {
@@ -1059,38 +1131,49 @@
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Continue",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePopups"
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "OverlordAbilityPopup",
+          "BlockedButtons": [
+            "Button_Cancel"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Continue",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePopups"
             }
           ]
         },
         {
           "ActionToEndThisStep": "HordeTabChanged",
           "TutorialStepType": "MenuStep",
+          "OpenScreen": "RenamePopup",
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_RightArrow",
-            "Button_LeftArrow",
-            "Button_Auto",
-            "Image_ButtonBackTray"
+            "Button_Cancel"
           ],
           "HandPointers": [
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.2,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Continue",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePopups"
             }
           ]
         },
@@ -1101,39 +1184,36 @@
             0
           ],
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
             "Button_Battle",
             "Button_Shop",
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
             "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Button_Filter",
-            "InputText_Search",
+            "Button_RightArrow",
+            "Button_LeftArrow",
+            "Button_AutoComplete",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity",
+            "Image_ButtonBackTray",
+            "Button_Rename",
+            "Button_ViewDeck",
+            "Button_AutoComplete",
             "Button_SaveDeck",
-            "Button_UpperLeftArrow",
-            "Button_UpperRightArrow",
-            "Button_LowerLeftArrow",
-            "Button_LowerRightArrow",
-            "Text_DeckName",
-            "Button_OverlordAbilities",
-            "Button_AddToDeck",
-            "Button_Remove"
+            "InputText_Search"
           ],
           "CanDragCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.2,
+                "X": -3,
                 "Y": 1,
                 "Z": 0
               },
               "EndPosition": {
-                "X": 2.2,
-                "Y": 6.2,
+                "X": 10,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
@@ -1153,34 +1233,31 @@
             0
           ],
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
+          	"Button_Battle",
             "Button_Shop",
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
             "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Button_Filter",
-            "InputText_Search",
+            "Button_RightArrow",
+            "Button_LeftArrow",
+            "Button_AutoComplete",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity",
+            "Image_ButtonBackTray",
+            "Button_Rename",
+            "Button_ViewDeck",
+            "Button_AutoComplete",
             "Button_SaveDeck",
-            "Button_UpperLeftArrow",
-            "Button_UpperRightArrow",
-            "Button_LowerLeftArrow",
-            "Button_LowerRightArrow",
-            "Text_DeckName",
-            "Button_OverlordAbilities",
-            "Button_Remove",
-            "Button_AddToDeck"
+            "InputText_Search"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.6,
-                "Y": 6,
+                "X": 10,
+                "Y": 5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -1200,33 +1277,30 @@
             1
           ],
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
             "Button_Battle",
             "Button_Shop",
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
             "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Button_Filter",
-            "InputText_Search",
+            "Button_RightArrow",
+            "Button_LeftArrow",
+            "Button_AutoComplete",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity",
+            "Image_ButtonBackTray",
+            "Button_Rename",
+            "Button_ViewDeck",
+            "Button_AutoComplete",
             "Button_SaveDeck",
-            "Button_UpperLeftArrow",
-            "Button_UpperRightArrow",
-            "Button_LowerLeftArrow",
-            "Button_LowerRightArrow",
-            "Text_DeckName",
-            "Button_OverlordAbilities",
-            "Button_Remove",
-            "Button_AddToDeck"
+            "InputText_Search"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.25,
+                "X": -3,
                 "Y": 1,
                 "Z": 0
               },
@@ -1248,19 +1322,21 @@
             2
           ],
           "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
             "Button_Battle",
             "Button_Shop",
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
             "Button_Back",
-            "Button_Save",
-            "Button_Auto",
+            "Button_AutoComplete",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity",
+            "Image_ButtonBackTray",
+            "Button_Rename",
+            "Button_ViewDeck",
             "Button_SaveDeck",
-            "Text_DeckName",
-            "Button_OverlordAbilities"
+            "InputText_Search"
           ],
           "ConnectedActivities": [
             1
@@ -1284,7 +1360,13 @@
             "Button_Auto",
             "Text_DeckName",
             "Button_OverlordAbilities",
-            "Button_Filter"
+            "Button_Filter",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -1317,6 +1399,8 @@
             "Button_Login",
             "Button_Delete",
             "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck",
             "Button_Edit",
             "Button_BuildNewDeck",
             "Button_Filter",
@@ -1507,7 +1591,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 51,
-          "Description": "Feral zombies can attack the turn they are played.",
+          "Description": "Feral creatures can attack the turn they are played.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -1572,7 +1656,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 52,
-          "Description": "Heavy zombies need to be attacked first.",
+          "Description": "Heavy creatures need to be attacked first.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -1599,7 +1683,7 @@
           "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's learn how to use them.",
+            "Description": "Creatures aren't all just claws and flesh.\n\nThey have abilities too. Let's learn how to use them.",
             "AboveUI": false,
             "DescriptionTooltipCloseText": "LET'S BEGIN"
           }
@@ -1646,7 +1730,7 @@
             {
               "TutorialTooltipAlign": "CenterRight",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Pesky Feral zombies!"
+              "Description": "Pesky Feral creatures!"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2209,10 +2293,10 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialUIElementOwnerName": "Button_OpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 9.5
+              "AppearDelay": 2.5
             }
           ]
         },
@@ -2227,11 +2311,97 @@
             "Button_MyPacks",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
             "Button_Login",
-            "PackContent"
+            "PackContent",
+            "Button_ClosePackOpener"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_ClosePackOpener"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 3,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_OpenNextPack",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_ClosePackOpener"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardOpenerClosedOpenCardsScreen",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "Button_OpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login",
+            "PackContent",
+            "Button_OpenNextPack"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 3,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_ClosePackOpener",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
           ]
         },
         {
@@ -2243,7 +2413,7 @@
             "Button_Shop",
             "Button_MyCards",
             "ButtonPackType",
-            "ButtonOpenPacks",
+            "Button_OpenPacks",
             "Button_BuyPacks",
             "Button_MyPacks",
             "Button_Setting",
@@ -2281,11 +2451,13 @@
             "Button_Filter",
             "InputText_SearchDeckName",
             "Button_Delete",
-            "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
             "Image_ButtonBackTray",
-            "Button_BuildNewDeck"
+            "Button_BuildNewDeck",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "HandPointers": [
             {
@@ -2318,7 +2490,10 @@
             "Button_Auto",
             "Button_SaveDeck",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "ConnectedActivities": [
             1
@@ -2340,9 +2515,16 @@
             "Button_Back",
             "Button_Save",
             "Button_Auto",
+            "Button_Filter",
             "Text_DeckName",
             "Button_OverlordAbilities",
-            "Button_Filter"
+            "Button_Filter",
+            "Button_Element",
+            "Button_GooCost",
+            "Button_Rarity",
+            "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -2376,6 +2558,8 @@
             "Button_Login",
             "Button_Delete",
             "Button_Rename",
+            "Button_AutoComplete",
+            "Button_ViewDeck",
             "Button_Edit",
             "Button_BuildNewDeck",
             "Button_Filter",

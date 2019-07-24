@@ -5,24 +5,23 @@ public class DebugCommandsManager : IService
 {
     public void Init()
     {
-        #if UNITY_EDITOR || DEVELOPMENT
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
         ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/DebugConsole"));
 
         GeneralCommandsHandler.Initialize();
         QuickPlayCommandsHandler.Initialize();
         BattleCommandsHandler.Initialize();
-        DecksCommandHandler.Initialize();
+        CollectionCommandHandler.Initialize();
         PvPCommandsHandler.Initialize();
         TutorialRewardCommandsHandler.Initialize();
-        #endif
+        NetworkCommandsHandler.Initialize();
+        IapCommandsHandler.Initialize();
+        RewardsCommandsHandler.Initialize();
+#endif
     }
 
-    public void Update()
-    {
-    }
+    public void Update() { }
 
-    void IService.Dispose()
-    {
-    }
+    void IService.Dispose() { }
 }

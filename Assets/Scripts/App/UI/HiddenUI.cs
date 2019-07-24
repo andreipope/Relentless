@@ -1,22 +1,33 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CodeStage.AdvancedFPSCounter;
-using KellermanSoftware.CompareNetObjects;
+using log4net;
 using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Loom.Google.Protobuf;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
     public class HiddenUI : MonoBehaviour
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(HiddenUI));
+
         public GameObject UIRoot;
 
         public BaseRaycaster[] AlwaysActiveRaycasters = new BaseRaycaster[0];
         public GameObject[] ObjectsToDisableInProduction = { };
+
+        public Dropdown SelectBackendDropdown;
+        public Toggle ForceUseAuthToggle;
+
+        public Button RequestFullCardCollectionSyncButton;
+        public Button DebugCheatSetFullCardCollectionButton;
 
         private AFPSCounter _afpsCounter;
         private bool _isVisible;
@@ -28,6 +39,22 @@ namespace Loom.ZombieBattleground
             _afpsCounter = FindObjectOfType<AFPSCounter>();
             if (_afpsCounter == null)
                 throw new Exception("AFPSCounter instance not found in scene");
+
+            SelectBackendDropdown.options.Clear();
+            SelectBackendDropdown.options.Add(new Dropdown.OptionData("No Override"));
+            SelectBackendDropdown.options.AddRange(
+                ((BackendPurpose[]) Enum.GetValues(typeof(BackendPurpose)))
+                .Select(p => new Dropdown.OptionData(p.ToString()))
+            );
+
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, -1);
+            SelectBackendDropdown.value = backendOverrideValue + 1;
+            SelectBackendDropdown.RefreshShownValue();
+            SelectBackendDropdown.onValueChanged.AddListener(OnSelectBackendDropdownValueChanged);
+
+            bool forceUseAuth = PlayerPrefs.GetInt(Constants.ForceUseAuthPlayerPrefsKey, 0) != 0;
+            ForceUseAuthToggle.isOn = forceUseAuth;
+            ForceUseAuthToggle.onValueChanged.AddListener(OnForceUseAuthToggleValueChanged);
 
             SetVisibility(ShouldBeVisible);
 #if USE_PRODUCTION_BACKEND
@@ -79,6 +106,38 @@ namespace Loom.ZombieBattleground
 
         #region UI Handlers
 
+        public async void RequestFullCardCollectionSync()
+        {
+            Text buttonText = RequestFullCardCollectionSyncButton.GetComponentInChildren<Text>();
+            string originalButtonText = buttonText.text;
+            try
+            {
+                RequestFullCardCollectionSyncButton.interactable = false;
+                buttonText.text = "Wait...";
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                BackendDataSyncService backendDataSyncService = GameClient.Get<BackendDataSyncService>();
+                BackendDataControlMediator backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+                await backendFacade.RequestUserFullCardCollectionSync(backendDataControlMediator.UserDataModel.UserId);
+                backendDataSyncService.SetCollectionDataDirtyFlag();
+                await Task.Delay(5000);
+                buttonText.text = "Done!";
+            }
+            catch (Exception e)
+            {
+                buttonText.text = "Error, try again";
+                Log.Warn(nameof(RequestFullCardCollectionSync) + ":" + e);
+            }
+            finally
+            {
+                await Task.Delay(5000);
+                if (RequestFullCardCollectionSyncButton != null)
+                {
+                    RequestFullCardCollectionSyncButton.interactable = true;
+                    buttonText.text = originalButtonText;
+                }
+            }
+        }
+
         public void SubmitBugReport()
         {
             UserReportingScript.Instance.CreateUserReport();
@@ -96,6 +155,33 @@ namespace Loom.ZombieBattleground
         public void SkipTutorial()
         {
             GeneralCommandsHandler.SkipTutorialFlow();
+        }
+
+        public async void DebugCheatSetFullCardCollection()
+        {
+            Text buttonText = DebugCheatSetFullCardCollectionButton.GetComponentInChildren<Text>();
+            string originalButtonText = buttonText.text;
+            try
+            {
+                DebugCheatSetFullCardCollectionButton.interactable = false;
+                buttonText.text = "Wait...";
+                await CollectionCommandHandler.DebugCheatSetFullCardCollection();
+                buttonText.text = "Done!";
+            }
+            catch (Exception e)
+            {
+                buttonText.text = "Error, try again";
+                Log.Warn(nameof(DebugCheatSetFullCardCollection) + ":" + e);
+            }
+            finally
+            {
+                await Task.Delay(5000);
+                if (DebugCheatSetFullCardCollectionButton != null)
+                {
+                    DebugCheatSetFullCardCollectionButton.interactable = true;
+                    buttonText.text = originalButtonText;
+                }
+            }
         }
 
         public void DumpState()
@@ -131,6 +217,25 @@ namespace Loom.ZombieBattleground
             {
                 Debug.LogError(e);
             }
+        }
+
+        private void OnSelectBackendDropdownValueChanged(int index)
+        {
+            if (index == 0)
+            {
+                index = -1;
+            }
+            else
+            {
+                index--;
+            }
+
+            PlayerPrefs.SetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, index);
+        }
+
+        private void OnForceUseAuthToggleValueChanged(bool forceUseAuth)
+        {
+            PlayerPrefs.SetInt(Constants.ForceUseAuthPlayerPrefsKey, forceUseAuth ? 1 : 0);
         }
 
         #endregion

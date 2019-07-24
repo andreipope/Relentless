@@ -11,7 +11,9 @@ namespace Loom.ZombieBattleground
 
         public event Action OnUpdateEvent;
 
-        private List<BoardObject> _targets;
+        private bool _targetsAreReady;
+
+        private List<IBoardObject> _targets;
 
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -32,6 +34,7 @@ namespace Loom.ZombieBattleground
 
         public override void Update()
         {
+            base.Update();
             OnUpdateEvent?.Invoke();
         }
 
@@ -56,7 +59,7 @@ namespace Loom.ZombieBattleground
             TakeDamage();
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
@@ -69,6 +72,36 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            AbilityProcessingAction?.TriggerActionExternally();
+
+            if (_targets.Count > 0)
+            {
+                List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+                foreach (IBoardObject unit in _targets)
+                {
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Damage,
+                        Target = unit
+                    });
+                }
+
+                Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingCard;
+
+                if (_targets.Count > 1)
+                {
+                    actionType = Enumerators.ActionType.CardAffectingMultipleCards;
+                }
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = targetEffects
+                });
+            }
+
             for (int i = _targets.Count-1; i >= 0; i--)
             {
                 OneActionCompleted(_targets[i]);
@@ -80,9 +113,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeDamage(bool exceptCaller = false)
+        private void PrepareTargets(bool exceptCaller = false)
         {
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
 
             foreach (Enumerators.Target target in AbilityTargets)
             {
@@ -114,29 +147,69 @@ namespace Loom.ZombieBattleground
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.EqualToUnitAttack)
             {
-                Damage = BoardUnitModel.InstanceCard.Damage;
+                Damage = CardModel.CurrentDamage;
             }
 
-            foreach(BoardObject boardObject in _targets)
+            _targetsAreReady = true;
+        }
+
+        private void TakeDamage(bool exceptCaller = false)
+        {
+            _targets = new List<IBoardObject>();
+
+            if (!_targetsAreReady)
             {
-                if (boardObject is BoardUnitModel boardUnit)
+                PrepareTargets(exceptCaller);
+            }
+
+            foreach(IBoardObject boardObject in _targets)
+            {
+                if (boardObject is CardModel boardUnit)
                 {
                     boardUnit.HandleDefenseBuffer(Damage);
                 }
             }
 
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+
             InvokeActionTriggered(_targets);
         }
 
-        public void OneActionCompleted(BoardObject boardObject)
+        private void PrepareTargetsBeforeDeath()
+        {
+            PrepareTargets();
+        }
+
+        protected override void PrepairingToDieHandler(IBoardObject from)
+        {
+            base.PrepairingToDieHandler(from);
+
+            PrepareTargetsBeforeDeath();
+        }
+
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            base.UnitHpChangedHandler(oldValue, newValue);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) 
+                return;
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                PrepareTargetsBeforeDeath();
+            }
+        }
+
+        public void OneActionCompleted(IBoardObject boardObject)
         {
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, Damage);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, Damage);
                     break;
-                case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, Damage);
+                case CardModel unit:
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, Damage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

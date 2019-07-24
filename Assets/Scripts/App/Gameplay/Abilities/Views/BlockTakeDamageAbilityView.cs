@@ -1,7 +1,5 @@
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -11,9 +9,9 @@ namespace Loom.ZombieBattleground
         private BattlegroundController _battlegroundController;
         private AbilitiesController _abilitiesController;
 
-        private BoardUnitModel _targetedUnit;
+        private CardModel _targetedUnit;
 
-        private string _cardName;
+        private GameObject _idleVfxObject;
 
         public BlockTakeDamageAbilityView(BlockTakeDamageAbility ability) : base(ability)
         {
@@ -23,9 +21,16 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targetedUnit = info as BoardUnitModel;
+            _targetedUnit = info as CardModel;
             _targetedUnit.IsPlayable = false;
             ActionCompleted();
+            Ability.OnDeactivate += () =>
+            {
+                if (_idleVfxObject != null)
+                {
+                    Object.Destroy(_idleVfxObject);
+                }
+            };
         }
 
         private void ActionCompleted()
@@ -42,11 +47,19 @@ namespace Loom.ZombieBattleground
 
                 offset = Vector3.zero;
 
-                Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(_targetedUnit).Transform;
+                Transform unitTransform = _battlegroundController.GetCardViewByModel<BoardUnitView>(_targetedUnit).Transform;
 
                 Vector3 targetPosition = unitTransform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+
+                Data.AbilityData.VisualEffectInfo idleVfxInfo = Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving);
+                _idleVfxObject = idleVfxInfo == null ? 
+                    null :
+                    LoadObjectsManager.GetObjectByPath<GameObject>
+                    (
+                        Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path
+                    );                
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
@@ -61,6 +74,13 @@ namespace Loom.ZombieBattleground
                 CreateVfx(targetPosition, true, delayBeforeDestroy);
                 VfxObject.transform.SetParent(unitTransform, false);
                 VfxObject.transform.localPosition = offset;
+                
+                if(_idleVfxObject != null)
+                {
+                    _idleVfxObject = Object.Instantiate(_idleVfxObject);
+                    _idleVfxObject.transform.SetParent(unitTransform, false);
+                    _idleVfxObject.transform.localPosition = offset;
+                }
             }
 
             PlaySound(soundName, soundDelay);

@@ -27,6 +27,45 @@ namespace Loom.ZombieBattleground.Editor
             GetBuildMetaInfo();
         }
 
+        // ReSharper disable once RedundantNameQualifier
+        public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
+        {
+#if UNITY_CLOUD_BUILD
+            Debug.Log("Cloud Build manifest:\r\n" + manifest.ToJson());
+#endif
+#if MAC_APPSTORE
+            PlayerSettings.applicationIdentifier = "games.loom.battlegroundmacos";
+            PlayerSettings.useMacAppStoreValidation = true;
+#endif
+            BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
+            buildMetaInfo.GitBranchName = manifest.GetValue<string>("scmBranch");
+            buildMetaInfo.GitCommitHash = manifest.GetValue<string>("scmCommitId");
+            buildMetaInfo.CloudBuildBuildNumber = Convert.ToInt32(manifest.GetValue<string>("buildNumber"));
+            buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
+
+            const int gitShortHashLength = 8;
+            buildMetaInfo.GitCommitHash = buildMetaInfo.GitCommitHash.Substring(0,
+                buildMetaInfo.GitCommitHash.Length > gitShortHashLength ?
+                    gitShortHashLength :
+                    buildMetaInfo.GitCommitHash.Length);
+
+            UnityEditor.EditorUtility.SetDirty(buildMetaInfo);
+        }
+
+        private static BuildMetaInfo GetBuildMetaInfo()
+        {
+            BuildMetaInfo instance = BuildMetaInfo.Instance;
+            if (instance != null)
+            {
+                return instance;
+            }
+
+            instance = ScriptableObject.CreateInstance<BuildMetaInfo>();
+            AssetDatabase.CreateAsset(instance, BuildMetaInfoPath);
+
+            return instance;
+        }
+
         private static void PreBuildInternal()
         {
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
@@ -67,49 +106,6 @@ namespace Loom.ZombieBattleground.Editor
 #endif
 
             UnityEditor.EditorUtility.SetDirty(buildMetaInfo);
-        }
-
-        // ReSharper disable once RedundantNameQualifier
-        public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
-        {
-#if UNITY_CLOUD_BUILD
-            Debug.Log("Cloud Build manifest:\r\n" + manifest.ToJson());
-#endif
-#if SECOND_PVP_BUILD
-            PlayerSettings.applicationIdentifier = "games.loom.battleground2";
-            PlayerSettings.productName = "Zombie Battleground Second PVP Build";
-#endif
-#if MAC_APPSTORE
-            PlayerSettings.applicationIdentifier = "games.loom.battlegroundmacos";
-            PlayerSettings.useMacAppStoreValidation = true;
-#endif
-            BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
-            buildMetaInfo.GitBranchName = manifest.GetValue<string>("scmBranch");
-            buildMetaInfo.GitCommitHash = manifest.GetValue<string>("scmCommitId");
-            buildMetaInfo.CloudBuildBuildNumber = Convert.ToInt32(manifest.GetValue<string>("buildNumber"));
-            buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
-
-            const int gitShortHashLength = 8;
-            buildMetaInfo.GitCommitHash = buildMetaInfo.GitCommitHash.Substring(0,
-                buildMetaInfo.GitCommitHash.Length > gitShortHashLength ?
-                    gitShortHashLength :
-                    buildMetaInfo.GitCommitHash.Length);
-
-            UnityEditor.EditorUtility.SetDirty(buildMetaInfo);
-        }
-
-        private static BuildMetaInfo GetBuildMetaInfo()
-        {
-            BuildMetaInfo instance = BuildMetaInfo.Instance;
-            if (instance != null)
-            {
-                return instance;
-            }
-
-            instance = ScriptableObject.CreateInstance<BuildMetaInfo>();
-            AssetDatabase.CreateAsset(instance, BuildMetaInfoPath);
-
-            return instance;
         }
 
         private static void ExecuteCommand(

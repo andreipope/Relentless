@@ -2,15 +2,14 @@ using System;
 using System.IO;
 using DG.Tweening;
 using log4net;
-using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using UnityEngine;
-using Logger = log4net.Repository.Hierarchy.Logger;
 
 namespace Loom.ZombieBattleground
 {
@@ -29,7 +28,9 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            Log.Info("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+            Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName} " +
+                $"{(BuildMetaInfo.Instance.CloudBuildTargetName != "" ? "(" + BuildMetaInfo.Instance.CloudBuildTargetName + ") " : "")}" +
+                $"on {Application.platform}");
 
             DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
@@ -37,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
-            Func<Contract, IContractCallProxy> contractCallProxyFactory =
+            Func<RawChainEventContract, IContractCallProxy> contractCallProxyFactory =
                 contract => new ThreadedContractCallProxyWrapper(new CustomContractCallProxy(contract, true, true));
 
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
@@ -57,6 +58,11 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(GetConfigData()));
+            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
+            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<IFacebookManager>(new FacebookManager());
+            AddService<IAnalyticsManager>(new AnalyticsManager());
+            AddService<IPvPManager>(new PvPManager());
             AddService<BackendFacade>(
                 new BackendFacade(
                     backendEndpoint,
@@ -64,19 +70,15 @@ namespace Loom.ZombieBattleground
                     Logging.GetLog(nameof(BackendFacade)),
                     Logging.GetLog(nameof(BackendFacade) + "Rpc")
                 ));
-            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
-            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
-            AddService<IFacebookManager>(new FacebookManager());
-            AddService<IAnalyticsManager>(new AnalyticsManager());
-            AddService<IPvPManager>(new PvPManager());
             AddService<INetworkActionManager>(new NetworkActionManager());
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
-            AddService<FiatBackendManager>(new FiatBackendManager());
-            AddService<FiatPlasmaManager>(new FiatPlasmaManager());
-            AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
-            AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
-            AddService<TutorialRewardManager>(new TutorialRewardManager());
+            AddService<AuthApiFacade>(new AuthApiFacade(backendEndpoint.AuthHost, backendEndpoint.VaultHost));
+            AddService<AuthFiatApiFacade>(new AuthFiatApiFacade(backendEndpoint.AuthHost));
+            AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
+            AddService<IapMediator>(new IapMediator());
+            AddService<PlasmachainBackendFacade>(new PlasmachainBackendFacade(backendEndpoint.PlasmachainEndpointsConfiguration));
+            AddService<BackendDataSyncService>(new BackendDataSyncService());
         }
 
         public override void InitServices() {
@@ -101,16 +103,29 @@ namespace Loom.ZombieBattleground
                 return configData.Backend;
             }
 
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
+            BackendPurpose backend = GetDefaultBackendPurpose();
+            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            return backendEndpoint;
+        }
+
+        public static BackendPurpose GetDefaultBackendPurpose()
+        {
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_DEVELOPMENT_BACKEND
             const BackendPurpose defaultBackend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose defaultBackend = BackendPurpose.Production;
-#elif USE_BRANCH_TESTING_BACKEND
-            const BackendPurpose defaultBackend = BackendPurpose.BranchTesting;
+#elif USE_DEVELOPMENT_BACKEND
+            const BackendPurpose defaultBackend = BackendPurpose.Development;
 #else
             const BackendPurpose defaultBackend = BackendPurpose.Staging;
 #endif
             BackendPurpose backend = defaultBackend;
+
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, -1);
+            if (backendOverrideValue != -1)
+            {
+                backend = (BackendPurpose) backendOverrideValue;
+            }
 
 #if UNITY_EDITOR
             const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
@@ -121,8 +136,12 @@ namespace Loom.ZombieBattleground
             }
 #endif
 
-            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
-            return backendEndpoint;
+            return backend;
+        }
+
+        public static bool GetForceUseAuth()
+        {
+            return PlayerPrefs.GetInt(Constants.ForceUseAuthPlayerPrefsKey, 0) != 0;
         }
 
         public static GameClient Instance
@@ -142,6 +161,8 @@ namespace Loom.ZombieBattleground
         {
             return Instance.GetService<T>();
         }
+
+        public static bool InstanceExists => _instance != null;
 
         public static void ClearInstance()
         {

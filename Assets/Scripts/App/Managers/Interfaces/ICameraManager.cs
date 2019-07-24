@@ -17,5 +17,7 @@ namespace Loom.ZombieBattleground.Gameplay
         void FadeOut(Action callback = null, int level = 0, bool immediately = false);
 
         void ShakeGameplay(Enumerators.ShakeType type);
+
+        Transform GetGameplayCameras();
     }
 }

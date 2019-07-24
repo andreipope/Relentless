@@ -1,8 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -23,12 +21,27 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            base.UnitHpChangedHandler(oldValue, newValue);
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            }
+        }
+
         protected override void UnitDiedHandler()
         {
             base.UnitDiedHandler();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
+
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            
 
             foreach(Enumerators.Target target in AbilityData.Targets)
             {
@@ -47,7 +60,10 @@ namespace Loom.ZombieBattleground
         private void FillBoard(Player targetPlayer)
         {
             if (!HasEmptySpaceOnBoard(targetPlayer, out int maxUnits))
+            {
+                AbilityProcessingAction?.TriggerActionExternally();
                 return;
+            }
 
             if(AbilityUnitOwner.HasActiveMechanic(Enumerators.GameMechanicDescription.Reanimate))
             {
@@ -59,19 +75,18 @@ namespace Loom.ZombieBattleground
 
             List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Kind == Enumerators.CardKind.CREATURE);
 
-            cards = cards.OrderByDescending(x => x.MouldId).ToList();
-
-            cards = GetRandomElements(cards, (int)maxUnits);
+            cards = GetRandomElements(cards, maxUnits);
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            BoardUnitModel boardUnit;
+            CardModel boardUnit;
             for (int i = 0; i < cards.Count; i++)
             {
-                if (targetPlayer.PlayerCardsController.CardsOnBoard.Count >= targetPlayer.MaxCardsInPlay)
+                int CardOnBoard = targetPlayer.PlayerCardsController.GetCardsOnBoardCount(true);
+                if (CardOnBoard >= targetPlayer.MaxCardsInPlay)
                     break;
 
-                boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility).Model;
+                boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility, null, false).Model;
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -80,15 +95,31 @@ namespace Loom.ZombieBattleground
                 });
             }
 
+            AbilityProcessingAction?.TriggerActionExternally();
+
             if (TargetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = TargetEffects
                 });
             }
+        }
+
+        private int GetCardOnBoard(Player targetPlayer)
+        {
+            int count = 0;
+            for (int i = 0; i < targetPlayer.PlayerCardsController.CardsOnBoard.Count; i++)
+            {
+                if (targetPlayer.PlayerCardsController.CardsOnBoard[i].IsDead == false || targetPlayer.PlayerCardsController.CardsOnBoard[i].CurrentDefense <= 0)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
     }
 }

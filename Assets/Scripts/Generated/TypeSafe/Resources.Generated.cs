@@ -48,51 +48,65 @@ namespace Loom.ZombieBattleground {
                 }
             }
             
-            public static global::TypeSafe.PrefabResource PackReward {
+            public static global::TypeSafe.PrefabResource ActiveCardInHand {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[2]));
                 }
             }
             
-            public static global::TypeSafe.PrefabResource RegularModel2DOpponent {
+            public static global::TypeSafe.PrefabResource PackOpenerPlaceholder {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[3]));
                 }
             }
             
-            public static global::TypeSafe.PrefabResource RegularModel2DPlayer {
+            public static global::TypeSafe.PrefabResource PackReward {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[4]));
                 }
             }
             
-            public static global::TypeSafe.PrefabResource Loading {
+            public static global::TypeSafe.PrefabResource RegularModel2DOpponent {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[5]));
                 }
             }
             
-            public static global::TypeSafe.PrefabResource OverlordSiloShuttersOpponent {
+            public static global::TypeSafe.PrefabResource RegularModel2DPlayer {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[6]));
                 }
             }
             
-            public static global::TypeSafe.PrefabResource OverlordDeathSinglePlayer {
+            public static global::TypeSafe.PrefabResource Loading {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[7]));
                 }
             }
             
-            public static global::TypeSafe.PrefabResource TestSetup {
+            public static global::TypeSafe.PrefabResource OverlordSiloShuttersOpponent {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[8]));
+                }
+            }
+            
+            public static global::TypeSafe.PrefabResource OverlordDeathSinglePlayer {
+                get {
+                    return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[9]));
+                }
+            }
+            
+            public static global::TypeSafe.PrefabResource TestSetup {
+                get {
+                    return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[10]));
                 }
             }
             
             private static global::System.Collections.Generic.IList<global::TypeSafe.IResource> @__ts_internal_resources = new global::System.Collections.ObjectModel.ReadOnlyCollection<global::TypeSafe.IResource>(new global::TypeSafe.IResource[] {
                         new global::TypeSafe.PrefabResource("OverlordSiloShuttersPlayer", "Prefabs/OverlordSiloShuttersPlayer"),
                         new global::TypeSafe.PrefabResource("OverlordDeathSingleOpponent", "Prefabs/OverlordDeathSingleOpponent"),
+                        new global::TypeSafe.PrefabResource("ActiveCardInHand", "Prefabs/ActiveCardInHand"),
+                        new global::TypeSafe.PrefabResource("PackOpenerPlaceholder", "Prefabs/PackOpenerPlaceholder"),
                         new global::TypeSafe.PrefabResource("PackReward", "Prefabs/PackReward"),
                         new global::TypeSafe.PrefabResource("RegularModel2DOpponent", "Prefabs/RegularModel2DOpponent"),
                         new global::TypeSafe.PrefabResource("RegularModel2DPlayer", "Prefabs/RegularModel2DPlayer"),

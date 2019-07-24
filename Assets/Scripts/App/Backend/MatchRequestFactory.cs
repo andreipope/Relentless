@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _matchId = matchId;
         }
 
+        public long MatchId => _matchId;
+
         public PlayerActionRequest CreateAction(PlayerAction playerAction)
         {
             return new PlayerActionRequest
@@ -20,13 +22,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public EndMatchRequest EndMatch(string userId, string winnerId)
+        public EndMatchRequest EndMatch(string userId, string winnerId, long[] matchExperiences)
         {
             return new EndMatchRequest
             {
                 UserId = userId,
                 MatchId = _matchId,
-                WinnerId = winnerId
+                WinnerId = winnerId,
+                MatchExperiences = { matchExperiences }
             };
         }
     }

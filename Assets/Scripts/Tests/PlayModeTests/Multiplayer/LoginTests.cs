@@ -1,13 +1,8 @@
-using System;
 using UnityEngine;
 using NUnit.Framework;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
@@ -25,7 +20,7 @@ namespace Loom.ZombieBattleground.Test
                 LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
 
                 DeactivateTutorialFlag();
-                HandleLogut();
+                HandleLogout();
 
                 await ConfirmLoginPopupHide();
 
@@ -33,7 +28,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = UnityEngine.Random.Range(0, 2 ^ 4096) + UnityEngine.Random.Range(0, 2 ^ 4096) + "_Test@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
                 string password = "testing";
 
                 loginPopup.SetRegistrationFieldsData(email, password);
@@ -46,7 +41,7 @@ namespace Loom.ZombieBattleground.Test
 
                 Assert.IsTrue(IsUserLoggedIn());
 
-                HandleLogut();
+                HandleLogout();
 
                 await ConfirmLoginPopupHide();
 
@@ -72,7 +67,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
 
-                HandleLogut();
+                HandleLogout();
 
                 await TestHelper.LetsThink();
 
@@ -80,7 +75,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_ForgotPassword");
 
-                string email = UnityEngine.Random.Range(0, 2 ^ 1024) + UnityEngine.Random.Range(0, 2 ^ 1024) + "_Test@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
 
                 PopulateLoginPopupTextField(email, "Forgot_Group/Email_BG/Email_InputField");
 
@@ -107,7 +102,7 @@ namespace Loom.ZombieBattleground.Test
                 LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
 
                 DeactivateTutorialFlag();
-                HandleLogut();
+                HandleLogout();
 
                 await ConfirmLoginPopupHide();
 
@@ -115,7 +110,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = UnityEngine.Random.Range(0, 2 ^ 4096) + UnityEngine.Random.Range(0, 2 ^ 4096) + "_Test@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
                 string password = "testing";
 
                 loginPopup.SetRegistrationFieldsData(email, password);
@@ -128,7 +123,7 @@ namespace Loom.ZombieBattleground.Test
 
                 Assert.IsTrue(IsUserLoggedIn());
 
-                HandleLogut();
+                HandleLogout();
 
                 await ConfirmLoginPopupHide();
 
@@ -157,7 +152,7 @@ namespace Loom.ZombieBattleground.Test
                 LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
 
                 DeactivateTutorialFlag();
-                HandleLogut();
+                HandleLogout();
 
                 await ConfirmLoginPopupHide();
 
@@ -165,7 +160,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = UnityEngine.Random.Range(0, 2 ^ 4096) + UnityEngine.Random.Range(0, 2 ^ 4096) + "_Test@test.com";
+                string email = TestHelper.CreateTestUser() + "@test.com";
                 string password = "testing";
 
                 loginPopup.SetRegistrationFieldsData(email, password);
@@ -178,7 +173,7 @@ namespace Loom.ZombieBattleground.Test
 
                 Assert.IsTrue(IsUserLoggedIn());
 
-                HandleLogut();
+                HandleLogout();
 
                 await ConfirmLoginPopupHide();
 
@@ -198,7 +193,7 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        private void HandleLogut()
+        private void HandleLogout()
         {
             BackendDataControlMediator backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             if (backendDataControlMediator.LoadUserDataModel() && backendDataControlMediator.UserDataModel.IsValid) 

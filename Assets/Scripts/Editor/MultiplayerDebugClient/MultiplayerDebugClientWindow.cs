@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Test;
 using Newtonsoft.Json;
@@ -16,12 +15,11 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
-using Random = UnityEngine.Random;
 using Rect = UnityEngine.Rect;
 
 namespace Loom.ZombieBattleground.Editor.Tools
 {
-    public class MultiplayerDebugClientWindow : EditorWindow
+    public class MultiplayerDebugClientWindow : EditorWindow, IHasCustomMenu
     {
         [SerializeField]
         private PlayerActionLogView _playerActionLogView = new PlayerActionLogView();
@@ -132,7 +130,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (DebugClient.BackendFacade != null && DebugClient.MatchMakingFlowController != null)
             {
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
 
                 GUILayout.Label("<b>Debug Cheats</b>", GameStateGUI.Styles.RichLabel);
                 {
@@ -145,7 +143,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EditorGUI.EndDisabledGroup();
                 }
 
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
 
                 GUILayout.Label("<b>Matchmaking</b>", GameStateGUI.Styles.RichLabel);
                 {
@@ -172,7 +170,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         {
                             EnqueueAsyncTask(async () =>
                             {
-                                await DebugClient.MatchMakingFlowController.Start(1, null, DebugClient.PvPTags, DebugClient.UseBackendGameLogic, DebugClient.DebugCheats);
+                                await DebugClient.MatchMakingFlowController.Start(new DeckId(1), null, DebugClient.PvPTags, DebugClient.UseBackendGameLogic, DebugClient.DebugCheats);
                             });
                         }
                     }
@@ -198,7 +196,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 if (DebugClient.MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed &&
                     _currentGameState != null)
                 {
-                    DrawSeparator();
+                    EditorSpecialGuiUtility.DrawSeparator();
 
                     GUILayout.Label("<b>Game Actions</b>", GameStateGUI.Styles.RichLabel);
                     {
@@ -209,7 +207,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (_initialGameState != null && _initialGameState.HasValue)
             {
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
                 bool isExpanded = _initialGameState.IsExpanded;
                 GameStateGUI.DrawGameState(_initialGameState.Instance, DebugClient.UserDataModel?.UserId, "Initial Game State", null, null, ref isExpanded);
                 _initialGameState.IsExpanded = isExpanded;
@@ -218,7 +216,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             if (DebugClient.MatchMakingFlowController != null && DebugClient.MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed ||
                 _playerActionLogView.PlayerActions.Count > 0)
             {
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
                 if (GUILayout.Button("Update Game State"))
                 {
                     EnqueueAsyncTask(UpdateCurrentGameState);
@@ -241,7 +239,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     _currentGameState.IsExpanded = isExpanded;
                 }
 
-                DrawSeparator();
+                EditorSpecialGuiUtility.DrawSeparator();
 
                 GUILayout.Label("<b>Action Log</b>", GameStateGUI.Styles.RichLabel);
                 {
@@ -318,7 +316,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EnqueueAsyncTask(async () =>
                     {
                         List<Data.InstanceId> cardsInHandForMulligan = new List<Data.InstanceId>();
-                        foreach (CardInstance card in opponentPlayerState.CardsInHand) 
+                        foreach (CardInstance card in opponentPlayerState.CardsInHand)
                         {
                             cardsInHandForMulligan.Add(card.InstanceId.FromProtobuf());
                         }
@@ -493,7 +491,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (DebugClient.BackendFacade != null)
             {
-                DebugClient.BackendFacade.PlayerActionDataReceived -= OnPlayerActionDataReceived;
+                DebugClient.BackendFacade.PlayerActionEventReceived -= OnPlayerActionEventReceived;
                 await DebugClient.Reset();
             }
         }
@@ -576,15 +574,14 @@ namespace Loom.ZombieBattleground.Editor.Tools
             _currentGameState = new GameStateWrapper(getGameStateResponse.GameState);
         }
 
-        private void OnPlayerActionDataReceived(byte[] data)
+        private void OnPlayerActionEventReceived(BackendFacade.PlayerActionEventData playerActionEventData)
         {
-            PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
             bool? isLocalPlayer =
-                playerActionEvent.PlayerAction != null ?
-                    playerActionEvent.PlayerAction.PlayerId == DebugClient.UserDataModel.UserId :
+                playerActionEventData.Event.PlayerAction != null ?
+                    playerActionEventData.Event.PlayerAction.PlayerId == DebugClient.UserDataModel.UserId :
                     (bool?) null;
 
-            _playerActionLogView.Add(playerActionEvent, isLocalPlayer);
+            _playerActionLogView.Add(playerActionEventData.Event, isLocalPlayer);
 
             if (isLocalPlayer != null && !isLocalPlayer.Value)
             {
@@ -598,7 +595,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private async Task StartClient()
         {
             await DebugClient.Start(
-                contract => new DefaultContractCallProxy(contract),
+                contract => new DefaultContractCallProxy<RawChainEventArgs>(contract),
                 new DAppChainClientConfiguration(),
                 matchMakingFlowController =>
                 {
@@ -606,7 +603,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 },
                 backendFacade =>
                 {
-                    backendFacade.PlayerActionDataReceived += OnPlayerActionDataReceived;
+                    backendFacade.PlayerActionEventReceived += OnPlayerActionEventReceived;
                 }
             );
         }
@@ -614,7 +611,43 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private void EnqueueAsyncTask(Func<Task> task)
         {
             _asyncTaskQueue.Enqueue(task);
-            Repaint();
+
+            if (Thread.CurrentThread.ManagedThreadId == 0)
+            {
+                Repaint();
+            }
+            else
+            {
+                _asyncTaskQueue.Enqueue(() =>
+                {
+                    Repaint();
+                    return Task.CompletedTask;
+                });
+            }
+        }
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            string customDeckFilePath = Path.Combine(Application.persistentDataPath, "EditorCustomDeck.json");
+            menu.AddItem(
+                new GUIContent("Save Debug Cheats"),
+                false,
+                () =>
+                {
+                    string json = JsonConvert.SerializeObject(DebugClient.DebugCheats);
+                    File.WriteAllText(customDeckFilePath, json);
+                }
+            );
+
+            menu.AddItem(
+                new GUIContent("Load Debug Cheats"),
+                false,
+                () =>
+                {
+                    string json = File.ReadAllText(customDeckFilePath);
+                    DebugClient.DebugCheats = JsonConvert.DeserializeObject<DebugCheatsConfiguration>(json);
+                }
+            );
         }
 
         private static void DrawMinWidthLabel(string text)
@@ -623,14 +656,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             GUILayout.Label(guiContent, GUILayout.Width(GUI.skin.label.CalcSize(guiContent).x));
         }
 
-        private static void DrawSeparator()
-        {
-            EditorGUILayout.Space();
-            Rect rect = EditorGUILayout.GetControlRect(false, 2);
-            rect.height = 1;
-            EditorGUI.DrawRect(rect, Color.black);
-            EditorGUILayout.Space();
-        }
+
 
         [Serializable]
         private class GameActionsState
@@ -729,8 +755,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
         [Serializable]
         private class DebugCheatsConfigurationWrapper : JsonUnityNewtonsoftSerializationWrapper<DebugCheatsConfiguration>
         {
-            public bool IsExpanded;
-
             public DebugCheatsConfigurationWrapper(DebugCheatsConfiguration instance) : base(instance)
             {
             }
@@ -933,9 +957,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         playerAction.PlayerAction != null ? playerAction.PlayerAction.ActionType.ToString() : "Matchmaking",
                         playerAction.PlayerAction != null ? playerAction.PlayerAction.ToString() : "Match Status: " + playerAction.Match.Status,
                         isLocalPlayer
-                    )
-                {
-                }
+                    ) { }
 
                 public PlayerActionEventViewModel(long id, string match, string actionType, string action, bool? isLocalPlayer)
                 {

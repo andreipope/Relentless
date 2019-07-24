@@ -198,7 +198,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialObjectOwner.PlayerBattleframe:
                     if (tutorialObjectIdStepOwner != 0)
                     {
-                        BoardUnitModel ownerObjectModel =
+                        CardModel ownerObjectModel =
                             _gameplayManager.CurrentPlayer.CardsOnBoard
                                 .FirstOrDefault(x => String.Equals(x.Card.Prototype.Name, _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner), (StringComparison) StringComparison.InvariantCultureIgnoreCase));
                         if (ownerObjectModel == null && additionalObjectIdOwners != null)
@@ -212,7 +212,7 @@ namespace Loom.ZombieBattleground
                                     break;
                             }
                         }
-                        _ownerObject = ownerObjectModel == null ? null : _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(ownerObjectModel)?.GameObject;
+                        _ownerObject = ownerObjectModel == null ? null : _battlegroundController.GetCardViewByModel<BoardUnitView>(ownerObjectModel)?.GameObject;
                         if (_ownerObject == null)
                         {
                             _handPointerController.Reset(this);
@@ -222,17 +222,23 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.TutorialObjectOwner.PlayerCardInHand:
                     BoardCardView boardCard = null;
+                    CardModel boardCardModel = null;
                     if (tutorialObjectIdStepOwner != 0)
                     {
-                        boardCard =
-                            _gameplayManager.GetController<BattlegroundController>().PlayerHandCards
-                                .FirstOrDefault(card => card.Model.Card.TutorialObjectId == tutorialObjectIdStepOwner);
+                        boardCardModel =
+                            _gameplayManager.CurrentPlayer.CardsInHand
+                                .FirstOrDefault(card => card.Card.TutorialObjectId == tutorialObjectIdStepOwner);
                     }
-                    else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                    else if(_gameplayManager.CurrentPlayer.CardsInHand.Count > 0)
                     {
-                        boardCard = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                        boardCardModel = _gameplayManager.CurrentPlayer.CardsInHand[0];
                     }
-                    
+
+                    if (boardCardModel != null)
+                    {
+                        boardCard = _battlegroundController.GetCardViewByModel<BoardCardView>(boardCardModel);
+                    }
+
                     if (boardCard != null)
                     {
                         _ownerObject = boardCard.GameObject;
@@ -248,7 +254,7 @@ namespace Loom.ZombieBattleground
             
             if(targetTutorialObjectId != 0)
             {
-                BoardUnitModel targetObjectModel =
+                CardModel targetObjectModel =
                     _gameplayManager.OpponentPlayer.CardsOnBoard
                         .FirstOrDefault(x => String.Equals(x.Card.Prototype.Name, _tutorialManager.GetCardNameByTutorialObjectId(targetTutorialObjectId), StringComparison.InvariantCultureIgnoreCase));
                 if (targetObjectModel == null && additionalObjectIdTargets != null)
@@ -263,7 +269,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                GameObject targetObjectGo = targetObjectModel == null ? null : _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetObjectModel)?.GameObject;
+                GameObject targetObjectGo = targetObjectModel == null ? null : _battlegroundController.GetCardViewByModel<BoardUnitView>(targetObjectModel)?.GameObject;
                 if (targetObjectGo == null)
                 {
                     _handPointerController.Reset(this);
@@ -285,7 +291,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.TutorialObjectLayer.AbovePopups:
                     _handRenderer.sortingOrder = SortingOrderAbovePopups;
-                    _handRenderer.sortingLayerName = SRSortingLayers.GameUI3; 
+                    _handRenderer.sortingLayerName = SRSortingLayers.GameplayInfo; 
                     break;
             }
 

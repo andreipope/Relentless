@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: LogoAnimation_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -41,6 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: df1c59569e214b44b9a85959f507ebed, type: 3}
+    totalSpriteSurfaceArea: 13970775
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

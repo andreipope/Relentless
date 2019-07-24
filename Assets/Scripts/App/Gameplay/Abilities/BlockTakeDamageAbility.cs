@@ -2,20 +2,21 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class BlockTakeDamageAbility : AbilityBase
     {
         private int Damage { get; }
-        private BoardUnitModel _targetedUnit;
+        private CardModel _targetedUnit;
 
-        private Action _animationEndedAction;
+        public Action OnDeactivate;
+
+        private int _previousMaximumDamageBuff;
 
         public BlockTakeDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            Damage = ability.Damage;
+            Damage = 999 - ability.Damage;
         }
 
         public override void Activate()
@@ -29,10 +30,7 @@ namespace Loom.ZombieBattleground
             {
                 _targetedUnit = AbilityUnitOwner;
 
-                _animationEndedAction = () =>
-                {
-                    ApplyMaximumDamageBuff(_targetedUnit, Damage);
-                };
+                ApplyMaximumDamageBuff(_targetedUnit, Damage);
 
                 InvokeActionTriggered(_targetedUnit);
 
@@ -48,10 +46,7 @@ namespace Loom.ZombieBattleground
             {
                 _targetedUnit = TargetUnit;
 
-                _animationEndedAction = () =>
-                {
-                    ApplyMaximumDamageBuff(_targetedUnit, Damage);
-                };
+                ApplyMaximumDamageBuff(_targetedUnit, Damage);
 
                 InvokeActionTriggered(_targetedUnit);
 
@@ -71,25 +66,44 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.UntilStartOfNextPlayerTurn)
             {
-                ApplyMaximumDamageBuff(_targetedUnit, 999);
+                ApplyMaximumDamageBuff(_targetedUnit, -Damage);
                 Deactivate();
             }
+        }
+
+        public override void Deactivate()
+        {
+            base.Deactivate();
+            OnDeactivate?.Invoke();
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
-            _animationEndedAction?.Invoke();
-            _animationEndedAction = null;
+            _targetedUnit.IsPlayable = true;
         }
 
-        private void ApplyMaximumDamageBuff(BoardUnitModel boardUnit, int value)
+        private void ApplyMaximumDamageBuff(CardModel boardUnit, int value)
         {
             if (boardUnit != null)
             {
-                boardUnit.SetMaximumDamageToUnit(value);
-                boardUnit.IsPlayable = true;
+                _previousMaximumDamageBuff = boardUnit.MaximumDamageFromAnySource;
+                _previousMaximumDamageBuff -= value;
+                boardUnit.SetMaximumDamageToUnit(_previousMaximumDamageBuff);
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.None,
+                                Target = boardUnit
+                            }
+                        }
+                });
             }
         }
     }

@@ -1,7 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -22,11 +21,11 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            BoardUnitModel creature = (BoardUnitModel)TargetUnit;
+            CardModel creature = (CardModel)TargetUnit;
 
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(creature).Transform.position);
+            CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(creature).Transform.position);
 
-            BoardUnitModel leftAdjustment = null, rightAdjustment = null;
+            CardModel leftAdjustment = null, rightAdjustment = null;
 
             int targetIndex = -1;
             for (int i = 0; i < creature.OwnerPlayer.CardsOnBoard.Count; i++)

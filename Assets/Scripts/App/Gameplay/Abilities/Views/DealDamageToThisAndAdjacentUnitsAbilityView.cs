@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,19 +8,19 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         public DealDamageToThisAndAdjacentUnitsAbilityView(DealDamageToThisAndAdjacentUnitsAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
             if(info != null)
             {
-                _units = (List<BoardUnitModel>)info;
+                _units = (List<CardModel>)info;
             }
             ActionCompleted();        
         }
@@ -36,7 +35,7 @@ namespace Loom.ZombieBattleground
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
                 foreach (var unit in _units)
                 {
-                    targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position);
+                    targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position);
                     CreateVfx(targetPosition, true, 5f, true);
                 }
             }

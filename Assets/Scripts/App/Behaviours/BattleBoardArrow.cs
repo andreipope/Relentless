@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public UniqueList<BoardObject> IgnoreBoardObjectsList;
+        public UniqueList<IBoardObject> IgnoreBoardObjectsList;
 
-        public IReadOnlyList<BoardUnitModel> BoardCards;
+        public IReadOnlyList<CardModel> BoardCards;
 
-        public BoardUnitModel Owner;
+        public CardModel Owner;
 
         public bool IgnoreHeavy;
 
@@ -25,7 +24,13 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
-            BoardObject target = null;
+            if (creature.Model.OwnerPlayer.IsLocalPlayer && GameplayManager.GetController<ActionsQueueController>().RootQueue.GetChildCount() > 0)
+            {
+                Dispose();
+                return;
+            }
+
+            IBoardObject target = null;
 
             if (SelectedCard != null)
             {
@@ -158,6 +163,13 @@ namespace Loom.ZombieBattleground
 
             SelectedCard?.SetSelectedUnit(false);
             SelectedCard = null;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            BoardArrowController.CurrentBoardArrow = null;
+            BoardArrowController.SetStatusOfBoardArrowOnBoard(false);
         }
 
         protected bool OpponentHasHeavyUnits()

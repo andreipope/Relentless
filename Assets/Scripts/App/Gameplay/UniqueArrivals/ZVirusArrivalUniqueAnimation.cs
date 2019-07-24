@@ -1,52 +1,65 @@
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
-using DG.Tweening;
 
 namespace Loom.ZombieBattleground
 {
     public class ZVirusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
+        public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(-5.2f, 0.26f, 0f);
+            Vector3 offset = new Vector3(0.532f, 0.208f, 0f);
 
-            const float delayBeforeSpawn = 0.7f;
-            const float delayBeforeDestroyVFX = 5f;
+            const float delayBeforeSpawn = 3.5f;
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as BoardUnitModel);
+            BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
             unitView.GameObject.SetActive(false);
 
+            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/ZVirusArrival"));
+                    
+            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
+
+            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
+
+            animationVFX.transform.position = unitView.PositionOfBoard + offset;
+
+            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
+
             InternalTools.DoActionDelayed(() =>
             {
-                GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                            "Prefabs/VFX/UniqueArrivalAnimations/ZVirus"));
-
-                PlaySound("Z_Virus");
-
-                animationVFX.transform.position = unitView.PositionOfBoard + offset;
-
-                unitView.Transform.SetParent(animationVFX.transform.Find("ZVirusCardPH"), true);
-                unitView.GameObject.SetActive(true);
-
-                InternalTools.DoActionDelayed(() =>
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero; 
+                
+                Object.Destroy(animationVFX);
+                
+                if (unitView != null)
                 {
-                    unitView.Transform.SetParent(null, true);
-                    Object.Destroy(animationVFX);
-
-                    endArrivalCallback?.Invoke();
-
+                    unitView.GameObject.SetActive(true);
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+                    foreach (Transform child in unitView.battleframeAnimator.transform)
+                    {
+                        if (child.name == "ScrapFlies")
+                        {
+                            child.gameObject.SetActive(false);
+                            break;
+                        }
+                    }
                     BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                }             
 
-                    IsPlaying = false;
-                }, delayBeforeDestroyVFX);
+                endArrivalCallback?.Invoke();                
+
+                IsPlaying = false;
+
             }, delayBeforeSpawn);
         }
     }

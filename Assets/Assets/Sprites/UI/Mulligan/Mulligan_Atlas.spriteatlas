@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Mulligan_Atlas
   m_EditorData:
     serializedVersion: 2
@@ -41,17 +42,14 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 67ff059673ad95d4fbd688e3bb259577, type: 3}
+    totalSpriteSurfaceArea: 357989
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 18fbb1f1d41c3764f816c3ee4581b4df, type: 3}
-  - {fileID: 21300000, guid: 4a355059da06dd446a7157e31f4b56de, type: 3}
-  - {fileID: 21300000, guid: ea9f089ae6f17bc49b56b65f832b2ef3, type: 3}
-  - {fileID: 21300000, guid: 3b34eadeac9e6f142980c51af9dded5c, type: 3}
+  - {fileID: 21300000, guid: 2d2039e4192bf4465bb9116b38fbba2d, type: 3}
+  - {fileID: 21300000, guid: 60f430ad479664e6088ba07e7e28affd, type: 3}
   m_PackedSpriteNamesToIndex:
-  - mulligan_recycle
-  - mulligan_panel_recycle
-  - mulligan_panel_mid
-  - mulligan_panel_end
+  - mulligan_replace_x
+  - mulligan_header
   m_Tag: Mulligan_Atlas
   m_IsVariant: 0
