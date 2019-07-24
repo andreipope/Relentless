@@ -127,6 +127,11 @@ namespace Loom.ZombieBattleground
                         effectInfo.opponentPlayerAbilityEffectRotation;
                 }
 
+                if (effectInfo != null && (effectInfo.cardName == "Gargantua"))
+                {
+                    targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
+                }
+
                 CreateVfx(targetPosition + offset, true, _delayBeforeDestroyImpact, true);
                 VfxObject.transform.eulerAngles = vfxRotation;
 
