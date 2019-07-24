@@ -319,10 +319,13 @@ namespace Loom.ZombieBattleground
             float openButtonHoldTimeCounter = _openButtonHoldTimeCounter;
 
             Assert.IsTrue(_selectedPackType != null);
-            OneOf<IReadOnlyList<CardKey>, Exception> result = await _controller.OpenPack(_selectedPackType.Value);
+            OneOf<IReadOnlyList<CardKey>, No, Exception> result = await _controller.OpenPack(_selectedPackType.Value);
             if (result.IsT1)
+                return;
+
+            if (result.IsT2)
             {
-                ExceptionReporter.LogExceptionAsWarning(Log, result.AsT1);
+                ExceptionReporter.LogExceptionAsWarning(Log, result.AsT2);
                 FailAndGoToMainMenu("Loading cards failed.\n Please try again.");
                 return;
             }
@@ -916,7 +919,7 @@ namespace Loom.ZombieBattleground
 
             public abstract Task<OneOf<Success, Exception>> Start();
 
-            public abstract Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType);
+            public abstract Task<OneOf<IReadOnlyList<CardKey>, No, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType);
 
             public virtual void OnPackCollected()
             {
@@ -962,7 +965,7 @@ namespace Loom.ZombieBattleground
                 return Task.FromResult((OneOf<Success, Exception>) new Success());
             }
 
-            public override Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
+            public override Task<OneOf<IReadOnlyList<CardKey>, No, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
                 IReadOnlyList<CardKey> cards =
@@ -971,7 +974,7 @@ namespace Loom.ZombieBattleground
                         .Select(card => card.CardKey)
                         .ToArray();
                 _packTypeToPackAmount[packType]--;
-                return Task.FromResult(OneOf<IReadOnlyList<CardKey>, Exception>.FromT0(cards));
+                return Task.FromResult(OneOf<IReadOnlyList<CardKey>, No, Exception>.FromT0(cards));
             }
 
             public override void OnPackCollected()
@@ -982,6 +985,12 @@ namespace Loom.ZombieBattleground
 
         private class NormalPackOpenerController : PackOpenerControllerBase
         {
+            private static IReadOnlyList<Enumerators.MarketplaceCardPackType> RedirectedPackTypes { get; } = new[]
+            {
+                Enumerators.MarketplaceCardPackType.Binance,
+                Enumerators.MarketplaceCardPackType.Tron
+            };
+
             private readonly IUIManager _uiManager;
             private readonly PlasmachainBackendFacade _plasmaChainBackendFacade;
             private readonly BackendDataControlMediator _backendDataControlMediator;
@@ -1089,8 +1098,17 @@ namespace Loom.ZombieBattleground
                 return new Success();
             }
 
-            public override async Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
+            public override async Task<OneOf<IReadOnlyList<CardKey>, No, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
             {
+                if (RedirectedPackTypes.Contains(packType))
+                {
+                    _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
+                    _uiManager.DrawPopup<QuestionPopup>(
+                        "This pack type can only be opened through the website.\n" +
+                        "Do you want to redirect to the pack opener page?");
+                    return new No();
+                }
+
                 if (!_isOpenedPackScreenActive)
                 {
                     _isOpenedPackScreenActive = true;
@@ -1106,7 +1124,7 @@ namespace Loom.ZombieBattleground
                             await _plasmaChainBackendFacade.CallOpenPack(client, packType);
                         _backendDataSyncService.SetCollectionDataDirtyFlag();
                         _packTypeToPackAmount[packType]--;
-                        return OneOf<IReadOnlyList<CardKey>, Exception>.FromT0(cardKeys);
+                        return OneOf<IReadOnlyList<CardKey>, No, Exception>.FromT0(cardKeys);
                     }
                 }
                 catch (Exception e)
@@ -1141,6 +1159,15 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     throw new Exception($"Failed to get balance for pack type {packType}", e);
+                }
+            }
+
+            private void ConfirmRedirectMarketplaceLink(bool status)
+            {
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectMarketplaceLink;
+                if (status)
+                {
+                    Application.OpenURL(Constants.PackOpenLink);
                 }
             }
         }
@@ -1197,9 +1224,9 @@ namespace Loom.ZombieBattleground
                 return Task.FromResult((OneOf<Success, Exception>) new Success());
             }
 
-            public override Task<OneOf<IReadOnlyList<CardKey>, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
+            public override Task<OneOf<IReadOnlyList<CardKey>, No, Exception>> OpenPack(Enumerators.MarketplaceCardPackType packType)
             {
-                return Task.FromResult(OneOf<IReadOnlyList<CardKey>, Exception>.FromT0(
+                return Task.FromResult(OneOf<IReadOnlyList<CardKey>, No, Exception>.FromT0(
                     Enumerable
                         .Range(1, 5)
                         .Select(i => new CardKey(new MouldId(i), Enumerators.CardVariant.Standard))

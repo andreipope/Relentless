@@ -544,7 +544,7 @@ namespace Loom.ZombieBattleground
 
             public ShopItem(Transform parent, ILoadObjectsManager loadObjectsManager, IapMediator iapMediator, Product product)
             {
-                int packAmount = 2;
+                int packAmount = 0;
                 IapMarketplaceProduct marketplaceProduct = iapMediator.GetMarketplaceProduct(product.definition);
                 if (marketplaceProduct?.ExtraMetadata.Amount != null)
                 {
