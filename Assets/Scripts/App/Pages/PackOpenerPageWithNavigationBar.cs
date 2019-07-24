@@ -28,8 +28,6 @@ namespace Loom.ZombieBattleground
     public class PackOpenerPageWithNavigationBar : IUIElement
     {
         private const float FadeDuration = 1f;
-        private const float CardHideAnimationDuration = 0.2f;
-        private const float CardAppearAnimationDuration = 0.65f;
         private const float CardFlipAnimationDuration = 0.3f;
         private const float BoardCardViewOpenedCardScale = 0.26f;
         private const float PackScrollAnimationDuration = 0.3f;
@@ -37,8 +35,10 @@ namespace Loom.ZombieBattleground
         private const float CardsFlyOutAnimationLength = 0.21f;
         private const float GooFillMaxValue = 4f;
         private const float GooFillDecreaseMultiplier = 9f;
+        private const float PreDimAlpha = 0.5f;
+        private const float DimAlpha = 1f;
 
-        private static readonly Vector3 CardHidePosition = new Vector3(0, -15, 0);
+        private static readonly Vector3 CardHidePosition = new Vector3(0, -11.5f, 0);
 
         private static readonly ILog Log = Logging.GetLog(nameof(PackOpenerPageWithNavigationBar));
 
@@ -48,14 +48,6 @@ namespace Loom.ZombieBattleground
             "Prefabs/UI/Pages/PackOpener/PackOpenerAnimationTwo",
             "Prefabs/UI/Pages/PackOpener/PackOpenerAnimationThree",
             "Prefabs/UI/Pages/PackOpener/PackOpenerAnimationFour",
-        };
-
-        private static readonly (float triggerGooFillLevel, float dimFadeInDuration)[] PackOpenAnimationData =
-        {
-            (0f, 0f),
-            (1.83f, 0f),
-            (2.73f, 0f),
-            (3.5f, 0f)
         };
 
         private readonly List<PackObject> _packObjects = new List<PackObject>();
@@ -83,6 +75,8 @@ namespace Loom.ZombieBattleground
         private Material _grayScaleMaterial;
 
         private GameObject[] _packOpenAnimationPrefabs;
+
+        private PackOpeningAnimationData[] _packOpenAnimationsData;
 
         private RectTransform _packOpenAnimationWrapperTransform;
 
@@ -132,7 +126,9 @@ namespace Loom.ZombieBattleground
 
         private bool _isOpenButtonBeingHeld;
 
-        private float _gooFillValue;
+        private float _openButtonHoldTimeCounter;
+
+        private int _lastPackOpenAnimationIndex;
 
         #region IUIElement
 
@@ -148,6 +144,10 @@ namespace Loom.ZombieBattleground
 
             _grayScaleMaterial = _loadObjectsManager.GetObjectByPath<Material>("Materials/UI-Default-Grayscale");
             _packOpenAnimationPrefabs = _loadObjectsManager.GetObjectsByPath<GameObject>(PackOpenAnimationPrefabPaths);
+            _packOpenAnimationsData =
+                _packOpenAnimationPrefabs
+                    .Select(prefab => prefab.GetComponent<PackOpeningAnimationData>())
+                    .ToArray();
         }
 
         public async void Show()
@@ -237,8 +237,8 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Update();
             float gooFillDelta = Time.deltaTime;
             gooFillDelta = _isOpenButtonBeingHeld ? gooFillDelta : -gooFillDelta * GooFillDecreaseMultiplier;
-            _gooFillValue = Mathf.Clamp(_gooFillValue + gooFillDelta, 0f, GooFillMaxValue);
-            _gooFillingAnimator.PlayInFixedTime(0, -1, _gooFillValue);
+            _openButtonHoldTimeCounter = Mathf.Clamp(_openButtonHoldTimeCounter + gooFillDelta, 0f, GooFillMaxValue);
+            _gooFillingAnimator.PlayInFixedTime(0, -1, _openButtonHoldTimeCounter);
         }
 
         public void Dispose()
@@ -266,7 +266,7 @@ namespace Loom.ZombieBattleground
                 OpenedPackCard openedPackCard = _openedCards[i];
                 Sequence hideSequence = DOTween.Sequence();
                 hideSequence.AppendInterval(i * 0.1f);
-                hideSequence.Append(openedPackCard.GameObject.transform.DOMove(CardHidePosition, CardHideAnimationDuration).SetEase(Ease.OutQuad));
+                hideSequence.Append(openedPackCard.GameObject.transform.DOMove(CardHidePosition, 0.2f).SetEase(Ease.OutQuad));
                 if (i == _openedCards.Count - 1)
                 {
                     hideSequence.AppendInterval(1f);
@@ -278,6 +278,7 @@ namespace Loom.ZombieBattleground
         private void SetSelectedPackType(Enumerators.MarketplaceCardPackType? packType)
         {
             _selectedPackType = packType;
+            _dataManager.CachedUserLocalData.PackOpenerLastSelectedPackType = packType;
             if (packType != null)
             {
                 uint amount = _controller.GetPackTypeAmount(packType.Value);
@@ -307,6 +308,7 @@ namespace Loom.ZombieBattleground
 
         private async Task OpenSelectedPack(bool openingNextPack)
         {
+            Log.Debug(nameof(OpenSelectedPack));
             Assert.IsTrue(_selectedPackType != null);
             OneOf<IReadOnlyList<CardKey>, Exception> result = await _controller.OpenPack(_selectedPackType.Value);
             if (result.IsT1)
@@ -316,34 +318,55 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            // Update counter
-            SetSelectedPackType(_selectedPackType.Value);
+            // Choose animation
+            int packOpenAnimationIndex = -1;
+            PackOpeningAnimationData packOpenAnimationData = null;
+            if (openingNextPack)
+            {
+                packOpenAnimationIndex = _lastPackOpenAnimationIndex;
+                packOpenAnimationData = _packOpenAnimationsData[_lastPackOpenAnimationIndex];
+            }
+            else
+            {
+                for (int i = _packOpenAnimationsData.Length - 1; i >= 0; i--)
+                {
+                    if (_openButtonHoldTimeCounter > _packOpenAnimationsData[i].OpenButtonHoldTriggerDuration)
+                    {
+                        packOpenAnimationIndex = i;
+                        _lastPackOpenAnimationIndex = packOpenAnimationIndex;
+                        packOpenAnimationData = _packOpenAnimationsData[packOpenAnimationIndex];
+                        break;
+                    }
+                }
+            }
+
+            if (packOpenAnimationData == null)
+                throw new ArgumentNullException(nameof(packOpenAnimationData));
+
+            Log.Debug($"Goo fill value: {_openButtonHoldTimeCounter}, using pack opening animation {packOpenAnimationIndex}");
 
             // Setup UI blocker
             _openedPackPanel.SetActive(true);
             _openedPackPanelCloseButton.gameObject.SetActive(false);
             _openedPackPanelOpenNextPackButton.gameObject.SetActive(false);
+
+            // Dim sequence had to be done in code to correctly work as UI blocker
             if (!openingNextPack)
             {
-                _openedPackPanelCanvasGroup.alpha = 0f;
+                _openedPackPanelCanvasGroup.alpha = 0;
             }
+
+            Sequence dimSequence = DOTween.Sequence();
+            dimSequence.AppendInterval(packOpenAnimationData.PreDimDelay);
+            dimSequence.Append(_openedPackPanelCanvasGroup.DOFade(PreDimAlpha, packOpenAnimationData.PreDimDuration));
+            dimSequence.AppendInterval(packOpenAnimationData.DimDelay - packOpenAnimationData.PreDimDelay - packOpenAnimationData.PreDimDuration);
+            dimSequence.Append(_openedPackPanelCanvasGroup.DOFade(DimAlpha, packOpenAnimationData.DimDuration));
+
+            // Update counter
+            SetSelectedPackType(_selectedPackType.Value);
 
             // Start the animation
-            int openingPackAnimationIndex = 0;
-            for (int i = 0; i < PackOpenAnimationData.Length; i++)
-            {
-                if (PackOpenAnimationData[i].triggerGooFillLevel > _gooFillValue)
-                {
-                    openingPackAnimationIndex = i;
-                    break;
-                }
-            }
-
-            Log.Debug($"Goo fill value: {_gooFillValue}, using pack opening animation {openingPackAnimationIndex}");
-
-            openingPackAnimationIndex = 1;
-
-            _openingPackAnimationObject = Object.Instantiate(_packOpenAnimationPrefabs[openingPackAnimationIndex]);
+            _openingPackAnimationObject = Object.Instantiate(_packOpenAnimationPrefabs[packOpenAnimationIndex]);
             RectTransform animationRectTransform = _openingPackAnimationObject.GetComponent<RectTransform>();
             animationRectTransform.SetParent(_packOpenAnimationWrapperTransform);
             animationRectTransform.anchoredPosition = Vector3.zero;
@@ -379,8 +402,6 @@ namespace Loom.ZombieBattleground
             await new WaitUntil(() => cardFlyOutAnimationStarted);
 
             // Enable buttons
-            _openedPackPanelCanvasGroup.DOFade(1f, FadeDuration);
-
             _openedPackPanelCloseButton.interactable = true;
             _openedPackPanelOpenNextPackButton.interactable = true;
 
@@ -451,14 +472,14 @@ namespace Loom.ZombieBattleground
                         _cardInfoPopupHandler.Closed += OnClosed;
                     }
                 });
-                openedPackCard.PlayAppearAnimation();
+
                 _openedCards.Add(openedPackCard);
             }
         }
 
         private void CreatePackObjects()
         {
-            IReadOnlyList<Enumerators.MarketplaceCardPackType> packTypes =
+            IReadOnlyList<Enumerators.MarketplaceCardPackType> shownPackTypes =
                 _controller.ShownPackTypes
                     .Where(packType => _controller.GetPackTypeAmount(packType) != 0)
                     .ToList();
@@ -466,7 +487,7 @@ namespace Loom.ZombieBattleground
             ClearPackObjects();
 
             int fakePackObjectsCount;
-            switch (packTypes.Count)
+            switch (shownPackTypes.Count)
             {
                 case 0:
                     fakePackObjectsCount = 0;
@@ -485,12 +506,12 @@ namespace Loom.ZombieBattleground
                     new PackObject(
                         _packObjectsRoot.transform,
                         _loadObjectsManager,
-                        packTypes[packTypes.Count - 1 - i]
+                        shownPackTypes[shownPackTypes.Count - 1 - i]
                     )
                 );
             }
 
-            foreach (Enumerators.MarketplaceCardPackType packType in packTypes)
+            foreach (Enumerators.MarketplaceCardPackType packType in shownPackTypes)
             {
                 PackObject packObject = new PackObject(_packObjectsRoot.transform, _loadObjectsManager, packType);
                 _packObjects.Add(packObject);
@@ -502,7 +523,7 @@ namespace Loom.ZombieBattleground
                     new PackObject(
                         _packObjectsRoot.transform,
                         _loadObjectsManager,
-                        packTypes[i]
+                        shownPackTypes[i]
                     )
                 );
             }
@@ -513,7 +534,7 @@ namespace Loom.ZombieBattleground
 #endif
 
             // If there is only 1 available pack type, hide the fake left/right packs
-            if (packTypes.Count <= 1)
+            if (shownPackTypes.Count <= 1)
             {
                 _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(false));
                 _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(false));
@@ -524,9 +545,40 @@ namespace Loom.ZombieBattleground
                 _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(true));
             }
 
-            _packObjectsRootRectTransform.anchoredPosition = CalculatePackObjectsRootPositionByIndex(0);
-            _scrollLeftButton.interactable = _scrollRightButton.interactable = packTypes.Count > 1;
-            SetSelectedPackType(_packObjects?.Count > 0 ? _packObjects[0]?.PackType : null);
+            _scrollLeftButton.interactable = _scrollRightButton.interactable = shownPackTypes.Count > 1;
+
+            // Try to use the last selected pack type, otherwise just first type, if any
+            Enumerators.MarketplaceCardPackType? selectedPackType = null;
+            if (_dataManager.CachedUserLocalData.PackOpenerLastSelectedPackType != null)
+            {
+                if (shownPackTypes.Contains(_dataManager.CachedUserLocalData.PackOpenerLastSelectedPackType.Value))
+                {
+                    selectedPackType = _dataManager.CachedUserLocalData.PackOpenerLastSelectedPackType;
+                }
+            }
+
+            if (selectedPackType == null)
+            {
+                if (_packObjects.Count > 0)
+                {
+                    selectedPackType = _packObjects[0].PackType;
+                }
+            }
+
+            if (selectedPackType != null)
+            {
+                // Get index of pack object with matching pack type
+                for (int i = 0; i < _packObjects.Count; i++)
+                {
+                    if (_packObjects[i].PackType == selectedPackType)
+                    {
+                        _packObjectsRootRectTransform.anchoredPosition = CalculatePackObjectsRootPositionByIndex(i);
+                        break;
+                    }
+                }
+            }
+
+            SetSelectedPackType(selectedPackType);
         }
 
         private void UpdateOpenButtonState()
@@ -544,6 +596,7 @@ namespace Loom.ZombieBattleground
 
         private void ClearCardOpenAnimation()
         {
+            Log.Debug(nameof(ClearCardOpenAnimation));
             foreach (OpenedPackCard packCard in _openedCards)
             {
                 packCard.Dispose();
@@ -551,6 +604,7 @@ namespace Loom.ZombieBattleground
 
             _openedCards.Clear();
 
+            Log.Debug("_openingPackAnimationObject == null: " + (_openingPackAnimationObject == null));
             if (_openingPackAnimationObject != null)
             {
                 Object.Destroy(_openingPackAnimationObject);
@@ -608,16 +662,21 @@ namespace Loom.ZombieBattleground
 
             _openedPackPanelCloseButton.interactable = false;
             _openedPackPanelOpenNextPackButton.interactable = false;
+            foreach (OpenedPackCard packCard in _openedCards)
+            {
+                packCard.Button.interactable = false;
+            }
 
-            PlayCardsHideAnimation(ClearCardOpenAnimation);
+            PlayCardsHideAnimation(() => {});
 
             await _controller.OnOpenedPackScreenClosed();
 
             Sequence sequence = DOTween.Sequence();
-            sequence.AppendInterval(CardHideAnimationDuration);
+            sequence.AppendInterval(0.5f);
             sequence.Append(_openedPackPanelCanvasGroup.DOFade(0f, FadeDuration));
             sequence.AppendCallback(() =>
             {
+                ClearCardOpenAnimation();
                 _openedPackPanel.SetActive(false);
                 CreatePackObjects();
             });
@@ -674,7 +733,7 @@ namespace Loom.ZombieBattleground
         private void OpenButtonPointerDownHandler(PointerEventData arg0)
         {
             _isOpenButtonBeingHeld = true;
-            _gooFillValue = 0;
+            _openButtonHoldTimeCounter = 0;
         }
 
         private void OpenButtonPointerUpHandler(PointerEventData arg0)
@@ -831,17 +890,6 @@ namespace Loom.ZombieBattleground
             public void Dispose()
             {
                 Object.Destroy(GameObject);
-            }
-
-            public void PlayAppearAnimation()
-            {
-                Sequence appearSequence = DOTween.Sequence();
-                appearSequence.AppendInterval(Random.Range(0f, 0.3f));
-                appearSequence.Append(
-                    GameObject.transform
-                        .DOScale(Vector3.one, CardAppearAnimationDuration)
-                        .SetEase(Ease.InFlash)
-                );
             }
         }
 
