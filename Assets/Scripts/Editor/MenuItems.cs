@@ -9,6 +9,7 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using Loom.ZombieBattleground.Editor.Tools;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -385,7 +386,7 @@ namespace Loom.ZombieBattleground.Editor
                 return;
 
             Undo.RecordObject(Selection.activeGameObject, "Convert child SpriteRenderers to UI Image");
-            SpriteRenderer[] spriteRenderers = Selection.activeGameObject.GetComponentsInChildren<SpriteRenderer>();
+            SpriteRenderer[] spriteRenderers = Selection.activeGameObject.GetComponentsInChildren<SpriteRenderer>(true);
             foreach (SpriteRenderer spriteRenderer in spriteRenderers)
             {
                 Image image = spriteRenderer.gameObject.AddComponent<Image>();
@@ -410,14 +411,22 @@ namespace Loom.ZombieBattleground.Editor
                 return;
 
             Undo.RecordObject(Selection.activeGameObject, "Convert child Transform To RectTransform");
-            Transform[] transforms = Selection.activeGameObject.GetComponentsInChildren<Transform>();
+            Transform[] transforms = Selection.activeGameObject.GetComponentsInChildren<Transform>(true);
             foreach (Transform transform in transforms)
             {
                 if (transform is RectTransform)
                     continue;
 
+                UnityEditor.EditorUtility.SetDirty(transform.gameObject);
                 transform.gameObject.AddComponent<RectTransform>();
                 Object.DestroyImmediate(transform);
+            }
+
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                EditorSceneManager.MarkSceneDirty(prefabStage.scene);
+                UnityEditor.EditorUtility.SetDirty(prefabStage.prefabContentsRoot);
             }
         }
 
