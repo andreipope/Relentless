@@ -8,7 +8,6 @@ using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Iap;
 using OneOf;
@@ -165,7 +164,9 @@ namespace Loom.ZombieBattleground
                 _controller = new TutorialPackOpenerController();
             }
 
+#if USE_FAKE_PACK_OPENER
             _controller = new FakePackOpenerController();
+#endif
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -313,6 +314,10 @@ namespace Loom.ZombieBattleground
         private async Task OpenSelectedPack(bool openingNextPack)
         {
             Log.Debug(nameof(OpenSelectedPack));
+
+            // Copy to account for delay caused by opening the pack
+            float openButtonHoldTimeCounter = _openButtonHoldTimeCounter;
+
             Assert.IsTrue(_selectedPackType != null);
             OneOf<IReadOnlyList<CardKey>, Exception> result = await _controller.OpenPack(_selectedPackType.Value);
             if (result.IsT1)
@@ -334,7 +339,7 @@ namespace Loom.ZombieBattleground
             {
                 for (int i = _packOpenAnimationsData.Length - 1; i >= 0; i--)
                 {
-                    if (_openButtonHoldTimeCounter > _packOpenAnimationsData[i].OpenButtonHoldTriggerDuration)
+                    if (openButtonHoldTimeCounter  > _packOpenAnimationsData[i].OpenButtonHoldTriggerDuration)
                     {
                         packOpenAnimationIndex = i;
                         _lastPackOpenAnimationIndex = packOpenAnimationIndex;
@@ -347,7 +352,7 @@ namespace Loom.ZombieBattleground
             if (packOpenAnimationData == null)
                 throw new ArgumentNullException(nameof(packOpenAnimationData));
 
-            Log.Debug($"Goo fill value: {_openButtonHoldTimeCounter}, using pack opening animation {packOpenAnimationIndex}");
+            Log.Debug($"Goo fill value: {openButtonHoldTimeCounter }, using pack opening animation {packOpenAnimationIndex}");
 
             // Setup UI blocker
             _openedPackPanel.SetActive(true);

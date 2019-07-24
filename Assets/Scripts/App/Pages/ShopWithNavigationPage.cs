@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfPage;
 
+        private Button _purchaseButton;
+
         private List<ShopItem> _items = new List<ShopItem>();
 
         private State _state, _unfinishedState;
@@ -58,11 +60,11 @@ namespace Loom.ZombieBattleground
             SubscribeIapEvents();
 
             _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"), _uiManager.Canvas.transform, false);
+            _purchaseButton = _selfPage.transform.Find("Button_Purchase").GetComponent<Button>();
 
             UpdatePageScaleToMatchResolution();
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
-            _uiManager.DrawPopup<AreaBarPopup>();
 
             if (_iapMediator.InitializationState != IapInitializationState.Initialized)
             {
@@ -75,6 +77,7 @@ namespace Loom.ZombieBattleground
             if (!claimingSuccess)
                 return;
 
+            _purchaseButton.onClick.AddListener(PurchaseButtonClickHandle);
             ChangeState(State.WaitForInput);
             CreateItems();
         }
@@ -84,7 +87,6 @@ namespace Loom.ZombieBattleground
             Dispose();
 
             _uiManager.HidePopup<SideMenuPopup>();
-            _uiManager.HidePopup<AreaBarPopup>();
             _uiManager.HidePopup<LoadingOverlayPopup>();
 
             if (_selfPage == null)
@@ -111,7 +113,7 @@ namespace Loom.ZombieBattleground
         #region UI Handler
 
 #pragma warning disable 1998
-        private async void BuyButtonHandler(Product product)
+        private async void PurchaseButtonHandler(Product product)
 #pragma warning restore 1998
         {
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
@@ -229,16 +231,30 @@ namespace Loom.ZombieBattleground
         private void CreateItems()
         {
             Transform root = _selfPage.transform.Find("Panel_Content/Mask/Group_Packs");
+            ToggleGroup rootToggleGroup = root.GetComponent<ToggleGroup>();
             foreach (Product product in _iapMediator.Products)
             {
                 ShopItem shopItem = new ShopItem(root, _loadObjectsManager, _iapMediator, product);
-                shopItem.Button.onClick.AddListener(() =>
-                {
-                    PlayClickSound();
-                    BuyButtonHandler(product);
-                });
-
+                shopItem.Toggle.group = rootToggleGroup;
                 _items.Add(shopItem);
+            }
+
+            if (_items.Count > 0)
+            {
+                _items[0].Toggle.isOn = true;
+            }
+        }
+
+        private void PurchaseButtonClickHandle()
+        {
+            PlayClickSound();
+            foreach (ShopItem shopItem in _items)
+            {
+                if (shopItem.Toggle.isOn)
+                {
+                    PurchaseButtonHandler(shopItem.Product);
+                    break;
+                }
             }
         }
 
@@ -516,20 +532,54 @@ namespace Loom.ZombieBattleground
         {
             public GameObject GameObject { get; }
 
-            public Button Button { get; }
+            public Toggle Toggle { get; }
 
-            public TextMeshProUGUI NameText { get; }
+            public Image PackImage { get; }
+
+            public TextMeshProUGUI PackAmountText { get; }
 
             public TextMeshProUGUI PriceText { get; }
 
+            public Product Product { get; }
+
             public ShopItem(Transform parent, ILoadObjectsManager loadObjectsManager, IapMediator iapMediator, Product product)
             {
-                GameObject = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Shop_Item_Pack"), parent);
-                NameText = GameObject.transform.Find("Text_PackName").GetComponent<TextMeshProUGUI>();
-                PriceText = GameObject.transform.Find("Text_Price").GetComponent<TextMeshProUGUI>();
-                Button = GameObject.transform.Find("Button").GetComponent<Button>();
+                int packAmount = 2;
+                IapMarketplaceProduct marketplaceProduct = iapMediator.GetMarketplaceProduct(product.definition);
+                if (marketplaceProduct?.ExtraMetadata.Amount != null)
+                {
+                    packAmount = marketplaceProduct.ExtraMetadata.Amount.Value;
+                }
 
-                NameText.text = iapMediator.ProcessProductTitle(product.metadata.localizedTitle);
+                GameObject = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Shop_Item_Pack"), parent);
+                PackImage = GameObject.transform.Find("Image_Pack").GetComponent<Image>();
+                PackAmountText = GameObject.transform.Find("Text_PackAmount").GetComponent<TextMeshProUGUI>();
+                PriceText = GameObject.transform.Find("Text_Price").GetComponent<TextMeshProUGUI>();
+                Toggle = GameObject.transform.Find("Toggle").GetComponent<Toggle>();
+                Product = product;
+
+                PackAmountText.text = packAmount.ToString();
+
+                // Update image
+                string packImageName;
+                switch (packAmount)
+                {
+                    case 1:
+                        packImageName = "shop_packs_1";
+                        break;
+                    case 25:
+                        packImageName = "shop_packs_25";
+                        break;
+                    case 100:
+                        packImageName = "shop_packs_100";
+                        break;
+                    case 5:
+                    default:
+                        packImageName = "shop_packs_5";
+                        break;
+                }
+
+                PackImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(packImageName);
 
                 // Pretty-format the price
                 CultureInfo currencyCulture = CurrencyUtility.GetCultureFromIsoCurrencyCode(product.metadata.isoCurrencyCode);
