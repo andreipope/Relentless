@@ -1193,6 +1193,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DISTRACT_AND_CHANGE_STAT:
                     ability = new DistractAndChangeStatAbility(cardKind, abilityData);
+                    abilityView = new DistractAndChangeStatAbilityView((DistractAndChangeStatAbility)ability);
                     break;
                 case Enumerators.AbilityType.DAMAGE_AND_DISTRACT:
                     ability = new DamageAndDistractAbility(cardKind, abilityData);

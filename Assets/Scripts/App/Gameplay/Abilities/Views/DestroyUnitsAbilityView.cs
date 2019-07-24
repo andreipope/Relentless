@@ -150,14 +150,14 @@ namespace Loom.ZombieBattleground
 
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
-                    if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
+                    if (playerLineObject.transform.position.x > unitView.Transform.position.x - 3f)
                     {
                         DestroyUnit(unitView);
                     }
                 }
                 else
                 {
-                    if (opponentLineObject.transform.position.x + 1f < unitView.Transform.position.x)
+                    if (opponentLineObject.transform.position.x - 3f < unitView.Transform.position.x)
                     {
                         DestroyUnit(unitView);
                     }

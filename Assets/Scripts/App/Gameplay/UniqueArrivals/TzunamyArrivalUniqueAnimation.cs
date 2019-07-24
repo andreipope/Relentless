@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
             Vector3 offset = new Vector3(-1.5f, -2.5f);
 
             const float delayBeforeSpawn = 0f;
-            const float delayBeforeDestroyVFX = 6f;
+            const float delayBeforeDestroyVFX = 8.5f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
             unitView.GameObject.SetActive(false);
@@ -38,15 +38,27 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    unitView.GameObject.SetActive(true);
-                    unitView.battleframeAnimator.Play(0, -1, 1);
-
                     cameraGroupTransform.SetParent(null);
                     cameraGroupTransform.position = Vector3.zero;
+                    
                     Object.Destroy(animationVFX);
+                    
+                    if (unitView != null)
+                    {
+                        unitView.GameObject.SetActive(true);
+                        unitView.battleframeAnimator.Play(0, -1, 1);
+                        foreach (Transform child in unitView.battleframeAnimator.transform)
+                        {
+                            if (child.name == "ScrapFlies")
+                            {
+                                child.gameObject.SetActive(false);
+                                break;
+                            }
+                        }
+                        BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                    }
 
                     endArrivalCallback?.Invoke();
-                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
                 }, delayBeforeDestroyVFX);
