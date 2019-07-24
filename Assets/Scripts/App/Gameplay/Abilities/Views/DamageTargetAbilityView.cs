@@ -82,6 +82,7 @@ namespace Loom.ZombieBattleground
 
             soundClipTitle = string.Empty;
 
+            Vector3 offset = Vector3.zero;
             bool isRotate = false;
             Vector3 vfxRotation = Vector3.zero;
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
@@ -99,13 +100,14 @@ namespace Loom.ZombieBattleground
                     _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
                     soundClipTitle = effectInfo.soundName;
                     delayBeforeSound = effectInfo.delayForSound;
+                    offset = effectInfo.offset;
                     isRotate = effectInfo.isRotate;
                     vfxRotation = Ability.PlayerCallerOfAbility.IsLocalPlayer ?
                         effectInfo.localPlayerAbilityEffectRotation :
                         effectInfo.opponentPlayerAbilityEffectRotation;
                 }
 
-                CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
+                CreateVfx(targetPosition + offset, true, _delayBeforeDestroyImpact, true);
                 VfxObject.transform.eulerAngles = vfxRotation;
 
                 if
@@ -113,7 +115,8 @@ namespace Loom.ZombieBattleground
                     effectInfo != null &&
                     (
                         effectInfo.cardName == "Harpoon" ||
-                        effectInfo.cardName == "Gargantua"
+                        effectInfo.cardName == "Gargantua" ||
+                        effectInfo.cardName == "Shovel Damage"
                     )
                 )
                 {
