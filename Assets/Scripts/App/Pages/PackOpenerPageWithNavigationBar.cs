@@ -94,6 +94,8 @@ namespace Loom.ZombieBattleground
 
         private Button _openedPackPanelOpenNextPackButton;
 
+        private Button _buyMorePacksButton;
+
         private GameObject _packObjectsRoot;
 
         private RectTransform _packObjectsRootRectTransform;
@@ -180,6 +182,7 @@ namespace Loom.ZombieBattleground
             _openedPackPanelOpenNextPackButton = _openedPackPanel.transform.Find("BottomButtons/Button_OpenNextPack").GetComponent<Button>();
 
             _wrapperTransform = _selfPage.transform.Find("PackOpenerWrapper").GetComponent<RectTransform>();
+            _buyMorePacksButton = _wrapperTransform.Find("PromoPanel/Button_BuyMorePacks").GetComponent<Button>();
             _packOpenAnimationWrapperTransform = _wrapperTransform.Find("OpenAnimationWrapper").GetComponent<RectTransform>();
             Transform packOpener = _selfPage.transform.Find("PackOpenerWrapper/PackOpener/PackOpenerPanel");
             _packObjectsRoot = packOpener.Find("Packs/Offset/PacksRoot").gameObject;
@@ -197,6 +200,7 @@ namespace Loom.ZombieBattleground
 
             _currentPackTypeText.text = "";
             _currentPackTypeAmountText.text = "";
+            _buyMorePacksButton.onClick.AddListener(BuyMorePacksButtonHandler);
             _openButton.onClick.AddListener(OpenButtonHandler);
             _openButtonEventNotifier.OnPointerDownInvoked += OpenButtonPointerDownHandler;
             _openButtonEventNotifier.OnPointerUpInvoked += OpenButtonPointerUpHandler;
@@ -572,6 +576,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_packObjects[i].PackType == selectedPackType)
                     {
+                        // Update initial scroll position to selected pack type
                         _packObjectsRootRectTransform.anchoredPosition = CalculatePackObjectsRootPositionByIndex(i);
                         break;
                     }
@@ -596,7 +601,6 @@ namespace Loom.ZombieBattleground
 
         private void ClearCardOpenAnimation()
         {
-            Log.Debug(nameof(ClearCardOpenAnimation));
             foreach (OpenedPackCard packCard in _openedCards)
             {
                 packCard.Dispose();
@@ -739,6 +743,12 @@ namespace Loom.ZombieBattleground
         private void OpenButtonPointerUpHandler(PointerEventData arg0)
         {
             _isOpenButtonBeingHeld = false;
+        }
+
+        private void BuyMorePacksButtonHandler()
+        {
+            PlayClickSound();
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         #endregion
