@@ -9538,7 +9538,7 @@ GameObject:
   - component: {fileID: 4766272716713346}
   - component: {fileID: 774473766922169216}
   m_Layer: 0
-  m_Name: ShovelDamage
+  m_Name: BatDamageVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
