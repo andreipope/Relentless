@@ -29,11 +29,21 @@ namespace Loom.ZombieBattleground
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/Vortex_Arrival"));
+                                                        
+            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
+            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
 
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
+            
+            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
 
             InternalTools.DoActionDelayed(() =>
             {
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero; 
+                
                 Object.Destroy(animationVFX);
 
                 if (unitView != null)
