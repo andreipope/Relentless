@@ -15,10 +15,13 @@ namespace Loom.ZombieBattleground
         private Transform _cameraGroupTransform, _cameraVFXObj;
 
         private BoardUnitView _unitView;
+
+        private Action _endArrivalCallback;
         
         public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
+            _endArrivalCallback = endArrivalCallback;
 
             IsPlaying = true;
 
@@ -68,7 +71,7 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private void VFXEnd()
+        private void VFXEnd(bool isAbilityResolved = true)
         {
             if (CheckForCancelCoroutine != null)
             {
@@ -90,6 +93,12 @@ namespace Loom.ZombieBattleground
                 _unitView.battleframeAnimator.Play(0, -1, 1);
                 BoardController.UpdateCurrentBoardOfPlayer(_unitView.Model.OwnerPlayer, null);
             }
+
+            if (isAbilityResolved)
+            {
+                _endArrivalCallback?.Invoke();
+                _endArrivalCallback = null;
+            }
         }        
 
         private void OnAbilityInputEnd(bool isAbilityResolved)
@@ -97,7 +106,7 @@ namespace Loom.ZombieBattleground
             DamageTargetAbility.OnInputEnd -= OnAbilityInputEnd;
             if (!isAbilityResolved)
             {
-                VFXEnd();
+                VFXEnd(isAbilityResolved);
             }           
         }
     }

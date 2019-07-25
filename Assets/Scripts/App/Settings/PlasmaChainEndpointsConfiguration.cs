@@ -45,12 +45,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             BinancePackContractAddress = Address.FromString(binancePackContractAddress, ChainId);
             TronPackContractAddress = Address.FromString(tronPackContractAddress, ChainId);
             FiatPurchaseContractAddress = Address.FromString(fiatPurchaseContractAddress, ChainId);
-            OpenLotteryContractAddress = !String.IsNullOrWhiteSpace(openLotteryContractAddress) ?
-                Address.FromString(openLotteryContractAddress, ChainId) :
-                new Address();
-            TronLotteryContractAddress = !String.IsNullOrWhiteSpace(tronLotteryContractAddress) ?
-                Address.FromString(tronLotteryContractAddress, ChainId) :
-                new Address();
+            OpenLotteryContractAddress = Address.FromString(openLotteryContractAddress, ChainId);
+            TronLotteryContractAddress = Address.FromString(tronLotteryContractAddress, ChainId);
         }
 
         [JsonProperty("plasmachain_chain_id")]

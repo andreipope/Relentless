@@ -42,6 +42,8 @@ namespace Loom.ZombieBattleground.Iap
 
         public IReadOnlyList<Product> Products { get; private set; }
 
+        public IReadOnlyList<IapMarketplaceProduct> MarketplaceProductDefinitions { get; private set; }
+
         public IReadOnlyList<string> StringsRemovedFromProductTitles { get; private set; }
 
         public IReadOnlyList<Product> StorePendingPurchases => _storePendingPurchases;
@@ -80,6 +82,7 @@ namespace Loom.ZombieBattleground.Iap
                 return new IapException("Loading store data failed", e);
             }
 
+            MarketplaceProductDefinitions = productDefinitions;
             _iapPlatformStoreFacade.BeginInitialization(productDefinitions);
             return new Success();
         }
@@ -318,6 +321,20 @@ namespace Loom.ZombieBattleground.Iap
             return title.Trim();
         }
 
+        public IapMarketplaceProduct GetMarketplaceProduct(ProductDefinition productDefinition)
+        {
+            foreach (IapMarketplaceProduct marketplaceProduct in MarketplaceProductDefinitions)
+            {
+                if (marketplaceProduct.Definition.Equals(productDefinition))
+                {
+                    return marketplaceProduct;
+                    break;
+                }
+            }
+
+            return null;
+        }
+
         private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ExecutePostPurchaseProcessingInternal(
             DAppChainClient plasmaChainClient,
             string receiptJson,
@@ -459,7 +476,8 @@ namespace Loom.ZombieBattleground.Iap
                     productData.Description,
                     storeData.Currency,
                     productData.Price / (decimal) storeData.UnitPercent
-                )
+                ),
+                new IapMarketplaceProductExtraMetadata(productData.Amount)
             );
         }
 

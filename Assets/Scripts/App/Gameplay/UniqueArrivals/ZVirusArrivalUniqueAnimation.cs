@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(0.532f, 0.208f, 0f);
+            Vector3 offset = new Vector3(0f, -0.37f, 0f);
 
             const float delayBeforeSpawn = 3.5f;
 

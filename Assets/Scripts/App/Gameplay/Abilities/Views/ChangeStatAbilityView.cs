@@ -38,9 +38,9 @@ namespace Loom.ZombieBattleground
 
             Vector3 targetPosition = unitTransform.position;
 
-            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
-            {   
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);                
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact) && !_targetedUnit.IsDead)
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
@@ -55,6 +55,10 @@ namespace Loom.ZombieBattleground
                 CreateVfx(targetPosition, true, delayBeforeDestroy);
                 VfxObject.transform.SetParent(unitTransform, false);
                 VfxObject.transform.localPosition = offset;                
+                if(effectInfo != null && effectInfo.cardName == "Stapler")
+                {
+                    VfxObject.transform.Find(_targetedUnit.HasHeavy ? "Heavy" : "Normal").gameObject.SetActive(true);
+                }
             }
 
             PlaySound(soundName, soundDelay);

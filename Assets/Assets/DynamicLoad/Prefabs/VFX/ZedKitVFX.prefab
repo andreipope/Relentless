@@ -43076,9 +43076,11 @@ MonoBehaviour:
   delayForChangeState: 0
   soundName: CZB_AUD_Zed_Kit_F1_EXP
   delayForSound: 0
-  offset: {x: 0, y: 0.2, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   localOffset: {x: 0, y: 0, z: 0}
   isRotate: 0
+  localPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
+  opponentPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
   positionInfo:
     type: 0
 --- !u!1 &5534789218765444738
