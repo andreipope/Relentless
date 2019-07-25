@@ -66,6 +66,14 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 return;
             }
 
+            IAppStateManager appStateManager = GameClient.Get<IAppStateManager>();
+            if (appStateManager.AppState == Enumerators.AppState.PlaySelection ||
+                appStateManager.AppState == Enumerators.AppState.NONE)
+            {
+                GUILayout.Label("Game must finish loading");
+                return;
+            }
+
             _cardLibraryJsonPath =
                 EditorSpecialGuiUtility.DrawPersistentFilePathField(
                     _cardLibraryJsonPath,
@@ -122,7 +130,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                         byte[] pngBytes = shadowImage.EncodeToPNG();
                         DestroyImmediate(shadowImage);
 
-                        string imagePath = Path.Combine(exportPath, cardGuiItem.Card.CardKey.MouldId.Id.ToString() + ".png") ;
+                        string imagePath = Path.Combine(exportPath, cardGuiItem.Card.CardKey.MouldId.Id + ".png") ;
                         File.WriteAllBytes(imagePath, pngBytes);
                     }
                 }
@@ -205,11 +213,13 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
                     PictureTransform pictureTransform = Card.PictureTransform;
                     FloatVector3 pictureTransformPosition = pictureTransform.Position;
-                    FloatVector3 pictureTransformScale = pictureTransform.Scale;
                     EditorGUILayout.BeginVertical();
                     {
-                        pictureTransformPosition = EditorGUILayout.Vector3Field("Picture Position", pictureTransformPosition.ToVector3()).ToFloatVector3();
-                        pictureTransformScale = EditorGUILayout.Vector3Field("Picture Scale", pictureTransformScale.ToVector3()).ToFloatVector3();
+                        pictureTransformPosition =
+                            ((Vector3) EditorGUILayout.Vector2Field("Battleframe Picture Position", pictureTransformPosition.ToVector3()))
+                                .ToFloatVector3();
+                        float scaleFactor = Mathf.Max(pictureTransform.Scale.X, pictureTransform.Scale.Y);
+                        FloatVector3 pictureTransformScale = new FloatVector3(EditorGUILayout.Slider("Battleframe Picture Scale", scaleFactor, 0, 3));
                         pictureTransform =
                             new PictureTransform(
                                 pictureTransformPosition,
@@ -506,10 +516,10 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     tempCanvasGameObject = new GameObject("_TempPreviewCanvas");
                     tempCanvasGameObject.layer = freeLayer;
                     Canvas canvas = tempCanvasGameObject.AddComponent<Canvas>();
-
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
                     canvas.worldCamera = _previewUtility.Camera;
                     canvas.scaleFactor = canvasScaleFactor;
+                    canvas.pixelPerfect = false;
 
                     gameObject.transform.SetParent(tempCanvasGameObject.transform);
                 }
@@ -538,7 +548,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 {
                     if (tempCanvasGameObject != null)
                     {
-                        //DestroyImmediate(tempCanvasGameObject);
+                        DestroyImmediate(tempCanvasGameObject);
                     }
                 }
             }

@@ -100,6 +100,7 @@ namespace Loom.ZombieBattleground
             }
 
             _previewCard.GameObject.name = "CardPreview";
+            _previewCard.GameObject.transform.rotation = card.GameObject.transform.rotation;
             _previewCard.GameObject.transform.position = card.GameObject.transform.position;
             _previewCard.GameObject.transform.localScale = card.GameObject.transform.lossyScale;
 

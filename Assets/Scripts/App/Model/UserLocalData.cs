@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground.Data
 
         public Deck TutorialSavedDeck;
 
+        public Enumerators.MarketplaceCardPackType? PackOpenerLastSelectedPackType;
+
         public UserLocalData()
         {
             Reset();
@@ -64,6 +66,7 @@ namespace Loom.ZombieBattleground.Data
             }
 #endif
             TutorialTooltipsPassed = new List<int>();
+            PackOpenerLastSelectedPackType = null;
         }
     }
 }

@@ -225,6 +225,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string MarketPlaceLink = "https://loom.games/en/purchase";
 
+        internal const string PackOpenLink = "https://loom.games/en/my-packs";
+
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 
         internal const string SupportLink = "https://loom.freshdesk.com/support/home";
