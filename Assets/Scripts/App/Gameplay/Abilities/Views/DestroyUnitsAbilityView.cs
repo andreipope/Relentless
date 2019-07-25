@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
         private GameObject _cardDissapearingPrefab;
 
         private event Action OnEventEnded;
+
+        private bool _deactivateUnitImmediately;
         #endregion
 
         public DestroyUnitsAbilityView(DestroyUnitsAbility ability) : base(ability)
@@ -45,7 +47,7 @@ namespace Loom.ZombieBattleground
 
             string soundName = string.Empty;
             float delaySound = 0;
-
+            _deactivateUnitImmediately = false;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.CardNameOfAbility.Bulldozer:
                         {
+                            _deactivateUnitImmediately = true;
                             CreateVfx(targetPosition, true, delayBeforeDestroy, true);
 
                             Transform cameraVFXObj = VfxObject.transform.Find("Camera Anim/!! Camera shake");
@@ -150,14 +153,14 @@ namespace Loom.ZombieBattleground
 
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
-                    if (playerLineObject.transform.position.x > unitView.Transform.position.x - 3f)
+                    if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
                     {
                         DestroyUnit(unitView);
                     }
                 }
                 else
                 {
-                    if (opponentLineObject.transform.position.x - 3f < unitView.Transform.position.x)
+                    if (opponentLineObject.transform.position.x + 1f < unitView.Transform.position.x)
                     {
                         DestroyUnit(unitView);
                     }
@@ -179,7 +182,11 @@ namespace Loom.ZombieBattleground
             {
                 unit.ChangeModelVisibility(false);
             }
-            Ability.DestroyUnit(unit.Model);
+            if(_deactivateUnitImmediately)
+            {
+                unit.GameObject.SetActive(false);
+            }
+            Ability.DestroyUnit(unit.Model);            
         }
 
         private void CreateSubParticle(Vector3 pos, float duration = 3)
