@@ -66,12 +66,7 @@ namespace Loom.ZombieBattleground
 
                     CreateVfx(newTargetPosition, true, delayBeforeDestroy, true);
 
-                    Transform cameraVFXObj = VfxObject.transform.Find("Camera Anim/!! Camera shake");
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
-                    cameraGroupTransform.SetParent(cameraVFXObj);
-
-                    Vector3 cameraPosition = newTargetPosition * -1;
-                    cameraGroupTransform.localPosition = new Vector3(cameraPosition.x, cameraGroupTransform.localPosition.y, cameraPosition.y);
 
                     GameplayPage gameplayPage = GameClient.Get<IUIManager>().GetPage<GameplayPage>();
                     Transform actionReportPivot = GameObject.Find("ActionReportPivot").transform;
@@ -80,18 +75,24 @@ namespace Loom.ZombieBattleground
                     actionReportPivot.SetParent(pivotParent.transform);
                     CorrectActionReportPanelCoroutine = MainApp.Instance.StartCoroutine
                     (
-                        gameplayPage.CorrectReportPanelDuringCameraShake()
+                        gameplayPage.CorrectReportPanelDuringCameraShake
+                        (
+                            cameraGroupTransform, 
+                            VfxObject.transform.Find("Camera Anim/!! Camera shake")
+                        )
                     );
 
                     Ability.VFXAnimationEnded += () =>
                     {
-                        cameraGroupTransform.SetParent(null);
-                        cameraGroupTransform.position = Vector3.zero;
                         if (CorrectActionReportPanelCoroutine != null)
                         {
                             MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
                         }
                         CorrectActionReportPanelCoroutine = null;
+                        
+                        cameraGroupTransform.SetParent(null);
+                        cameraGroupTransform.position = Vector3.zero;                        
+                       
                         actionReportPivot.SetParent(null);
                         actionReportPivot.position = actionReportPivotCachePos;
                         gameplayPage.SyncActionReportPanelPositionWithPivot();

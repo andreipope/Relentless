@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
 
-        private Transform _actionReportPivot, _actionReportPanel, _cameraGroupTransform;
+        private Transform _actionReportPivot, _actionReportPanel;
 
         private TextMeshPro _playerDefenseText,
             _opponentDefenseText,
@@ -412,17 +412,14 @@ namespace Loom.ZombieBattleground
             _actionReportPanel.position = pos;
         }
         
-        public IEnumerator CorrectReportPanelDuringCameraShake()
+        public IEnumerator CorrectReportPanelDuringCameraShake( Transform cameraGroupTransform, Transform shakingAnimationObject )
         {
             while(true)
             {                
                 if ( _selfPage != null && _selfPage.activeInHierarchy && _actionReportPivot.parent != null)
                 {
-                    if (_cameraGroupTransform == null)
-                    {
-                        _cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
-                    }
-                    _actionReportPivot.parent.position = _cameraGroupTransform.position * -1f;
+                    cameraGroupTransform.position = shakingAnimationObject.localPosition;
+                    _actionReportPivot.parent.position = cameraGroupTransform.position * -1f;
                     SyncActionReportPanelPositionWithPivot();
                 }
                 yield return null;
