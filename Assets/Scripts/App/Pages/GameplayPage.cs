@@ -330,7 +330,7 @@ namespace Loom.ZombieBattleground
                 SetOverlordInfo(_opponentOverlord, Constants.Opponent);
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
-                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.Prototype.FullName;
+                                                        _pvpManager.GetOpponentUserId() : DataUtilities.GetNickName(_opponentOverlord.Prototype.Name);
             }
 
             _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
