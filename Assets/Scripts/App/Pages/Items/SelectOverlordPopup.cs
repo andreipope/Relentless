@@ -233,7 +233,7 @@ namespace Loom.ZombieBattleground
         private Sprite GetElementIcon(Enumerators.Faction faction)
         {
             string path = "Images/UI/ChooseOverlord/";
-            path = path + "/icon_element_" + faction.ToString().ToLower();
+            path = path + "/icon_element_" + faction.ToString().ToLowerInvariant();
             return _loadObjectsManager.GetObjectByPath<Sprite>(path);
         }
     }

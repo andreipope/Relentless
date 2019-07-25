@@ -77,7 +77,7 @@ public class UnitCardUI
         _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
         string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.Rank);
-        string rankName = $"Images/IconsRanks/rank_icon_{rarity.ToLower()}";
+        string rankName = $"Images/IconsRanks/rank_icon_{rarity.ToLowerInvariant()}";
         _rankImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(rankName);
 
         string imagePath = $"{Constants.PathToCardsIllustrations}{card.Picture.ToLowerInvariant()}";
@@ -87,8 +87,8 @@ public class UnitCardUI
 
         //TODO : Set icon according to card details filled by designer
         //TODO : right now there is no way to get set type information
-        string setType = Enum.GetName(typeof(Enumerators.CardSetType), Enumerators.CardSetType.Basic);
-        string setName = $"Images/IconsSet/seticon_{setType.ToLower()}";
+        string setType = Enum.GetName(typeof(Enumerators.CardSet), Enumerators.CardSet.Season1);
+        string setName = $"Images/IconsSet/seticon_{setType.ToLowerInvariant()}";
         _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
     }
 

@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
             _buttonElementsDictionary.Clear();
             foreach(Enumerators.Faction faction in AllAvailableFactionList)
             {
-                Button buttonElementIcon = Self.transform.Find("Tab_Element/Elements/Scroll View/Viewport/Content/"+faction.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Tab_Element/Elements/Scroll View/Viewport/Content/"+faction.ToString().ToLowerInvariant()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
                 (()=>
                     {
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
             _buttonRankDictionary.Clear();
             foreach (Enumerators.CardRank rank in AllAvailableRankList)
             {
-                Button button = Self.transform.Find("Tab_Rarity/Rarity/Scroll View/Viewport/Content/"+rank.ToString().ToLower()).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_Rarity/Rarity/Scroll View/Viewport/Content/"+rank.ToString().ToLowerInvariant()).GetComponent<Button>();
                 button.onClick.AddListener
                 (()=>
                     {

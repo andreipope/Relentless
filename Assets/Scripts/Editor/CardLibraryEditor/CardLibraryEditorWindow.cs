@@ -33,6 +33,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
         private IList<Card> _cards;
         private List<CardGuiItem> _cardGuiItems = new List<CardGuiItem>();
+        private bool _onlyShowStandardEdition = true;
 
         [MenuItem("Window/ZombieBattleground/Open Card Library Editor Window 2")]
         private static void ShowWindow()
@@ -95,7 +96,43 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                         File.ReadAllText(_cardLibraryJsonPath),
                         JsonUtility.CreateStrictSerializerSettings((sender, args) => throw args.ErrorContext.Error)
                     ).Cards;
-                _cardGuiItems = _cards.Select(card => new CardGuiItem(this, card)).ToList();
+
+                _cardGuiItems = new List<CardGuiItem>();
+                foreach (Card card in _cards)
+                {
+                    Card convertedCard;
+                    if (card.CardKey.Variant == Enumerators.CardVariant.Standard)
+                    {
+                        convertedCard = new Card(card);
+                    }
+                    else
+                    {
+                        CardKey sourceCardKey = new CardKey(card.CardKey.MouldId, Enumerators.CardVariant.Standard);
+                        Card sourceCard = _cards.First(c => c.CardKey == sourceCardKey);
+                        convertedCard = new Card(
+                            sourceCardKey,
+                            sourceCard.Set,
+                            sourceCard.Name,
+                            sourceCard.Cost,
+                            sourceCard.Description,
+                            sourceCard.FlavorText,
+                            sourceCard.Picture,
+                            sourceCard.Damage,
+                            sourceCard.Defense,
+                            sourceCard.Faction,
+                            sourceCard.Frame,
+                            sourceCard.Kind,
+                            sourceCard.Rank,
+                            sourceCard.Type,
+                            sourceCard.Abilities,
+                            sourceCard.PictureTransform,
+                            sourceCard.UniqueAnimation,
+                            sourceCard.Hidden
+                        );
+                    }
+
+                    _cardGuiItems.Add(new CardGuiItem(this, convertedCard));
+                }
             }
 
             if (_cards == null)
@@ -140,10 +177,15 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 }
             }
 
+            _onlyShowStandardEdition = EditorGUILayout.ToggleLeft("Hide non-Standard edition cards", _onlyShowStandardEdition);
+
             EditorSpecialGuiUtility.DrawSeparator();
 
             foreach (CardGuiItem cardGuiItem in _cardGuiItems)
             {
+                if (_onlyShowStandardEdition && cardGuiItem.OriginalCard.CardKey.Variant != Enumerators.CardVariant.Standard)
+                    continue;
+
                 cardGuiItem.IsOpened = EditorGUILayout.Foldout(cardGuiItem.IsOpened, cardGuiItem.Card.ToString());
                 if (cardGuiItem.IsOpened)
                 {
@@ -234,6 +276,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     {
                         Card = new Card(
                             Card.CardKey,
+                            Card.Set,
                             Card.Name,
                             Card.Cost,
                             Card.Description,
@@ -385,6 +428,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
                 card = new Card(
                     card.CardKey,
+                    card.Set,
                     card.Name,
                     card.Cost,
                     card.Description,

@@ -368,7 +368,7 @@ namespace Loom.ZombieBattleground
         private List<Deck> GetDeckListBySearchKeywordToDisplay()
         {
             List<Deck> deckList = _myDeckPage.GetDeckList();
-            string keyword = _inputFieldSearchDeckName.text.Trim().ToLower();
+            string keyword = _inputFieldSearchDeckName.text.Trim().ToLowerInvariant();
 
             if(string.IsNullOrEmpty(keyword))
                 return deckList;
@@ -376,7 +376,7 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = new List<Deck>();
             for (int i = 0; i < deckList.Count; ++i)
             {
-                string deckName = deckList[i].Name.Trim().ToLower();
+                string deckName = deckList[i].Name.Trim().ToLowerInvariant();
                 if(deckName.Contains(keyword))
                     deckListToDisplay.Add(deckList[i]);
             }

@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground.Helpers
 
         public static string FormatStringToPascaleCase(string root)
         {
-            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(root.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
+            return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(root.ToLowerInvariant().Replace("_", " ")).Replace(" ", string.Empty);
         }
 
         public static ItemPosition GetSafePositionToInsert<T>(ItemPosition position, IReadOnlyCollection<T> list)

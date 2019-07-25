@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty(Order = 1)]
         public CardKey CardKey { get; }
 
+        public Enumerators.CardSet Set { get; }
+
         [JsonProperty(Order = 4)]
         public string Name { get; }
 
@@ -62,6 +64,7 @@ namespace Loom.ZombieBattleground.Data
         [JsonConstructor]
         public Card(
             CardKey cardKey,
+            Enumerators.CardSet set,
             string name,
             int cost,
             string description,
@@ -81,6 +84,7 @@ namespace Loom.ZombieBattleground.Data
             )
         {
             CardKey = cardKey;
+            Set = set;
             Name = name;
             Cost = cost;
             Description = description;
@@ -102,6 +106,7 @@ namespace Loom.ZombieBattleground.Data
         public Card(IReadOnlyCard sourceCard)
         {
             CardKey = sourceCard.CardKey;
+            Set = sourceCard.Set;
             Name = sourceCard.Name;
             Cost = sourceCard.Cost;
             Description = sourceCard.Description;

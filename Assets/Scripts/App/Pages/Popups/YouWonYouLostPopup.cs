@@ -29,13 +29,13 @@ namespace Loom.ZombieBattleground
         private IAppStateManager _stateManager;
 
         private ISoundManager _soundManager;
-        
+
         private ITutorialManager _tutorialManager;
 
         private BackendDataControlMediator _backendDataControlMediator;
 
         private IMatchManager _matchManager;
-        
+
         private IDataManager _dataManager;
 
         private IOverlordExperienceManager _overlordExperienceManager;
@@ -140,15 +140,15 @@ namespace Loom.ZombieBattleground
 
             _buttonPlayAgain = Self.transform.Find("Scaler/Group_Buttons/Button_PlayAgain").GetComponent<Button>();
             _buttonPlayAgain.onClick.AddListener(ButtonPlayAgainHandler);
-            
+
             _buttonContinue = Self.transform.Find("Scaler/Group_Buttons/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
-            
+
             _groupYouWin.SetActive(_isWin);
             _groupYouLost.SetActive(!_isWin);
 
             Enumerators.SoundType soundType = _isWin ? Enumerators.SoundType.WON_POPUP : Enumerators.SoundType.LOST_POPUP;
-            _soundManager.PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);  
+            _soundManager.PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);
 
 
             _imageExperienceBar = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar").GetComponent<Image>();
@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground
                 MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
                 matchManager.AppStateWasLoaded += PlayAgainWhenAppStateLoaded;
             }
-            
+
             if (_isWin)
             {
                 ContinueOnWin();
@@ -298,14 +298,14 @@ namespace Loom.ZombieBattleground
                 ContinueOnLost();
             }
         }
-        
+
         private void PlayAgainWhenAppStateLoaded()
         {
             MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
             matchManager.AppStateWasLoaded -= PlayAgainWhenAppStateLoaded;
             _uiManager.GetPage<MainMenuWithNavigationPage>().StartMatch();
         }
-        
+
         private void ButtonContinueHandler()
         {
             PlayClickSound();
@@ -320,7 +320,7 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
+
         private void ContinueOnWin()
         {
             _uiManager.HidePopup<YouWonYouLostPopup>();
@@ -341,7 +341,7 @@ namespace Loom.ZombieBattleground
                     //if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
                     //{
                     //    await GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
-                    //} 
+                    //}
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }
@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
-        
+
         private void ContinueOnLost()
         {
             if(_tutorialManager.IsTutorial)
@@ -372,8 +372,8 @@ namespace Loom.ZombieBattleground
 
         private Sprite GetOverlordPortraitSprite(Enumerators.Faction overlordFaction)
         {
-            string path = "Images/UI/WinLose/OverlordPortrait/results_overlord_"+overlordFaction.ToString().ToLower();
-            return _loadObjectsManager.GetObjectByPath<Sprite>(path);       
+            string path = "Images/UI/WinLose/OverlordPortrait/results_overlord_"+overlordFaction.ToString().ToLowerInvariant();
+            return _loadObjectsManager.GetObjectByPath<Sprite>(path);
         }
 
         private void PlayClickSound()
@@ -423,7 +423,7 @@ namespace Loom.ZombieBattleground
             _imageExperienceBar.DOFillAmount(targetProgressRatio, ExperienceFillInterval);
 
             yield return _experienceFillWait;
-            _buttonContinue.gameObject.SetActive(true);            
+            _buttonContinue.gameObject.SetActive(true);
             _buttonPlayAgain.gameObject.SetActive
             (
                 _appStateManager.AppState == Enumerators.AppState.GAMEPLAY

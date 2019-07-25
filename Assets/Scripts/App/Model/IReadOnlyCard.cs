@@ -7,6 +7,8 @@ namespace Loom.ZombieBattleground.Data
     {
         CardKey CardKey { get; }
 
+        Enumerators.CardSet Set { get; }
+
         string Name { get; }
 
         int Cost { get; }

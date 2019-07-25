@@ -71,6 +71,7 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.UniqueAnimation.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardOverrides>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardKey>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardSet.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAdditionalDamageToHeavyInAttack>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAttackOverlord>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityChangeStat>();

@@ -783,6 +783,7 @@ namespace Loom.ZombieBattleground
         {
             return new Card(
                 cardKey,
+                Enumerators.CardSet.Season1,
                 $"Card #{cardKey.MouldId.Id}",
                 0,
                 "",
@@ -1104,7 +1105,7 @@ namespace Loom.ZombieBattleground
                 {
                     _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
                     _uiManager.DrawPopup<QuestionPopup>(
-                        "This pack type can only be opened through the website.\n" +
+                        "Packs of this type can only be opened through the website.\n\n" +
                         "Do you want to redirect to the pack opener page?");
                     return new No();
                 }

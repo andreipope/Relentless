@@ -218,6 +218,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Card(
                 card.CardKey.FromProtobuf(),
+                (Enumerators.CardSet) card.Set,
                 card.Name,
                 card.Cost,
                 card.Description,

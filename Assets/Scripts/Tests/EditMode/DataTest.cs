@@ -103,6 +103,7 @@ namespace Loom.ZombieBattleground.Test
         {
             Card cardPrototype = new Card(
                 new CardKey(new MouldId(123), Enumerators.CardVariant.Standard),
+                Enumerators.CardSet.KickstarterExclusive,
                 "Foo",
                 3,
                 "description",

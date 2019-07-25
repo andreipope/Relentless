@@ -139,6 +139,7 @@ namespace Loom.ZombieBattleground.Data
             Protobuf.Card protoCard = new Protobuf.Card
             {
                 CardKey = card.CardKey.ToProtobuf(),
+                Set = (CardSet.Types.Enum) card.Set,
                 Name = card.Name,
                 Cost = card.Cost,
                 Description = card.Description,

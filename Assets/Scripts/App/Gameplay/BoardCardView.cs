@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
     public abstract class BoardCardView : ICardView
     {
         public int CardsAmountDeckEditing;
-        
+
         public int MaxCopies;
 
         public bool CardShouldBeChanged;
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
         protected TextMeshPro BodyText;
 
         protected TextMeshPro AmountText;
-        
+
         protected GameObject AmountTrayWithRadio, AmountTrayWithCounter;
 
         protected Animator CardAnimator;
@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
 
             string setName = Model.Card.Prototype.Faction.ToString();
             string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
-            string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
+            string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLowerInvariant());
 
             if (!string.IsNullOrEmpty(Model.Card.Prototype.Frame))
             {
@@ -198,7 +198,7 @@ namespace Loom.ZombieBattleground
         public CardModel Model { get; }
 
         public HandBoardCard HandBoardCard { get; set; }
-        
+
         public enum AmountTrayType
         {
             None,
@@ -207,10 +207,10 @@ namespace Loom.ZombieBattleground
         }
 
         public void SetAmount(AmountTrayType amountTrayType, int amount = -1, int maxCopies = -1)
-        {            
+        {
             AmountTrayWithRadio.SetActive(amountTrayType == AmountTrayType.Radio);
             AmountTrayWithCounter.SetActive(amountTrayType == AmountTrayType.Counter);
-            
+
             switch(amountTrayType)
             {
                 case AmountTrayType.Counter:
@@ -219,11 +219,11 @@ namespace Loom.ZombieBattleground
                 case AmountTrayType.Radio:
                     if (maxCopies > 4)
                         break;
-                        
+
                     if (MaxCopies != maxCopies)
                     {
                         Object.Destroy(BulletPointGroup);
-                        BulletPointGroup = null;                        
+                        BulletPointGroup = null;
                     }
                     if(BulletPointGroup == null)
                     {
@@ -249,11 +249,11 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 default:
-                    break;    
+                    break;
             }
-            
+
             CardsAmountDeckEditing = amount;
-            MaxCopies = maxCopies;       
+            MaxCopies = maxCopies;
         }
 
         public int FuturePositionOnBoard = 0;

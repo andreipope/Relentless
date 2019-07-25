@@ -2137,7 +2137,7 @@ namespace Loom.ZombieBattleground.Test
 
         private string UppercaseFirst(string s)
         {
-            return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLower());
+            return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLowerInvariant());
         }
 
         public enum RecordedValue
