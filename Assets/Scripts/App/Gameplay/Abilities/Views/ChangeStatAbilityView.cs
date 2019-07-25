@@ -55,6 +55,10 @@ namespace Loom.ZombieBattleground
                 CreateVfx(targetPosition, true, delayBeforeDestroy);
                 VfxObject.transform.SetParent(unitTransform, false);
                 VfxObject.transform.localPosition = offset;                
+                if(effectInfo != null && effectInfo.cardName == "Stapler")
+                {
+                    VfxObject.transform.Find(_targetedUnit.HasHeavy ? "Heavy" : "Normal").gameObject.SetActive(true);
+                }
             }
 
             PlaySound(soundName, soundDelay);
