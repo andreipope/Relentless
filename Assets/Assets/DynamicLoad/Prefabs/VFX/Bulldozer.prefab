@@ -14771,7 +14771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Bulldozer
   cardNameOfAbility: 1
-  delayBeforeEffect: 6
+  delayBeforeEffect: 5
   delayAfterEffect: 8
   delayForChangeState: 0
   soundName: CZB_AUD_Bulldozer_Drive_F1_EXP
@@ -14779,6 +14779,8 @@ MonoBehaviour:
   offset: {x: 1.1, y: 0.41, z: 0}
   localOffset: {x: 0, y: 0, z: 0}
   isRotate: 0
+  localPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
+  opponentPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
   positionInfo:
     type: 0
 --- !u!210 &41014507607554691
@@ -14848,7 +14850,7 @@ ParticleSystem:
   cullingMode: 1
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -19641,7 +19643,7 @@ ParticleSystem:
   cullingMode: 1
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -24504,7 +24506,7 @@ ParticleSystem:
   cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -39004,7 +39006,7 @@ ParticleSystem:
   cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -44080,7 +44082,7 @@ ParticleSystem:
   cullingMode: 1
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -87754,7 +87756,7 @@ ParticleSystem:
   cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -92672,7 +92674,7 @@ ParticleSystem:
   cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0

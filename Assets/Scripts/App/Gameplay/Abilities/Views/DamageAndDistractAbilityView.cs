@@ -85,8 +85,6 @@ namespace Loom.ZombieBattleground
 
                     Ability.VFXAnimationEnded += () =>
                     {
-                        cameraGroupTransform.SetParent(null);
-                        cameraGroupTransform.position = Vector3.zero;
                         if (CorrectActionReportPanelCoroutine != null)
                         {
                             MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
@@ -103,6 +101,12 @@ namespace Loom.ZombieBattleground
                     _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                     Ability.OnUpdateEvent += OnUpdateEventHandler;
+
+                    Ability.VFXAnimationEnded += () =>
+                    {
+                        cameraGroupTransform.SetParent(null);
+                        cameraGroupTransform.position = Vector3.zero;
+                    };
                 }
                 else
                 {
@@ -125,7 +129,7 @@ namespace Loom.ZombieBattleground
                 }
 
             }
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeDestroy);
         }
 
         private void CustomCreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
