@@ -34,6 +34,11 @@ namespace Loom.ZombieBattleground
 #if !UNITY_ANDROID && !UNITY_IOS
             FillResolutions();
 #endif
+
+#if UNITY_ANDROID || UNITY_IOS
+            // Arbitrary value bigger than the refresh rate, will be vsync-limited anyway
+            Application.targetFrameRate = 150;
+#endif
         }
 
         public async void Update()
@@ -118,12 +123,12 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-#if !UNITY_ANDROID && !UNITY_IOS 
+#if !UNITY_ANDROID && !UNITY_IOS
             await MakeResolutionHighestInFullScreenMode();
 #endif
         }
-  
-#if !UNITY_ANDROID && !UNITY_IOS      
+
+#if !UNITY_ANDROID && !UNITY_IOS
         private async Task MakeResolutionHighestInFullScreenMode()
         {
             if (Resolutions.Count == 0)
