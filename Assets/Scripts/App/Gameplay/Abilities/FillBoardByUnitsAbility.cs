@@ -55,6 +55,9 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+
+            InvokeActionTriggered();
+            base.UnitDiedHandler();
         }
 
         private void FillBoard(Player targetPlayer)

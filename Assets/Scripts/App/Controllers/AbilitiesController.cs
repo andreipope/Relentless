@@ -1178,6 +1178,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.FILL_BOARD_BY_UNITS:
                     ability = new FillBoardByUnitsAbility(cardKind, abilityData);
+                    abilityView = new FillBoardByUnitsAbilityView((FillBoardByUnitsAbility)ability);
                     break;
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS:
                     ability = new DealDamageToTargetThatAttackThisAbility(cardKind, abilityData);
