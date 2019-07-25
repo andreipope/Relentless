@@ -38,9 +38,9 @@ namespace Loom.ZombieBattleground
 
             Vector3 targetPosition = unitTransform.position;
 
-            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
-            {   
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);                
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact) && !_targetedUnit.IsDead)
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
