@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground.Editor {
     [Serializable]
-    internal class PreviewRenderUtility : IDisposable {
+    public class PreviewRenderUtility : IDisposable {
         [SerializeField]
         private Camera _camera;
         private RenderTexture _renderTexture;

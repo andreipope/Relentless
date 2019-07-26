@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Editor {
-    internal static class TagManager {
+    public static class TagManager {
         private const string kTagManagerPath = "ProjectSettings/TagManager.asset";
         private static SerializedObject _tagManager;
         private static SerializedProperty _tags;
