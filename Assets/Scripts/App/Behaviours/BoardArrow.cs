@@ -67,6 +67,13 @@ public class BoardArrow : MonoBehaviour
 
         SetInverse(isInverse);
     }
+    
+    public void UpdateBeginPosition(Vector2 from)
+    {
+        FromPosition = from;
+
+        ArrowObject.transform.position = FromPosition;
+    }
 
     public void UpdateLength(Vector3 target, bool isInverse = true)
     {

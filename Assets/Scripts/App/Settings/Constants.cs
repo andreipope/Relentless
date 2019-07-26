@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxDecksCount = 10;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 30f;
+        public const float PvPCheckPlayerAvailableMaxTime = 20f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
