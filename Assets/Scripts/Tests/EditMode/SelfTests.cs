@@ -6,6 +6,7 @@ using System.Reflection;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Test.MultiplayerTests;
 using NUnit.Framework;
@@ -20,7 +21,7 @@ namespace Loom.ZombieBattleground.Test
         private static readonly ILog Log = Logging.GetLog(nameof(SelfTests));
 
         [UnityTest]
-        public IEnumerator CheckForMissingCardTests()
+        public IEnumerator CheckForMissingCardTest()
         {
             string NormalizeTestName(string name)
             {
@@ -60,7 +61,11 @@ namespace Loom.ZombieBattleground.Test
                 {
                     await client.Start(contract => new DefaultContractCallProxy<RawChainEventArgs>(contract), new DAppChainClientConfiguration(), enabledLogs: false);
 
-                    foreach (Card card in client.CardLibrary)
+                    List<Card> cardLibrary =
+                        client.CardLibrary
+                            .Where(card => card.CardKey.Variant == Enumerators.CardVariant.Standard)
+                            .ToList();
+                    foreach (Card card in cardLibrary)
                     {
                         // Ignore simple cards, no point in making tests for each of them
                         if (card.Abilities.Count == 0)
@@ -84,15 +89,14 @@ namespace Loom.ZombieBattleground.Test
                             .ThenBy(card => card.Name.ToLowerInvariant())
                             .ToList();
 
-                    Debug.Log(
-                        $"Total {client.CardLibrary.Count} cards in library, " +
+                    string message =
+                        $"Total {cardLibrary.Count} Standard cards in library, " +
                         $"{numberOfCardsWithoutAbilities} cards without any abilities, " +
-                        $"{client.CardLibrary.Count - numberOfCardsWithoutAbilities - cardsWithMissingTests.Count} cards with abilities have tests, " +
+                        $"{cardLibrary.Count - numberOfCardsWithoutAbilities - cardsWithMissingTests.Count} cards with abilities have tests, " +
                         $"{cardsWithMissingTests.Count} cards with missing tests:\n" +
-                        String.Join("\n", cardsWithMissingTests)
-                        );
-
-                    //Assert.AreEqual(0,cardsWithMissingTests.Count);
+                        String.Join("\n", cardsWithMissingTests);
+                    Debug.Log(message);
+                    Assert.AreEqual(0, cardsWithMissingTests.Count, message);
                 }
                 finally
                 {
