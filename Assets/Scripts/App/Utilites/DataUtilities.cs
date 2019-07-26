@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
-        public static Card ApplyCardVariant(IReadOnlyCard variantCard, Card standardCard)
+        public static Card ApplyCardVariantOverrides(IReadOnlyCard variantCard, Card standardCard)
         {
             return new Card(
                 variantCard.CardKey,

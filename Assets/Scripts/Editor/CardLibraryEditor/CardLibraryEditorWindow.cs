@@ -334,7 +334,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 if (StandardCard == null)
                     return;
 
-                Card variantCard = DataUtilities.ApplyCardVariant(Card, StandardCard);
+                Card variantCard = DataUtilities.ApplyCardVariantOverrides(Card, StandardCard);
                 PreviewCard = new Card(
                     variantCard.CardKey,
                     variantCard.Set,
