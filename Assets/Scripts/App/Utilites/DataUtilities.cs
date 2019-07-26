@@ -167,18 +167,6 @@ namespace Loom.ZombieBattleground
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
-        public static string GetNickName(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                return name;
-
-            string nickName = string.Empty;
-            Regex pRegex = new Regex("\".*?(?=\")", RegexOptions.IgnoreCase);
-            var result = pRegex.Match(name).Value;
-            nickName = Regex.Replace(result , "\"", string.Empty);
-            return nickName;
-        }
-
         public static Card ApplyCardVariant(IReadOnlyCard variantCard, Card standardCard)
         {
             return new Card(

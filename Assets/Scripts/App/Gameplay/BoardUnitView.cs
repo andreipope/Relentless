@@ -98,6 +98,8 @@ namespace Loom.ZombieBattleground
         private const float _effectsOnUnitFadeCrossfadingDelay = 3f;
 
         private bool _crossfadingSequenceEnded = true;
+        
+        public bool IsUpdatingTweenSequence { get; set; }
 
         private List<Enumerators.GameMechanicDescription> _filteredEffectsToShow;
 
@@ -182,6 +184,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            CheckOnArrowUpdate();
             CheckOnDie();
         }
 
@@ -768,6 +771,14 @@ namespace Loom.ZombieBattleground
                     CancelTargetingArrows();
                     Model.Die();
                 }
+            }
+        }
+        
+        private void CheckOnArrowUpdate()
+        {
+            if (IsUpdatingTweenSequence && _fightTargetingArrow != null && Transform != null)
+            {
+                _fightTargetingArrow.UpdateBeginPosition(Transform.position);
             }
         }
 

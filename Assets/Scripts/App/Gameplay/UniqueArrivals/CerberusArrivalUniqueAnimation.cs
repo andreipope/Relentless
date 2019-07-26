@@ -41,11 +41,15 @@ namespace Loom.ZombieBattleground
                 Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
                 cameraGroupTransform.localPosition = cameraLocalPosition;
 
+                GameObject battleFrameParticles = unitView.Transform.Find("Walker_Arrival_VFX(Clone)/ScrapFlies").gameObject;
+
                 InternalTools.DoActionDelayed(() =>
                 {
                     unitSortingGroup.enabled = true;
 
                     unitView.GameObject.SetActive(true);
+
+                    battleFrameParticles.SetActive(false);
                     unitView.battleframeAnimator.Play(0, -1, 1);
 
                     cameraGroupTransform.SetParent(null);

@@ -260,7 +260,7 @@ namespace Loom.ZombieBattleground
 
             Log.Debug("Set _keepAliveActive = true");
             _keepAliveActive = true;
-            _nextKeepAliveSendTimer = 0;
+            _nextKeepAliveSendTimer = Constants.PvPCheckPlayerAvailableMaxTime;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
@@ -386,6 +386,10 @@ namespace Loom.ZombieBattleground
                         OnReceivePlayerLeftAction(playerActionEventData.Event);
                         break;
                     case Match.Types.Status.Ended:
+                        if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEventData.Event.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                        {
+                            _gameplayManager.OpponentPlayer.PlayerDie();
+                        }
                         GameEndedActionReceived?.Invoke();
                         break;
                     case Match.Types.Status.Canceled:
@@ -476,7 +480,7 @@ namespace Loom.ZombieBattleground
         {
             Log.Info($"{nameof(ResetCheckPlayerStatus)} (was {nameof(_keepAliveActive)} = {_keepAliveActive}, {nameof(_nextKeepAliveSendTimer)} = {_nextKeepAliveSendTimer})");
             _keepAliveActive = false;
-            _nextKeepAliveSendTimer = 0f;
+            _nextKeepAliveSendTimer = Constants.PvPCheckPlayerAvailableMaxTime;
         }
     }
 }

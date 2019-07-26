@@ -53471,7 +53471,7 @@ GameObject:
   - component: {fileID: 4558224874155504}
   - component: {fileID: 198740161504253912}
   - component: {fileID: 199899911370522280}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cracks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58199,8 +58199,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2131230863
-  m_SortingLayer: 8
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -62934,7 +62934,7 @@ GameObject:
   - component: {fileID: 4238032765742294}
   - component: {fileID: 198308207137115378}
   - component: {fileID: 199128030070138588}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CracksGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67662,8 +67662,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2131230863
-  m_SortingLayer: 8
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0

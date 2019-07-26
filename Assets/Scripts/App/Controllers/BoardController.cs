@@ -110,9 +110,11 @@ namespace Loom.ZombieBattleground
                     card.PositionOfBoard = newPositions[i].Position;
 
                     tween = card.Transform.DOMove(newPositions[i].Position, Duration).SetEase(Ease.OutSine);
+                    card.IsUpdatingTweenSequence = true;
                     tween.OnComplete(() =>
                     {
                         updateSequence.TweenEnded(tween);
+                        card.IsUpdatingTweenSequence = false;
                     });
 
                     updateSequence.Tweens[i].Tween = tween;

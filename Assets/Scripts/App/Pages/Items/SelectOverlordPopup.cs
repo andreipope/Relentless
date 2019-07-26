@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.Overlords.Find(overlords => overlords.Prototype.Id == overlordId);
 
             _overlordImage.sprite = DataUtilities.GetOverlordImage(overlord.Prototype.Faction);
-            _textSelectOverlordName.text = DataUtilities.GetNickName(overlord.Prototype.Name);
+            _textSelectOverlordName.text = overlord.Prototype.ShortName;
             _textSelectOverlordDescription.text = overlord.Prototype.ShortDescription;
 
             Enumerators.Faction againstFaction = Constants.FactionAgainstDictionary[overlord.Prototype.Faction];

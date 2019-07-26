@@ -330,7 +330,7 @@ namespace Loom.ZombieBattleground
                 SetOverlordInfo(_opponentOverlord, Constants.Opponent);
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
-                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.Prototype.FullName;
+                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.Prototype.ShortName;
                 _opponentNameText.text = PrettifyUserId(_opponentNameText.text);
             }
 
@@ -447,9 +447,6 @@ namespace Loom.ZombieBattleground
 
         private string PrettifyUserId(string userId)
         {
-            if (_matchManager.MatchType != Enumerators.MatchType.PVP)
-                return userId;
-
             return userId.Replace("ZombieSlayer_", "Champion ");
         }
 
