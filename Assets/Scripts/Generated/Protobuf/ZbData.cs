@@ -237,9 +237,9 @@ namespace Loom.ZombieBattleground.Protobuf {
             "EhAKCGRlZmVuc2UyGBggASgFEgwKBGNvc3QYGSABKAUSJgoOdGFyZ2V0Q2Fy",
             "ZEtpbmQYGiABKA4yDi5DYXJkS2luZC5FbnVtEkkKInRhcmdldEdhbWVNZWNo",
             "YW5pY0Rlc2NyaXB0aW9uVHlwZXMYGyADKA4yHS5HYW1lTWVjaGFuaWNEZXNj",
-            "cmlwdGlvbi5FbnVtGr0BChBWaXN1YWxFZmZlY3RJbmZvEjwKBFR5cGUYASAB",
+            "cmlwdGlvbi5FbnVtGr0BChBWaXN1YWxFZmZlY3RJbmZvEjwKBHR5cGUYASAB",
             "KA4yLi5BYmlsaXR5RGF0YS5WaXN1YWxFZmZlY3RJbmZvLlZpc3VhbEVmZmVj",
-            "dFR5cGUSDAoEUGF0aBgCIAEoCSJdChBWaXN1YWxFZmZlY3RUeXBlEg0KCVVu",
+            "dFR5cGUSDAoEcGF0aBgCIAEoCSJdChBWaXN1YWxFZmZlY3RUeXBlEg0KCVVu",
             "ZGVmaW5lZBAAEgoKBkltcGFjdBABEgoKBk1vdmluZxACEhAKDEltcGFjdF9I",
             "ZWF2eRADEhAKDEltcGFjdF9GZXJhbBAEIjoKD0NhcmRBYmlsaXR5UmFnZRIT",
             "CgthZGRlZERhbWFnZRgBIAEoBRISCgp3YXNBcHBsaWVkGAIgASgIIkEKKkNh",
@@ -14096,7 +14096,7 @@ namespace Loom.ZombieBattleground.Protobuf {
           return new VisualEffectInfo(this);
         }
 
-        /// <summary>Field number for the "Type" field.</summary>
+        /// <summary>Field number for the "type" field.</summary>
         public const int TypeFieldNumber = 1;
         private global::Loom.ZombieBattleground.Protobuf.AbilityData.Types.VisualEffectInfo.Types.VisualEffectType type_ = 0;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -14107,7 +14107,7 @@ namespace Loom.ZombieBattleground.Protobuf {
           }
         }
 
-        /// <summary>Field number for the "Path" field.</summary>
+        /// <summary>Field number for the "path" field.</summary>
         public const int PathFieldNumber = 2;
         private string path_ = "";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

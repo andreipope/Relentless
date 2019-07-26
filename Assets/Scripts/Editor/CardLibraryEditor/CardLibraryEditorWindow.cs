@@ -723,7 +723,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
             protected void RenderBoardUnit(Card card, int width, int height, Action<Texture2D> onDone)
             {
-                _isBoardUnitPreviewRendering = true;
+                //_isBoardUnitPreviewRendering = true;
                 IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
                 CardsController cardsController = gameplayManager.GetController<CardsController>();
 
