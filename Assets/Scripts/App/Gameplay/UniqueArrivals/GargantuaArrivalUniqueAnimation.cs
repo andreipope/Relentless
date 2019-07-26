@@ -91,6 +91,14 @@ namespace Loom.ZombieBattleground
             {
                 _unitView.GameObject.SetActive(true);
                 _unitView.battleframeAnimator.Play(0, -1, 1);
+                foreach (Transform child in _unitView.battleframeAnimator.transform)
+                {
+                    if (child.name == "ScrapFlies")
+                    {
+                        child.gameObject.SetActive(false);
+                        break;
+                    }
+                }
                 BoardController.UpdateCurrentBoardOfPlayer(_unitView.Model.OwnerPlayer, null);
             }
 
