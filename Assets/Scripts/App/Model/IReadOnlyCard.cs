@@ -40,5 +40,7 @@ namespace Loom.ZombieBattleground.Data
         Enumerators.UniqueAnimation UniqueAnimation { get; }
 
         bool Hidden { get; }
+
+        CardOverrideData Overrides { get; }
     }
 }

@@ -130,7 +130,26 @@ namespace Loom.ZombieBattleground.Test
                     FloatVector3.One
                 ),
                 Enumerators.UniqueAnimation.ShammannArrival,
-                true
+                true,
+                new CardOverrideData(
+                    null,
+                    "OverrideName",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    Enumerators.Faction.WATER,
+                    "override frame",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                )
             );
 
             string cardPrototypeSerializedToJson = JsonConvert.SerializeObject(cardPrototype, Formatting.Indented, StringJsonSerializerSettings);
@@ -140,6 +159,80 @@ namespace Loom.ZombieBattleground.Test
             WorkingCard workingCardProtobuf = new WorkingCard(cardPrototype, cardPrototype, null, new Data.InstanceId(373));
             WorkingCard workingCardDeserializedFromProtobuf = workingCardProtobuf.ToProtobuf().FromProtobuf(null);
             workingCardProtobuf.ShouldDeepEqual(workingCardDeserializedFromProtobuf);
+        }
+
+        [Test]
+        public void CardDeserializationFromJson()
+        {
+            string cardLibraryCardJson = @"
+     {
+      ""cardKey"": {
+        ""mouldId"": 3,
+        ""variant"": ""Limited""
+      },
+      ""kind"": ""CREATURE"",
+      ""faction"": ""AIR"",
+      ""name"": ""Whizper"",
+      ""description"": """",
+      ""flavorText"": ""The unfriendly ghost..."",
+      ""picture"": ""001"",
+      ""rank"": ""MINION"",
+      ""type"": ""WALKER"",
+      ""frame"": """",
+      ""damage"": 1,
+      ""defense"": 2,
+      ""cost"": 0,
+      ""pictureTransform"": {
+        ""position"": {
+          ""x"": 0.07,
+          ""y"": 0.36,
+          ""z"": 0
+        },
+        ""scale"": {
+          ""x"": 0.9,
+          ""y"": 0.9,
+          ""z"": 0.9
+        }
+      },
+      ""abilities"": [],
+      ""uniqueAnimation"": ""None"",
+      ""hidden"": false,
+      ""overrides"": {
+        ""cost"": null,
+        ""name"": {
+            ""value"": ""Legendary Zpitter""
+        },
+        ""flavorText"": {
+            ""value"": ""Zpittity-zpit, now with more zpit""
+        },
+        ""type"": {
+            ""value"": ""HEAVY""
+        },
+        ""faction"": {
+            ""value"": ""EARTH""
+        },
+        ""rank"": {
+            ""value"": ""GENERAL""
+        },
+        ""frame"": {
+            ""value"": ""legendary-frame.png""
+        },
+        ""picture"": {
+            ""value"": ""zpitter_legendary.png""
+        },
+		""hidden"": {
+            ""value"": false
+        }
+      }
+    }
+";
+            Card cardDeserializedFromJson = JsonConvert.DeserializeObject<Card>(cardLibraryCardJson, StringJsonSerializerSettings);
+            Protobuf.Card cardProtobufDeserializedFromJson = Protobuf.Card.Parser.ParseJson(cardLibraryCardJson);
+            Card cardFromProtobuf = cardProtobufDeserializedFromJson.FromProtobuf();
+            cardDeserializedFromJson.ShouldDeepEqual(cardFromProtobuf);
+
+            Assert.AreEqual("legendary-frame.png", cardDeserializedFromJson.Overrides.Frame);
+            Assert.AreEqual("legendary-frame.png", cardFromProtobuf.Overrides.Frame);
         }
 
         [Test]

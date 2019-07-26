@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -31,7 +33,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
         [SerializeField]
         private string _cardLibraryJsonPath;
 
-        private IList<Card> _cards;
+        private KeyedCollection<CardKey, Card> _cards;
         private List<CardGuiItem> _cardGuiItems = new List<CardGuiItem>();
         private bool _onlyShowStandardEdition = true;
 
@@ -92,10 +94,17 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
             if (GUILayout.Button("Load Card Library"))
             {
-                _cards = JsonConvert.DeserializeObject<CardList>(
+                List<Card> cardList =
+                    JsonConvert.DeserializeObject<CardList>(
                         File.ReadAllText(_cardLibraryJsonPath),
                         JsonUtility.CreateStrictSerializerSettings((sender, args) => throw args.ErrorContext.Error)
-                    ).Cards;
+                    )
+                        .Cards
+                        .OrderBy(card => card.CardKey, CardKey.Comparer)
+                        .ToList();
+
+                _cards = new CardKeyedCollection();
+                cardList.ForEach(card => _cards.Add(card));
 
                 _cardGuiItems = new List<CardGuiItem>();
                 foreach (Card card in _cards)
@@ -107,10 +116,11 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     }
                     else
                     {
+                        // FIXME: only use fake cards for preview
                         CardKey sourceCardKey = new CardKey(card.CardKey.MouldId, Enumerators.CardVariant.Standard);
                         Card sourceCard = _cards.First(c => c.CardKey == sourceCardKey);
                         convertedCard = new Card(
-                            sourceCardKey,
+                            card.CardKey,
                             sourceCard.Set,
                             sourceCard.Name,
                             sourceCard.Cost,
@@ -127,7 +137,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                             sourceCard.Abilities,
                             sourceCard.PictureTransform,
                             sourceCard.UniqueAnimation,
-                            sourceCard.Hidden
+                            sourceCard.Hidden,
+                            sourceCard.Overrides
                         );
                     }
 
@@ -220,6 +231,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
             [SerializeField]
             private EditorWindow Owner;
 
+            private Card _standardCard;
+
             public bool IsOpened
             {
                 get => _isOpened;
@@ -229,12 +242,16 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
             public IReadOnlyCard OriginalCard { get; }
             public Card Card { get; private set; }
 
+            public Card PreviewCard { get; private set; }
+
             public CardGuiItem(EditorWindow owner, Card card)
             {
                 Owner = owner;
                 OriginalCard = card;
                 Card = new Card(card);
+                PreviewCard = new Card(card);
                 _previewUtility = new PreviewRenderUtility();
+                UpdatePreviewCard();
             }
 
             public void DrawGui()
@@ -247,6 +264,31 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 DrawInnerGui();
             }
 
+            public void Dispose()
+            {
+                if (_cardPreviewTexture != null)
+                {
+                    DestroyImmediate(_cardPreviewTexture);
+                }
+
+                if (_deckEditingDeckCardPreviewTexture != null)
+                {
+                    DestroyImmediate(_deckEditingDeckCardPreviewTexture);
+                }
+
+                if (_boardUnitPreviewTexture != null)
+                {
+                    DestroyImmediate(_boardUnitPreviewTexture);
+                }
+
+                if (_pastActionCardPreviewTexture != null)
+                {
+                    DestroyImmediate(_pastActionCardPreviewTexture);
+                }
+
+                _previewUtility?.Cleanup();
+            }
+
             private void DrawInnerGui()
             {
                 EditorGUILayout.BeginHorizontal();
@@ -255,6 +297,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
                     PictureTransform pictureTransform = Card.PictureTransform;
                     FloatVector3 pictureTransformPosition = pictureTransform.Position;
+                    Enumerators.CardSet cardSet = Card.Set;
                     EditorGUILayout.BeginVertical();
                     {
                         pictureTransformPosition =
@@ -267,6 +310,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                                 pictureTransformPosition,
                                 pictureTransformScale
                             );
+
+                        cardSet = (Enumerators.CardSet) EditorGUILayout.EnumPopup("Set", cardSet);
                     }
 
                     EditorGUILayout.EndVertical();
@@ -276,7 +321,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     {
                         Card = new Card(
                             Card.CardKey,
-                            Card.Set,
+                            cardSet,
                             Card.Name,
                             Card.Cost,
                             Card.Description,
@@ -291,9 +336,12 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                             Card.Type,
                             Card.Abilities,
                             pictureTransform,
-                            Enumerators.UniqueAnimation.None,
-                            Card.Hidden
+                            Card.UniqueAnimation,
+                            Card.Hidden,
+                            Card.Overrides
                         );
+
+                        UpdatePreviewCard();
                     }
 
                     RenderPreviews(isChanged);
@@ -329,12 +377,38 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 EditorGUILayout.EndHorizontal();
             }
 
+            private void UpdatePreviewCard()
+            {
+                PreviewCard = new Card(
+                    Card.CardKey,
+                    Card.Set,
+                    Card.Name,
+                    Card.Cost,
+                    Card.Description,
+                    Card.FlavorText,
+                    Card.Picture,
+                    Card.Damage,
+                    Card.Defense,
+                    Card.Faction,
+                    Card.Frame,
+                    Card.Kind,
+                    Card.Rank,
+                    Card.Type,
+                    Card.Abilities,
+                    Card.PictureTransform,
+                    // Disable animation for preview
+                    Enumerators.UniqueAnimation.None,
+                    Card.Hidden,
+                    Card.Overrides
+                );
+            }
+
             private void RenderPreviews(bool force)
             {
                 if (force || _cardPreviewTexture == null)
                 {
                     _cardPreviewTexture = RenderCard(
-                        Card,
+                        PreviewCard,
                         (int) (CardImageWidth / CardPreviewDownscaleFactor),
                         (int) (CardImageHeight / CardPreviewDownscaleFactor)
                     );
@@ -343,7 +417,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 if (force || _deckEditingDeckCardPreviewTexture == null)
                 {
                     _deckEditingDeckCardPreviewTexture = RenderDeckEditingCard(
-                        Card,
+                        PreviewCard,
                         DeckEditingCardPreviewWidth,
                         DeckEditingCardPreviewHeight
                     );
@@ -352,7 +426,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 if (force || _pastActionCardPreviewTexture == null)
                 {
                     _pastActionCardPreviewTexture = RenderPastActionCard(
-                        Card,
+                        PreviewCard,
                         128,
                         128
                     );
@@ -361,7 +435,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 if (Card.Kind != Enumerators.CardKind.ITEM && (force || _boardUnitPreviewTexture == null) && !_isBoardUnitPreviewRendering)
                 {
                     RenderBoardUnit(
-                        Card,
+                        PreviewCard,
                         (int) (CardImageWidth / CardPreviewDownscaleFactor),
                         (int) (CardImageHeight / CardPreviewDownscaleFactor),
                         tex =>
@@ -372,31 +446,6 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                         }
                     );
                 }
-            }
-
-            public void Dispose()
-            {
-                if (_cardPreviewTexture != null)
-                {
-                    DestroyImmediate(_cardPreviewTexture);
-                }
-
-                if (_deckEditingDeckCardPreviewTexture != null)
-                {
-                    DestroyImmediate(_deckEditingDeckCardPreviewTexture);
-                }
-
-                if (_boardUnitPreviewTexture != null)
-                {
-                    DestroyImmediate(_boardUnitPreviewTexture);
-                }
-
-                if (_pastActionCardPreviewTexture != null)
-                {
-                    DestroyImmediate(_pastActionCardPreviewTexture);
-                }
-
-                _previewUtility?.Cleanup();
             }
 
             public Texture2D RenderCard(Card card, int width, int height)
@@ -444,7 +493,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     card.Abilities,
                     card.PictureTransform,
                     Enumerators.UniqueAnimation.None,
-                    card.Hidden
+                    card.Hidden,
+                    card.Overrides
                 );
 
                 CardModel previewModel = new CardModel(
@@ -595,6 +645,17 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                         DestroyImmediate(tempCanvasGameObject);
                     }
                 }
+            }
+        }
+
+        private class CardKeyedCollection : KeyedCollection<CardKey, Card>
+        {
+            public CardKeyedCollection()
+            {
+            }
+            protected override CardKey GetKeyForItem(Card item)
+            {
+                return item.CardKey;
             }
         }
     }

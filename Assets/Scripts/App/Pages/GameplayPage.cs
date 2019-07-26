@@ -129,7 +129,7 @@ namespace Loom.ZombieBattleground
 
             _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
             _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
-            
+
             ApplicationSettingsManager.OnResolutionChanged += UpdateActionReportPanelPosition;
         }
 
@@ -176,12 +176,12 @@ namespace Loom.ZombieBattleground
             _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
 
             _actionReportPivot = GameObject.Find("ActionReportPivot").transform;
-            _actionReportPanel = _selfPage.transform.Find("ActionReportPanel");            
+            _actionReportPanel = _selfPage.transform.Find("ActionReportPanel");
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
-            
+
             UpdateActionReportPanelPosition();
             _reportGameActionsPanel = new PastActionReportPanel
             (
@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground
                     playerNameText = _backendDataControlMediator.UserDataModel.UserId;
                 }
 
-                _playerNameText.text = playerNameText;
+                _playerNameText.text = PrettifyUserId(playerNameText);
             }
 
             if (_opponentOverlord != null)
@@ -331,6 +331,7 @@ namespace Loom.ZombieBattleground
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
                                                         _pvpManager.GetOpponentUserId() : _opponentOverlord.Prototype.FullName;
+                _opponentNameText.text = PrettifyUserId(_opponentNameText.text);
             }
 
             _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
@@ -398,7 +399,7 @@ namespace Loom.ZombieBattleground
         private async void UpdateActionReportPanelPosition()
         {
             await Task.Delay(TimeSpan.FromSeconds(0.1));
-            
+
             if (_selfPage == null)
                 return;
 
@@ -406,16 +407,16 @@ namespace Loom.ZombieBattleground
         }
 
         public void SyncActionReportPanelPositionWithPivot()
-        { 
+        {
             Vector3 pos = _actionReportPivot.position;
             pos.z = _actionReportPanel.position.z;
             _actionReportPanel.position = pos;
         }
-        
+
         public IEnumerator CorrectReportPanelDuringCameraShake()
         {
             while(true)
-            {                
+            {
                 if ( _selfPage != null && _selfPage.activeInHierarchy && _actionReportPivot.parent != null)
                 {
                     if (_cameraGroupTransform == null)
@@ -426,7 +427,7 @@ namespace Loom.ZombieBattleground
                     SyncActionReportPanelPositionWithPivot();
                 }
                 yield return null;
-            }            
+            }
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -442,6 +443,14 @@ namespace Loom.ZombieBattleground
         private int GetPercentFromMaxDeck(int index)
         {
             return 100 * index / (int)Constants.DeckMaxSize;
+        }
+
+        private string PrettifyUserId(string userId)
+        {
+            if (_matchManager.MatchType != Enumerators.MatchType.PVP)
+                return userId;
+
+            return userId.Replace("ZombieSlayer_", "Champion ");
         }
 
         private class CardZoneOnBoardStatus

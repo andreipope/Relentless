@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
@@ -16,6 +17,8 @@ namespace Loom.ZombieBattleground
 {
     public abstract class BoardCardView : ICardView
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BoardCardView));
+
         public int CardsAmountDeckEditing;
 
         public int MaxCopies;
@@ -51,6 +54,8 @@ namespace Loom.ZombieBattleground
         protected SpriteRenderer BackgroundSprite;
 
         protected SpriteRenderer RankIconSprite;
+
+        protected SpriteRenderer SetIconSprite;
 
         protected GameObject DistibuteCardObject;
 
@@ -106,6 +111,7 @@ namespace Loom.ZombieBattleground
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
             RankIconSprite = Transform.Find("RankIcon").GetComponent<SpriteRenderer>();
+            SetIconSprite = Transform.Find("SetIcon").GetComponent<SpriteRenderer>();
 
             CostText = Transform.Find("GooText").GetComponent<TextMeshPro>();
             NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
@@ -143,8 +149,8 @@ namespace Loom.ZombieBattleground
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.Rank);
 
-            string setName = Model.Card.Prototype.Faction.ToString();
-            string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
+            string factionName = Model.Card.Prototype.Faction.ToString();
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}", factionName);
             string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLowerInvariant());
 
             if (!string.IsNullOrEmpty(Model.Card.Prototype.Frame))
@@ -154,6 +160,18 @@ namespace Loom.ZombieBattleground
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
             RankIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(rankName);
+
+            if (Model.Card.Prototype.Set != Enumerators.CardSet.Undefined)
+            {
+                string setName = $"Images/IconsSet/seticon_{Model.Card.Prototype.Set.ToString().ToLowerInvariant()}";
+                SetIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(setName);
+            }
+            else
+            {
+                Log.Warn($"Card {Model.Card.Prototype} doesn't have Set defined");
+                SetIconSprite.sprite = null;
+            }
+
             Model.CardPictureWasUpdated += PictureUpdatedEvent;
             PictureUpdatedEvent();
 

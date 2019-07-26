@@ -502,7 +502,8 @@ namespace Loom.ZombieBattleground
             switch (shownPackTypes.Count)
             {
                 case 0:
-                    fakePackObjectsCount = 0;
+                    // One left pack for offset, one in center for recepticle only
+                    fakePackObjectsCount = 2;
                     break;
                 case 1:
                     fakePackObjectsCount = 1;
@@ -518,7 +519,7 @@ namespace Loom.ZombieBattleground
                     new PackObject(
                         _packObjectsRoot.transform,
                         _loadObjectsManager,
-                        shownPackTypes[shownPackTypes.Count - 1 - i]
+                        shownPackTypes.Count > 0 ? shownPackTypes[shownPackTypes.Count - 1 - i] : Enumerators.MarketplaceCardPackType.Booster
                     )
                 );
             }
@@ -535,7 +536,7 @@ namespace Loom.ZombieBattleground
                     new PackObject(
                         _packObjectsRoot.transform,
                         _loadObjectsManager,
-                        shownPackTypes[i]
+                        shownPackTypes.Count > 0 ? shownPackTypes[shownPackTypes.Count - 1 - i] : Enumerators.MarketplaceCardPackType.Booster
                     )
                 );
             }
@@ -546,15 +547,23 @@ namespace Loom.ZombieBattleground
 #endif
 
             // If there is only 1 available pack type, hide the fake left/right packs
-            if (shownPackTypes.Count <= 1)
+            switch (shownPackTypes.Count)
             {
-                _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(false));
-                _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(false));
-            }
-            else
-            {
-                _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(true));
-                _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(true));
+                case 0:
+                    _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(false, false));
+                    _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(false, false));
+
+                    // Enable central recepticle
+                    _fakeLeftPackObjects[1].SetIsVisible(false, true);
+                    break;
+                case 1:
+                    _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(false, false));
+                    _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(false, false));
+                    break;
+                default:
+                    _fakeLeftPackObjects.ForEach(pack => pack.SetIsVisible(true, true));
+                    _fakeRightPackObjects.ForEach(pack => pack.SetIsVisible(true, true));
+                    break;
             }
 
             _scrollLeftButton.interactable = _scrollRightButton.interactable = shownPackTypes.Count > 1;
@@ -799,7 +808,8 @@ namespace Loom.ZombieBattleground
                 new List<AbilityData>(),
                 new PictureTransform(new FloatVector3(0), new FloatVector3(0.4f)),
                 Enumerators.UniqueAnimation.None,
-                true
+                true,
+                null
             );
         }
 
@@ -807,7 +817,9 @@ namespace Loom.ZombieBattleground
 
         private class PackObject
         {
-            private Graphic[] _graphics;
+            private Image _packImage;
+
+            private Image _recepticleImage;
 
             public Enumerators.MarketplaceCardPackType PackType { get; }
 
@@ -821,15 +833,15 @@ namespace Loom.ZombieBattleground
                         loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/PackOpenerPack"),
                         parent);
                 GameObject.name = $"PackOpenerPack [{packType}]";
-                _graphics = GameObject.GetComponentsInChildren<Graphic>();
+
+                _recepticleImage = GameObject.transform.Find("Recepticle").GetComponent<Image>();
+                _packImage = GameObject.transform.Find("Pack").GetComponent<Image>();
             }
 
-            public void SetIsVisible(bool visible)
+            public void SetIsVisible(bool packVisible, bool recepticleVisible)
             {
-                foreach (Graphic graphic in _graphics)
-                {
-                    graphic.enabled = visible;
-                }
+                _packImage.enabled = packVisible;
+                _recepticleImage.enabled = recepticleVisible;
             }
 
             public void Dispose()
@@ -1178,7 +1190,8 @@ namespace Loom.ZombieBattleground
         {
             public FakePackOpenerController()
             {
-                switch (Random.Range(0, 3))
+                int value = Random.Range(0, 4);
+                switch (value)
                 {
                     case 0:
                         ShownPackTypes = new[]
@@ -1207,6 +1220,9 @@ namespace Loom.ZombieBattleground
                             Enumerators.MarketplaceCardPackType.Binance,
                             Enumerators.MarketplaceCardPackType.Tron
                         };
+                        break;
+                    case 3:
+                        ShownPackTypes = new Enumerators.MarketplaceCardPackType[] { };
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

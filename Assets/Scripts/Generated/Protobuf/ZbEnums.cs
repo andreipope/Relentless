@@ -187,16 +187,17 @@ namespace Loom.ZombieBattleground.Protobuf {
             "TElUWl9BSRAFEhQKEE1JWEVEX0RFRkVOU0VfQUkQBiJ/ChRFeHBlcmllbmNl",
             "QWN0aW9uVHlwZSJnCgRFbnVtEhAKDEtpbGxPdmVybG9yZBAAEg4KCktpbGxN",
             "aW5pb24QARIMCghQbGF5Q2FyZBACEhcKE0FjdGl2YXRlUmFua0FiaWxpdHkQ",
-            "AxIWChJVc2VPdmVybG9yZEFiaWxpdHkQBCIyChFDYXJkS2luZEVudW1WYWx1",
-            "ZRIdCgV2YWx1ZRgBIAEoDjIOLkNhcmRLaW5kLkVudW0iMAoQRmFjdGlvbkVu",
-            "dW1WYWx1ZRIcCgV2YWx1ZRgBIAEoDjINLkZhY3Rpb24uRW51bSI6ChVDcmVh",
-            "dHVyZVJhbmtFbnVtVmFsdWUSIQoFdmFsdWUYASABKA4yEi5DcmVhdHVyZVJh",
-            "bmsuRW51bSIyChFDYXJkVHlwZUVudW1WYWx1ZRIdCgV2YWx1ZRgBIAEoDjIO",
-            "LkNhcmRUeXBlLkVudW0iQAoYVW5pcXVlQW5pbWF0aW9uRW51bVZhbHVlEiQK",
-            "BXZhbHVlGAEgASgOMhUuVW5pcXVlQW5pbWF0aW9uLkVudW0qOAoaT3Zlcmxv",
-            "cmRTa2lsbFNlbGVjdGlvblR5cGUSCwoHUHJpbWFyeRAAEg0KCVNlY29uZGFy",
-            "eRABQiOqAiBMb29tLlpvbWJpZUJhdHRsZWdyb3VuZC5Qcm90b2J1ZmIGcHJv",
-            "dG8z"));
+            "AxIWChJVc2VPdmVybG9yZEFiaWxpdHkQBCIwChBDYXJkU2V0RW51bVZhbHVl",
+            "EhwKBXZhbHVlGAEgASgOMg0uQ2FyZFNldC5FbnVtIjIKEUNhcmRLaW5kRW51",
+            "bVZhbHVlEh0KBXZhbHVlGAEgASgOMg4uQ2FyZEtpbmQuRW51bSIwChBGYWN0",
+            "aW9uRW51bVZhbHVlEhwKBXZhbHVlGAEgASgOMg0uRmFjdGlvbi5FbnVtIjoK",
+            "FUNyZWF0dXJlUmFua0VudW1WYWx1ZRIhCgV2YWx1ZRgBIAEoDjISLkNyZWF0",
+            "dXJlUmFuay5FbnVtIjIKEUNhcmRUeXBlRW51bVZhbHVlEh0KBXZhbHVlGAEg",
+            "ASgOMg4uQ2FyZFR5cGUuRW51bSJAChhVbmlxdWVBbmltYXRpb25FbnVtVmFs",
+            "dWUSJAoFdmFsdWUYASABKA4yFS5VbmlxdWVBbmltYXRpb24uRW51bSo4ChpP",
+            "dmVybG9yZFNraWxsU2VsZWN0aW9uVHlwZRILCgdQcmltYXJ5EAASDQoJU2Vj",
+            "b25kYXJ5EAFCI6oCIExvb20uWm9tYmllQmF0dGxlZ3JvdW5kLlByb3RvYnVm",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillSelectionType), }, new pbr::GeneratedClrTypeInfo[] {
@@ -224,6 +225,7 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus), global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus.Parser, null, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus.Types.Enum) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.AIType), global::Loom.ZombieBattleground.Protobuf.AIType.Parser, null, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.AIType.Types.Enum) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ExperienceActionType), global::Loom.ZombieBattleground.Protobuf.ExperienceActionType.Parser, null, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.ExperienceActionType.Types.Enum) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardSetEnumValue), global::Loom.ZombieBattleground.Protobuf.CardSetEnumValue.Parser, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardKindEnumValue), global::Loom.ZombieBattleground.Protobuf.CardKindEnumValue.Parser, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.FactionEnumValue), global::Loom.ZombieBattleground.Protobuf.FactionEnumValue.Parser, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CreatureRankEnumValue), global::Loom.ZombieBattleground.Protobuf.CreatureRankEnumValue.Parser, new[]{ "Value" }, null, null, null),
@@ -3264,6 +3266,135 @@ namespace Loom.ZombieBattleground.Protobuf {
 
   }
 
+  public sealed partial class CardSetEnumValue : pb::IMessage<CardSetEnumValue> {
+    private static readonly pb::MessageParser<CardSetEnumValue> _parser = new pb::MessageParser<CardSetEnumValue>(() => new CardSetEnumValue());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CardSetEnumValue> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[24]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardSetEnumValue() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardSetEnumValue(CardSetEnumValue other) : this() {
+      value_ = other.value_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardSetEnumValue Clone() {
+      return new CardSetEnumValue(this);
+    }
+
+    /// <summary>Field number for the "value" field.</summary>
+    public const int ValueFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.CardSet.Types.Enum value_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardSet.Types.Enum Value {
+      get { return value_; }
+      set {
+        value_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CardSetEnumValue);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CardSetEnumValue other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Value != other.Value) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Value != 0) hash ^= Value.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Value != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Value);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Value != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Value);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CardSetEnumValue other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Value != 0) {
+        Value = other.Value;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            value_ = (global::Loom.ZombieBattleground.Protobuf.CardSet.Types.Enum) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class CardKindEnumValue : pb::IMessage<CardKindEnumValue> {
     private static readonly pb::MessageParser<CardKindEnumValue> _parser = new pb::MessageParser<CardKindEnumValue>(() => new CardKindEnumValue());
     private pb::UnknownFieldSet _unknownFields;
@@ -3272,7 +3403,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3401,7 +3532,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3530,7 +3661,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3659,7 +3790,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3788,7 +3919,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbEnumsReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

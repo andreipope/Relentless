@@ -158,7 +158,40 @@ namespace Loom.ZombieBattleground.Data
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
                 UniqueAnimation = (Protobuf.UniqueAnimation.Types.Enum) card.UniqueAnimation,
-                Hidden = card.Hidden
+                Hidden = card.Hidden,
+                Overrides = card.Overrides?.ToProtobuf()
+            };
+
+            return protoCard;
+        }
+
+        public static Protobuf.CardOverrides ToProtobuf(this CardOverrideData card)
+        {
+            if (card == null)
+                return null;
+
+            Protobuf.CardOverrides protoCard = new Protobuf.CardOverrides
+            {
+                Set = card.Set == null ? null : new CardSetEnumValue { Value = (CardSet.Types.Enum) card.Set.Value },
+                Name = card.Name == null ? null : new StringValue { Value = card.Name },
+                Cost = card.Cost == null ? null : new Int32Value { Value = card.Cost.Value },
+                Description = card.Description == null ? null : new StringValue { Value = card.Description },
+                FlavorText = card.FlavorText == null ? null : new StringValue { Value = card.FlavorText },
+                Picture = card.Picture == null ? null : new StringValue { Value = card.Picture },
+                Damage = card.Damage == null ? null : new Int32Value { Value = card.Damage.Value },
+                Defense = card.Defense == null ? null : new Int32Value { Value = card.Defense.Value },
+                Faction = card.Faction == null ? null : new FactionEnumValue { Value = (Protobuf.Faction.Types.Enum) card.Faction.Value },
+                Frame = card.Frame == null ? null : new StringValue { Value = card.Frame },
+                Kind = card.Kind == null ? null : new CardKindEnumValue { Value = (CardKind.Types.Enum) card.Kind.Value },
+                Rank = card.Rank == null ? null : new CreatureRankEnumValue { Value = (CreatureRank.Types.Enum) card.Rank.Value },
+                Type = card.Type == null ? null : new CardTypeEnumValue { Value = (CardType.Types.Enum) card.Type.Value },
+                PictureTransform = card.PictureTransform.ToProtobuf(),
+                Abilities =
+                {
+                    card.Abilities.Select(a => a.ToProtobuf())
+                },
+                UniqueAnimation = card.UniqueAnimation == null ? null : new UniqueAnimationEnumValue { Value = (Protobuf.UniqueAnimation.Types.Enum) card.UniqueAnimation.Value },
+                Hidden = card.Hidden == null ? null : new BoolValue { Value = card.Hidden.Value }
             };
 
             return protoCard;
@@ -174,15 +207,15 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static Protobuf.PictureTransform ToProtobuf(this PictureTransform cardViewInfo)
+        public static Protobuf.PictureTransform ToProtobuf(this PictureTransform pictureTransform)
         {
-            if (cardViewInfo == null)
+            if (pictureTransform == null)
                 return null;
 
             return new Protobuf.PictureTransform
             {
-                Position = cardViewInfo.Position.ToProtobuf(),
-                Scale = cardViewInfo.Scale.ToProtobuf()
+                Position = pictureTransform.Position.ToProtobuf(),
+                Scale = pictureTransform.Scale.ToProtobuf()
             };
         }
 

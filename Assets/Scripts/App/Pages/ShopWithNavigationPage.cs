@@ -546,7 +546,7 @@ namespace Loom.ZombieBattleground
             {
                 int packAmount = 0;
                 IapMarketplaceProduct marketplaceProduct = iapMediator.GetMarketplaceProduct(product.definition);
-                if (marketplaceProduct?.ExtraMetadata.Amount != null)
+                if (marketplaceProduct?.ExtraMetadata?.Amount != null)
                 {
                     packAmount = marketplaceProduct.ExtraMetadata.Amount.Value;
                 }
@@ -558,7 +558,7 @@ namespace Loom.ZombieBattleground
                 Toggle = GameObject.transform.Find("Toggle").GetComponent<Toggle>();
                 Product = product;
 
-                PackAmountText.text = packAmount.ToString();
+                PackAmountText.text = packAmount > 0 ? packAmount.ToString() : "";
 
                 // Update image
                 string packImageName;

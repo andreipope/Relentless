@@ -8,58 +8,62 @@ namespace Loom.ZombieBattleground.Data
 {
     public class Card : IReadOnlyCard
     {
-        [JsonProperty(Order = 1)]
+        [JsonProperty(Order = 10)]
         public CardKey CardKey { get; }
 
+        [JsonProperty(Order = 11)]
         public Enumerators.CardSet Set { get; }
 
-        [JsonProperty(Order = 4)]
+        [JsonProperty(Order = 40)]
         public string Name { get; }
 
-        [JsonProperty(Order = 13)]
+        [JsonProperty(Order = 130)]
         public int Cost { get; }
 
-        [JsonProperty(Order = 5)]
+        [JsonProperty(Order = 50)]
         public string Description { get; }
 
-        [JsonProperty(Order = 6)]
+        [JsonProperty(Order = 60)]
         public string FlavorText { get; }
 
-        [JsonProperty(Order = 7)]
+        [JsonProperty(Order = 70)]
         public string Picture { get; }
 
-        [JsonProperty(Order = 11)]
+        [JsonProperty(Order = 110)]
         public int Damage { get;  }
 
-        [JsonProperty(Order = 12)]
+        [JsonProperty(Order = 120)]
         public int Defense { get; }
 
-        [JsonProperty(Order = 3)]
+        [JsonProperty(Order = 30)]
         public Enumerators.Faction Faction { get; }
 
-        [JsonProperty(Order = 10)]
+        [JsonProperty(Order = 100)]
         public string Frame { get; }
 
-        [JsonProperty(Order = 2)]
+        [JsonProperty(Order = 20)]
         public Enumerators.CardKind Kind { get; }
 
-        [JsonProperty(Order = 8)]
+        [JsonProperty(Order = 80)]
         public Enumerators.CardRank Rank { get; }
 
-        [JsonProperty(Order = 9)]
+        [JsonProperty(Order = 90)]
         public Enumerators.CardType Type { get; }
 
-        [JsonProperty(Order = 15)]
+        [JsonProperty(Order = 150)]
         public IReadOnlyList<AbilityData> Abilities { get; }
 
-        [JsonProperty(Order = 14)]
+        [JsonProperty(Order = 140)]
         public PictureTransform PictureTransform { get; }
 
-        [JsonProperty(Order = 16)]
+        [JsonProperty(Order = 160)]
         public Enumerators.UniqueAnimation UniqueAnimation { get; }
 
-        [JsonProperty(Order = 17)]
+        [JsonProperty(Order = 170)]
         public bool Hidden { get; }
+
+        [JsonProperty(Order = 500)]
+        public CardOverrideData Overrides { get; }
 
         [JsonConstructor]
         public Card(
@@ -80,7 +84,8 @@ namespace Loom.ZombieBattleground.Data
             IReadOnlyList<AbilityData> abilities,
             PictureTransform pictureTransform,
             Enumerators.UniqueAnimation uniqueAnimation,
-            bool hidden
+            bool hidden,
+            CardOverrideData overrides
             )
         {
             CardKey = cardKey;
@@ -101,6 +106,7 @@ namespace Loom.ZombieBattleground.Data
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
+            Overrides = overrides;
         }
 
         public Card(IReadOnlyCard sourceCard)
@@ -126,6 +132,7 @@ namespace Loom.ZombieBattleground.Data
             PictureTransform = new PictureTransform(sourceCard.PictureTransform);
             UniqueAnimation = sourceCard.UniqueAnimation;
             Hidden = sourceCard.Hidden;
+            Overrides = Overrides;
         }
 
         public override string ToString()

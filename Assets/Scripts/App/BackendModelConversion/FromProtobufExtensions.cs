@@ -234,7 +234,34 @@ namespace Loom.ZombieBattleground.Data
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
-                card.Hidden
+                card.Hidden,
+                card.Overrides.FromProtobuf()
+            );
+        }
+
+        public static CardOverrideData FromProtobuf(this Protobuf.CardOverrides overrides)
+        {
+            if (overrides == null)
+                return null;
+
+            return new CardOverrideData(
+                (Enumerators.CardSet?) overrides.Set?.Value,
+                overrides.Name?.Value,
+                overrides.Cost?.Value,
+                overrides.Description?.Value,
+                overrides.FlavorText?.Value,
+                overrides.Picture?.Value,
+                overrides.Damage?.Value,
+                overrides.Defense?.Value,
+                (Enumerators.Faction?) overrides.Faction?.Value,
+                overrides.Frame?.Value,
+                (Enumerators.CardKind?) overrides.Kind?.Value,
+                (Enumerators.CardRank?) overrides.Rank?.Value,
+                (Enumerators.CardType?) overrides.Type?.Value,
+                overrides?.Abilities.Select(a => a.FromProtobuf()).ToList(),
+                overrides?.PictureTransform.FromProtobuf(),
+                (Enumerators.UniqueAnimation?) overrides.UniqueAnimation?.Value,
+                overrides.Hidden?.Value
             );
         }
 
