@@ -96,8 +96,6 @@ namespace Loom.ZombieBattleground
 
                             OnEventEnded += () =>
                             {
-                                cameraGroupTransform.SetParent(null);
-                                cameraGroupTransform.position = Vector3.zero;
                                 if (CorrectActionReportPanelCoroutine != null)
                                 {
                                     MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
@@ -116,6 +114,12 @@ namespace Loom.ZombieBattleground
                             _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
 
                             Ability.OnUpdateEvent += OnUpdateEventHandler;
+
+                            Ability.VFXAnimationEnded += () =>
+                            {
+                                cameraGroupTransform.SetParent(null);
+                                cameraGroupTransform.position = Vector3.zero;
+                            };
                         }
                         break;
                     case Enumerators.CardNameOfAbility.Molotov:
@@ -135,7 +139,7 @@ namespace Loom.ZombieBattleground
 
             PlaySound(soundName, delaySound);
 
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeDestroy);
         }
 
         #region Bulldozer
