@@ -69,8 +69,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
             }
 
             IAppStateManager appStateManager = GameClient.Get<IAppStateManager>();
-            Debug.Log(appStateManager.AppState);
             if (appStateManager.AppState == Enumerators.AppState.PlaySelection ||
+                appStateManager.AppState == Enumerators.AppState.APP_INIT ||
                 appStateManager.AppState == Enumerators.AppState.NONE)
             {
                 GUILayout.Label("Game must finish loading");
