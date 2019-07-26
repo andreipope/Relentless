@@ -208,8 +208,8 @@ namespace Loom.ZombieBattleground
 
             _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
-            _pictureSprite.transform.localPosition = (Vector3)Model.Card.Prototype.PictureTransform.Position;
-            _pictureSprite.transform.localScale = (Vector3)Model.Card.Prototype.PictureTransform.Scale;
+            _pictureSprite.transform.localPosition = (Vector2) Model.Card.Prototype.PictureTransforms.Battleground.Position;
+            _pictureSprite.transform.localScale = Vector3.one * Model.Card.Prototype.PictureTransforms.Battleground.Scale;
 
             _attackText.text = Model.CurrentDamage.ToString();
             _defenseText.text = Model.CurrentDefense.ToString();

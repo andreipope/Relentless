@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -33,8 +32,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
         [SerializeField]
         private string _cardLibraryJsonPath;
 
-        private KeyedCollection<CardKey, Card> _cards;
         private List<CardGuiItem> _cardGuiItems = new List<CardGuiItem>();
+
         private bool _onlyShowStandardEdition = true;
 
         [MenuItem("Window/ZombieBattleground/Open Card Library Editor Window 2")]
@@ -94,63 +93,20 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
             if (GUILayout.Button("Load Card Library"))
             {
-                List<Card> cardList =
-                    JsonConvert.DeserializeObject<CardList>(
-                        File.ReadAllText(_cardLibraryJsonPath),
-                        JsonUtility.CreateStrictSerializerSettings((sender, args) => throw args.ErrorContext.Error)
-                    )
-                        .Cards
-                        .OrderBy(card => card.CardKey, CardKey.Comparer)
-                        .ToList();
-
-                _cards = new CardKeyedCollection();
-                cardList.ForEach(card => _cards.Add(card));
-
-                _cardGuiItems = new List<CardGuiItem>();
-                foreach (Card card in _cards)
-                {
-                    Card convertedCard;
-                    if (card.CardKey.Variant == Enumerators.CardVariant.Standard)
-                    {
-                        convertedCard = new Card(card);
-                    }
-                    else
-                    {
-                        // FIXME: only use fake cards for preview
-                        CardKey sourceCardKey = new CardKey(card.CardKey.MouldId, Enumerators.CardVariant.Standard);
-                        Card sourceCard = _cards.First(c => c.CardKey == sourceCardKey);
-                        convertedCard = new Card(
-                            card.CardKey,
-                            sourceCard.Set,
-                            sourceCard.Name,
-                            sourceCard.Cost,
-                            sourceCard.Description,
-                            sourceCard.FlavorText,
-                            sourceCard.Picture,
-                            sourceCard.Damage,
-                            sourceCard.Defense,
-                            sourceCard.Faction,
-                            sourceCard.Frame,
-                            sourceCard.Kind,
-                            sourceCard.Rank,
-                            sourceCard.Type,
-                            sourceCard.Abilities,
-                            sourceCard.PictureTransform,
-                            sourceCard.UniqueAnimation,
-                            sourceCard.Hidden,
-                            sourceCard.Overrides
-                        );
-                    }
-
-                    _cardGuiItems.Add(new CardGuiItem(this, convertedCard));
-                }
+                LoadCardLibrary();
             }
 
-            if (_cards == null)
+            if (_cardGuiItems.Count == 0)
                 return;
+
+            if (GUILayout.Button("Save Card Library"))
+            {
+                SaveCardLibrary();
+            }
 
             if (GUILayout.Button("Export All Cards as Images"))
             {
+                // TODO: override card graphics with high-res variants
                 string exportPath = UnityEditor.EditorUtility.SaveFolderPanel("Select Export Folder", Application.dataPath, "CardExports");
                 if (!Directory.Exists(exportPath))
                     throw new DirectoryNotFoundException(exportPath);
@@ -170,11 +126,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                             GUIUtility.ExitGUI();
                         }
 
-                        Texture2D shadowImage = cardGuiItem.RenderCard(
-                            cardGuiItem.Card,
-                            CardImageWidth,
-                            CardImageHeight
-                        );
+                        Texture2D shadowImage = cardGuiItem.RenderCard(CardImageWidth, CardImageHeight);
                         byte[] pngBytes = shadowImage.EncodeToPNG();
                         DestroyImmediate(shadowImage);
 
@@ -194,18 +146,271 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
             foreach (CardGuiItem cardGuiItem in _cardGuiItems)
             {
-                if (_onlyShowStandardEdition && cardGuiItem.OriginalCard.CardKey.Variant != Enumerators.CardVariant.Standard)
+                if (_onlyShowStandardEdition && cardGuiItem.Card.CardKey.Variant != Enumerators.CardVariant.Standard)
                     continue;
 
-                cardGuiItem.IsOpened = EditorGUILayout.Foldout(cardGuiItem.IsOpened, cardGuiItem.Card.ToString());
+                cardGuiItem.IsOpened = EditorGUILayout.Foldout(cardGuiItem.IsOpened, cardGuiItem.Title);
                 if (cardGuiItem.IsOpened)
                 {
                     cardGuiItem.DrawGui();
+                    if (cardGuiItem.IsChanged)
+                    {
+                        // If this is a standard card, refresh variants
+                        if (cardGuiItem.Card.CardKey.Variant != Enumerators.CardVariant.Standard)
+                            continue;
+
+                        _cardGuiItems.Where(cardVariantGuiItem =>
+                                cardVariantGuiItem.Card.CardKey.MouldId == cardGuiItem.Card.CardKey.MouldId &&
+                                cardVariantGuiItem.Card.CardKey.Variant != Enumerators.CardVariant.Standard
+                            )
+                            .Cast<CardVariantGuiItem>()
+                            .ToList()
+                            .ForEach(item => item.StandardCard = (Card) cardGuiItem.Card);
+                    }
                 }
             }
         }
 
+        private void LoadCardLibrary()
+        {
+            List<Card> cards =
+                LoadCardLibraryFromJsonString(File.ReadAllText(_cardLibraryJsonPath))
+                    .OrderBy(card => card.CardKey, CardKey.Comparer)
+                    .ToList();
+
+            _cardGuiItems = new List<CardGuiItem>();
+            foreach (Card card in cards)
+            {
+                if (card.CardKey.Variant == Enumerators.CardVariant.Standard)
+                {
+                    _cardGuiItems.Add(new CardGuiItem(this, card));
+                }
+                else
+                {
+                    CardKey standardCardKey = new CardKey(card.CardKey.MouldId, Enumerators.CardVariant.Standard);
+                    Card standardCard = cards.First(c => c.CardKey == standardCardKey);
+                    _cardGuiItems.Add(new CardVariantGuiItem(this, card, standardCard));
+                }
+            }
+        }
+
+        private void SaveCardLibrary()
+        {
+            // Put Standard variants at the start
+            List<IReadOnlyCard> cards =
+                _cardGuiItems
+                    .Select(guiItem => guiItem.Card)
+                    .Where(card => card.CardKey.Variant == Enumerators.CardVariant.Standard)
+                    .OrderBy(card => card.CardKey.MouldId.Id)
+                    .Concat(
+                        _cardGuiItems
+                            .Select(guiItem => guiItem.Card)
+                            .Where(card => card.CardKey.Variant != Enumerators.CardVariant.Standard)
+                            .OrderBy(card => card.CardKey.MouldId.Id)
+                            .ThenBy(card => card.CardKey.Variant)
+                            .ToList()
+                    )
+                    .ToList();
+
+            string cardLibraryJson = SaveCardLibraryToJsonString(cards);
+            string exportPath = UnityEditor.EditorUtility.SaveFilePanel(
+                "Select File Path",
+                Path.GetDirectoryName(_cardLibraryJsonPath),
+                "card_library",
+                "json"
+            );
+            File.WriteAllText(exportPath, cardLibraryJson);
+            ShowNotification(new GUIContent("Saved!"));
+        }
+
+        private static List<Card> LoadCardLibraryFromJsonString(string json)
+        {
+            Protobuf.CardList protobufCardList = Protobuf.CardList.Parser.ParseJson(json);
+            return
+                protobufCardList.Cards
+                    .Select(card => card.FromProtobuf())
+                    .ToList();
+        }
+
+        private static string SaveCardLibraryToJsonString(List<IReadOnlyCard> cards)
+        {
+            ReadonlyCardList cardList = new ReadonlyCardList { Cards = cards };
+            JsonSerializerSettings serializerSettings =
+                JsonUtility.CreateProtobufSerializerSettings((sender, args) => Debug.LogError(args.ErrorContext.Error));
+            serializerSettings.Formatting = Formatting.Indented;
+            return JsonConvert.SerializeObject(cardList, Formatting.Indented, serializerSettings);
+            /*Protobuf.CardList protobufCardList = new Protobuf.CardList
+            {
+                Cards =
+                {
+                    cards.Select(card => card.ToProtobuf())
+                }
+            };
+            JsonFormatter jsonFormatter = new JsonFormatter(new JsonFormatter.Settings(false));
+            return JsonUtility.PrettyPrint(jsonFormatter.Format(protobufCardList));*/
+        }
+
+        private static PictureTransform DrawPictureTransformFields(string labelPrefix, PictureTransform pictureTransform)
+        {
+            EditorGUI.BeginChangeCheck();
+
+            FloatVector2 pictureTransformPosition = (FloatVector2) EditorGUILayout.Vector2Field(
+                labelPrefix + " Picture Position",
+                (Vector2) pictureTransform.Position
+            );
+            float pictureTransformScale =
+                EditorGUILayout.Slider(
+                    labelPrefix + " Picture Scale",
+                    pictureTransform.Scale,
+                    0,
+                    3
+                );
+
+            bool isChanged = EditorGUI.EndChangeCheck();
+            if (!isChanged)
+                return pictureTransform;
+
+            return new PictureTransform(
+                pictureTransformPosition,
+                pictureTransformScale
+            );
+        }
+
         [Serializable]
+        private class CardVariantGuiItem : CardGuiItem
+        {
+            private Card _standardCard;
+
+            public Card StandardCard
+            {
+                get => _standardCard;
+                set
+                {
+                    if (_standardCard == value)
+                        return;
+
+                    _standardCard = value;
+                    UpdatePreviewCard();
+                }
+            }
+
+            public CardVariantGuiItem(EditorWindow owner, Card variant, Card standardCard) : base(owner)
+            {
+                Card = new NullAbilitiesCardProxy(new Card(
+                    variant.CardKey,
+                    variant.Set,
+                    variant.Name,
+                    variant.Cost,
+                    variant.Description,
+                    variant.FlavorText,
+                    variant.Picture,
+                    variant.Damage,
+                    variant.Defense,
+                    variant.Faction,
+                    variant.Frame,
+                    variant.Kind,
+                    variant.Rank,
+                    variant.Type,
+                    variant.Abilities,
+                    variant.PictureTransforms,
+                    variant.UniqueAnimation,
+                    variant.Hidden,
+                    variant.Overrides
+                ));
+                _previewUtility = new PreviewRenderUtility();
+                StandardCard = standardCard;
+                UpdatePreviewCard();
+            }
+
+            protected override bool DrawCardEditorGui()
+            {
+                EditorGUILayout.HelpBox("Editing card variants not implemented, edit the Standard variant", MessageType.Warning);
+                return false;
+            }
+
+            protected override void UpdatePreviewCard()
+            {
+                if (StandardCard == null)
+                    return;
+
+                Card variantCard = DataUtilities.ApplyCardVariant(Card, StandardCard);
+                PreviewCard = new Card(
+                    variantCard.CardKey,
+                    variantCard.Set,
+                    variantCard.Name,
+                    variantCard.Cost,
+                    variantCard.Description,
+                    variantCard.FlavorText,
+                    variantCard.Picture,
+                    variantCard.Damage,
+                    variantCard.Defense,
+                    variantCard.Faction,
+                    variantCard.Frame,
+                    variantCard.Kind,
+                    variantCard.Rank,
+                    variantCard.Type,
+                    variantCard.Abilities,
+                    variantCard.PictureTransforms,
+                    // Disable animation for preview
+                    Enumerators.UniqueAnimation.None,
+                    variantCard.Hidden,
+                    variantCard.Overrides
+                );
+
+                Title = PreviewCard.ToString();
+                ClearPreview();
+            }
+
+            private class NullAbilitiesCardProxy : IReadOnlyCard
+            {
+                private readonly IReadOnlyCard _original;
+
+                public NullAbilitiesCardProxy(IReadOnlyCard original)
+                {
+                    _original = original;
+                }
+
+                public CardKey CardKey => _original.CardKey;
+
+                public Enumerators.CardSet Set => _original.Set;
+
+                public string Name => _original.Name;
+
+                public int Cost => _original.Cost;
+
+                public string Description => _original.Description;
+
+                public string FlavorText => _original.FlavorText;
+
+                public string Picture => _original.Picture;
+
+                public int Damage => _original.Damage;
+
+                public int Defense => _original.Defense;
+
+                public Enumerators.Faction Faction => _original.Faction;
+
+                public string Frame => _original.Frame;
+
+                public Enumerators.CardKind Kind => _original.Kind;
+
+                public Enumerators.CardRank Rank => _original.Rank;
+
+                public Enumerators.CardType Type => _original.Type;
+
+                // Returns null since abilities are ignored for variants anyway, but show up in JSON
+                public IReadOnlyList<AbilityData> Abilities => null;
+
+                public CardPictureTransforms PictureTransforms => _original.PictureTransforms;
+
+                public Enumerators.UniqueAnimation UniqueAnimation => _original.UniqueAnimation;
+
+                public bool Hidden => _original.Hidden;
+
+                public CardOverrideData Overrides => _original.Overrides;
+            }
+        }
+
         private class CardGuiItem
         {
             [SerializeField]
@@ -222,16 +427,12 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
             private bool _isBoardUnitPreviewRendering;
 
-            [SerializeField]
-            private PreviewRenderUtility _previewUtility;
+            [SerializeField] protected PreviewRenderUtility _previewUtility;
 
             [SerializeField]
             private bool _isOpened;
 
-            [SerializeField]
-            private EditorWindow Owner;
-
-            private Card _standardCard;
+            [SerializeField] protected EditorWindow Owner;
 
             public bool IsOpened
             {
@@ -239,23 +440,31 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 set => _isOpened = value;
             }
 
-            public IReadOnlyCard OriginalCard { get; }
-            public Card Card { get; private set; }
+            public IReadOnlyCard Card { get; protected set; }
 
-            public Card PreviewCard { get; private set; }
+            public Card PreviewCard { get; protected set; }
 
-            public CardGuiItem(EditorWindow owner, Card card)
+            public bool IsChanged { get; private set; }
+
+            public string Title { get; protected set; }
+
+            public CardGuiItem(EditorWindow owner, Card card) : this(owner)
             {
-                Owner = owner;
-                OriginalCard = card;
+
                 Card = new Card(card);
                 PreviewCard = new Card(card);
                 _previewUtility = new PreviewRenderUtility();
                 UpdatePreviewCard();
             }
 
+            protected CardGuiItem(EditorWindow owner)
+            {
+                Owner = owner;
+            }
+
             public void DrawGui()
             {
+                IsChanged = false;
                 if (_previewUtility == null)
                 {
                     _previewUtility = new PreviewRenderUtility();
@@ -265,6 +474,12 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
             }
 
             public void Dispose()
+            {
+                ClearPreview();
+                _previewUtility?.Cleanup();
+            }
+
+            protected void ClearPreview()
             {
                 if (_cardPreviewTexture != null)
                 {
@@ -285,99 +500,128 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 {
                     DestroyImmediate(_pastActionCardPreviewTexture);
                 }
-
-                _previewUtility?.Cleanup();
             }
 
             private void DrawInnerGui()
             {
                 EditorGUILayout.BeginHorizontal();
                 {
-                    EditorGUI.BeginChangeCheck();
-
-                    PictureTransform pictureTransform = Card.PictureTransform;
-                    FloatVector3 pictureTransformPosition = pictureTransform.Position;
-                    Enumerators.CardSet cardSet = Card.Set;
-                    EditorGUILayout.BeginVertical();
-                    {
-                        pictureTransformPosition =
-                            ((Vector3) EditorGUILayout.Vector2Field("Battleframe Picture Position", pictureTransformPosition.ToVector3()))
-                                .ToFloatVector3();
-                        float scaleFactor = Mathf.Max(pictureTransform.Scale.X, pictureTransform.Scale.Y);
-                        FloatVector3 pictureTransformScale = new FloatVector3(EditorGUILayout.Slider("Battleframe Picture Scale", scaleFactor, 0, 3));
-                        pictureTransform =
-                            new PictureTransform(
-                                pictureTransformPosition,
-                                pictureTransformScale
-                            );
-
-                        cardSet = (Enumerators.CardSet) EditorGUILayout.EnumPopup("Set", cardSet);
-                    }
-
-                    EditorGUILayout.EndVertical();
-                    bool isChanged = EditorGUI.EndChangeCheck();
-
-                    if (isChanged)
-                    {
-                        Card = new Card(
-                            Card.CardKey,
-                            cardSet,
-                            Card.Name,
-                            Card.Cost,
-                            Card.Description,
-                            Card.FlavorText,
-                            Card.Picture,
-                            Card.Damage,
-                            Card.Defense,
-                            Card.Faction,
-                            Card.Frame,
-                            Card.Kind,
-                            Card.Rank,
-                            Card.Type,
-                            Card.Abilities,
-                            pictureTransform,
-                            Card.UniqueAnimation,
-                            Card.Hidden,
-                            Card.Overrides
-                        );
-
-                        UpdatePreviewCard();
-                    }
-
+                    bool isChanged = DrawCardEditorGui();
+                    IsChanged = isChanged;
                     RenderPreviews(isChanged);
-
-                    // Card
-                    Rect rectTexture = EditorGUILayout.GetControlRect(
-                        false, _cardPreviewTexture.height, GUILayout.Width(_cardPreviewTexture.width));
-                    EditorGUI.DrawTextureTransparent(rectTexture, _cardPreviewTexture, ScaleMode.ScaleToFit, rectTexture.width / rectTexture.height);
-
-                    // Board unit
-                    if (_boardUnitPreviewTexture != null)
-                    {
-                        rectTexture = EditorGUILayout.GetControlRect(
-                            false, _boardUnitPreviewTexture.height, GUILayout.Width(_boardUnitPreviewTexture.width));;
-                        EditorGUI.DrawTextureTransparent(rectTexture, _boardUnitPreviewTexture, ScaleMode.ScaleToFit, rectTexture.width / rectTexture.height);
-                    }
-
-                    EditorGUILayout.BeginVertical();
-                    {
-                        // Deck editing card
-                        rectTexture = EditorGUILayout.GetControlRect(
-                            false, _deckEditingDeckCardPreviewTexture.height, GUILayout.Width(_deckEditingDeckCardPreviewTexture.width));;
-                        EditorGUI.DrawTextureTransparent(rectTexture, _deckEditingDeckCardPreviewTexture, ScaleMode.ScaleToFit, rectTexture.width / rectTexture.height);
-
-                        // Past action card
-                        rectTexture = EditorGUILayout.GetControlRect(
-                            false, _pastActionCardPreviewTexture.height, GUILayout.Width(_pastActionCardPreviewTexture.width));
-                        EditorGUI.DrawTextureTransparent(rectTexture, _pastActionCardPreviewTexture, ScaleMode.ScaleToFit, rectTexture.width / rectTexture.height);
-                    }
-                    EditorGUILayout.EndVertical();
-
+                    DrawPreviewsGui();
                 }
                 EditorGUILayout.EndHorizontal();
             }
 
-            private void UpdatePreviewCard()
+            protected virtual bool DrawCardEditorGui()
+            {
+                EditorGUI.BeginChangeCheck();
+
+                CardPictureTransforms cardPictureTransforms = Card.PictureTransforms;
+                Enumerators.CardSet cardSet = Card.Set;
+                EditorGUILayout.BeginVertical();
+
+                PictureTransform battlegroundPictureTransform = DrawPictureTransformFields("Battleground", cardPictureTransforms.Battleground);
+                GUILayout.Space(10);
+                PictureTransform deckUIPictureTransform = DrawPictureTransformFields("Deck UI", cardPictureTransforms.DeckUI);
+                GUILayout.Space(10);
+                PictureTransform pastActionPictureTransform = DrawPictureTransformFields("Past Action", cardPictureTransforms.PastAction);
+                GUILayout.Space(15);
+
+                cardSet = (Enumerators.CardSet) EditorGUILayout.EnumPopup("Set", cardSet);
+
+                EditorGUILayout.EndVertical();
+                bool isChanged = EditorGUI.EndChangeCheck();
+
+                if (isChanged)
+                {
+                    cardPictureTransforms = new CardPictureTransforms(
+                        battlegroundPictureTransform,
+                        deckUIPictureTransform,
+                        pastActionPictureTransform
+                    );
+                    Card = new Card(
+                        Card.CardKey,
+                        cardSet,
+                        Card.Name,
+                        Card.Cost,
+                        Card.Description,
+                        Card.FlavorText,
+                        Card.Picture,
+                        Card.Damage,
+                        Card.Defense,
+                        Card.Faction,
+                        Card.Frame,
+                        Card.Kind,
+                        Card.Rank,
+                        Card.Type,
+                        Card.Abilities,
+                        cardPictureTransforms,
+                        Card.UniqueAnimation,
+                        Card.Hidden,
+                        Card.Overrides
+                    );
+
+                    UpdatePreviewCard();
+                }
+
+                return isChanged;
+            }
+
+            private void DrawPreviewsGui()
+            {
+                // Main card view
+                Rect rectTexture = EditorGUILayout.GetControlRect(
+                    false,
+                    _cardPreviewTexture.height,
+                    GUILayout.Width(_cardPreviewTexture.width));
+                EditorGUI.DrawTextureTransparent(rectTexture,
+                    _cardPreviewTexture,
+                    ScaleMode.ScaleToFit,
+                    rectTexture.width / rectTexture.height);
+
+                // Board unit
+                rectTexture = EditorGUILayout.GetControlRect(
+                    false,
+                    (int) (CardImageHeight / CardPreviewDownscaleFactor),
+                    GUILayout.Width((int) (CardImageWidth / CardPreviewDownscaleFactor)));
+
+                if (_boardUnitPreviewTexture != null)
+                {
+                    EditorGUI.DrawTextureTransparent(rectTexture,
+                        _boardUnitPreviewTexture,
+                        ScaleMode.ScaleToFit,
+                        rectTexture.width / rectTexture.height);
+                }
+
+                EditorGUILayout.BeginVertical();
+                {
+                    // Deck editing card
+                    rectTexture = EditorGUILayout.GetControlRect(
+                        false,
+                        _deckEditingDeckCardPreviewTexture.height,
+                        GUILayout.Width(_deckEditingDeckCardPreviewTexture.width));
+
+                    EditorGUI.DrawTextureTransparent(rectTexture,
+                        _deckEditingDeckCardPreviewTexture,
+                        ScaleMode.ScaleToFit,
+                        rectTexture.width / rectTexture.height);
+
+                    // Past action card
+                    rectTexture = EditorGUILayout.GetControlRect(
+                        false,
+                        _pastActionCardPreviewTexture.height,
+                        GUILayout.Width(_pastActionCardPreviewTexture.width));
+                    EditorGUI.DrawTextureTransparent(rectTexture,
+                        _pastActionCardPreviewTexture,
+                        ScaleMode.ScaleToFit,
+                        rectTexture.width / rectTexture.height);
+                }
+                EditorGUILayout.EndVertical();
+            }
+
+            protected virtual void UpdatePreviewCard()
             {
                 PreviewCard = new Card(
                     Card.CardKey,
@@ -395,12 +639,14 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     Card.Rank,
                     Card.Type,
                     Card.Abilities,
-                    Card.PictureTransform,
+                    Card.PictureTransforms,
                     // Disable animation for preview
                     Enumerators.UniqueAnimation.None,
                     Card.Hidden,
                     Card.Overrides
                 );
+
+                Title = PreviewCard.ToString();
             }
 
             private void RenderPreviews(bool force)
@@ -448,7 +694,12 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 }
             }
 
-            public Texture2D RenderCard(Card card, int width, int height)
+            public Texture2D RenderCard(int width, int height)
+            {
+                return RenderCard(PreviewCard, width, height);
+            }
+
+            protected Texture2D RenderCard(Card card, int width, int height)
             {
                 IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
                 CardsController cardsController = gameplayManager.GetController<CardsController>();
@@ -470,8 +721,9 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 return result;
             }
 
-            private void RenderBoardUnit(Card card, int width, int height, Action<Texture2D> onDone)
+            protected void RenderBoardUnit(Card card, int width, int height, Action<Texture2D> onDone)
             {
+                _isBoardUnitPreviewRendering = true;
                 IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
                 CardsController cardsController = gameplayManager.GetController<CardsController>();
 
@@ -491,7 +743,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     card.Rank,
                     card.Type,
                     card.Abilities,
-                    card.PictureTransform,
+                    card.PictureTransforms,
                     Enumerators.UniqueAnimation.None,
                     card.Hidden,
                     card.Overrides
@@ -501,10 +753,9 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                     new WorkingCard(card, card, new Player(InstanceId.Invalid, null, false, true), InstanceId.Invalid));
                 BoardUnitView boardUnitView = new BoardUnitView(previewModel, null);
                 boardUnitView.PlayArrivalAnimation(false, false);
-                boardUnitView.battleframeAnimator.Play(0, -1, 1);
-                boardUnitView.battleframeAnimator.Update(0.1f);
+                boardUnitView.battleframeAnimator.speed = 100000;
 
-                int updateCounter = 4;
+                int updateCounter = 5;
                 void RenderDelegate()
                 {
                     updateCounter--;
@@ -513,6 +764,8 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
                     EditorApplication.update -= RenderDelegate;
 
+                    boardUnitView.battleframeAnimator.Play(0, -1, 1);
+                    boardUnitView.battleframeAnimator.Update(1000f);
                     try
                     {
                         Texture2D result = RenderPreview(boardUnitView.GameObject, width, height, orthographicSize: 1.8f);
@@ -528,7 +781,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 EditorApplication.update += RenderDelegate;
             }
 
-            private Texture2D RenderPastActionCard(Card card, int width, int height)
+            protected Texture2D RenderPastActionCard(Card card, int width, int height)
             {
                 ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
@@ -559,7 +812,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 return result;
             }
 
-            private Texture2D RenderDeckEditingCard(Card card, int width, int height)
+            protected Texture2D RenderDeckEditingCard(Card card, int width, int height)
             {
                 ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
@@ -582,7 +835,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
                 return result;
             }
 
-            private Texture2D RenderPreview(
+            protected Texture2D RenderPreview(
                 GameObject gameObject,
                 int width,
                 int height,

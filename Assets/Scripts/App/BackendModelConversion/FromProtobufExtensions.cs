@@ -59,9 +59,9 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
-        public static FloatVector3 FromProtobuf(this Vector3Float vector)
+        public static FloatVector2 FromProtobuf(this Vector2Float vector)
         {
-            return new FloatVector3(vector.X, vector.Y, vector.Z);
+            return new FloatVector2(vector.X, vector.Y);
         }
 
         public static AbilityData FromProtobuf(this Protobuf.AbilityData ability)
@@ -127,6 +127,7 @@ namespace Loom.ZombieBattleground.Data
                 new OverlordId(overlordPrototype.Id),
                 overlordPrototype.Icon,
                 overlordPrototype.Name,
+                overlordPrototype.ShortName,
                 overlordPrototype.ShortDescription,
                 overlordPrototype.LongDescription,
                 (Enumerators.Faction) overlordPrototype.Faction,
@@ -206,12 +207,24 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
+        public static Data.CardPictureTransforms FromProtobuf(this Protobuf.CardPictureTransforms pictureTransform)
+        {
+            if (pictureTransform == null)
+                return null;
+
+            return new CardPictureTransforms(
+                pictureTransform.Battleground.FromProtobuf(),
+                pictureTransform.DeckUI.FromProtobuf(),
+                pictureTransform.PastAction.FromProtobuf()
+            );
+        }
+
         public static PictureTransform FromProtobuf(this Protobuf.PictureTransform pictureTransform)
         {
             if (pictureTransform == null)
                 return null;
 
-            return new PictureTransform(pictureTransform.Position.FromProtobuf(), pictureTransform.Scale.FromProtobuf());
+            return new PictureTransform(pictureTransform.Position.FromProtobuf(), pictureTransform.Scale);
         }
 
         public static Card FromProtobuf(this Protobuf.Card card)
@@ -232,7 +245,7 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardRank) card.Rank,
                 (Enumerators.CardType) card.Type,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
-                card.PictureTransform.FromProtobuf(),
+                card.PictureTransforms.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
                 card.Hidden,
                 card.Overrides.FromProtobuf()
@@ -259,7 +272,7 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardRank?) overrides.Rank?.Value,
                 (Enumerators.CardType?) overrides.Type?.Value,
                 overrides?.Abilities.Select(a => a.FromProtobuf()).ToList(),
-                overrides?.PictureTransform.FromProtobuf(),
+                overrides?.PictureTransforms.FromProtobuf(),
                 (Enumerators.UniqueAnimation?) overrides.UniqueAnimation?.Value,
                 overrides.Hidden?.Value
             );

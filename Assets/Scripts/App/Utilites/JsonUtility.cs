@@ -1,9 +1,13 @@
 using System;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using UnityEngine;
+using ErrorEventArgs = Newtonsoft.Json.Serialization.ErrorEventArgs;
 
 namespace Loom.ZombieBattleground
 {
@@ -26,7 +30,7 @@ namespace Loom.ZombieBattleground
 
         public static JsonSerializerSettings CreateProtobufSerializerSettings(EventHandler<ErrorEventArgs> errorHandler)
         {
-            DefaultContractResolver contractResolver = new DefaultContractResolver
+            ProtobufContractResolver contractResolver = new ProtobufContractResolver
             {
                 NamingStrategy = new CamelCaseNamingStrategy
                 {
@@ -36,6 +40,7 @@ namespace Loom.ZombieBattleground
 
             return new JsonSerializerSettings
             {
+                DefaultValueHandling = DefaultValueHandling.Ignore,
                 Culture = CultureInfo.InvariantCulture,
                 Converters =
                 {
@@ -52,6 +57,21 @@ namespace Loom.ZombieBattleground
         public static string PrettyPrint(string json)
         {
             return JToken.Parse(json).ToString(Formatting.Indented);
+        }
+
+        private class ProtobufContractResolver : DefaultContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
+                if (property.PropertyType == typeof(string))
+                {
+                    // Do not include empty strings
+                    property.ShouldSerialize = instance =>
+                        !string.IsNullOrWhiteSpace(instance.GetType().GetProperty(member.Name).GetValue(instance, null) as string);
+                }
+                return property;
+            }
         }
 
         private class WholeValueDecimalJsonConverter : JsonConverter

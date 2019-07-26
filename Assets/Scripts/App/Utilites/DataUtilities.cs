@@ -179,5 +179,29 @@ namespace Loom.ZombieBattleground
             return nickName;
         }
 
+        public static Card ApplyCardVariant(IReadOnlyCard variantCard, Card standardCard)
+        {
+            return new Card(
+                variantCard.CardKey,
+                variantCard.Overrides?.Set ?? standardCard.Set,
+                variantCard.Overrides?.Name ?? standardCard.Name,
+                variantCard.Overrides?.Cost ?? standardCard.Cost,
+                variantCard.Overrides?.Description ?? standardCard.Description,
+                variantCard.Overrides?.FlavorText ?? standardCard.FlavorText,
+                variantCard.Overrides?.Picture ?? standardCard.Picture,
+                variantCard.Overrides?.Damage ?? standardCard.Damage,
+                variantCard.Overrides?.Defense ?? standardCard.Defense,
+                variantCard.Overrides?.Faction ?? standardCard.Faction,
+                variantCard.Overrides?.Frame ?? standardCard.Frame,
+                variantCard.Overrides?.Kind ?? standardCard.Kind,
+                variantCard.Overrides?.Rank ?? standardCard.Rank,
+                variantCard.Overrides?.Type ?? standardCard.Type,
+                variantCard.Overrides?.Abilities ?? standardCard.Abilities,
+                variantCard.Overrides?.PictureTransforms ?? standardCard.PictureTransforms,
+                variantCard.Overrides?.UniqueAnimation ?? standardCard.UniqueAnimation,
+                variantCard.Overrides?.Hidden ?? standardCard.Hidden,
+                null
+            );
+        }
     }
 }

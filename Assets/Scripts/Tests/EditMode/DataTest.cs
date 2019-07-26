@@ -88,14 +88,11 @@ namespace Loom.ZombieBattleground.Test
         public void PictureTransformDeserialization()
         {
             string json =
-                "        {\r\n            \"position\": {\r\n                \"x\": 0.07,\r\n                \"y\": 0.02,\r\n                \"z\": 0\r\n            },\r\n            \"scale\": {\r\n                \"x\": 0.9,\r\n                \"y\": 0.9,\r\n                \"z\": 0.9\r\n            }\r\n        }";
+                "        {\r\n            \"position\": {\r\n                \"x\": 0.07,\r\n                \"y\": 0.02\r\n                },\r\n            \"scale\": 0.9\r\n        }";
             PictureTransform pictureTransform = JsonConvert.DeserializeObject<PictureTransform>(json, StringJsonSerializerSettings);
             Assert.AreEqual(0.07f, pictureTransform.Position.X);
             Assert.AreEqual(0.02f, pictureTransform.Position.Y);
-            Assert.AreEqual(0f, pictureTransform.Position.Z);
-            Assert.AreEqual(0.9f, pictureTransform.Scale.X);
-            Assert.AreEqual(0.9f, pictureTransform.Scale.Y);
-            Assert.AreEqual(0.9f, pictureTransform.Scale.Z);
+            Assert.AreEqual(0.9f, pictureTransform.Scale);
         }
 
         [Test]
@@ -125,9 +122,19 @@ namespace Loom.ZombieBattleground.Test
                             new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null), "")
                         })
                 },
-                new PictureTransform(
-                    new FloatVector3(0.3f, 0.4f, 0.5f),
-                    FloatVector3.One
+                new Data.CardPictureTransforms(
+                    new PictureTransform(
+                        new FloatVector2(0.3f, 0.4f),
+                        1f
+                    ),
+                    new PictureTransform(
+                        new FloatVector2(0.5f, 0.6f),
+                        1.1f
+                    ),
+                    new PictureTransform(
+                        new FloatVector2(0.7f, 0.8f),
+                        1.2f
+                    )
                 ),
                 Enumerators.UniqueAnimation.ShammannArrival,
                 true,
@@ -164,7 +171,7 @@ namespace Loom.ZombieBattleground.Test
         [Test]
         public void CardDeserializationFromJson()
         {
-            string cardLibraryCardJson = @"
+            const string cardLibraryCardJson = @"
      {
       ""cardKey"": {
         ""mouldId"": 3,
@@ -182,16 +189,13 @@ namespace Loom.ZombieBattleground.Test
       ""damage"": 1,
       ""defense"": 2,
       ""cost"": 0,
-      ""pictureTransform"": {
-        ""position"": {
-          ""x"": 0.07,
-          ""y"": 0.36,
-          ""z"": 0
-        },
-        ""scale"": {
-          ""x"": 0.9,
-          ""y"": 0.9,
-          ""z"": 0.9
+      ""pictureTransforms"": {
+        ""battleground"": {
+          ""position"": {
+            ""x"": 0.07,
+            ""y"": 0.36
+          },
+          ""scale"": 0.9
         }
       },
       ""abilities"": [],
@@ -243,9 +247,9 @@ namespace Loom.ZombieBattleground.Test
                 Id = 1,
                 Icon = "icon",
                 Name = "name",
+                ShortName = "short name",
                 ShortDescription = "short desc",
                 LongDescription = "long desc",
-
                 Faction = Protobuf.Faction.Types.Enum.Life,
                 Skills =
                 {
@@ -290,6 +294,7 @@ namespace Loom.ZombieBattleground.Test
                 new OverlordId(1),
                 "icon",
                 "name",
+                "short name",
                 "short desc",
                 "long desc",
                 Enumerators.Faction.LIFE,

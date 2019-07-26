@@ -806,7 +806,11 @@ namespace Loom.ZombieBattleground
                 Enumerators.CardRank.MINION,
                 Enumerators.CardType.UNDEFINED,
                 new List<AbilityData>(),
-                new PictureTransform(new FloatVector3(0), new FloatVector3(0.4f)),
+                new CardPictureTransforms(
+                    new PictureTransform(new FloatVector2(0), 0.4f),
+                    null,
+                    null
+                ),
                 Enumerators.UniqueAnimation.None,
                 true,
                 null

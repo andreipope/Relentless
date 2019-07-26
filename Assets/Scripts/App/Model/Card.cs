@@ -8,61 +8,42 @@ namespace Loom.ZombieBattleground.Data
 {
     public class Card : IReadOnlyCard
     {
-        [JsonProperty(Order = 10)]
         public CardKey CardKey { get; }
 
-        [JsonProperty(Order = 11)]
         public Enumerators.CardSet Set { get; }
 
-        [JsonProperty(Order = 40)]
         public string Name { get; }
 
-        [JsonProperty(Order = 130)]
         public int Cost { get; }
 
-        [JsonProperty(Order = 50)]
         public string Description { get; }
 
-        [JsonProperty(Order = 60)]
         public string FlavorText { get; }
 
-        [JsonProperty(Order = 70)]
         public string Picture { get; }
 
-        [JsonProperty(Order = 110)]
         public int Damage { get;  }
 
-        [JsonProperty(Order = 120)]
         public int Defense { get; }
 
-        [JsonProperty(Order = 30)]
         public Enumerators.Faction Faction { get; }
 
-        [JsonProperty(Order = 100)]
         public string Frame { get; }
 
-        [JsonProperty(Order = 20)]
         public Enumerators.CardKind Kind { get; }
 
-        [JsonProperty(Order = 80)]
         public Enumerators.CardRank Rank { get; }
 
-        [JsonProperty(Order = 90)]
         public Enumerators.CardType Type { get; }
 
-        [JsonProperty(Order = 150)]
         public IReadOnlyList<AbilityData> Abilities { get; }
 
-        [JsonProperty(Order = 140)]
-        public PictureTransform PictureTransform { get; }
+        public CardPictureTransforms PictureTransforms { get; }
 
-        [JsonProperty(Order = 160)]
         public Enumerators.UniqueAnimation UniqueAnimation { get; }
 
-        [JsonProperty(Order = 170)]
         public bool Hidden { get; }
 
-        [JsonProperty(Order = 500)]
         public CardOverrideData Overrides { get; }
 
         [JsonConstructor]
@@ -82,7 +63,7 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardRank rank,
             Enumerators.CardType type,
             IReadOnlyList<AbilityData> abilities,
-            PictureTransform pictureTransform,
+            CardPictureTransforms pictureTransforms,
             Enumerators.UniqueAnimation uniqueAnimation,
             bool hidden,
             CardOverrideData overrides
@@ -103,7 +84,7 @@ namespace Loom.ZombieBattleground.Data
             Rank = rank;
             Type = type;
             Abilities = abilities ?? new List<AbilityData>();
-            PictureTransform = pictureTransform;
+            PictureTransforms = pictureTransforms;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
             Overrides = overrides;
@@ -126,10 +107,11 @@ namespace Loom.ZombieBattleground.Data
             Rank = sourceCard.Rank;
             Type = sourceCard.Type;
             Abilities =
-                sourceCard.Abilities
+                sourceCard
+                    .Abilities?
                     .Select(a => new AbilityData(a))
                     .ToList();
-            PictureTransform = new PictureTransform(sourceCard.PictureTransform);
+            PictureTransforms = sourceCard.PictureTransforms == null ? null : new CardPictureTransforms(sourceCard.PictureTransforms);
             UniqueAnimation = sourceCard.UniqueAnimation;
             Hidden = sourceCard.Hidden;
             Overrides = Overrides;
@@ -141,20 +123,51 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
+    public class CardPictureTransforms
+    {
+        [JsonProperty]
+        public PictureTransform Battleground { get; } = new PictureTransform();
+
+        [JsonProperty("deckUI")]
+        public PictureTransform DeckUI { get; } = new PictureTransform(FloatVector2.Zero, 1f);
+
+        [JsonProperty]
+        public PictureTransform PastAction { get; } = new PictureTransform(FloatVector2.Zero, 1f);
+
+        public CardPictureTransforms()
+        {
+        }
+
+        [JsonConstructor]
+        public CardPictureTransforms(PictureTransform battleground, PictureTransform deckUI, PictureTransform pastAction)
+        {
+            Battleground = battleground;
+            DeckUI = deckUI ?? DeckUI;
+            PastAction = pastAction ?? PastAction;
+        }
+
+        public CardPictureTransforms(CardPictureTransforms source)
+        {
+            Battleground = source.Battleground;
+            DeckUI = source.DeckUI;
+            PastAction = source.PastAction;
+        }
+    }
+
     public class PictureTransform
     {
         [JsonProperty]
-        public FloatVector3 Position { get; } = FloatVector3.Zero;
+        public FloatVector2 Position { get; } = FloatVector2.Zero;
 
         [JsonProperty]
-        public FloatVector3 Scale { get; } = new FloatVector3(0.38f);
+        public float Scale { get; } = 0.38f;
 
         public PictureTransform()
         {
         }
 
         [JsonConstructor]
-        public PictureTransform(FloatVector3 position, FloatVector3 scale)
+        public PictureTransform(FloatVector2 position, float scale)
         {
             Position = position;
             Scale = scale;

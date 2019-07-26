@@ -131,4 +131,10 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("cards")]
         public IList<Card> Cards;
     }
+
+    public class ReadonlyCardList
+    {
+        [JsonProperty("cards")]
+        public IList<IReadOnlyCard> Cards;
+    }
 }

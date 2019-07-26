@@ -62,6 +62,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string Name { get; }
 
+        public string ShortName { get; }
+
         public string ShortDescription { get; }
 
         public string LongDescription { get; }
@@ -78,6 +80,7 @@ namespace Loom.ZombieBattleground.Data
             OverlordId id,
             string icon,
             string name,
+            string shortName,
             string shortDescription,
             string longDescription,
             Enumerators.Faction faction,
@@ -87,6 +90,7 @@ namespace Loom.ZombieBattleground.Data
             Id = id;
             Icon = icon;
             Name = name;
+            ShortName = shortName;
             ShortDescription = shortDescription;
             LongDescription = longDescription;
             Faction = faction;

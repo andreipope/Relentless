@@ -43,16 +43,6 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
-        public static Vector3 ToVector3(this FloatVector3 vector)
-        {
-            return new Vector3(vector.X, vector.Y, vector.Z);
-        }
-
-        public static FloatVector3 ToFloatVector3(this Vector3 vector)
-        {
-            return new FloatVector3(vector.x, vector.y, vector.z);
-        }
-
         public static string LimitStringLength(string str, int maxLength)
         {
             if (str.Length < maxLength)
@@ -69,7 +59,7 @@ namespace Loom.ZombieBattleground
         public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dtDateTime = UnixEpoch;
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
@@ -260,18 +250,18 @@ namespace Loom.ZombieBattleground
             output = output.Replace('_', '/');
             switch (output.Length % 4)
             {
-                case 0: 
-                    break; 
-                case 2: 
-                    output += "=="; 
+                case 0:
                     break;
-                case 3: 
-                    output += "="; 
-                    break; 
-                default: 
+                case 2:
+                    output += "==";
+                    break;
+                case 3:
+                    output += "=";
+                    break;
+                default:
                     throw new Exception("Illegal base64url string!");
             }
-            byte[] converted = Convert.FromBase64String(output); 
+            byte[] converted = Convert.FromBase64String(output);
             return converted;
         }
 

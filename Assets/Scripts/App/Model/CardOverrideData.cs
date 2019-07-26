@@ -65,8 +65,8 @@ namespace Loom.ZombieBattleground.Data
         public IReadOnlyList<AbilityData> Abilities { get; }
 
         [JsonProperty(Order = 140)]
-        [JsonConverter(typeof(NullableReferenceWrapperJsonConverter<PictureTransform>))]
-        public PictureTransform PictureTransform { get; }
+        [JsonConverter(typeof(NullableReferenceWrapperJsonConverter<CardPictureTransforms>))]
+        public CardPictureTransforms PictureTransforms { get; }
 
         [JsonProperty(Order = 160)]
         [JsonConverter(typeof(NullableWrapperJsonConverter<Enumerators.UniqueAnimation>))]
@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardRank? rank,
             Enumerators.CardType? type,
             IReadOnlyList<AbilityData> abilities,
-            PictureTransform pictureTransform,
+            CardPictureTransforms pictureTransforms,
             Enumerators.UniqueAnimation? uniqueAnimation,
             bool? hidden
             )
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground.Data
             Rank = rank;
             Type = type;
             Abilities = abilities ?? new List<AbilityData>();
-            PictureTransform = pictureTransform;
+            PictureTransforms = pictureTransforms;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
         }
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground.Data
                 sourceCard.Abilities
                     .Select(a => new AbilityData(a))
                     .ToList();
-            PictureTransform = new PictureTransform(sourceCard.PictureTransform);
+            PictureTransforms = new CardPictureTransforms(sourceCard.PictureTransforms);
             UniqueAnimation = sourceCard.UniqueAnimation;
             Hidden = sourceCard.Hidden;
         }
