@@ -155,7 +155,12 @@ namespace Loom.ZombieBattleground
             Application.logMessageReceivedThreaded += ApplicationOnLogMessageReceivedThreaded;
 
             // Finish up
-            hierarchy.Root.Level = Level.Off;
+            #if UNITY_ANDROID
+                hierarchy.Root.Level = Level.Off;
+            #else
+                hierarchy.Root.Level = Level.All;
+            #endif
+            
             hierarchy.Configured = true;
         }
 
