@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
             Application.logMessageReceivedThreaded += ApplicationOnLogMessageReceivedThreaded;
 
             // Finish up
-            hierarchy.Root.Level = Level.All;
+            hierarchy.Root.Level = Level.Off;
             hierarchy.Configured = true;
         }
 
