@@ -88,14 +88,11 @@ namespace Loom.ZombieBattleground.Test
         public void PictureTransformDeserialization()
         {
             string json =
-                "        {\r\n            \"position\": {\r\n                \"x\": 0.07,\r\n                \"y\": 0.02,\r\n                \"z\": 0\r\n            },\r\n            \"scale\": {\r\n                \"x\": 0.9,\r\n                \"y\": 0.9,\r\n                \"z\": 0.9\r\n            }\r\n        }";
+                "        {\r\n            \"position\": {\r\n                \"x\": 0.07,\r\n                \"y\": 0.02\r\n                },\r\n            \"scale\": 0.9\r\n        }";
             PictureTransform pictureTransform = JsonConvert.DeserializeObject<PictureTransform>(json, StringJsonSerializerSettings);
             Assert.AreEqual(0.07f, pictureTransform.Position.X);
             Assert.AreEqual(0.02f, pictureTransform.Position.Y);
-            Assert.AreEqual(0f, pictureTransform.Position.Z);
-            Assert.AreEqual(0.9f, pictureTransform.Scale.X);
-            Assert.AreEqual(0.9f, pictureTransform.Scale.Y);
-            Assert.AreEqual(0.9f, pictureTransform.Scale.Z);
+            Assert.AreEqual(0.9f, pictureTransform.Scale);
         }
 
         [Test]
@@ -103,6 +100,7 @@ namespace Loom.ZombieBattleground.Test
         {
             Card cardPrototype = new Card(
                 new CardKey(new MouldId(123), Enumerators.CardVariant.Standard),
+                Enumerators.CardSet.KickstarterExclusive,
                 "Foo",
                 3,
                 "description",
@@ -124,12 +122,41 @@ namespace Loom.ZombieBattleground.Test
                             new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null), "")
                         })
                 },
-                new PictureTransform(
-                    new FloatVector3(0.3f, 0.4f, 0.5f),
-                    FloatVector3.One
+                new Data.CardPictureTransforms(
+                    new PictureTransform(
+                        new FloatVector2(0.3f, 0.4f),
+                        1f
+                    ),
+                    new PictureTransform(
+                        new FloatVector2(0.5f, 0.6f),
+                        1.1f
+                    ),
+                    new PictureTransform(
+                        new FloatVector2(0.7f, 0.8f),
+                        1.2f
+                    )
                 ),
                 Enumerators.UniqueAnimation.ShammannArrival,
-                true
+                true,
+                new CardOverrideData(
+                    null,
+                    "OverrideName",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    Enumerators.Faction.WATER,
+                    "override frame",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                )
             );
 
             string cardPrototypeSerializedToJson = JsonConvert.SerializeObject(cardPrototype, Formatting.Indented, StringJsonSerializerSettings);
@@ -142,6 +169,77 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [Test]
+        public void CardDeserializationFromJson()
+        {
+            const string cardLibraryCardJson = @"
+     {
+      ""cardKey"": {
+        ""mouldId"": 3,
+        ""variant"": ""Limited""
+      },
+      ""kind"": ""CREATURE"",
+      ""faction"": ""AIR"",
+      ""name"": ""Whizper"",
+      ""description"": """",
+      ""flavorText"": ""The unfriendly ghost..."",
+      ""picture"": ""001"",
+      ""rank"": ""MINION"",
+      ""type"": ""WALKER"",
+      ""frame"": """",
+      ""damage"": 1,
+      ""defense"": 2,
+      ""cost"": 0,
+      ""pictureTransforms"": {
+        ""battleground"": {
+          ""position"": {
+            ""x"": 0.07,
+            ""y"": 0.36
+          },
+          ""scale"": 0.9
+        }
+      },
+      ""abilities"": [],
+      ""uniqueAnimation"": ""None"",
+      ""hidden"": false,
+      ""overrides"": {
+        ""cost"": null,
+        ""name"": {
+            ""value"": ""Legendary Zpitter""
+        },
+        ""flavorText"": {
+            ""value"": ""Zpittity-zpit, now with more zpit""
+        },
+        ""type"": {
+            ""value"": ""HEAVY""
+        },
+        ""faction"": {
+            ""value"": ""EARTH""
+        },
+        ""rank"": {
+            ""value"": ""GENERAL""
+        },
+        ""frame"": {
+            ""value"": ""legendary-frame.png""
+        },
+        ""picture"": {
+            ""value"": ""zpitter_legendary.png""
+        },
+		""hidden"": {
+            ""value"": false
+        }
+      }
+    }
+";
+            Card cardDeserializedFromJson = JsonConvert.DeserializeObject<Card>(cardLibraryCardJson, StringJsonSerializerSettings);
+            Protobuf.Card cardProtobufDeserializedFromJson = Protobuf.Card.Parser.ParseJson(cardLibraryCardJson);
+            Card cardFromProtobuf = cardProtobufDeserializedFromJson.FromProtobuf();
+            cardDeserializedFromJson.ShouldDeepEqual(cardFromProtobuf);
+
+            Assert.AreEqual("legendary-frame.png", cardDeserializedFromJson.Overrides.Frame);
+            Assert.AreEqual("legendary-frame.png", cardFromProtobuf.Overrides.Frame);
+        }
+
+        [Test]
         public void OverlordProtobufSerialization()
         {
             Protobuf.OverlordPrototype protobufPrototype = new Protobuf.OverlordPrototype
@@ -149,9 +247,9 @@ namespace Loom.ZombieBattleground.Test
                 Id = 1,
                 Icon = "icon",
                 Name = "name",
+                ShortName = "short name",
                 ShortDescription = "short desc",
                 LongDescription = "long desc",
-
                 Faction = Protobuf.Faction.Types.Enum.Life,
                 Skills =
                 {
@@ -196,6 +294,7 @@ namespace Loom.ZombieBattleground.Test
                 new OverlordId(1),
                 "icon",
                 "name",
+                "short name",
                 "short desc",
                 "long desc",
                 Enumerators.Faction.LIFE,

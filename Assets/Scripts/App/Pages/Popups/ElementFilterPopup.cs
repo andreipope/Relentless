@@ -11,9 +11,9 @@ namespace Loom.ZombieBattleground
     public class ElementFilterPopup : IUIPopup
     {
         public GameObject Self { get; private set; }
-        
+
         public event Action ActionPopupHiding;
-        
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
 
             foreach(Enumerators.Faction faction in AvailableFactionList)
             {
-                Button buttonElementIcon = Self.transform.Find("Group_ElementIcons/Button_element_"+faction.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Group_ElementIcons/Button_element_"+faction.ToString().ToLowerInvariant()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
                 (()=>
                     {

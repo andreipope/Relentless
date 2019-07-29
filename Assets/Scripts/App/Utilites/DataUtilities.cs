@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
             Enumerators.Faction faction = GetFaction(overlordId);
 
             string path = "Images/UI/Overlord_Image/";
-            path = path + "champion_image_" + faction.ToString().ToLower();
+            path = path + "champion_image_" + faction.ToString().ToLowerInvariant();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
         public static Sprite GetOverlordImage(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/Overlord_Image/";
-            path = path + "champion_image_" + overlordFaction.ToString().ToLower();
+            path = path + "champion_image_" + overlordFaction.ToString().ToLowerInvariant();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
@@ -163,21 +163,33 @@ namespace Loom.ZombieBattleground
         public static Sprite GetOverlordDeckIcon(Enumerators.Faction faction)
         {
             string path = "Images/UI/DeckIcons/";
-            path = path + "icon_" + faction.ToString().ToLower();
+            path = path + "icon_" + faction.ToString().ToLowerInvariant();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
-        public static string GetNickName(string name)
+        public static Card ApplyCardVariantOverrides(IReadOnlyCard variantCard, Card standardCard)
         {
-            if (string.IsNullOrEmpty(name))
-                return name;
-
-            string nickName = string.Empty;
-            Regex pRegex = new Regex("\".*?(?=\")", RegexOptions.IgnoreCase);
-            var result = pRegex.Match(name).Value;
-            nickName = Regex.Replace(result , "\"", string.Empty);
-            return nickName;
+            return new Card(
+                variantCard.CardKey,
+                variantCard.Overrides?.Set ?? standardCard.Set,
+                variantCard.Overrides?.Name ?? standardCard.Name,
+                variantCard.Overrides?.Cost ?? standardCard.Cost,
+                variantCard.Overrides?.Description ?? standardCard.Description,
+                variantCard.Overrides?.FlavorText ?? standardCard.FlavorText,
+                variantCard.Overrides?.Picture ?? standardCard.Picture,
+                variantCard.Overrides?.Damage ?? standardCard.Damage,
+                variantCard.Overrides?.Defense ?? standardCard.Defense,
+                variantCard.Overrides?.Faction ?? standardCard.Faction,
+                variantCard.Overrides?.Frame ?? standardCard.Frame,
+                variantCard.Overrides?.Kind ?? standardCard.Kind,
+                variantCard.Overrides?.Rank ?? standardCard.Rank,
+                variantCard.Overrides?.Type ?? standardCard.Type,
+                variantCard.Overrides?.Abilities ?? standardCard.Abilities,
+                variantCard.Overrides?.PictureTransforms ?? standardCard.PictureTransforms,
+                variantCard.Overrides?.UniqueAnimation ?? standardCard.UniqueAnimation,
+                variantCard.Overrides?.Hidden ?? standardCard.Hidden,
+                null
+            );
         }
-
     }
 }

@@ -504,7 +504,7 @@ namespace Loom.ZombieBattleground
         #region UI Handlers
         public void OnInputFieldSearchEndedEdit(string value)
         {
-            string keyword = _inputFieldSearchName.text.Trim().ToLower();
+            string keyword = _inputFieldSearchName.text.Trim().ToLowerInvariant();
             Faction set;
             List<Card> cards;
             List<Card> resultList = new List<Card>();
@@ -519,7 +519,7 @@ namespace Loom.ZombieBattleground
                 {
                     if
                     (
-                        card.Name.ToLower().Contains(keyword) &&
+                        card.Name.ToLowerInvariant().Contains(keyword) &&
                         CheckIfSatisfyFactionFilter(card) &&
                         CheckIfSatisfyGooCostFilter(card) &&
                         CheckIfSatisfyRankFilter(card) &&

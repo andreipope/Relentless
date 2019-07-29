@@ -8,60 +8,48 @@ namespace Loom.ZombieBattleground.Data
 {
     public class Card : IReadOnlyCard
     {
-        [JsonProperty(Order = 1)]
         public CardKey CardKey { get; }
 
-        [JsonProperty(Order = 4)]
+        public Enumerators.CardSet Set { get; }
+
         public string Name { get; }
 
-        [JsonProperty(Order = 13)]
         public int Cost { get; }
 
-        [JsonProperty(Order = 5)]
         public string Description { get; }
 
-        [JsonProperty(Order = 6)]
         public string FlavorText { get; }
 
-        [JsonProperty(Order = 7)]
         public string Picture { get; }
 
-        [JsonProperty(Order = 11)]
         public int Damage { get;  }
 
-        [JsonProperty(Order = 12)]
         public int Defense { get; }
 
-        [JsonProperty(Order = 3)]
         public Enumerators.Faction Faction { get; }
 
-        [JsonProperty(Order = 10)]
         public string Frame { get; }
 
-        [JsonProperty(Order = 2)]
         public Enumerators.CardKind Kind { get; }
 
-        [JsonProperty(Order = 8)]
         public Enumerators.CardRank Rank { get; }
 
-        [JsonProperty(Order = 9)]
         public Enumerators.CardType Type { get; }
 
-        [JsonProperty(Order = 15)]
         public IReadOnlyList<AbilityData> Abilities { get; }
 
-        [JsonProperty(Order = 14)]
-        public PictureTransform PictureTransform { get; }
+        public CardPictureTransforms PictureTransforms { get; }
 
-        [JsonProperty(Order = 16)]
         public Enumerators.UniqueAnimation UniqueAnimation { get; }
 
-        [JsonProperty(Order = 17)]
         public bool Hidden { get; }
+
+        public CardOverrideData Overrides { get; }
 
         [JsonConstructor]
         public Card(
             CardKey cardKey,
+            Enumerators.CardSet set,
             string name,
             int cost,
             string description,
@@ -75,12 +63,14 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardRank rank,
             Enumerators.CardType type,
             IReadOnlyList<AbilityData> abilities,
-            PictureTransform pictureTransform,
+            CardPictureTransforms pictureTransforms,
             Enumerators.UniqueAnimation uniqueAnimation,
-            bool hidden
+            bool hidden,
+            CardOverrideData overrides
             )
         {
             CardKey = cardKey;
+            Set = set;
             Name = name;
             Cost = cost;
             Description = description;
@@ -94,14 +84,16 @@ namespace Loom.ZombieBattleground.Data
             Rank = rank;
             Type = type;
             Abilities = abilities ?? new List<AbilityData>();
-            PictureTransform = pictureTransform;
+            PictureTransforms = pictureTransforms;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
+            Overrides = overrides;
         }
 
         public Card(IReadOnlyCard sourceCard)
         {
             CardKey = sourceCard.CardKey;
+            Set = sourceCard.Set;
             Name = sourceCard.Name;
             Cost = sourceCard.Cost;
             Description = sourceCard.Description;
@@ -115,12 +107,14 @@ namespace Loom.ZombieBattleground.Data
             Rank = sourceCard.Rank;
             Type = sourceCard.Type;
             Abilities =
-                sourceCard.Abilities
+                sourceCard
+                    .Abilities?
                     .Select(a => new AbilityData(a))
                     .ToList();
-            PictureTransform = new PictureTransform(sourceCard.PictureTransform);
+            PictureTransforms = sourceCard.PictureTransforms == null ? null : new CardPictureTransforms(sourceCard.PictureTransforms);
             UniqueAnimation = sourceCard.UniqueAnimation;
             Hidden = sourceCard.Hidden;
+            Overrides = Overrides;
         }
 
         public override string ToString()
@@ -129,20 +123,51 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
+    public class CardPictureTransforms
+    {
+        [JsonProperty]
+        public PictureTransform Battleground { get; } = new PictureTransform();
+
+        [JsonProperty("deckUI")]
+        public PictureTransform DeckUI { get; } = new PictureTransform(FloatVector2.Zero, 1f);
+
+        [JsonProperty]
+        public PictureTransform PastAction { get; } = new PictureTransform(FloatVector2.Zero, 1f);
+
+        public CardPictureTransforms()
+        {
+        }
+
+        [JsonConstructor]
+        public CardPictureTransforms(PictureTransform battleground, PictureTransform deckUI, PictureTransform pastAction)
+        {
+            Battleground = battleground;
+            DeckUI = deckUI ?? DeckUI;
+            PastAction = pastAction ?? PastAction;
+        }
+
+        public CardPictureTransforms(CardPictureTransforms source)
+        {
+            Battleground = source.Battleground;
+            DeckUI = source.DeckUI;
+            PastAction = source.PastAction;
+        }
+    }
+
     public class PictureTransform
     {
         [JsonProperty]
-        public FloatVector3 Position { get; } = FloatVector3.Zero;
+        public FloatVector2 Position { get; } = FloatVector2.Zero;
 
         [JsonProperty]
-        public FloatVector3 Scale { get; } = new FloatVector3(0.38f);
+        public float Scale { get; } = 0.38f;
 
         public PictureTransform()
         {
         }
 
         [JsonConstructor]
-        public PictureTransform(FloatVector3 position, FloatVector3 scale)
+        public PictureTransform(FloatVector2 position, float scale)
         {
             Position = position;
             Scale = scale;

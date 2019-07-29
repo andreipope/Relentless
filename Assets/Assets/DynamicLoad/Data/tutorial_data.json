@@ -11,8 +11,7 @@
           "Description": "Enemy Champion Defense",
           "Position": {
             "X": 1,
-            "Y": 4.1,
-            "Z": 0
+            "Y": 4.1
           },
           "DynamicPosition": false
         },
@@ -22,7 +21,6 @@
           "TutorialTooltipOwner": "PlayerOverlord",
           "Description": "Your Champion Defense",
           "Position": {
-            "Z": 0
           },
           "DynamicPosition": false
         },
@@ -33,8 +31,7 @@
           "Description": "Def: How much damage this creature can take.",
           "Position": {
             "X": 1.38,
-            "Y": 0.87,
-            "Z": 0
+            "Y": 0.87
           }
         },
         {
@@ -44,8 +41,7 @@
           "Description": "Atk: How much damage this creature deals.",
           "Position": {
             "X": -1.3,
-            "Y": 0.87,
-            "Z": 0
+            "Y": 0.87
           }
         },
         {
@@ -56,8 +52,7 @@
           "Description": "Gloop's defense was lowered by the counter-attack.",
           "Position": {
             "X": 1.3,
-            "Y": -0.85,
-            "Z": 0
+            "Y": -0.85
           }
         }
       ],
@@ -148,8 +143,7 @@
             {
               "EndPosition": {
                 "X": 0,
-                "Y": -0.25,
-                "Z": 0
+                "Y": -0.25
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
@@ -173,8 +167,7 @@
             {
               "StartPosition": {
                 "X": 9,
-                "Y": 1.6,
-                "Z": 0
+                "Y": 1.6
               },
               "TutorialHandPointerType": "Single"
             }
@@ -220,13 +213,11 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.6,
-                "Z": 0
+                "Y": 1.6
               },
               "EndPosition": {
                 "X": 0,
-                "Y": 3,
-                "Z": 0
+                "Y": 3
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
@@ -244,8 +235,7 @@
             {
               "EndPosition": {
                 "X": 2.4,
-                "Y": -0.4,
-                "Z": 0
+                "Y": -0.4
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
@@ -269,8 +259,7 @@
             {
               "StartPosition": {
                 "X": 9,
-                "Y": 1.6,
-                "Z": 0
+                "Y": 1.6
               },
               "TutorialHandPointerType": "Single",
               "AppearDelay": 5.5
@@ -326,13 +315,11 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.6,
-                "Z": 0
+                "Y": 1.6
               },
               "EndPosition": {
                 "X": 0,
-                "Y": 6.7,
-                "Z": 0
+                "Y": 6.7
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
@@ -356,13 +343,11 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.6,
-                "Z": 0
+                "Y": 1.6
               },
               "EndPosition": {
                 "X": 0,
-                "Y": 6.7,
-                "Z": 0
+                "Y": 6.7
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
@@ -460,8 +445,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": -4.7,
-                "Z": 0
+                "Y": -4.7
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePopups",
@@ -776,8 +760,7 @@
           "Description": "Add cards to your deck by dragging them to the right.",
           "Position": {
             "X": -1.34,
-            "Y": -2.76,
-            "Z": 0
+            "Y": -2.76
           },
           "TutorialTooltipLayer": "AbovePages"
         },
@@ -789,8 +772,7 @@
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
             "X": 9.19,
-            "Y": 2.93,
-            "Z": 0
+            "Y": 2.93
           },
           "TutorialTooltipLayer": "AbovePages"
         },
@@ -802,8 +784,7 @@
           "Description": "You can also add cards by double tapping them.",
           "Position": {
             "X": -1.4,
-            "Y": -3,
-            "Z": 0
+            "Y": -3
           },
           "TutorialTooltipLayer": "AbovePages"
         },
@@ -814,8 +795,7 @@
           "Description": "It's time to BATTLE!",
           "Position": {
             "X": 9,
-            "Y": -1.9,
-            "Z": 0
+            "Y": -1.9
           },
           "TutorialTooltipLayer": "AboveUI"
         },
@@ -826,8 +806,7 @@
           "Description": "Later on, you can click this button to rename your Deck.",
           "Position": {
             "X": 7.1,
-            "Y": 5,
-            "Z": 0
+            "Y": 5
           },
           "TutorialTooltipLayer": "AbovePages"
         },
@@ -839,8 +818,7 @@
           "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
             "X": 5.6,
-            "Y": 0,
-            "Z": 0
+            "Y": 0
           },
           "TutorialTooltipLayer": "AbovePages"
         },
@@ -851,8 +829,7 @@
           "Description": "Don't you want to open your new cards first?",
           "Position": {
             "X": 0,
-            "Y": -3.25,
-            "Z": 0
+            "Y": -3.25
           },
           "TutorialTooltipLayer": "AbovePages"
         },
@@ -862,8 +839,7 @@
           "Description": "Open your pack.",
           "Position": {
             "X": -8.92,
-            "Y": -2.2,
-            "Z": 0
+            "Y": -2.2
           },
           "TutorialTooltipLayer": "AbovePages"
         }
@@ -892,8 +868,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.2,
-                "Z": 0
+                "Y": 1.2
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_MyPacks",
@@ -929,8 +904,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.15,
-                "Z": 0
+                "Y": 1.15
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_OpenPacks",
@@ -981,8 +955,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 3,
-                "Z": 0
+                "Y": 3
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_OpenNextPack",
@@ -1033,8 +1006,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 3,
-                "Z": 0
+                "Y": 3
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_ClosePackOpener",
@@ -1065,8 +1037,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
+                "Y": 1.4
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_MyDecks",
@@ -1104,8 +1075,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1,
-                "Z": 0
+                "Y": 1
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_BuildNewDeck",
@@ -1125,8 +1095,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.5,
-                "Z": 0
+                "Y": 1.5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Continue",
@@ -1146,8 +1115,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.5,
-                "Z": 0
+                "Y": 1.5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Continue",
@@ -1167,8 +1135,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.5,
-                "Z": 0
+                "Y": 1.5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Continue",
@@ -1208,13 +1175,11 @@
             {
               "StartPosition": {
                 "X": -3,
-                "Y": 1,
-                "Z": 0
+                "Y": 1
               },
               "EndPosition": {
                 "X": 10,
-                "Y": 1,
-                "Z": 0
+                "Y": 1
               },
               "TutorialHandPointerType": "Animated",
               "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
@@ -1233,7 +1198,7 @@
             0
           ],
           "BlockedButtons": [
-          	"Button_Battle",
+            "Button_Battle",
             "Button_Shop",
             "Button_MyDecks",
             "Button_MyPacks",
@@ -1257,8 +1222,7 @@
             {
               "StartPosition": {
                 "X": 10,
-                "Y": 5,
-                "Z": 0
+                "Y": 5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
@@ -1301,8 +1265,7 @@
             {
               "StartPosition": {
                 "X": -3,
-                "Y": 1,
-                "Z": 0
+                "Y": 1
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
@@ -1373,8 +1336,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.5,
-                "Z": 0
+                "Y": 1.5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_SaveDeck",
@@ -1410,8 +1372,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
+                "Y": 1.4
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Battle",
@@ -1440,8 +1401,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 0,
-                "Z": 0
+                "Y": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Panel_BattleSwitch",
@@ -1594,8 +1554,7 @@
           "Description": "Feral creatures can attack the turn they are played.",
           "Position": {
             "X": 1.15,
-            "Y": 0.3,
-            "Z": 0
+            "Y": 0.3
           },
           "AppearDelay": 1.5
         },
@@ -1607,8 +1566,7 @@
           "Description": "This is how much goo your card costs.",
           "Position": {
             "X": 5.65,
-            "Y": 5.7,
-            "Z": 0
+            "Y": 5.7
           },
           "AppearDelay": 2.3,
           "Resizable": false
@@ -1620,8 +1578,7 @@
           "Description": "You've earned a goo bottle.",
           "Position": {
             "X": -7.05,
-            "Y": -5.25,
-            "Z": 0
+            "Y": -5.25
           },
           "AppearDelay": 2,
           "Resizable": false
@@ -1632,8 +1589,7 @@
           "Description": "You've earned another goo bottle, and goo you spent before is replenished.",
           "Position": {
             "X": -6.77,
-            "Y": -5.28,
-            "Z": 0
+            "Y": -5.28
           },
           "AppearDelay": 1,
           "Resizable": true
@@ -1646,8 +1602,7 @@
           "Description": "Entry effects happen as you play cards, just like Items.",
           "Position": {
             "X": 1.15,
-            "Y": 0.3,
-            "Z": 0
+            "Y": 0.3
           },
           "Resizable": false
         },
@@ -1659,8 +1614,7 @@
           "Description": "Heavy creatures need to be attacked first.",
           "Position": {
             "X": 1.15,
-            "Y": 0.3,
-            "Z": 0
+            "Y": 0.3
           },
           "Resizable": false
         },
@@ -1671,8 +1625,7 @@
           "Description": "Overlords have unique abilities that can be used on cooldown.",
           "Position": {
             "X": 3.6,
-            "Y": -5,
-            "Z": 0
+            "Y": -5
           },
           "Resizable": true
         }
@@ -1756,13 +1709,11 @@
             {
               "StartPosition": {
                 "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
+                "Y": -5.4
               },
               "EndPosition": {
                 "X": 0,
-                "Y": -0.25,
-                "Z": 0
+                "Y": -0.25
               },
               "TutorialHandPointerType": "Animated",
               "AppearDelay": 10
@@ -1830,13 +1781,11 @@
             {
               "StartPosition": {
                 "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
+                "Y": -5.4
               },
               "EndPosition": {
                 "X": 0,
-                "Y": -0.25,
-                "Z": 0
+                "Y": -0.25
               },
               "TutorialHandPointerType": "Animated"
             }
@@ -1878,13 +1827,11 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.13,
-                "Z": 0
+                "Y": 1.13
               },
               "EndPosition": {
                 "X": 0,
-                "Y": 1.13,
-                "Z": 0
+                "Y": 1.13
               },
               "TutorialHandPointerType": "Animated",
               "TutorialObjectIdStepOwner": 2,
@@ -1909,13 +1856,11 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.13,
-                "Z": 0
+                "Y": 1.13
               },
               "EndPosition": {
                 "X": 0,
-                "Y": 7,
-                "Z": 0
+                "Y": 7
               },
               "TutorialHandPointerType": "Animated",
               "AppearDelay": 5,
@@ -1977,13 +1922,11 @@
             {
               "StartPosition": {
                 "X": 2.53,
-                "Y": -3.9,
-                "Z": 0
+                "Y": -3.9
               },
               "EndPosition": {
                 "X": 0,
-                "Y": 7,
-                "Z": 0
+                "Y": 7
               },
               "TutorialHandPointerOwner": "PlayerOverlordAbility",
               "TutorialHandPointerType": "Animated"
@@ -2218,8 +2161,7 @@
           "Description": "Let's check out your new cards first.",
           "Position": {
             "X": 1,
-            "Y": -0.5,
-            "Z": 0
+            "Y": -0.5
           },
           "AppearDelay": 0,
           "TutorialTooltipLayer": "AboveUI"
@@ -2252,8 +2194,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.2,
-                "Z": 0
+                "Y": 1.2
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_MyPacks",
@@ -2289,8 +2230,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.15,
-                "Z": 0
+                "Y": 1.15
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_OpenPacks",
@@ -2341,8 +2281,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 3,
-                "Z": 0
+                "Y": 3
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_OpenNextPack",
@@ -2393,8 +2332,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 3,
-                "Z": 0
+                "Y": 3
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_ClosePackOpener",
@@ -2425,8 +2363,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
+                "Y": 1.4
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_MyDecks",
@@ -2463,8 +2400,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.5,
-                "Z": 0
+                "Y": 1.5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Edit",
@@ -2531,8 +2467,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1.5,
-                "Z": 0
+                "Y": 1.5
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_SaveDeck",
@@ -2569,8 +2504,7 @@
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
+                "Y": 1.4
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Battle",
@@ -2600,8 +2534,7 @@
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 0,
-                "Z": 0
+                "Y": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Panel_BattleSwitch",
@@ -2740,8 +2673,7 @@
           "Description": "You go first.",
           "Position": {
             "X": 8.6,
-            "Y": -4.5,
-            "Z": 0
+            "Y": -4.5
           },
           "AppearDelay": 0.5,
           "TutorialTooltipLayer": "AbovePopups"
@@ -2753,8 +2685,7 @@
           "Description": "This is your starting hand. Drag cards you want replaced to the top, then press KEEP",
           "Position": {
             "X": 7.6,
-            "Y": 1,
-            "Z": 0
+            "Y": 1
           },
           "TutorialTooltipLayer": "AboveUI"
         },
@@ -2765,8 +2696,7 @@
           "Description": "You still have a battle to win.",
           "Position": {
             "X": 9.5,
-            "Y": 1,
-            "Z": 0
+            "Y": 1
           },
           "TutorialTooltipLayer": "AbovePages"
         }

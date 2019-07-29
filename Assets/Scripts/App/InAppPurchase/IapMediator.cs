@@ -328,7 +328,6 @@ namespace Loom.ZombieBattleground.Iap
                 if (marketplaceProduct.Definition.Equals(productDefinition))
                 {
                     return marketplaceProduct;
-                    break;
                 }
             }
 

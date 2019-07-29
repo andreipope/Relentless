@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using log4net;
 using Loom.ZombieBattleground.Common;
 #if UNITY_EDITOR
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ using ZombieBattleground.Editor.Runtime;
 
 public class UnitCardUI
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(UnitCardUI));
+
     private GameObject _selfObj;
     private GameObject _cardAmountTray;
 
@@ -77,7 +80,7 @@ public class UnitCardUI
         _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
         string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.Rank);
-        string rankName = $"Images/IconsRanks/rank_icon_{rarity.ToLower()}";
+        string rankName = $"Images/IconsRanks/rank_icon_{rarity.ToLowerInvariant()}";
         _rankImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(rankName);
 
         string imagePath = $"{Constants.PathToCardsIllustrations}{card.Picture.ToLowerInvariant()}";
@@ -85,11 +88,16 @@ public class UnitCardUI
 
         _cardAmountTray.SetActive(cardCount != 0);
 
-        //TODO : Set icon according to card details filled by designer
-        //TODO : right now there is no way to get set type information
-        string setType = Enum.GetName(typeof(Enumerators.CardSetType), Enumerators.CardSetType.Basic);
-        string setName = $"Images/IconsSet/seticon_{setType.ToLower()}";
-        _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
+        if (card.Set != Enumerators.CardSet.Undefined)
+        {
+            string setName = $"Images/IconsSet/seticon_{card.Set.ToString().ToLowerInvariant()}";
+            _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
+        }
+        else
+        {
+            Log.Warn($"Card {card} doesn't have Set defined");
+            _setImage.sprite = null;
+        }
     }
 
     public void UpdateCardAmount(int cardCount)

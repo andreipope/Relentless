@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public const string UserEventNamePrefix = "user";
 
         private IContractCallProxy _contractCallProxy;
-        private Func<RawChainEventContract, IContractCallProxy> _contractCallProxyFactory;
+        private readonly Func<RawChainEventContract, IContractCallProxy> _contractCallProxyFactory;
 
         public delegate void ContractCreatedEventHandler(RawChainEventContract oldContract, RawChainEventContract newContract);
 

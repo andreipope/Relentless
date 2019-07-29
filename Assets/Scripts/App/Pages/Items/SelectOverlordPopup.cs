@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.Overlords.Find(overlords => overlords.Prototype.Id == overlordId);
 
             _overlordImage.sprite = DataUtilities.GetOverlordImage(overlord.Prototype.Faction);
-            _textSelectOverlordName.text = DataUtilities.GetNickName(overlord.Prototype.Name);
+            _textSelectOverlordName.text = overlord.Prototype.ShortName;
             _textSelectOverlordDescription.text = overlord.Prototype.ShortDescription;
 
             Enumerators.Faction againstFaction = Constants.FactionAgainstDictionary[overlord.Prototype.Faction];
@@ -233,7 +233,7 @@ namespace Loom.ZombieBattleground
         private Sprite GetElementIcon(Enumerators.Faction faction)
         {
             string path = "Images/UI/ChooseOverlord/";
-            path = path + "/icon_element_" + faction.ToString().ToLower();
+            path = path + "/icon_element_" + faction.ToString().ToLowerInvariant();
             return _loadObjectsManager.GetObjectByPath<Sprite>(path);
         }
     }

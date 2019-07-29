@@ -139,6 +139,7 @@ namespace Loom.ZombieBattleground.Data
             Protobuf.Card protoCard = new Protobuf.Card
             {
                 CardKey = card.CardKey.ToProtobuf(),
+                Set = (CardSet.Types.Enum) card.Set,
                 Name = card.Name,
                 Cost = card.Cost,
                 Description = card.Description,
@@ -151,37 +152,82 @@ namespace Loom.ZombieBattleground.Data
                 Kind = (CardKind.Types.Enum) card.Kind,
                 Rank = (CreatureRank.Types.Enum) card.Rank,
                 Type = (CardType.Types.Enum) card.Type,
-                PictureTransform = card.PictureTransform.ToProtobuf(),
+                PictureTransforms = card.PictureTransforms.ToProtobuf(),
                 Abilities =
                 {
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
                 UniqueAnimation = (Protobuf.UniqueAnimation.Types.Enum) card.UniqueAnimation,
-                Hidden = card.Hidden
+                Hidden = card.Hidden,
+                Overrides = card.Overrides?.ToProtobuf()
             };
 
             return protoCard;
         }
 
-        public static Vector3Float ToProtobuf(this FloatVector3 vector)
+        public static Protobuf.CardOverrides ToProtobuf(this CardOverrideData card)
         {
-            return new Vector3Float
+            if (card == null)
+                return null;
+
+            Protobuf.CardOverrides protoCard = new Protobuf.CardOverrides
+            {
+                Set = card.Set == null ? null : new CardSetEnumValue { Value = (CardSet.Types.Enum) card.Set.Value },
+                Name = card.Name == null ? null : new StringValue { Value = card.Name },
+                Cost = card.Cost == null ? null : new Int32Value { Value = card.Cost.Value },
+                Description = card.Description == null ? null : new StringValue { Value = card.Description },
+                FlavorText = card.FlavorText == null ? null : new StringValue { Value = card.FlavorText },
+                Picture = card.Picture == null ? null : new StringValue { Value = card.Picture },
+                Damage = card.Damage == null ? null : new Int32Value { Value = card.Damage.Value },
+                Defense = card.Defense == null ? null : new Int32Value { Value = card.Defense.Value },
+                Faction = card.Faction == null ? null : new FactionEnumValue { Value = (Protobuf.Faction.Types.Enum) card.Faction.Value },
+                Frame = card.Frame == null ? null : new StringValue { Value = card.Frame },
+                Kind = card.Kind == null ? null : new CardKindEnumValue { Value = (CardKind.Types.Enum) card.Kind.Value },
+                Rank = card.Rank == null ? null : new CreatureRankEnumValue { Value = (CreatureRank.Types.Enum) card.Rank.Value },
+                Type = card.Type == null ? null : new CardTypeEnumValue { Value = (CardType.Types.Enum) card.Type.Value },
+                PictureTransforms = card.PictureTransforms.ToProtobuf(),
+                Abilities =
+                {
+                    card.Abilities.Select(a => a.ToProtobuf())
+                },
+                UniqueAnimation = card.UniqueAnimation == null ? null : new UniqueAnimationEnumValue { Value = (Protobuf.UniqueAnimation.Types.Enum) card.UniqueAnimation.Value },
+                Hidden = card.Hidden == null ? null : new BoolValue { Value = card.Hidden.Value }
+            };
+
+            return protoCard;
+        }
+
+        public static Vector2Float ToProtobuf(this FloatVector2 vector)
+        {
+            return new Vector2Float
             {
                 X = vector.X,
-                Y = vector.Y,
-                Z = vector.Z
+                Y = vector.Y
             };
         }
 
-        public static Protobuf.PictureTransform ToProtobuf(this PictureTransform cardViewInfo)
+        public static Protobuf.PictureTransform ToProtobuf(this PictureTransform pictureTransform)
         {
-            if (cardViewInfo == null)
+            if (pictureTransform == null)
                 return null;
 
             return new Protobuf.PictureTransform
             {
-                Position = cardViewInfo.Position.ToProtobuf(),
-                Scale = cardViewInfo.Scale.ToProtobuf()
+                Position = pictureTransform.Position.ToProtobuf(),
+                Scale = pictureTransform.Scale
+            };
+        }
+
+        public static Protobuf.CardPictureTransforms ToProtobuf(this Data.CardPictureTransforms pictureTransform)
+        {
+            if (pictureTransform == null)
+                return null;
+
+            return new Protobuf.CardPictureTransforms
+            {
+                Battleground = pictureTransform.Battleground.ToProtobuf(),
+                DeckUI = pictureTransform.DeckUI.ToProtobuf(),
+                PastAction = pictureTransform.PastAction.ToProtobuf(),
             };
         }
 

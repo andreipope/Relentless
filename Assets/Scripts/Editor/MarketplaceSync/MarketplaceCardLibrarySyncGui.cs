@@ -118,49 +118,57 @@ namespace Loom.ZombieBattleground.Editor
 
             if (GUILayout.Button("Copy Cards Missing in zb_card_meta_data 'card_library.json' to Clipboard"))
             {
-                List<DummyCardWithCardKey> dummyCards =
-                    _comparisonResult.CardsMissingOnGamechain
-                        .Select(key => new DummyCardWithCardKey
-                        {
-                            CardKey = key
-                        })
-                        .ToList();
+                CopyCardKeyListToClipboard(_comparisonResult.CardsMissingOnGamechain);
+            }
 
-                string deltaJson = JsonConvert.SerializeObject(dummyCards, Formatting.Indented, _jsonSerializerSettings);
-                EditorGUIUtility.systemCopyBuffer = deltaJson;
-                _ownerWindow.ShowNotification(new GUIContent("Done!"));
+            if (GUILayout.Button("Copy Card Variants Missing in zb_card_meta_data 'card_library.json' to Clipboard"))
+            {
+                CopyCardKeyListToClipboard(_comparisonResult.CardVariantsMissing);
             }
 
             _onlyShowStandardEdition = EditorGUILayout.ToggleLeft("Hide non-Standard edition cards", _onlyShowStandardEdition);
 
+            void DrawCardKeysList(List<CardKey> cardKeys)
+            {
+                int counter = 1;
+                for (int i = 0; i < cardKeys.Count; i++)
+                {
+                    CardKey cardKey = cardKeys[i];
+                    if (_onlyShowStandardEdition && cardKey.Variant != Enumerators.CardVariant.Standard)
+                        continue;
+
+                    EditorGUILayout.LabelField($"{counter,3}. " + cardKey);
+                    counter++;
+                }
+            }
+
             EditorGUILayout.LabelField(
                 $"Cards Missing in zb_card_meta_data 'card_library.json' ({_comparisonResult.CardsMissingOnGamechain.Count})",
                 EditorStyles.boldLabel);
-
-            int counter = 1;
-            for (int i = 0; i < _comparisonResult.CardsMissingOnGamechain.Count; i++)
-            {
-                CardKey missingCardKey = _comparisonResult.CardsMissingOnGamechain[i];
-                if (_onlyShowStandardEdition && missingCardKey.Variant != Enumerators.CardVariant.Standard)
-                    continue;
-
-                EditorGUILayout.LabelField($"{counter,3}. " + missingCardKey);
-                counter++;
-            }
+            DrawCardKeysList(_comparisonResult.CardsMissingOnGamechain);
 
             GUILayout.Space(15);
             EditorGUILayout.LabelField($"Cards Missing in Marketplace card lists ({_comparisonResult.CardsMissingOnGamechain.Count})", EditorStyles.boldLabel);
+            DrawCardKeysList(_comparisonResult.CardsMissingOnMarketplace);
 
-            counter = 1;
-            for (int i = 0; i < _comparisonResult.CardsMissingOnMarketplace.Count; i++)
-            {
-                CardKey missingCardKey = _comparisonResult.CardsMissingOnMarketplace[i];
-                if (_onlyShowStandardEdition && missingCardKey.Variant != Enumerators.CardVariant.Standard)
-                    continue;
+            GUILayout.Space(15);
+            EditorGUILayout.LabelField($"Card Variants Missing in zb_card_meta_data 'card_library.json' ({_comparisonResult.CardVariantsMissing.Count})", EditorStyles.boldLabel);
+            DrawCardKeysList(_comparisonResult.CardVariantsMissing);
+        }
 
-                EditorGUILayout.LabelField($"{counter,3}. " + missingCardKey);
-                counter++;
-            }
+        private void CopyCardKeyListToClipboard(List<CardKey> cardKeys)
+        {
+            List<DummyCardWithCardKey> dummyCards =
+                cardKeys
+                    .Select(key => new DummyCardWithCardKey
+                    {
+                        CardKey = key
+                    })
+                    .ToList();
+
+            string deltaJson = JsonConvert.SerializeObject(dummyCards, Formatting.Indented, _jsonSerializerSettings);
+            EditorGUIUtility.systemCopyBuffer = deltaJson;
+            _ownerWindow.ShowNotification(new GUIContent("Done!"));
         }
 
         private void DoLoadAndCompare()
@@ -186,22 +194,49 @@ namespace Loom.ZombieBattleground.Editor
                         .Distinct()
                         .ToList();
 
-                List<CardKey> gamechainCardKeys = _gamechainCardLibrary.Cards.Select(card => card.CardKey).ToList();
+                HashSet<CardKey> gamechainCardKeys = new HashSet<CardKey>(
+                    _gamechainCardLibrary.Cards.Select(card => card.CardKey)
+                );
 
                 _comparisonResult.CardsMissingOnGamechain =
                     combinedCardFaucetCardKeys
                         .Except(gamechainCardKeys)
-                        .OrderBy(key => key.MouldId)
-                        .ThenBy(key => key.Variant)
                         .Where(key => !IgnoredCardMouldIds.Contains(key.MouldId.Id))
+                        .OrderBy(key => key, CardKey.Comparer)
                         .ToList();
 
                 _comparisonResult.CardsMissingOnMarketplace =
                     gamechainCardKeys
                         .Except(combinedCardFaucetCardKeys)
-                        .OrderBy(key => key.MouldId)
-                        .ThenBy(key => key.Variant)
                         .Where(key => !IgnoredCardMouldIds.Contains(key.MouldId.Id))
+                        .OrderBy(key => key, CardKey.Comparer)
+                        .ToList();
+
+
+                _comparisonResult.CardVariantsMissing = new List<CardKey>();
+                Enumerators.CardVariant[] cardVariants = (Enumerators.CardVariant[]) Enum.GetValues(typeof(Enumerators.CardVariant));
+                foreach (CardKey cardKey in gamechainCardKeys)
+                {
+                    if (cardKey.Variant != Enumerators.CardVariant.Standard)
+                        continue;
+
+                    foreach (Enumerators.CardVariant variant in cardVariants)
+                    {
+                        if (variant == Enumerators.CardVariant.Standard)
+                            continue;
+
+                        CardKey variantCardKey = new CardKey(cardKey.MouldId, variant);
+                        if (!gamechainCardKeys.Contains(variantCardKey))
+                        {
+                            _comparisonResult.CardVariantsMissing.Add(variantCardKey);
+                        }
+                    }
+                }
+
+                _comparisonResult.CardVariantsMissing =
+                    _comparisonResult.CardVariantsMissing
+                        .Where(key => !IgnoredCardMouldIds.Contains(key.MouldId.Id))
+                        .OrderBy(key => key, CardKey.Comparer)
                         .ToList();
             }
             catch (Exception e)
@@ -229,6 +264,7 @@ namespace Loom.ZombieBattleground.Editor
         {
             public List<CardKey> CardsMissingOnGamechain;
             public List<CardKey> CardsMissingOnMarketplace;
+            public List<CardKey> CardVariantsMissing;
         }
 
         private class DummyCardWithCardKey

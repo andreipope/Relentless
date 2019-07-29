@@ -429,7 +429,7 @@ namespace Loom.ZombieBattleground
                 string setName = prototype.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
-                string rankIconName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
+                string rankIconName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLowerInvariant());
 
                 if (!string.IsNullOrEmpty(prototype.Frame))
                 {
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
                 string setName = prototype.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}", setName);
-                string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLower());
+                string rankName = string.Format("Images/IconsRanks/rank_icon_{0}", rarity.ToLowerInvariant());
 
                 if (!string.IsNullOrEmpty(prototype.Frame))
                 {
