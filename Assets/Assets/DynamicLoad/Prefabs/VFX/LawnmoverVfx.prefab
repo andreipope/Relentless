@@ -28918,7 +28918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Lawnmower
   cardNameOfAbility: 2
-  delayBeforeEffect: 5
+  delayBeforeEffect: 2
   delayAfterEffect: 5
   delayForChangeState: 0
   soundName: 
@@ -28926,6 +28926,8 @@ MonoBehaviour:
   offset: {x: 7.5, y: 0, z: 0}
   localOffset: {x: 0, y: 0, z: 0}
   isRotate: 0
+  localPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
+  opponentPlayerAbilityEffectRotation: {x: 0, y: 0, z: 0}
   positionInfo:
     type: 0
 --- !u!210 &8715564002334686551
