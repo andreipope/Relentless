@@ -112,8 +112,8 @@ namespace Loom.ZombieBattleground
 
         private void ApplyInfoAboutOverlords(OverlordUserInstance player, OverlordUserInstance opponent)
         {
-            _playerOverlordNameText.text = player.Prototype.Name.ToUpperInvariant();
-            _opponentOverlordNameText.text = opponent.Prototype.Name.ToUpperInvariant();
+            _playerOverlordNameText.text = player.Prototype.ShortName.ToUpperInvariant();
+            _opponentOverlordNameText.text = opponent.Prototype.ShortName.ToUpperInvariant();
 
             _playerOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
