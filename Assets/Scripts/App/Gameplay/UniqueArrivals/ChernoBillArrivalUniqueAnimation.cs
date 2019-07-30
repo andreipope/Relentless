@@ -28,7 +28,6 @@ namespace Loom.ZombieBattleground
             cameraGroupTransform.SetParent(cameraVFXObj);
 
             Vector3 vfxPosition = unitView.PositionOfBoard;
-            vfxPosition.x = 0f;
             animationVFX.transform.position = vfxPosition;
             animationVFX.transform.Find("DestroyAllCards/Bubble").position = Vector3.zero;
 
