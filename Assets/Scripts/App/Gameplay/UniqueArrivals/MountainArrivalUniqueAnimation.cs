@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
 
@@ -23,6 +24,13 @@ namespace Loom.ZombieBattleground
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/Mountain_Arrival"));
+
+            Transform creatureImage = animationVFX.transform.Find("Battleframe_/SpriteContainer/CreaturePicture").transform;
+            Card card = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardByName("Mountain");
+            FloatVector2 position = card.PictureTransforms.Battleground.Position;
+            float scale = card.PictureTransforms.Battleground.Scale;
+            creatureImage.transform.localPosition = new Vector3(position.X, position.Y, 0f);
+            creatureImage.transform.localScale = Vector3.one * scale;
 
             Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
 
