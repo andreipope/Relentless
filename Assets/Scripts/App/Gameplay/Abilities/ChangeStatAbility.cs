@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
+                ChangeStatsOfPlayerCards(newPlayer, Defense, Attack, false);
             }
         }
 
@@ -257,9 +257,9 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
+        private void ChangeStatsOfPlayerCards(Player player, int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
         {
-            List<CardModel> units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.ToList();
+            List<CardModel> units = player.PlayerCardsController.CardsOnBoard.ToList();
 
             if(filterUnits != null)
             {
@@ -280,6 +280,18 @@ namespace Loom.ZombieBattleground
                     ModifiedDefense = defense
                 });
             }
+        }
+        
+        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
+        {
+            ChangeStatsOfPlayerCards
+            (
+                PlayerCallerOfAbility,
+                defense,
+                damage,
+                withCaller,
+                filterUnits
+            );
         }
         
         private void ChangeStatsOfTarget(CardModel unit, int defense, int damage)
