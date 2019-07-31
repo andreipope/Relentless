@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
             _selfPage = armyPage;
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);
-            _uiManager.DrawPopup<AreaBarPopup>();
+            _uiManager.HidePopup<AreaBarPopup>();
 
             if (_backendDataSyncService.IsCollectionDataDirty)
             {
@@ -70,7 +70,6 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_CARDS);
-            _uiManager.DrawPopup<AreaBarPopup>();
 
             _buttonMarketplace = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_MarketPlace").GetComponent<Button>();
             _buttonMarketplace.onClick.AddListener(ButtonMarketplace);

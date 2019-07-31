@@ -19,10 +19,13 @@ namespace Loom.ZombieBattleground
         private Button _buttonGooCost;
         private Button _buttonRank;
 
+        private Button _buttonEdition;
+
         private Button _buttonGooCostLeftArrow;
         private Button _buttonGooCostRightArrow;
         private ScrollRect _scrollRectGooCost;
 
+        private Dictionary<Enumerators.CardVariant, Button> _buttonEditionDictionary;
         private Dictionary<Enumerators.Faction, Button> _buttonElementsDictionary;
         private Dictionary<Enumerators.CardRank, Button> _buttonRankDictionary;
         private List<Button> _buttonGooCostList;
@@ -46,10 +49,20 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank.COMMANDER
         };
 
+        public readonly List<Enumerators.CardVariant> AllAvailableEditionList = new List<Enumerators.CardVariant>()
+        {
+            Enumerators.CardVariant.Standard,
+            Enumerators.CardVariant.Limited,
+            Enumerators.CardVariant.Backer,
+            Enumerators.CardVariant.Tron,
+            Enumerators.CardVariant.Binance
+        };
+
         public CardFilterData FilterData;
 
         private CardFilterData _cacheFilterData;
 
+        public UnityAction<Enumerators.CardVariant> UpdateEditionFilterEvent;
         public UnityAction<Enumerators.Faction> UpdateElementFilterEvent;
         public UnityAction<Enumerators.CardRank> UpdateRankFilterEvent;
         public UnityAction<int> UpdateGooCostFilterEvent;
@@ -59,8 +72,8 @@ namespace Loom.ZombieBattleground
             None = -1,
             Element = 0,
             GooCost = 1,
-            Rank = 2
-
+            Rank = 2,
+            Edition = 3
         }
 
         private Tab _tab = Tab.None;
@@ -73,11 +86,13 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _buttonEditionDictionary = new Dictionary<Enumerators.CardVariant, Button>();
             _buttonElementsDictionary = new Dictionary<Enumerators.Faction, Button>();
             _buttonRankDictionary = new Dictionary<Enumerators.CardRank, Button>();
 
             FilterData = new CardFilterData
             (
+                AllAvailableEditionList,
                 AllAvailableFactionList,
                 AllAvailableRankList
             );
@@ -96,6 +111,13 @@ namespace Loom.ZombieBattleground
         public void Show(GameObject obj)
         {
             Self = obj;
+
+            _buttonEdition = Self.transform.Find("FiltersButtons/Button_Edition")?.GetComponent<Button>();
+            if (_buttonEdition != null)
+            {
+                _buttonEdition.onClick.AddListener(ButtonEditionHandler);
+            }
+
             _buttonElement = Self.transform.Find("FiltersButtons/Button_Element").GetComponent<Button>();
             _buttonElement.onClick.AddListener(ButtonElementHandler);
 
@@ -114,7 +136,27 @@ namespace Loom.ZombieBattleground
             _scrollRectGooCost = Self.transform.Find("Tab_GooCost/Goo/Scroll View").GetComponent<ScrollRect>();
             _scrollRectGooCost.horizontalNormalizedPosition = 0f;
 
+            _buttonEditionDictionary.Clear();
+
+            foreach(Enumerators.CardVariant variant in AllAvailableEditionList)
+            {
+                Button buttonEditionIcon = Self.transform.Find("Tab_Edition/Editions/Scroll View/Viewport/Content/"+variant.ToString().ToLowerInvariant())?.GetComponent<Button>();
+                if (buttonEditionIcon != null)
+                {
+                   buttonEditionIcon.onClick.AddListener
+                    (()=>
+                        {
+                            PlayClickSound();
+                            ButtonEditionIconHandler(variant);
+                        }
+                    );
+
+                    _buttonEditionDictionary.Add(variant, buttonEditionIcon);
+                }
+            }
+
             _buttonElementsDictionary.Clear();
+
             foreach(Enumerators.Faction faction in AllAvailableFactionList)
             {
                 Button buttonElementIcon = Self.transform.Find("Tab_Element/Elements/Scroll View/Viewport/Content/"+faction.ToString().ToLowerInvariant()).GetComponent<Button>();
@@ -172,11 +214,12 @@ namespace Loom.ZombieBattleground
             {
                 Self.transform.Find("Tab_Element").gameObject,
                 Self.transform.Find("Tab_GooCost").gameObject,
-                Self.transform.Find("Tab_Rarity").gameObject
+                Self.transform.Find("Tab_Rarity").gameObject,
+                Self.transform.Find("Tab_Edition").gameObject
             };
 
 
-            LoadCacaheFilterData();
+            LoadCacheFilterData();
             LoadTabs();
             UpdateAllButtonsStatus();
         }
@@ -194,6 +237,17 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _scrollRectGooCost.horizontalNormalizedPosition = _scrollRectGooCost.horizontalNormalizedPosition < 1 ? 1 : 0;
+        }
+
+        private void ButtonEditionIconHandler(Enumerators.CardVariant variant)
+        {
+            if (_tutorialManager.IsTutorial)
+                return;
+
+            PlayClickSound();
+
+            ToggleSelectedEdition(variant);
+            UpdateEditionFilterEvent?.Invoke(variant);
         }
 
         private void ButtonElementIconHandler(Enumerators.Faction faction)
@@ -228,6 +282,15 @@ namespace Loom.ZombieBattleground
             UpdateRankFilterEvent?.Invoke(rank);
         }
 
+        private void ButtonEditionHandler()
+        {
+            if (_tutorialManager.BlockAndReport(_buttonEdition.name))
+                return;
+
+            PlayClickSound();
+            ChangeTab(Tab.Edition);
+        }
+
         private void ButtonElementHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonElement.name))
@@ -260,7 +323,7 @@ namespace Loom.ZombieBattleground
         private void LoadTabs()
         {
             _tab = Tab.None;
-            ChangeTab(Tab.Element);
+            ChangeTab(Tab.Edition);
         }
 
         public void ChangeTab(Tab newTab)
@@ -278,6 +341,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Tab.GooCost:
                     _buttonGooCost.GetComponent<Image>().sprite = _buttonGooCost.spriteState.disabledSprite;
+                    break;
+                case Tab.Edition:
+                    _buttonEdition.GetComponent<Image>().sprite = _buttonEdition.spriteState.disabledSprite;
                     break;
             }
 
@@ -302,6 +368,9 @@ namespace Loom.ZombieBattleground
                 case Tab.GooCost:
                     _buttonGooCost.GetComponent<Image>().sprite = _buttonGooCost.spriteState.pressedSprite;
                     break;
+                case Tab.Edition:
+                    _buttonEdition.GetComponent<Image>().sprite = _buttonEdition.spriteState.pressedSprite;
+                    break;
             }
         }
 
@@ -310,7 +379,7 @@ namespace Loom.ZombieBattleground
             _cacheFilterData = new CardFilterData(FilterData);
         }
 
-        private void LoadCacaheFilterData()
+        private void LoadCacheFilterData()
         {
             if (_cacheFilterData != null)
             {
@@ -326,10 +395,28 @@ namespace Loom.ZombieBattleground
             UpdateFactionButtonDisplay(faction);
         }
 
+        private void ToggleSelectedEdition(Enumerators.CardVariant variant)
+        {
+            foreach (Enumerators.CardVariant edition in AllAvailableEditionList)
+            {
+                FilterData.EditionDictionary[edition] = edition == variant;
+            }
+            UpdateEditionButtonDisplay();
+        }
+
         private void ToggleSelectedFaction(Enumerators.Faction faction)
         {
             FilterData.FactionDictionary[faction] = !FilterData.FactionDictionary[faction];
             UpdateFactionButtonDisplay(faction);
+        }
+
+        private void UpdateEditionButtonDisplay()
+        {
+            foreach (Enumerators.CardVariant edition in AllAvailableEditionList)
+            {
+                Button button = _buttonEditionDictionary[edition].GetComponent<Button>();
+                button.GetComponent<Image>().color = FilterData.EditionDictionary[edition] ? Color.white : Color.gray;
+            }
         }
 
         private void UpdateFactionButtonDisplay(Enumerators.Faction faction)
@@ -370,6 +457,8 @@ namespace Loom.ZombieBattleground
 
         private void UpdateAllButtonsStatus()
         {
+            UpdateEditionButtonDisplay();
+
             foreach (Enumerators.Faction faction in AllAvailableFactionList)
             {
                 UpdateFactionButtonDisplay(faction);
@@ -400,12 +489,18 @@ namespace Loom.ZombieBattleground
 
         public class CardFilterData
         {
+            public Dictionary<Enumerators.CardVariant, bool> EditionDictionary;
             public Dictionary<Enumerators.Faction, bool> FactionDictionary;
             public Dictionary<Enumerators.CardRank, bool> RankDictionary;
             public List<bool> GooCostList;
 
             public CardFilterData(CardFilterData originalData)
             {
+                EditionDictionary = originalData.EditionDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
                 FactionDictionary = originalData.FactionDictionary.ToDictionary
                 (
                     entry => entry.Key,
@@ -421,10 +516,17 @@ namespace Loom.ZombieBattleground
 
             public CardFilterData
             (
+                List<Enumerators.CardVariant> availableEditionList,
                 List<Enumerators.Faction> availableFactionList,
                 List<Enumerators.CardRank> availableRankList
             )
             {
+                EditionDictionary = new Dictionary<Enumerators.CardVariant, bool>();
+                foreach(Enumerators.CardVariant variant in availableEditionList)
+                {
+                    EditionDictionary.Add(variant, variant == Enumerators.CardVariant.Standard ? true : false);
+                }
+
                 FactionDictionary = new Dictionary<Enumerators.Faction, bool>();
                 foreach(Enumerators.Faction faction in availableFactionList)
                 {
@@ -442,6 +544,28 @@ namespace Loom.ZombieBattleground
                 {
                     GooCostList.Add(true);
                 }
+            }
+
+            public List<Enumerators.CardVariant> GetFilteredEditionList()
+            {
+                List<Enumerators.CardVariant> editionList = new List<Enumerators.CardVariant>();
+                foreach (KeyValuePair<Enumerators.CardVariant, bool> kvp in EditionDictionary)
+                {
+                    if(kvp.Value)
+                        editionList.Add(kvp.Key);
+                }
+                return editionList;
+            }
+
+            public int GetActiveEditionFilterCount()
+            {
+                int count = 0;
+                foreach (KeyValuePair<Enumerators.CardVariant, bool> kvp in EditionDictionary)
+                {
+                    if (kvp.Value)
+                        count++;
+                }
+                return count;
             }
 
             public List<Enumerators.Faction> GetFilteredFactionList()
@@ -502,6 +626,11 @@ namespace Loom.ZombieBattleground
 
             public void Reset()
             {
+                for (int i = 0; i < EditionDictionary.Count;++i)
+                {
+                    KeyValuePair<Enumerators.CardVariant, bool> kvp = EditionDictionary.ElementAt(i);
+                    EditionDictionary[kvp.Key] = true;
+                }
                 for (int i = 0; i < FactionDictionary.Count;++i)
                 {
                     KeyValuePair<Enumerators.Faction, bool> kvp = FactionDictionary.ElementAt(i);
