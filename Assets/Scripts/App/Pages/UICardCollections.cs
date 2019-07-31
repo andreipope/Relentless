@@ -260,7 +260,16 @@ namespace Loom.ZombieBattleground
 
         private void LoadEditionCards(Enumerators.CardVariant variant)
         {
-            _cardUIList = new List<UnitCardUI>();
+            if (_cardUIList == null)
+            {
+                _cardUIList = new List<UnitCardUI>();
+            }
+
+            for (int i = _cardUIList.Count-1; i >= 0; i--)
+            {
+                GameObject.Destroy(_cardUIList[i].GetGameObject());
+                _cardUIList.RemoveAt(i);
+            }
 
             for (int i = 0; i < _dataManager.CachedCardsLibraryData.Factions.Count; i++)
             {
@@ -291,17 +300,6 @@ namespace Loom.ZombieBattleground
 
         private void LoadUserOwnedCards()
         {
-            if (_cardUIList == null)
-            {
-                _cardUIList = new List<UnitCardUI>();
-            }
-
-            for (int i = _cardUIList.Count-1; i >= 0; i--)
-            {
-                GameObject.DestroyImmediate(_cardUIList[i].GetGameObject());
-                _cardUIList.RemoveAt(i);
-            }
-
             for (int i = 0; i < _dataManager.CachedCollectionData.Cards.Count; i++)
             {
                 CollectionCardData cardData = _dataManager.CachedCollectionData.Cards[i];
