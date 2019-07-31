@@ -215,8 +215,10 @@ namespace Loom.ZombieBattleground
                 Self.transform.Find("Tab_Element").gameObject,
                 Self.transform.Find("Tab_GooCost").gameObject,
                 Self.transform.Find("Tab_Rarity").gameObject,
-                Self.transform.Find("Tab_Edition").gameObject
+                Self.transform.Find("Tab_Edition")?.gameObject
             };
+
+            _tabObjects = _tabObjects.Where(x => x != null).ToArray();
 
 
             LoadCacheFilterData();
@@ -323,7 +325,14 @@ namespace Loom.ZombieBattleground
         private void LoadTabs()
         {
             _tab = Tab.None;
-            ChangeTab(Tab.Edition);
+            if (_tabObjects.Length > 3)
+            {
+                ChangeTab(Tab.Edition);
+            }
+            else
+            {
+                ChangeTab(Tab.Element);
+            }
         }
 
         public void ChangeTab(Tab newTab)
@@ -457,8 +466,11 @@ namespace Loom.ZombieBattleground
 
         private void UpdateAllButtonsStatus()
         {
-            UpdateEditionButtonDisplay();
-
+            if (_tabObjects.Length > 3)
+            {
+                UpdateEditionButtonDisplay();
+            }
+            
             foreach (Enumerators.Faction faction in AllAvailableFactionList)
             {
                 UpdateFactionButtonDisplay(faction);
