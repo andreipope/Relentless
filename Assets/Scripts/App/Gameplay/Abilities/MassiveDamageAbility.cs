@@ -56,6 +56,7 @@ namespace Loom.ZombieBattleground
                      !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
+            _targetsAreReady = false;
             TakeDamage();
         }
 
@@ -65,7 +66,6 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            _targetsAreReady = false;
             TakeDamage();
         }
 

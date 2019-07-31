@@ -143,6 +143,10 @@ namespace Loom.ZombieBattleground
                     default:
                         break;
                 }
+            } 
+            else
+            {
+                Ability.InvokeVFXAnimationEnded();
             }
 
             PlaySound(soundName, delaySound);

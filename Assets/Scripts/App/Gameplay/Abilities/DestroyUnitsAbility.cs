@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
             }
 
             AbilityProcessingAction?.TriggerActionExternally();
-            AbilityProcessingAction = AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
 
             InvokeActionTriggered(_units);
         }
@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
+            
             AbilityProcessingAction?.TriggerActionExternally();
 
             OnUpdateEvent = null;
