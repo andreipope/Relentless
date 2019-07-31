@@ -1010,5 +1010,11 @@ namespace Loom.ZombieBattleground.Common
             Army,
             DeckEditing
         }
+
+        public enum Layer
+        {
+            Default = 0,
+            Battleground = 9
+        }
     }
 }

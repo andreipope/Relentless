@@ -60,6 +60,9 @@ namespace Loom.ZombieBattleground
 
         private Transform _actionReportPivot, _actionReportPanel;
 
+        private GameObject _playerGraveyardGameObject;
+        private GameObject _opponentGraveyardGameObject;
+
         private TextMeshPro _playerDefenseText,
             _opponentDefenseText,
             _playerCardDeckCountText,
@@ -286,10 +289,12 @@ namespace Loom.ZombieBattleground
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture =
                 GameObject.Find("Opponent/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
-            _playerGraveyardStatusTexture = GameObject.Find("Player/Graveyard_Illustration/Graveyard")
-                .GetComponent<SpriteRenderer>();
-            _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard")
-                .GetComponent<SpriteRenderer>();
+
+            _playerGraveyardGameObject = GameObject.Find("Player/Graveyard_Illustration");
+            _opponentGraveyardGameObject = GameObject.Find("Opponent/Graveyard_Illustration");
+
+            _playerGraveyardStatusTexture = _playerGraveyardGameObject.transform.Find("Graveyard").GetComponent<SpriteRenderer>();
+            _opponentGraveyardStatusTexture = _opponentGraveyardGameObject.transform.Find("Graveyard").GetComponent<SpriteRenderer>();
 
             _playerDefenseText = GameObject.Find("Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
             _opponentDefenseText = GameObject.Find("Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
@@ -412,12 +417,12 @@ namespace Loom.ZombieBattleground
             pos.z = _actionReportPanel.position.z;
             _actionReportPanel.position = pos;
         }
-        
+
         public IEnumerator CorrectReportPanelDuringCameraShake( Transform cameraGroupTransform, Transform shakingAnimationObject )
         {
             while(true)
             {
-                if ( _selfPage != null && _selfPage.activeInHierarchy && _actionReportPivot.parent != null)
+                if ( _selfPage != null && _selfPage.activeInHierarchy && _actionReportPivot.parent != null && shakingAnimationObject != null)
                 {
                     cameraGroupTransform.position = shakingAnimationObject.localPosition;
                     _actionReportPivot.parent.position = cameraGroupTransform.position * -1f;
@@ -425,6 +430,23 @@ namespace Loom.ZombieBattleground
                 }
                 yield return null;
             }
+        }
+
+        public void ChangeGraveyardLayer(int layer)
+        {
+            _playerGraveyardGameObject.layer = layer;
+            _opponentGraveyardGameObject.layer = layer;
+
+            foreach (Transform childTransform in _playerGraveyardGameObject.transform)
+            {
+                childTransform.gameObject.layer = layer;
+            }
+
+            foreach (Transform childTransform in _opponentGraveyardGameObject.transform)
+            {
+                childTransform.gameObject.layer = layer;
+            }
+
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)

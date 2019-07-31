@@ -65,6 +65,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
+            _targetsAreReady = false;
             TakeDamage();
         }
 

@@ -72,44 +72,32 @@ namespace Loom.ZombieBattleground
                         {
                             CreateVfx(targetPosition, true, delayBeforeDestroy, true);
                         }
+                        InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeDestroy);
                         break;
                     case Enumerators.CardNameOfAbility.Bulldozer:
+                    {
+                        _deactivateUnitImmediately = true;
+                        InternalTools.DoActionDelayed(() =>
                         {
-                            _deactivateUnitImmediately = true;
                             CreateVfx(targetPosition, true, delayBeforeDestroy, true);
 
                             Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
-                            
+
                             GameplayPage gameplayPage = GameClient.Get<IUIManager>().GetPage<GameplayPage>();
+                            gameplayPage.ChangeGraveyardLayer((int)Enumerators.Layer.Battleground);
+
                             Transform actionReportPivot = GameObject.Find("ActionReportPivot").transform;
-                            GameObject pivotParent = new GameObject("PivotParent");                    
+                            GameObject pivotParent = new GameObject("PivotParent");
                             Vector3 actionReportPivotCachePos = actionReportPivot.position;
                             actionReportPivot.SetParent(pivotParent.transform);
                             CorrectActionReportPanelCoroutine = MainApp.Instance.StartCoroutine
                             (
                                 gameplayPage.CorrectReportPanelDuringCameraShake
                                 (
-                                    cameraGroupTransform, 
+                                    cameraGroupTransform,
                                     VfxObject.transform.Find("Camera Anim/!! Camera shake")
                                 )
                             );
-
-                            OnEventEnded += () =>
-                            {
-                                if (CorrectActionReportPanelCoroutine != null)
-                                {
-                                    MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
-                                }
-                                CorrectActionReportPanelCoroutine = null;
-                                
-                                cameraGroupTransform.SetParent(null);
-                                cameraGroupTransform.position = Vector3.zero;
-                                
-                                actionReportPivot.SetParent(null);
-                                actionReportPivot.position = actionReportPivotCachePos;
-                                gameplayPage.SyncActionReportPanelPositionWithPivot();
-                                Object.Destroy(pivotParent);
-                            };
 
                             opponentLineObject = VfxObject.transform.Find("VFX/RubbleUp/BurstToxic").gameObject;
                             playerLineObject = VfxObject.transform.Find("VFX/Rubble/BurstToxic").gameObject;
@@ -121,11 +109,26 @@ namespace Loom.ZombieBattleground
 
                             Ability.VFXAnimationEnded += () =>
                             {
-                                cameraGroupTransform.SetParent(null);
-                                cameraGroupTransform.position = Vector3.zero;
+                                if (CorrectActionReportPanelCoroutine != null)
+                                {
+                                    Debug.LogWarning("Stop coroutine called");
+                                    MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
+                                }
+                                CorrectActionReportPanelCoroutine = null;
+
+                                gameplayPage.ChangeGraveyardLayer((int)Enumerators.Layer.Default);
+
+                                actionReportPivot.SetParent(null);
+                                actionReportPivot.position = actionReportPivotCachePos;
+                                gameplayPage.SyncActionReportPanelPositionWithPivot();
+                                Object.Destroy(pivotParent);
                             };
-                        }
-                        break;
+
+                        }, delayAfter);
+
+                        InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeDestroy + delayAfter);
+                    }
+                    break;
                     case Enumerators.CardNameOfAbility.Molotov:
                         {
                             _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
@@ -133,8 +136,9 @@ namespace Loom.ZombieBattleground
                             {
                                 targetPosition = unitView.Transform.position;
                                 CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                            }                            
+                            }
                         }
+                        InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeDestroy);
                         break;
                     default:
                         break;
@@ -143,7 +147,7 @@ namespace Loom.ZombieBattleground
 
             PlaySound(soundName, delaySound);
 
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeDestroy);
+
         }
 
         #region Bulldozer
@@ -176,7 +180,7 @@ namespace Loom.ZombieBattleground
             }
 
             if(_unitsViews.Count == 0)
-            {                
+            {
                 OnEventEnded?.Invoke();
                 Ability.OnUpdateEvent -= OnUpdateEventHandler;
             }
@@ -194,7 +198,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.GameObject.SetActive(false);
             }
-            Ability.DestroyUnit(unit.Model);            
+            Ability.DestroyUnit(unit.Model);
         }
 
         private void CreateSubParticle(Vector3 pos, float duration = 3)
