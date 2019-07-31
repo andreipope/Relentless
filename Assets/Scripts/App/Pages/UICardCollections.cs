@@ -300,6 +300,8 @@ namespace Loom.ZombieBattleground
 
         private void LoadUserOwnedCards()
         {
+            _cardUIList = new List<UnitCardUI>();
+
             for (int i = 0; i < _dataManager.CachedCollectionData.Cards.Count; i++)
             {
                 CollectionCardData cardData = _dataManager.CachedCollectionData.Cards[i];
@@ -534,6 +536,12 @@ namespace Loom.ZombieBattleground
                 _selectedUnitCard = null;
             }
 
+            for (int i = _cardUIList.Count-1; i >= 0; i--)
+            {
+                GameObject.DestroyImmediate(_cardUIList[i].GetGameObject());
+                _cardUIList.RemoveAt(i);
+            }
+
             _cardFilter.Hide();
         }
 
@@ -546,7 +554,7 @@ namespace Loom.ZombieBattleground
         {
             if (_selfPage == null)
                 return;
-
+            
             for (int i = 0; i < _cardUIList.Count; i++)
             {
                 _cardUIList[i]
