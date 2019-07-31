@@ -139,12 +139,14 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
 
-            for (int i = _affectedUnits.Count-1; i >= 0; i--)
+            for (int i = 0; i < _affectedUnits.Count; ++i)
             {
-                if (_affectedUnits[i].CardModel.OwnerPlayer != AbilityUnitOwner.OwnerPlayer)
+                CardStatInfo unit = _affectedUnits[i];
+                if (unit.CardModel.Card.Owner != AbilityUnitOwner.OwnerPlayer)
                 {
-                    RemoveBuffFromUnit(_affectedUnits[i].ModifiedDamage, _affectedUnits[i].ModifiedDefense, _affectedUnits[i]);
-                    _affectedUnits.Remove(_affectedUnits[i]);
+                    RemoveBuffFromUnit(unit.ModifiedDamage, unit.ModifiedDefense, unit);
+                    _affectedUnits.Remove(unit);
+                    --i;
                 }
             }
 
