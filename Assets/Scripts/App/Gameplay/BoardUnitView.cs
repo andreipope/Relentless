@@ -292,8 +292,13 @@ namespace Loom.ZombieBattleground
         }
         private void ModelOnUnitHpChanged(int oldValue, int newValue)
         {
-            int currentDefence = Model.MaxCurrentDefense;
-            UpdateUnitInfoText(_defenseText, Model.CurrentDefense, currentDefence, currentDefence);
+            UpdateUnitInfoText
+            (
+                _defenseText, 
+                Model.CurrentDefense, 
+                Model.MaxCurrentDefense, 
+                Model.MaxCurrentDefense
+            );
             CheckOnDie();
         }
 
