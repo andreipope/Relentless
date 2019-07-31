@@ -14772,7 +14772,7 @@ MonoBehaviour:
   cardName: Bulldozer
   cardNameOfAbility: 1
   delayBeforeEffect: 5
-  delayAfterEffect: 8
+  delayAfterEffect: 2
   delayForChangeState: 0
   soundName: CZB_AUD_Bulldozer_Drive_F1_EXP
   delayForSound: 0
