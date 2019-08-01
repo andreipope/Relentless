@@ -753,7 +753,7 @@ namespace Loom.ZombieBattleground
 
                         if(_uiManager.GetPopup<YouWonYouLostPopup>().Self == null)
                         {
-                            string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                            string tutorialSkipQuestion = "Welcome, Champion!\nWould you like a tutorial to get you started?";
                             QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
                             questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
 
