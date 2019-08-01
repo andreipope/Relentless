@@ -826,12 +826,16 @@ namespace Loom.ZombieBattleground
         {
             CallLog($"{nameof(TakeControlOfUnit)}(CardModel unit = {unit})");
 
+            Player oldOwner = unit.OwnerPlayer;
+            
             unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit, false);
             unit.OwnerPlayer.PlayerCardsController.InvokeBoardChanged();
             unit.Card.Owner = Player;
 
             _cardsOnBoard.Insert(ItemPosition.End, unit);
             InvokeBoardChanged();
+
+            oldOwner.PlayerCardsController.InvokeBoardChanged();
         }
 
         public bool CheckIsMoreThanMaxCards(CardModel cardModel = null, int addToMaxCards = 0)
