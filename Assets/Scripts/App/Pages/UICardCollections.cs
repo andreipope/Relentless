@@ -666,6 +666,8 @@ namespace Loom.ZombieBattleground
                 _showingUserCollection ?
                     _dataManager.CachedCollectionData.Cards.Count :
                     _allCardsCount;
+
+            cardCount = Mathf.Clamp(cardCount, cardCount, totalCardCount);
             _cardCounter.text = cardCount + "/" + totalCardCount;
         }
 
