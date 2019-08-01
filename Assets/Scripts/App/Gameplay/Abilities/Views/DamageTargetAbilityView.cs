@@ -1,3 +1,4 @@
+using System.Collections;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -14,6 +15,8 @@ namespace Loom.ZombieBattleground
         private float _delayBeforeDestroyImpact;
 
         private BattlegroundController _battlegroundController;
+        
+        public Coroutine CorrectVfxPositionCoroutine;
 
         public DamageTargetAbilityView(DamageTargetAbility ability) : base(ability)
         {
@@ -135,37 +138,61 @@ namespace Loom.ZombieBattleground
                 CreateVfx(targetPosition + offset, true, _delayBeforeDestroyImpact, true);
                 VfxObject.transform.eulerAngles = vfxRotation;
 
-                if
-                (
-                    effectInfo != null &&
-                    (
-                        effectInfo.cardName == "Harpoon" ||
-                        effectInfo.cardName == "Gargantua" ||
-                        effectInfo.cardName == "Shovel Damage"
-                    )
-                )
+                if (effectInfo != null)
                 {
                     Transform cameraVFXObj = VfxObject.transform.Find("!! Camera shake");
-                    cameraVFXObj.transform.position = Vector3.zero;
                     Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
-                    cameraGroupTransform.SetParent
+
+                    if
                     (
-                       cameraVFXObj
-                    );
-
-                    cameraGroupTransform.localPosition = VfxObject.transform.position * -1;
-                    if (isRotate && !Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                        effectInfo.cardName == "Harpoon" ||
+                        effectInfo.cardName == "Shovel Damage"
+                    )
                     {
-                        cameraGroupTransform.localPosition = VfxObject.transform.position;
+                        cameraVFXObj.transform.position = Vector3.zero;
+                        cameraGroupTransform.SetParent
+                        (
+                           cameraVFXObj
+                        );
+
+                        cameraGroupTransform.localPosition = VfxObject.transform.position * -1;
+                        if (isRotate && !Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                        {
+                            cameraGroupTransform.localPosition = VfxObject.transform.position;
+                        }
+
+                        Ability.VFXAnimationEnded += () =>
+                        {
+                            cameraGroupTransform.SetParent(null);
+                            cameraGroupTransform.position = Vector3.zero;
+                        };
                     }
-
-                    Ability.VFXAnimationEnded += () =>
+                    else if(effectInfo.cardName == "Gargantua")
                     {
-                        cameraGroupTransform.SetParent(null);
-                        cameraGroupTransform.position = Vector3.zero;
-                    };
+                        CorrectVfxPositionCoroutine = MainApp.Instance.StartCoroutine
+                        (
+                            CorrectVfxPositionDuringCameraShake
+                            (
+                                cameraGroupTransform,
+                                VfxObject.transform.Find("Gargantua_Anim"),
+                                cameraVFXObj
+                            )
+                        );
+    
+                        Ability.VFXAnimationEnded += () =>
+                        {
+                            cameraGroupTransform.SetParent(null);
+                            cameraGroupTransform.position = Vector3.zero;
+    
+                            if (CorrectVfxPositionCoroutine != null)
+                            {
+                                Debug.LogWarning("Stop coroutine called");
+                                MainApp.Instance.StopCoroutine(CorrectVfxPositionCoroutine);
+                            }
+                            CorrectVfxPositionCoroutine = null;
+                        };
+                    }
                 }
-
 
                 PlaySound(soundClipTitle, delayBeforeSound);
             }
@@ -173,6 +200,18 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);
         }
 
+        public IEnumerator CorrectVfxPositionDuringCameraShake( Transform cameraGroupTransform, Transform vfxTransform, Transform shakingAnimationObject )
+        {
+            while(true)
+            {
+                if ( cameraGroupTransform != null && vfxTransform != null && shakingAnimationObject != null)
+                {
+                    cameraGroupTransform.position = shakingAnimationObject.localPosition;
+                    vfxTransform.localPosition = cameraGroupTransform.localPosition * -1f;
+                }
+                yield return null;
+            }
+        }
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
