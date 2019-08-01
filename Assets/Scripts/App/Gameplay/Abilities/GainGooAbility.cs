@@ -41,7 +41,14 @@ namespace Loom.ZombieBattleground
             {
                 if (PlayerCallerOfAbility.Defense < GetOpponentOverlord().Defense)
                 {
-                    GainGoo(PlayerCallerOfAbility, Count);
+                    if (PlayerCallerOfAbility.GooVials + Count > PlayerCallerOfAbility.MaxGooVials)
+                    {
+                        AddCardFromDeckToHand(PlayerCallerOfAbility);
+                    }
+                    else
+                    {
+                        GainGoo(PlayerCallerOfAbility, Count);
+                    }
                 }
             }
             else
@@ -50,8 +57,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void AddCardFromDeckToHand(Player player)
+        {
+            player.PlayerCardsController.AddCardFromDeckToHand();
+        }
+
         private void GainGoo(Player player, int count)
-        { 
+        {
             if (GameplayManager.CurrentTurnPlayer == player)
             {
                 player.CurrentGoo = Mathf.Clamp(player.CurrentGoo + count, 0, (int)player.MaxGooVials);
