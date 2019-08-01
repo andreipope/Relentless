@@ -114,6 +114,9 @@ namespace Loom.ZombieBattleground
         {
             IDataManager dataManager = GameClient.Get<IDataManager>();
             Deck deck = dataManager.CachedDecksData.Decks.Find(cachedDeck => cachedDeck.Id == deckId);
+            if (deck == null)
+                return null;
+
             OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
