@@ -95,12 +95,7 @@ namespace Loom.ZombieBattleground
 
         public void DestroyUnit(CardModel unit)
         {
-            bool withEffect = true;
-
-            if (AbilityData.VisualEffectsToPlay != null && AbilityData.VisualEffectsToPlay.Count > 0)
-            {
-                withEffect = false;
-            }
+            bool withEffect = !(AbilityData.VisualEffectsToPlay != null && AbilityData.VisualEffectsToPlay.Count > 0);
 
             BattlegroundController.DestroyBoardUnit(unit, withEffect);
             _units.Remove(unit);

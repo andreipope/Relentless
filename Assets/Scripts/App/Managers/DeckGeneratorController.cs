@@ -288,6 +288,11 @@ namespace Loom.ZombieBattleground
 
         public string GenerateDeckName()
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                return Constants.TutorialDefaultDeckName;
+            }
+            
             int index = _dataManager.CachedDecksData.Decks.Count;
             string newName = "HORDE " + index;
             while (true)

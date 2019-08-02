@@ -54,6 +54,8 @@ namespace Loom.ZombieBattleground.Common
 #endif
 
         internal const int TutorialPlayerOverlordId = 4;
+        
+        internal const string TutorialDefaultDeckName = "HORDE 1";
 
         internal const uint DeckMaxSize = 30;
 

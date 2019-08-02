@@ -143,10 +143,15 @@ namespace Loom.ZombieBattleground
                     default:
                         break;
                 }
-            } 
+            }
             else
             {
-                Ability.InvokeVFXAnimationEnded();
+                if (Ability.CardModel.Name == "Cherno-bill")
+                {
+                    InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, 6f);
+                }
+                else
+                    Ability.InvokeVFXAnimationEnded();
             }
 
             PlaySound(soundName, delaySound);
