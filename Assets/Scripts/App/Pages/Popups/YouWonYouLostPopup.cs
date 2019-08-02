@@ -358,7 +358,10 @@ namespace Loom.ZombieBattleground
         {
             if(_tutorialManager.IsTutorial)
             {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouLosePopupClosed);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouLosePopupClosed);                
+              
+                MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
+                matchManager.AppStateWasLoaded += PlayAgainWhenAppStateLoaded;
             }
 
             if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
