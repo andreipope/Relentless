@@ -45,6 +45,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            _targetsAreReady = false;
             TakeDamage();
         }
 
@@ -66,6 +67,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
+            _targetsAreReady = false;
             TakeDamage();
         }
 
