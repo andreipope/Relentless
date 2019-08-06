@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
 
             _selectedDeck = deck;
 
-            _deckNameText.text = _selectedDeck.Name;
+            _deckNameText.text = _tutorialManager.IsTutorial ? Constants.TutorialDefaultDeckName : _selectedDeck.Name;
 
             Enumerators.Faction faction = DataUtilities.GetFaction(deck.OverlordId);
             _overlordImage.sprite = DataUtilities.GetOverlordImage(deck.OverlordId);
