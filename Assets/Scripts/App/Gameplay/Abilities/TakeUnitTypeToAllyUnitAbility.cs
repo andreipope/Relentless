@@ -59,7 +59,23 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ResetAffectedUnits(_affectedUnits);
+                bool otherUnitWithAuraExist = false;
+                foreach(CardModel card in AbilityUnitOwner.OwnerPlayer.PlayerCardsController.CardsOnBoard)
+                {
+                    if
+                    (
+                        card != AbilityUnitOwner &&
+                        card.Prototype.CardKey.MouldId == AbilityUnitOwner.Prototype.CardKey.MouldId
+                    )
+                    {
+                        otherUnitWithAuraExist = true;
+                    }
+                }
+                
+                if(!otherUnitWithAuraExist)
+                {
+                    ResetAffectedUnits(_affectedUnits);
+                }
             }
         }
 
@@ -177,8 +193,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
                     {
                         List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard.Where(
-                                       unit => unit != AbilityUnitOwner &&
-                                           !unit.IsDead &&
+                                       unit => !unit.IsDead &&
                                            unit.CurrentDefense > 0 && unit.IsUnitActive).ToList();
 
                         if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
