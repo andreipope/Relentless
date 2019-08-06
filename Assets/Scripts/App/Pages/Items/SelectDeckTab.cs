@@ -262,6 +262,17 @@ namespace Loom.ZombieBattleground
                 if (_tutorialManager.IsTutorial)
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+
+                    // hack for tutorial in count number
+                    if (_tutorialManager.CurrentTutorial.Id == 3)
+                    {
+                        if (_tutorialManager.CurrentTutorialStepIndex >= 10)
+                        {
+                            int cardCount = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent()
+                                .SpecificHordeInfo.MaximumCardsCount;
+                            deckInfoObject.TextCardsAmount.text = $"{cardCount}/{cardCount}";
+                        }
+                    }
                 }
                 else
                 {

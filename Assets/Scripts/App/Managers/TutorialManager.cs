@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
         private List<TutorialStep> _tutorialSteps;
         private int _currentTutorialStepIndex;
 
+        public int CurrentTutorialStepIndex => _currentTutorialStepIndex;
+
         private List<InGameTutorialData> _ingameTutorials;
 
         private List<TutorialDescriptionTooltipItem> _ingameTutorialActiveTooltips;
