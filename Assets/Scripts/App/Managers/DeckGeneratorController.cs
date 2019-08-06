@@ -288,28 +288,32 @@ namespace Loom.ZombieBattleground
 
         public string GenerateDeckName()
         {
+            string deckName = string.Empty;
+            int index = _dataManager.CachedDecksData.Decks.Count;
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
-                return Constants.TutorialDefaultDeckName;
+                deckName = Constants.TutorialDefaultDeckName;
             }
-            
-            int index = _dataManager.CachedDecksData.Decks.Count;
-            string newName = "HORDE " + index;
+            else
+            {
+                deckName = "HORDE " + index;
+            }
+
             while (true)
             {
                 bool isNameCollide = false;
                 for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; ++i)
                 {
-                    if (string.Equals(_dataManager.CachedDecksData.Decks[i].Name,newName))
+                    if (string.Equals(_dataManager.CachedDecksData.Decks[i].Name,deckName))
                     {
                         isNameCollide = true;
                         ++index;
-                        newName = "HORDE " + index;
+                        deckName = "HORDE " + index;
                         break;
                     }
                 }
                 if (!isNameCollide)
-                    return newName;
+                    return deckName;
             }
         }
 
