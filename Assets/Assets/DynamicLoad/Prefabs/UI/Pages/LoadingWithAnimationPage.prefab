@@ -407,7 +407,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5839500392985134308}
   - component: {fileID: 682025083564540932}
-  - component: {fileID: 3520574512340082694}
   m_Layer: 0
   m_Name: LoadingBar
   m_TagString: Untagged
@@ -443,35 +442,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1576317249162065228}
   m_CullTransparentMesh: 0
---- !u!114 &3520574512340082694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576317249162065228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
 --- !u!1 &4110833076158940976
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,6 +595,30 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4435891927710062, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4435891927710062, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4877772172799718, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4877772172799718, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226628143533876, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226628143533876, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 199392524957349750, guid: 34c2ef3ae7fffc54680d2e8ac490f3d9,
         type: 3}

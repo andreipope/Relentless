@@ -327,7 +327,7 @@ namespace Loom.ZombieBattleground
             if (selectedDeck == null)
                 return;
 
-            _textDeckName.text = _tutorialManager.IsTutorial ? Constants.TutorialDefaultDeckName : selectedDeck.Name;
+            _textDeckName.text = (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 ) ? Constants.TutorialDefaultDeckName : selectedDeck.Name;
             OverlordUserInstance selectedOverlord = DataUtilities.GetOverlordDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Prototype.Faction);
 
