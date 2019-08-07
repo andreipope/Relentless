@@ -2429,7 +2429,10 @@
             "Button_OverlordAbilities",
             "Button_Rename",
             "Button_AutoComplete",
-            "Button_ViewDeck"
+            "Button_ViewDeck",
+            "Button_GooCost",
+            "Button_Element",
+            "Button_Rarity"
           ],
           "ConnectedActivities": [
             1
