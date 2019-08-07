@@ -386,6 +386,10 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardType.WALKER:
                     ChangeTypeFrame(1.3f, 1.3f);
+                    if (!Model.AttackedThisTurn && Model.NumTurnsOnBoard == 0)
+                    {
+                        PlaySleepingParticles();
+                    }
                     break;
                 case Enumerators.CardType.FERAL:
                     ChangeTypeFrame(2.7f, 1.7f);
@@ -401,6 +405,7 @@ namespace Loom.ZombieBattleground
                     if (!Model.AttackedThisTurn && Model.NumTurnsOnBoard == 0)
                     {
                         currentHighlight = false;
+                        PlaySleepingParticles();
                     }
                     else if (!Model.AttackedThisTurn && Model.IsPlayable && !Model.CantAttackInThisTurnBlocker)
                     {
@@ -699,6 +704,15 @@ namespace Loom.ZombieBattleground
                 return _glowObj.activeSelf;
 
             return false;
+        }
+        
+        public void PlaySleepingParticles()
+        {
+            if (_sleepingParticles != null)
+            {
+                _sleepingParticles.Play();
+                _sleepingParticles.gameObject.SetActive(true);
+            }
         }
 
         public void StopSleepingParticles()

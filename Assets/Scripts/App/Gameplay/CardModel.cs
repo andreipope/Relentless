@@ -1174,6 +1174,10 @@ namespace Loom.ZombieBattleground
         public void ResetAfterTakenControl()
         {
             AttackedThisTurn = false;
+            if(NumTurnsOnBoard > 0)
+            {
+                IsPlayable = true;
+            }
         }
 
         public bool HasActiveMechanic(Enumerators.GameMechanicDescription gameMechanic)
