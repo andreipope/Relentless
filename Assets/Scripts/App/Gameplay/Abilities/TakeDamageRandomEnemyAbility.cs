@@ -143,6 +143,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+            
             InvokeActionTriggered(_targets);      
         }
 
@@ -150,6 +153,8 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            AbilityProcessingAction?.TriggerActionExternally();
+            
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
