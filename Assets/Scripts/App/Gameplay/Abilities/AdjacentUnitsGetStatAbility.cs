@@ -124,7 +124,10 @@ namespace Loom.ZombieBattleground
                 _affectedUnits.Add(unit);
                 unit.UnitDistracted += () =>
                 {
-                    _affectedUnits.Remove(unit);
+                    if (_affectedUnits != null && _affectedUnits.Contains(unit))
+                    {
+                        _affectedUnits.Remove(unit);
+                    }
                 };
                 if (defense != 0)
                 {
