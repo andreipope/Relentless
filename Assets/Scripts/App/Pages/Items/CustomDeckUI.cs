@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground
         private DeckCardUI _selectedDeckCard;
 
         private GameObject _cardListScrollRect;
+        
+        private GameObject _selfObject;
 
         public void Init()
         {
@@ -89,27 +91,27 @@ namespace Loom.ZombieBattleground
 
         public void Load(GameObject obj)
         {
-            GameObject selfObject = obj;
+            _selfObject = obj;
 
-            _deckNameText = selfObject.transform.Find("Top_Panel/Panel_Image/Deck_Name").GetComponent<TextMeshProUGUI>();
-            _cardsCountText = selfObject.transform.Find("Bottom_Panel/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+            _deckNameText = _selfObject.transform.Find("Top_Panel/Panel_Image/Deck_Name").GetComponent<TextMeshProUGUI>();
+            _cardsCountText = _selfObject.transform.Find("Bottom_Panel/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
 
-            _cardListScrollRect = selfObject.transform.parent.Find("Panel_Frame/Panel_Content/Army/Element/Scroll View").gameObject;
+            _cardListScrollRect = _selfObject.transform.parent.Find("Panel_Frame/Panel_Content/Army/Element/Scroll View").gameObject;
 
-            _buttonRename = selfObject.transform.Find("Top_Panel/Panel_Image/Button_Rename").GetComponent<Button>();
+            _buttonRename = _selfObject.transform.Find("Top_Panel/Panel_Image/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
 
-            _buttonViewDeck = selfObject.transform.Find("Top_Panel/Panel_Image/Button_ViewDeck").GetComponent<Button>();
+            _buttonViewDeck = _selfObject.transform.Find("Top_Panel/Panel_Image/Button_ViewDeck").GetComponent<Button>();
             _buttonViewDeck.onClick.AddListener(ButtonViewDeckHandler);
 
-            _buttonSave = selfObject.transform.Find("Bottom_Panel/Button_SaveDeck").GetComponent<Button>();
+            _buttonSave = _selfObject.transform.Find("Bottom_Panel/Button_SaveDeck").GetComponent<Button>();
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
 
-            _allCardsContent = selfObject.transform.Find("Cards/Scroll View").GetComponent<ScrollRect>().content;
+            _allCardsContent = _selfObject.transform.Find("Cards/Scroll View").GetComponent<ScrollRect>().content;
 
-            _overlordImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Image/Image").GetComponent<Image>();
-            _overlordPrimarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Primary/Image").GetComponent<Image>();
-            _overlordSecondarySkillImage = selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Secondary/Image").GetComponent<Image>();
+            _overlordImage = _selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Image/Image").GetComponent<Image>();
+            _overlordPrimarySkillImage = _selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Primary/Image").GetComponent<Image>();
+            _overlordSecondarySkillImage = _selfObject.transform.Find("Top_Panel/Panel_Image/Overlord_Frame/Overlord_Skill_Secondary/Image").GetComponent<Image>();
 
             _selectedDeckCard = null;
         }
@@ -119,11 +121,16 @@ namespace Loom.ZombieBattleground
             if (deck == null)
                 return;
 
+            if (_selfObject == null)
+            {
+                return;
+            }
+            
             Reset();
 
             _selectedDeck = deck;
 
-            _deckNameText.text = _selectedDeck.Name;
+            _deckNameText.text = _tutorialManager.IsTutorial ? Constants.TutorialDefaultDeckName : _selectedDeck.Name;
 
             Enumerators.Faction faction = DataUtilities.GetFaction(deck.OverlordId);
             _overlordImage.sprite = DataUtilities.GetOverlordImage(deck.OverlordId);

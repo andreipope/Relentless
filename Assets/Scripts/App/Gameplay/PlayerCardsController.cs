@@ -829,6 +829,7 @@ namespace Loom.ZombieBattleground
             Player oldOwner = unit.OwnerPlayer;
             
             unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit, false);
+            unit.ResetAfterTakenControl();
             unit.OwnerPlayer.PlayerCardsController.InvokeBoardChanged();
             unit.Card.Owner = Player;
 

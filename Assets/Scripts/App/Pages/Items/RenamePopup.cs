@@ -2,6 +2,7 @@
 
 using System;
 using log4net;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace Loom.ZombieBattleground
 
         private Deck _deck;
         private bool _openFromCreatingNewHorde;
+
+        private string _deckName;
 
         public void Init()
         {
@@ -65,10 +68,12 @@ namespace Loom.ZombieBattleground
 
             EnablePanelButtons();
 
-            SetName(_deck.Name);
+            _deckName = _deck.Name;
 
             // set the input field not intractable, if there is tutorial
-            _inputFieldRenameDeckName.interactable = !GameClient.Get<ITutorialManager>().IsTutorial;
+            bool isTutorial = GameClient.Get<ITutorialManager>().IsTutorial;
+            _inputFieldRenameDeckName.interactable = !isTutorial;
+            SetName(isTutorial ? Constants.TutorialDefaultDeckName : _deckName);
         }
 
         private void EnablePanelButtons()
@@ -138,7 +143,7 @@ namespace Loom.ZombieBattleground
 
         private void OnInputFieldRenameEndedEdit(string value)
         {
-
+            _deckName = value;
         }
 
         private void SetName(string name)
@@ -152,7 +157,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             DataUtilities.PlayClickSound();
-            string newDeckName = _inputFieldRenameDeckName.text;
+            string newDeckName = _deckName;
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
             if (!deckGeneratorController.VerifyDeckName(newDeckName))
                 return;
@@ -174,6 +179,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonBackHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonBack.name))
+                return;
+                
             DataUtilities.PlayClickSound();
             Hide();
             _uiManager.DrawPopup<SelectOverlordAbilitiesPopup>();
@@ -184,7 +192,7 @@ namespace Loom.ZombieBattleground
         {
             DataUtilities.PlayClickSound();
 
-            string newDeckName = _inputFieldRenameDeckName.text;
+            string newDeckName = _deckName;
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
             if (!deckGeneratorController.VerifyDeckName(newDeckName))
                 return;

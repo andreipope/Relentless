@@ -84,7 +84,8 @@ namespace Loom.ZombieBattleground
             base.BoardChangedHandler(count);
 
             if (AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityTrigger == Enumerators.AbilityTrigger.AURA && LastAuraState)
-            {
+            {                
+                RemoveAffectedUnitsNotCurrentlyOwn();
                 Action();
             }
         }
@@ -119,7 +120,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<CardModel> allies;
 
-                        allies = PlayerCallerOfAbility.CardsOnBoard
+                        allies = AbilityUnitOwner.OwnerPlayer.CardsOnBoard
                         .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead && unit.IsUnitActive)
                         .ToList();
 
@@ -138,7 +139,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (GetAliveUnits(PlayerCallerOfAbility.CardsOnBoard).Count() == 1)
+                    if (GetAliveUnits(AbilityUnitOwner.OwnerPlayer.CardsOnBoard).Count() == 1)
                     {
                         targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
@@ -151,7 +152,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
-                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                        List<CardModel> allies = AbilityUnitOwner.OwnerPlayer.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
                                    (unit.Card.Prototype.Faction == Faction || Faction == Enumerators.Faction.Undefined) &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
@@ -172,7 +173,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
-                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                        List<CardModel> allies = AbilityUnitOwner.OwnerPlayer.CardsOnBoard
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
                                       unit.CurrentCost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
@@ -192,20 +193,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
                     {
-                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard.Where(
+                        List<CardModel> allies = AbilityUnitOwner.OwnerPlayer.CardsOnBoard.Where(
                                        unit => !unit.IsDead &&
                                            unit.CurrentDefense > 0 && unit.IsUnitActive).ToList();
-
-                        if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
-                        {
-                            for (int i = _affectedUnits.Count-1; i >= 0; i--)
-                            {
-                                if (!allies.Contains(_affectedUnits[i]))
-                                {
-                                    _affectedUnits.RemoveAt(i);
-                                }
-                            }
-                        }
 
                         foreach (CardModel unit in allies)
                         {
@@ -268,24 +258,43 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        private void RemoveAffectedUnitsNotCurrentlyOwn()
+        {
+            for(int i = 0; i < _affectedUnits.Count; ++i)
+            {
+                CardModel unit = _affectedUnits[i];
+                if(unit.OwnerPlayer != AbilityUnitOwner.OwnerPlayer)
+                {
+                    ResetAffectedUnit(unit);
+                    _affectedUnits.Remove(unit);
+                    --i;
+                }
+            }
+        }
+
         private void ResetAffectedUnits(List<CardModel> units)
         {
             foreach(CardModel unit in units)
             {
-                switch(unit.Card.InstanceCard.CardType)
-                {
-                    case Enumerators.CardType.HEAVY:
-                        unit.SetAsHeavyUnit();
-                        break;
-                    case Enumerators.CardType.WALKER:
-                        unit.SetAsWalkerUnit();
-                        break;
-                    case Enumerators.CardType.FERAL:
-                        unit.SetAsFeralUnit();
-                        break;
-                }
+                ResetAffectedUnit(unit);
             }
             units.Clear();
+        }
+        
+        private void ResetAffectedUnit(CardModel unit)
+        {
+            switch(unit.Card.InstanceCard.CardType)
+            {
+                case Enumerators.CardType.HEAVY:
+                    unit.SetAsHeavyUnit();
+                    break;
+                case Enumerators.CardType.WALKER:
+                    unit.SetAsWalkerUnit();
+                    break;
+                case Enumerators.CardType.FERAL:
+                    unit.SetAsFeralUnit();
+                    break;
+            }
         }
     }
 }

@@ -1109,7 +1109,8 @@
           "TutorialStepType": "MenuStep",
           "OpenScreen": "OverlordAbilityPopup",
           "BlockedButtons": [
-            "Button_Cancel"
+            "Button_Cancel",
+            "Button_Back"
           ],
           "HandPointers": [
             {
@@ -1129,7 +1130,8 @@
           "TutorialStepType": "MenuStep",
           "OpenScreen": "RenamePopup",
           "BlockedButtons": [
-            "Button_Cancel"
+            "Button_Cancel",
+            "Button_Back"
           ],
           "HandPointers": [
             {
@@ -2429,7 +2431,10 @@
             "Button_OverlordAbilities",
             "Button_Rename",
             "Button_AutoComplete",
-            "Button_ViewDeck"
+            "Button_ViewDeck",
+            "Button_GooCost",
+            "Button_Element",
+            "Button_Rarity"
           ],
           "ConnectedActivities": [
             1

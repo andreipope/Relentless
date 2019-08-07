@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
 
@@ -7,9 +8,20 @@ namespace Loom.ZombieBattleground
 {
     public class GoozillaArrivalUniqueAnimation : UniqueAnimation
     {
+        public Coroutine CheckForCancelCoroutine;
+
+        private GameObject _animationVFX;
+
+        private Transform _cameraGroupTransform, _cameraVFXObj;
+
+        private BoardUnitView _unitView;
+
+        private Action _endArrivalCallback;
+        
         public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
+            _endArrivalCallback = endArrivalCallback;
 
             IsPlaying = true;
 
@@ -17,41 +29,95 @@ namespace Loom.ZombieBattleground
 
             const float delayBeforeSpawn = 4.8f;
 
-            BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
+            _unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
-            unitView.GameObject.SetActive(false);
+            _unitView.GameObject.SetActive(false);
 
-            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
+            _animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/GooZilla_Arrival"));
 
-            Transform cameraVFXObj = animationVFX.transform.Find("!! NULL camera shake anim file");
+            _cameraVFXObj = _animationVFX.transform.Find("!! NULL camera shake anim file");
 
-            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
-            cameraGroupTransform.SetParent(cameraVFXObj);
+            _cameraGroupTransform = CameraManager.GetGameplayCameras();
+            _cameraGroupTransform.SetParent(_cameraVFXObj);
 
             //PlaySound("CZB_AUD_Cherno_Bill_Arrival_F1_EXP");
 
-            animationVFX.transform.position = unitView.PositionOfBoard + offset;
+            _animationVFX.transform.position = _unitView.PositionOfBoard + offset;
 
-            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
-            cameraGroupTransform.localPosition = cameraLocalPosition;
+            Vector3 cameraLocalPosition = _animationVFX.transform.position * -1;
+            _cameraGroupTransform.localPosition = cameraLocalPosition;
 
+            CheckForCancelCoroutine = MainApp.Instance.StartCoroutine(CheckForCancel(_unitView, _animationVFX));
+            DamageTargetAbility.OnInputEnd += OnAbilityInputEnd;
+            
             InternalTools.DoActionDelayed(() =>
             {
-                unitView.GameObject.SetActive(true);
-                unitView.battleframeAnimator.Play(0, -1, 1);
-
-                cameraGroupTransform.SetParent(null);
-                cameraGroupTransform.position = Vector3.zero;
-                Object.Destroy(animationVFX);
-
-                endArrivalCallback?.Invoke();
-
-                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                VFXEnd();        
 
                 IsPlaying = false;
 
             }, delayBeforeSpawn);
+        }
+        
+        public IEnumerator CheckForCancel(BoardUnitView unitView, GameObject animationVFX)
+        {
+            while(true)
+            {
+                if (unitView == null)
+                {
+                    Object.Destroy(animationVFX);
+                    break;
+                }
+                yield return null;
+            }
+        }
+        
+        private void VFXEnd(bool isAbilityResolved = true)
+        {
+            if (CheckForCancelCoroutine != null)
+            {
+                MainApp.Instance.StopCoroutine(CheckForCancelCoroutine);
+            }
+            CheckForCancelCoroutine = null;
+
+            if (_cameraGroupTransform.parent == _cameraVFXObj)
+            {
+                _cameraGroupTransform.SetParent(null);
+                _cameraGroupTransform.position = Vector3.zero;
+            }
+
+            Object.Destroy(_animationVFX);
+
+            if (_unitView != null)
+            {
+                _unitView.GameObject.SetActive(true);
+                _unitView.battleframeAnimator.Play(0, -1, 1);
+                foreach (Transform child in _unitView.battleframeAnimator.transform)
+                {
+                    if (child.name == "ScrapFlies")
+                    {
+                        child.gameObject.SetActive(false);
+                        break;
+                    }
+                }
+                BoardController.UpdateCurrentBoardOfPlayer(_unitView.Model.OwnerPlayer, null);
+            }
+
+            if (isAbilityResolved)
+            {
+                _endArrivalCallback?.Invoke();
+                _endArrivalCallback = null;
+            }
+        }        
+
+        private void OnAbilityInputEnd(bool isAbilityResolved)
+        {
+            DamageTargetAbility.OnInputEnd -= OnAbilityInputEnd;
+            if (!isAbilityResolved)
+            {
+                VFXEnd(isAbilityResolved);
+            }           
         }
     }
 }

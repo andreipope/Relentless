@@ -258,10 +258,21 @@ namespace Loom.ZombieBattleground
                 OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
                 deckInfoObject.DeckId = deck.Id;
-                deckInfoObject.TextDeckName.text = deckName;
+                deckInfoObject.TextDeckName.text = _tutorialManager.IsTutorial ? Constants.TutorialDefaultDeckName : deckName;
                 if (_tutorialManager.IsTutorial)
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+
+                    // hack for tutorial in count number
+                    if (_tutorialManager.CurrentTutorial.Id == 3)
+                    {
+                        if (_tutorialManager.CurrentTutorialStepIndex >= 10)
+                        {
+                            int cardCount = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent()
+                                .SpecificHordeInfo.MaximumCardsCount;
+                            deckInfoObject.TextCardsAmount.text = $"{cardCount}/{cardCount}";
+                        }
+                    }
                 }
                 else
                 {
