@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
         TutorialData CurrentTutorial { get; }
         TutorialStep CurrentTutorialStep { get; }
 
+        int CurrentTutorialStepIndex { get; }
+
         bool IsTutorial { get; }
 
         int TutorialsCount { get; }
