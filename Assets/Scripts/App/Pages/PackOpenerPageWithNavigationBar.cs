@@ -353,7 +353,11 @@ namespace Loom.ZombieBattleground
             }
 
             if (packOpenAnimationData == null)
-                throw new ArgumentNullException(nameof(packOpenAnimationData));
+            {
+                packOpenAnimationIndex = 0;
+                _lastPackOpenAnimationIndex = packOpenAnimationIndex;
+                packOpenAnimationData = _packOpenAnimationsData[packOpenAnimationIndex];
+            }
 
             Log.Debug($"Goo fill value: {openButtonHoldTimeCounter }, using pack opening animation {packOpenAnimationIndex}");
 
@@ -764,6 +768,9 @@ namespace Loom.ZombieBattleground
 
         private void BuyMorePacksButtonHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buyMorePacksButton.name))
+                return;
+
             PlayClickSound();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }

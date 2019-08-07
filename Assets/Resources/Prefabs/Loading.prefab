@@ -10268,7 +10268,7 @@ GameObject:
   - component: {fileID: 4435891927710062}
   - component: {fileID: 198216917563248248}
   - component: {fileID: 199496703362854266}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HighlightStatic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19766,7 +19766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4226628143533876}
   - component: {fileID: 212715716599873008}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: GooCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

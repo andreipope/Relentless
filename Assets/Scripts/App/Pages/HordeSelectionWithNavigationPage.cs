@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
 
         public List<Deck> GetDeckList()
         {
-            if (_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
             {
                 List<Deck> tutorialDeckList = new List<Deck>();
                 if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
