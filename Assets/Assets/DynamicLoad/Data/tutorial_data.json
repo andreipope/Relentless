@@ -1109,7 +1109,8 @@
           "TutorialStepType": "MenuStep",
           "OpenScreen": "OverlordAbilityPopup",
           "BlockedButtons": [
-            "Button_Cancel"
+            "Button_Cancel",
+            "Button_Back"
           ],
           "HandPointers": [
             {
@@ -1129,7 +1130,8 @@
           "TutorialStepType": "MenuStep",
           "OpenScreen": "RenamePopup",
           "BlockedButtons": [
-            "Button_Cancel"
+            "Button_Cancel",
+            "Button_Back"
           ],
           "HandPointers": [
             {

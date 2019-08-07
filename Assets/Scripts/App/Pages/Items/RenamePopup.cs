@@ -179,6 +179,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonBackHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonBack.name))
+                return;
+                
             DataUtilities.PlayClickSound();
             Hide();
             _uiManager.DrawPopup<SelectOverlordAbilitiesPopup>();
