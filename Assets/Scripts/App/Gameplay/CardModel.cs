@@ -1170,6 +1170,11 @@ namespace Loom.ZombieBattleground
             ClearEffectsOnUnit();
             MaximumDamageFromAnySource = 999;
         }
+        
+        public void ResetAfterTakenControl()
+        {
+            AttackedThisTurn = false;
+        }
 
         public bool HasActiveMechanic(Enumerators.GameMechanicDescription gameMechanic)
         {
