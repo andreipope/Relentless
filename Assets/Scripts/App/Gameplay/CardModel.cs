@@ -1174,9 +1174,9 @@ namespace Loom.ZombieBattleground
         public void ResetAfterTakenControl()
         {
             AttackedThisTurn = false;
-            if(NumTurnsOnBoard > 0)
+            if(NumTurnsOnBoard > 0 || HasFeral)
             {
-                IsPlayable = true;
+                ForceSetCreaturePlayable();
             }
         }
 
