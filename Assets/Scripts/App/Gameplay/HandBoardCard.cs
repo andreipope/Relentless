@@ -91,6 +91,7 @@ namespace Loom.ZombieBattleground
                 Transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 newPos = Transform.position;
                 newPos.z = 0;
+                newPos.y += 3.4f;
                 Transform.position = newPos;
 
                 if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
@@ -144,6 +145,8 @@ namespace Loom.ZombieBattleground
 
                 _playerController.IsCardSelected = true;
                 _alreadySelected = true;
+
+                Transform.DOScale(Constants.DefaultScaleForZoomedCardWhileDragging, Constants.DurationHoveringHandCard);
             }
         }
 
@@ -219,6 +222,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
+            Transform.DOScale(BoardCardView.ScaleOnHand, 0.5f);
             Transform.DOMove(InitialPos, 0.5f)
                 .OnComplete(
                     () =>
@@ -254,6 +258,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
+            Transform.DOScale(BoardCardView.ScaleOnHand, 0.5f);
             Transform.DOMove(InitialPos, 0.5f)
                 .OnComplete(
                     () =>
@@ -266,7 +271,7 @@ namespace Loom.ZombieBattleground
         public void HoveringAndZoom()
         {
             Transform.DOScale(Constants.DefaultScaleForZoomedCardInHand, Constants.DurationHoveringHandCard);
-            Transform.DOMove(new Vector3(BoardCardView.PositionOnHand.x, -5f, 0), Constants.DurationHoveringHandCard);
+            Transform.DOMove(new Vector3(BoardCardView.PositionOnHand.x, -3.6f, 0), Constants.DurationHoveringHandCard);
             Transform.DORotate(Vector3.zero, 0.15f);
             _normalSortingOrder = _sortingGroup.sortingOrder;
             _sortingGroup.sortingOrder = 100;
@@ -281,6 +286,7 @@ namespace Loom.ZombieBattleground
             {
                 Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
             }
+
             Transform.DOScale(BoardCardView.ScaleOnHand, Constants.DurationHoveringHandCard);
             Transform.DORotate(BoardCardView.RotationOnHand, Constants.DurationHoveringHandCard).OnComplete(() =>
             {

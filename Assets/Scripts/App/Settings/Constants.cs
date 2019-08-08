@@ -182,8 +182,9 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
-        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.25f, 0.25f, 0.25f);
-
+        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.5f, 0.5f, 0.5f);
+        internal static Vector3 DefaultScaleForZoomedCardWhileDragging = new Vector3(0.5f, 0.5f, 0.5f);
+        
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
