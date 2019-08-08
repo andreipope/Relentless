@@ -560,6 +560,12 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
+            if (_myDeckPage.SelectedDeckId == -1)
+            {
+                ChangeSelectDeckIndex(GetDefaultDeckIndex());
+                _myDeckPage.SelectedDeckId = (int)_cacheDeckListToDisplay[_myDeckPage.SelectDeckIndex].Id.Id;
+            }
+
             _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
         }
 

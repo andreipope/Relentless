@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground.Editor.CardLibraryEditor
 
             DeckCardUI deckCardUi = new DeckCardUI();
             deckCardUi.Init(Object.Instantiate(prefab));
-            deckCardUi.FillCard(card, 1);
+            deckCardUi.FillCard(card);
             Texture2D result;
             try
             {

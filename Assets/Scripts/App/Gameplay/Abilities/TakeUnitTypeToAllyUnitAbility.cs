@@ -9,6 +9,14 @@ namespace Loom.ZombieBattleground
     {
         private List<CardModel> _affectedUnits;
 
+        private static Dictionary<CardModel, AuraState> _affectedAura = new Dictionary<CardModel, AuraState>();        
+
+        public class AuraState
+        {
+            public Player Player;
+            public MouldId TypeById;
+        }
+
         public Enumerators.CardType UnitType;
         public Enumerators.Faction Faction;
 
@@ -53,30 +61,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
                 return;
 
-            if (status)
-            {
-                Action();
-            }
-            else
-            {
-                bool otherUnitWithAuraExist = false;
-                foreach(CardModel card in AbilityUnitOwner.OwnerPlayer.PlayerCardsController.CardsOnBoard)
-                {
-                    if
-                    (
-                        card != AbilityUnitOwner &&
-                        card.Prototype.CardKey.MouldId == AbilityUnitOwner.Prototype.CardKey.MouldId
-                    )
-                    {
-                        otherUnitWithAuraExist = true;
-                    }
-                }
-                
-                if(!otherUnitWithAuraExist)
-                {
-                    ResetAffectedUnits(_affectedUnits);
-                }
-            }
+            UpdateAura(status);
         }
 
         protected override void BoardChangedHandler(int count)
@@ -84,18 +69,17 @@ namespace Loom.ZombieBattleground
             base.BoardChangedHandler(count);
 
             if (AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityTrigger == Enumerators.AbilityTrigger.AURA && LastAuraState)
-            {                
-                RemoveAffectedUnitsNotCurrentlyOwn();
-                Action();
+            {
+                RemoveAffectedUnitsIfNoAura();
+                UpdateAura(true);
             }
         }
 
         protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
         {
-            ResetAffectedUnits(_affectedUnits);
+            RemoveAuraFromPlayer(oldPlayer);            
             BoardChangedHandler(newPlayer.CardsOnBoard.Count);
         }
-
 
         public override void Action(object info = null)
         {
@@ -193,30 +177,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
                     {
-                        List<CardModel> allies = AbilityUnitOwner.OwnerPlayer.CardsOnBoard.Where(
-                                       unit => !unit.IsDead &&
-                                           unit.CurrentDefense > 0 && unit.IsUnitActive).ToList();
-
-                        foreach (CardModel unit in allies)
-                        {
-                            if (AbilityTrigger == Enumerators.AbilityTrigger.AURA &&
-                                _affectedUnits.Contains(unit))
-                                continue;
-
-                            if (TakeTypeToUnit(unit))
-                            {
-                                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
-                                {
-                                    ActionEffectType = effectType,
-                                    Target = unit
-                                });
-
-                                if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
-                                {
-                                    _affectedUnits.Add(unit);
-                                }
-                            }
-                        }
+                        //Aura status has already updated from ChangeAuraStatusAction method
                     }
                     break;
             }
@@ -239,6 +200,174 @@ namespace Loom.ZombieBattleground
                 });
             }
         }
+        
+        private void UpdateAura(bool status)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;                
+            
+            Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
+
+            if (UnitType == Enumerators.CardType.FERAL)
+            {
+                effectType = Enumerators.ActionEffectType.Feral;
+            }
+            else if (UnitType == Enumerators.CardType.HEAVY)
+            {
+                effectType = Enumerators.ActionEffectType.Heavy;
+            }
+            
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();          
+            
+            if(status)
+            {
+                Player affectedPlayer = AbilityUnitOwner.OwnerPlayer;
+                
+                if (!_affectedAura.ContainsKey(AbilityUnitOwner))
+                {
+                    _affectedAura.Add
+                    (
+                        AbilityUnitOwner, 
+                        new AuraState()
+                        {
+                            Player = affectedPlayer,
+                            TypeById = AbilityUnitOwner.Prototype.CardKey.MouldId
+                        }
+                    );
+                }
+                
+                List<CardModel> unitsToAffect = affectedPlayer.CardsOnBoard.Where
+                (
+                    unit => !unit.IsDead &&
+                    unit.CurrentDefense > 0 &&
+                    unit.IsUnitActive
+                ).ToList();
+
+                foreach (CardModel unit in unitsToAffect)
+                {
+                    if (_affectedUnits.Contains(unit))
+                        continue;
+                        
+                    if (TakeTypeToUnit(unit))
+                    {
+                        targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = effectType,
+                            Target = unit
+                        });
+                    }
+                    
+                    _affectedUnits.Add(unit);
+                }
+            }
+            else
+            {
+                if (!_affectedAura.ContainsKey(AbilityUnitOwner))
+                    return;
+
+                Player affectedPlayer = _affectedAura[AbilityUnitOwner].Player;
+                
+                 _affectedAura.Remove(AbilityUnitOwner);
+
+                bool otherAuraExist = _affectedAura.Any
+                (
+                    kvp => 
+                        kvp.Value.Player.IsLocalPlayer == affectedPlayer.IsLocalPlayer &&
+                        kvp.Value.TypeById == AbilityUnitOwner.Prototype.CardKey.MouldId
+                );
+
+                if(!otherAuraExist)
+                {
+                    List<CardModel> unitsToAffect = affectedPlayer.CardsOnBoard.Where
+                    (
+                        unit => !unit.IsDead &&
+                        unit.CurrentDefense > 0 &&
+                        unit.IsUnitActive
+                    ).ToList();
+                    foreach (CardModel unit in unitsToAffect)
+                    {
+                        ResetAffectedUnit(unit);
+                        if(_affectedUnits.Contains(unit))
+                        {
+                            _affectedUnits.Remove(unit);
+                        }
+                    }
+                }
+            }
+
+            if (targetEffects.Count > 0)
+            {
+                Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingMultipleCards;
+
+                if (targetEffects.Count == 1)
+                {
+                    actionType = Enumerators.ActionType.CardAffectingCard;
+                }
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = targetEffects
+                });
+            }
+        }
+        
+        private void RemoveAuraFromPlayer(Player affectedPlayer)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+                
+            if (_affectedAura.ContainsKey(AbilityUnitOwner))
+            {
+                if(_affectedAura[AbilityUnitOwner].Player == affectedPlayer)
+                {
+                    _affectedAura.Remove(AbilityUnitOwner);
+                }
+            }
+
+            bool otherAuraExist = _affectedAura.Any
+            (
+                kvp => 
+                    kvp.Value.Player.IsLocalPlayer == affectedPlayer.IsLocalPlayer &&
+                    kvp.Value.TypeById == AbilityUnitOwner.Prototype.CardKey.MouldId
+            );
+
+            if(!otherAuraExist)
+            {
+                List<CardModel> unitsToAffect = affectedPlayer.CardsOnBoard.Where
+                (
+                    unit => !unit.IsDead &&
+                    unit.CurrentDefense > 0 &&
+                    unit.IsUnitActive
+                ).ToList();
+                foreach (CardModel unit in unitsToAffect)
+                {
+                    ResetAffectedUnit(unit);
+                    if(_affectedUnits.Contains(unit))
+                    {
+                        _affectedUnits.Remove(unit);
+                    }
+                }
+            }
+        }
+        
+        private bool CheckAllyUnitWithAuraExist(Player player)
+        {
+            bool otherUnitWithAuraExist = false;
+            foreach(CardModel card in player.PlayerCardsController.CardsOnBoard)
+            {
+                if
+                (
+                    card != AbilityUnitOwner &&
+                    card.Prototype.CardKey.MouldId == AbilityUnitOwner.Prototype.CardKey.MouldId
+                )
+                {
+                    otherUnitWithAuraExist = true;
+                }
+            }
+            return otherUnitWithAuraExist;
+        }
 
         private bool TakeTypeToUnit(CardModel unit)
         {
@@ -257,13 +386,19 @@ namespace Loom.ZombieBattleground
 
             return false;
         }
-
-        private void RemoveAffectedUnitsNotCurrentlyOwn()
+        
+        private void RemoveAffectedUnitsIfNoAura()
         {
             for(int i = 0; i < _affectedUnits.Count; ++i)
             {
                 CardModel unit = _affectedUnits[i];
-                if(unit.OwnerPlayer != AbilityUnitOwner.OwnerPlayer)
+
+                bool hasAura = _affectedAura.Any
+                (
+                    kvp => kvp.Value.Player.IsLocalPlayer == unit.OwnerPlayer.IsLocalPlayer && 
+                    kvp.Value.TypeById == AbilityUnitOwner.Prototype.CardKey.MouldId
+                );
+                if(!hasAura)
                 {
                     ResetAffectedUnit(unit);
                     _affectedUnits.Remove(unit);

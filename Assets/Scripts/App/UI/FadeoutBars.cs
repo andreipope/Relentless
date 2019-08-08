@@ -28,12 +28,12 @@ public class FadeoutBars
         _leftFadeGameObject.SetActive(isScrollBarActive);
         _rightFadeGameObject.SetActive(isScrollBarActive);
 
-        if (_deckCardsScrollBar.value <= 0)
+        if (_deckCardsScrollBar.value <= 0.05f)
         {
             _leftFadeGameObject.SetActive(false);
             _rightFadeGameObject.SetActive(true);
         }
-        else if(_deckCardsScrollBar.value >= 0.9999f)
+        else if(_deckCardsScrollBar.value >= 0.95f)
         {
             _leftFadeGameObject.SetActive(true);
             _rightFadeGameObject.SetActive(false);

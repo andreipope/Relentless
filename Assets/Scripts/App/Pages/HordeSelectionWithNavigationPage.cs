@@ -191,7 +191,6 @@ namespace Loom.ZombieBattleground
             {
                 CurrentEditDeck = deck.Clone();
 
-                //CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Prototype.Id == CurrentEditDeck.OverlordId);
                 IsEditingNewDeck = false;
             }
         }

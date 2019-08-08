@@ -172,11 +172,14 @@ namespace Loom.ZombieBattleground
                 }
 
                 Card card = _dataManager.CachedCardsLibraryData.Cards[cardIndex];
-                AddCard(card, deckCardData.Amount);
+                for (int a = 0; a < deckCardData.Amount; a++)
+                {
+                    AddCard(card);
+                }
             }
         }
 
-        public void AddCard(Card card, int cardAmount)
+        public void AddCard(Card card)
         {
             GameObject deckCard = Object.Instantiate(_deckCardPrefab, _allCardsContent);
 
@@ -193,7 +196,7 @@ namespace Loom.ZombieBattleground
 
             DeckCardUI deckCardUi = new DeckCardUI();
             deckCardUi.Init(deckCard);
-            deckCardUi.FillCard(card, cardAmount);
+            deckCardUi.FillCard(card);
             _deckCards.Add(deckCardUi);
         }
 
@@ -216,7 +219,7 @@ namespace Loom.ZombieBattleground
             Card selectedCard = _deckCards.Find(card => card.GetGameObject() == obj).GetCard();
             DeckCardUI deckCardUi = new DeckCardUI();
             deckCardUi.Init(cardObj);
-            deckCardUi.FillCard(selectedCard, 0);
+            deckCardUi.FillCard(selectedCard);
 
             _selectedDeckCard = deckCardUi;
         }
@@ -265,20 +268,6 @@ namespace Loom.ZombieBattleground
 
             _deckCards.Remove(cardUi);
         }
-
-        public void UpdateCard(Card card, int cardAmount)
-        {
-            DeckCardUI deckCard = _deckCards.Find(cardInDeck => cardInDeck.GetCardInterface().CardKey == card.CardKey);
-            if (deckCard == null)
-            {
-                Log.Error($"Card with MouldId {card.CardKey} not found.");
-                return;
-            }
-
-            deckCard.UpdateCard(cardAmount);
-        }
-
-
 
         public List<IReadOnlyCard> GetAllCardsInDeck()
         {
