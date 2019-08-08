@@ -444,17 +444,47 @@ namespace Loom.ZombieBattleground
                 Card cardInUi = _cardUIList[i].GetCard();
 
                 // get amount of card in collection data
-                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
-                int totalCardAmount = cardInCollection.Amount;
+                int totalCardAmount = 0;
 
-                DeckCardData deckCardData = selectedDeck.Cards.Find(card => card.CardKey == cardInUi.CardKey);
-                if (deckCardData == null)
+                if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
                 {
-                    _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                    List<CollectionCardData> cardSetsInCollection = _dataManager.CachedCollectionData.Cards.FindAll(card => card.CardKey.MouldId == cardInUi.CardKey.MouldId).ToList();
+                    foreach (CollectionCardData card in cardSetsInCollection)
+                    {
+                        totalCardAmount += card.Amount;
+                    }
+
+                    List<DeckCardData> deckCardData = selectedDeck.Cards.FindAll(card => card.CardKey.MouldId == cardInUi.CardKey.MouldId).ToList();
+                    int totalDeckAmount = 0;
+                    foreach (DeckCardData card in deckCardData)
+                    {
+                        totalDeckAmount += card.Amount;
+                    }
+
+                    if (deckCardData == null || deckCardData.Count <= 0)
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                    }
+                    else
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount - totalDeckAmount);
+                    }
                 }
                 else
                 {
-                    _cardUIList[i].UpdateCardAmount(totalCardAmount - deckCardData.Amount);
+                    CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
+                    totalCardAmount = cardInCollection.Amount;
+
+                    DeckCardData deckCardData = selectedDeck.Cards.Find(card => card.CardKey == cardInUi.CardKey);
+                    
+                    if (deckCardData == null)
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                    }
+                    else
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount - deckCardData.Amount);
+                    }
                 }
             }
         }
@@ -469,17 +499,46 @@ namespace Loom.ZombieBattleground
                 Card cardInUi = _cardUIList[i].GetCard();
 
                 // get amount of card in collection data
-                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
-                int totalCardAmount = cardInCollection.Amount;
+                int totalCardAmount = 0;
 
-                DeckCardData deckCardData = deck.Cards.Find(card => card.CardKey == cardInUi.CardKey);
-                if (deckCardData == null)
+                if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
                 {
-                    _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                    List<CollectionCardData> cardSetsInCollection = _dataManager.CachedCollectionData.Cards.FindAll(card => card.CardKey.MouldId == cardInUi.CardKey.MouldId).ToList();
+                    foreach (CollectionCardData card in cardSetsInCollection)
+                    {
+                        totalCardAmount += card.Amount;
+                    }
+
+                    List<DeckCardData> deckCardData = deck.Cards.FindAll(card => card.CardKey.MouldId == cardInUi.CardKey.MouldId).ToList();
+                    int totalDeckAmount = 0;
+                    foreach (DeckCardData card in deckCardData)
+                    {
+                        totalDeckAmount += card.Amount;
+                    }
+
+                    if (deckCardData == null || deckCardData.Count <= 0)
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                    }
+                    else
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount - totalDeckAmount);
+                    }
                 }
                 else
                 {
-                    _cardUIList[i].UpdateCardAmount(totalCardAmount - deckCardData.Amount);
+                    CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
+                    totalCardAmount = cardInCollection.Amount;
+
+                    DeckCardData deckCardData = deck.Cards.Find(card => card.CardKey == cardInUi.CardKey);
+                    if (deckCardData == null)
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount);
+                    }
+                    else
+                    {
+                        _cardUIList[i].UpdateCardAmount(totalCardAmount - deckCardData.Amount);
+                    }
                 }
             }
         }
@@ -493,8 +552,22 @@ namespace Loom.ZombieBattleground
                 Card cardInUi = _cardUIList[i].GetCard();
 
                 // get amount of card in collection data
-                CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
-                int totalCardAmount = cardInCollection?.Amount ?? 0;
+                int totalCardAmount = 0;
+
+                if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
+                {
+                    List<CollectionCardData> cardSetsInCollection = _dataManager.CachedCollectionData.Cards.FindAll(card => card.CardKey.MouldId == cardInUi.CardKey.MouldId).ToList();
+                    foreach (CollectionCardData card in cardSetsInCollection)
+                    {
+                        totalCardAmount += card.Amount;
+                    }
+                }
+                else
+                {
+                    CollectionCardData cardInCollection = _dataManager.CachedCollectionData.Cards.Find(card => card.CardKey == cardInUi.CardKey);
+                    totalCardAmount = cardInCollection?.Amount ?? 0;
+                }
+
                _cardUIList[i].UpdateCardAmount(totalCardAmount);
             }
         }
@@ -518,11 +591,28 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCardAmountDisplay(IReadOnlyCard card, int amount)
         {
-            UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey == card.CardKey);
-            if (unitCardUi == null)
-                return;
+            if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
+            {
+                UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey == card.CardKey && cardUi.GetCard().CardKey.Variant == Enumerators.CardVariant.Standard);
+                if (unitCardUi == null)
+                    return;
 
-            unitCardUi.UpdateCardAmount(amount);
+                List<CollectionCardData> listOfCards = _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.GetCollectionData().Cards.FindAll(cardColl => cardColl.CardKey.MouldId == card.CardKey.MouldId).ToList();
+                int totalAmount = 0;
+                foreach (CollectionCardData cardVariant in listOfCards)
+                {
+                    totalAmount += cardVariant.Amount;
+                }
+                unitCardUi.UpdateCardAmount(totalAmount);
+            }
+            else 
+            {
+                UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey == card.CardKey);
+                if (unitCardUi == null)
+                    return;
+
+                unitCardUi.UpdateCardAmount(amount);
+            }
         }
 
         public void Hide()

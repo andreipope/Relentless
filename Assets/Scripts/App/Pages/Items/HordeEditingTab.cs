@@ -297,6 +297,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public CollectionData GetCollectionData()
+        {
+            return _collectionData;
+        }
+
         private void SubtractInitialDeckCardsAmountFromCollections(Deck deck)
         {
             foreach(DeckCardData card in deck.Cards)
@@ -331,8 +336,6 @@ namespace Loom.ZombieBattleground
             }
 
             DeckCardData existingCard = _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardKey == card.CardKey);
-            int existingCardAmount = existingCard?.Amount ?? 0;
-
 
             uint maxCopies = GetMaxCopiesValue(card);
             if (existingCard != null && existingCard.Amount == maxCopies)
@@ -348,23 +351,13 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.CardKey == card.CardKey);
             _myDeckPage.CurrentEditDeck.AddCard(card.CardKey);
-            existingCardAmount++;
 
             // update count in card collection list left panel
             collectionCardData.Amount--;
             _uiCardCollections.UpdateCardAmountDisplay(card, collectionCardData.Amount);
 
-            // Update card in deck - right panel
-            if (isCardAlreadyExist)
-            {
-                _customDeckUi.UpdateCard((Card) card, existingCardAmount);
-            }
-            else
-            {
-                _customDeckUi.AddCard((Card)card, existingCardAmount);
-            }
+            _customDeckUi.AddCard((Card)card);
 
             _customDeckUi.UpdateCardsInDeckCountDisplay();
 
@@ -384,18 +377,7 @@ namespace Loom.ZombieBattleground
 
             _myDeckPage.CurrentEditDeck.RemoveCard(card.CardKey);
 
-            // update right panel
-                // if more than one card, only indicator changes
-                // if no more card left, remove the card from ui
-            bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.CardKey == card.CardKey);
-            if (isCardAlreadyExist)
-            {
-                _customDeckUi.UpdateCard((Card) card, existingCardAmount - 1);
-            }
-            else
-            {
-                _customDeckUi.RemoveCard((Card)card);
-            }
+            _customDeckUi.RemoveCard((Card)card);
 
             // update left panel.. change the card amount in card
             _uiCardCollections.UpdateCardAmountDisplay(card, collectionCardData.Amount);
