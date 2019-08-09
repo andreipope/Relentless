@@ -121,6 +121,14 @@ public class UnitCardUI
         return _selfObj.activeSelf;
     }
 
+    public void SetActive(bool active)
+    {
+        if (_selfObj == null)
+            return;
+
+        _selfObj.SetActive(active);
+    }
+
 
 
     public RectTransform GetFrameRectTransform()
