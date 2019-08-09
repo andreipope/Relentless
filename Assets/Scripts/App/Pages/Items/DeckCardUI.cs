@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
         {
             return _card;
         }
-
+        
         public GameObject GetGameObject()
         {
             return _selfObject;

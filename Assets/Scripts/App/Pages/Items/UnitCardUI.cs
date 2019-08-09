@@ -166,6 +166,11 @@ public class UnitCardUI
         _setImage.material = material;
     }
 
+    public void EnableSetImage(bool enable)
+    {
+        _setImage.enabled = enable;
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
