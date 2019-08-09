@@ -311,7 +311,7 @@ namespace Loom.ZombieBattleground
         public void AddCardToDeck(IReadOnlyCard card, bool animate = false, bool skipPopup = false,  object cardKey = null, bool forcePopup = false)
         {   
             List<CollectionCardData> otherVariants = _collectionData.Cards.FindAll(x => x.CardKey.MouldId == card.CardKey.MouldId && x.Amount > 0).ToList();
-            Debug.LogWarning(VariantPopupIsActive + " - " + skipPopup + " - " + forcePopup);
+            
             if (otherVariants.Count > 1 && ((VariantPopupIsActive && !skipPopup) || forcePopup))
             {
                 _uiManager.GetPopup<SelectSkinPopup>().Show(card);
