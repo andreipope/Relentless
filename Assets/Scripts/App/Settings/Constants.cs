@@ -190,6 +190,7 @@ namespace Loom.ZombieBattleground.Common
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
         public const string ErrorMessageForMaxDecks =
             "You can't have more than 10 decks, delete 1 or more decks and try again.";
+        public const string ErrorMessageForLoadingDeckDataFailed = "Issue with Loading Decks Data";
 
         public const bool MulliganEnabled = true;
 

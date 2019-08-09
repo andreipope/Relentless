@@ -259,6 +259,15 @@ namespace Loom.ZombieBattleground
                 deckIconObj.transform.localScale = Vector3.one * DeckIconScaleNormal;
 
                 DeckIcon deckIcon = new DeckIcon(_deckList[i].Id);
+                if(deckIcon.DeckId == null)
+                {
+                    GameClient.Get<IUIManager>().HidePopup<DeckSelectionPopup>();
+                    GameClient.Get<IUIManager>().GetPopup<LoginPopup>().SetValidationFailed
+                    (
+                        Constants.ErrorMessageForLoadingDeckDataFailed
+                    );
+                    return;
+                }
                 deckIcon.Init(deckIconObj);
                 deckIcon.SetDeckIcon();
 
@@ -324,7 +333,7 @@ namespace Loom.ZombieBattleground
             Deck selectedDeck = GetSelectedDeck();
             int deckIndex = GetSelectedDeckIndex();
 
-            if (selectedDeck == null)
+            if (selectedDeck == null || _createdDeckIconList == null)
                 return;
 
             _textDeckName.text = (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 ) ? Constants.TutorialDefaultDeckName : selectedDeck.Name;
