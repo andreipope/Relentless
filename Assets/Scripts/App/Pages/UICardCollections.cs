@@ -323,7 +323,7 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         CollectionCardData cardVersionVariant = _dataManager.CachedCollectionData.Cards.FirstOrDefault(x => x.CardKey.MouldId == card.CardKey.MouldId && x.CardKey.Variant != Enumerators.CardVariant.Standard);
-                        if (cardVersionVariant != null && cardStandard.Amount > 0)
+                        if (cardVersionVariant != null && cardVersionVariant.Amount > 0)
                         {
                             if (cardVersionVariant != cardData)
                             {
@@ -617,7 +617,7 @@ namespace Loom.ZombieBattleground
         {
             if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
             {
-                UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey == card.CardKey && cardUi.GetCard().CardKey.Variant == Enumerators.CardVariant.Standard);
+                UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey.MouldId == card.CardKey.MouldId);
                 if (unitCardUi == null)
                     return;
 
@@ -825,7 +825,7 @@ namespace Loom.ZombieBattleground
         {
             if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
                 return true;
-                
+
             return _cardFilter.FilterData.EditionDictionary[card.CardKey.Variant];
         }
 

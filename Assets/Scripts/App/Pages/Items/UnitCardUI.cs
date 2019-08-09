@@ -88,16 +88,8 @@ public class UnitCardUI
 
         _cardAmountTray.SetActive(cardCount != 0);
 
-        if (card.Set != Enumerators.CardSet.Undefined)
-        {
-            string setName = $"Images/IconsSet/seticon_{card.Set.ToString().ToLowerInvariant()}";
-            _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
-        }
-        else
-        {
-            Log.Warn($"Card {card} doesn't have Set defined");
-            _setImage.sprite = null;
-        }
+        string setName = $"Images/IconsSets/set_icon_{card.CardKey.Variant.ToString().ToLowerInvariant()}";
+        _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
     }
 
     public void UpdateCardAmount(int cardCount)

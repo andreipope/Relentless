@@ -192,18 +192,21 @@ namespace Loom.ZombieBattleground
                 }
 
                 Card card = _dataManager.CachedCardsLibraryData.Cards[cardIndex];
-                InstantiateCard(card, deckCardData.Amount);
+                for (int a = 0; a < deckCardData.Amount; a++)
+                {
+                    InstantiateCard(card);
+                }
             }
         }
 
-        private void InstantiateCard(Card card, int cardAmount)
+        private void InstantiateCard(Card card)
         {
             GameObject go = Object.Instantiate(_cardCreaturePrefab, _allCardsContent, false);
             go.transform.localScale = Vector3.one * BoardCardScale;
 
             UnitCardUI unitCard = new UnitCardUI();
             unitCard.Init(go);
-            unitCard.FillCardData(card, cardAmount);
+            unitCard.FillCardData(card, 0);
 
             _cardInDeckUIList.Add(unitCard);
         }
