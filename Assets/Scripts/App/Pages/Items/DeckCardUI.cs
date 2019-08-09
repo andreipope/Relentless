@@ -54,15 +54,8 @@ namespace Loom.ZombieBattleground
 
             _frameEffectImage.color = GetFactionColor(_card.Faction);
 
-            if (_card.Set != Enumerators.CardSet.Undefined)
-            {
-                string setName = $"Images/IconsSet/seticon_{_card.Set.ToString().ToLowerInvariant()}";
-                _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
-            }
-            else
-            {
-                _setImage.sprite = null;
-            }
+            string setName = $"Images/IconsSet/set_icon_{_card.CardKey.Variant.ToString().ToLowerInvariant()}";
+            _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
         }
 
         public Card GetCard()

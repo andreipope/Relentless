@@ -312,7 +312,31 @@ namespace Loom.ZombieBattleground
 
                 Card card = _dataManager.CachedCardsLibraryData.Cards[index];
 
-                InstantiateCard(card);
+                bool skip = false;
+                if (card.CardKey.Variant != Enumerators.CardVariant.Standard)
+                {
+                    CollectionCardData cardStandard = _dataManager.CachedCollectionData.Cards.FirstOrDefault(x => x.CardKey.MouldId == card.CardKey.MouldId && x.CardKey.Variant == Enumerators.CardVariant.Standard);
+                    if (cardStandard != null && cardStandard.Amount > 0)
+                    {
+                        skip = true;
+                    }
+                    else
+                    {
+                        CollectionCardData cardVersionVariant = _dataManager.CachedCollectionData.Cards.FirstOrDefault(x => x.CardKey.MouldId == card.CardKey.MouldId && x.CardKey.Variant != Enumerators.CardVariant.Standard);
+                        if (cardVersionVariant != null && cardVersionVariant.Amount > 0)
+                        {
+                            if (cardVersionVariant != cardData)
+                            {
+                                skip = true;
+                            }
+                        }
+                    }
+                }
+
+                if (!skip)
+                {
+                    InstantiateCard(card);
+                }
             }
         }
 
@@ -593,7 +617,7 @@ namespace Loom.ZombieBattleground
         {
             if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
             {
-                UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey == card.CardKey && cardUi.GetCard().CardKey.Variant == Enumerators.CardVariant.Standard);
+                UnitCardUI unitCardUi = _cardUIList.Find(cardUi => cardUi.GetCard().CardKey.MouldId == card.CardKey.MouldId);
                 if (unitCardUi == null)
                     return;
 
@@ -799,6 +823,9 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIfSatisfyEditionFilter(Card card)
         {
+            if (_pageType == Enumerators.CardCollectionPageType.DeckEditing)
+                return true;
+
             return _cardFilter.FilterData.EditionDictionary[card.CardKey.Variant];
         }
 
