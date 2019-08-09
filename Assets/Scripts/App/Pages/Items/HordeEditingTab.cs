@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
         private UICardCollections _uiCardCollections;
         private CustomDeckUI _customDeckUi;
 
-        private bool _variantPopupIsActive;
+        public bool VariantPopupIsActive;
 
         public void Init()
         {
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
         public void Show(int deckId)
         {
-            _variantPopupIsActive = true;
+            VariantPopupIsActive = true;
 
             FillCollectionData();
 
@@ -308,17 +308,19 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AddCardToDeck(IReadOnlyCard card, bool animate = false, bool skipPopup = false)
+        public void AddCardToDeck(IReadOnlyCard card, bool animate = false, bool skipPopup = false,  object cardKey = null, bool forcePopup = false)
         {   
-            if (_variantPopupIsActive && !skipPopup)
+            List<CollectionCardData> otherVariants = _collectionData.Cards.FindAll(x => x.CardKey.MouldId == card.CardKey.MouldId && x.Amount > 0).ToList();
+            Debug.LogWarning(VariantPopupIsActive + " - " + skipPopup + " - " + forcePopup);
+            if (otherVariants.Count > 1 && ((VariantPopupIsActive && !skipPopup) || forcePopup))
             {
-                _uiManager.GetPopup<SelectSkinPopup>().Show();
+                _uiManager.GetPopup<SelectSkinPopup>().Show(card);
                 return;
             }
 
             if (_myDeckPage.CurrentEditDeck == null)
             {
-                Debug.LogError("current edit deck is nul");
+                Debug.LogError("current edit deck is null");
                 return;
             }
 
@@ -331,9 +333,14 @@ namespace Loom.ZombieBattleground
             }
 
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.CardKey);
+            if (cardKey is CardKey)
+            {
+                collectionCardData = _collectionData.GetCardData((CardKey) cardKey);
+            }
+            
             if (collectionCardData.Amount <= 0)
             {
-                List<CollectionCardData> otherVariants = _collectionData.Cards.FindAll(x => x.CardKey.MouldId == card.CardKey.MouldId).ToList();
+                otherVariants = _collectionData.Cards.FindAll(x => x.CardKey.MouldId == card.CardKey.MouldId).ToList();
                 for (int i = 0; i < otherVariants.Count; i++)
                 {
                     if (otherVariants[i].Amount > 0) 
@@ -373,13 +380,13 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _myDeckPage.CurrentEditDeck.AddCard(card.CardKey);
+            _myDeckPage.CurrentEditDeck.AddCard(collectionCardData.CardKey);
 
             // update count in card collection list left panel
             collectionCardData.Amount--;
             _uiCardCollections.UpdateCardAmountDisplay(card, collectionCardData.Amount);
 
-            _customDeckUi.AddCard((Card)card);
+            _customDeckUi.AddCard((Card)_dataManager.CachedCardsLibraryData.Cards.FirstOrDefault(x => x.CardKey == collectionCardData.CardKey));
 
             _customDeckUi.UpdateCardsInDeckCountDisplay();
 

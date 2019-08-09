@@ -764,18 +764,19 @@ namespace Loom.ZombieBattleground
                 (_tutorialManager.CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
                 return;
 
-            AddCardToDeck(selectedCard);
+            AddCardToDeck(selectedCard, fromDoubleClick:true);
 
             if (_tutorialManager.IsTutorial)
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
         }
 
-        private void AddCardToDeck(Card selectedCard)
+        private void AddCardToDeck(Card selectedCard, bool fromDoubleClick = false)
         {
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
                 selectedCard,
-                true
+                true,
+                forcePopup:fromDoubleClick
             );
         }
 
