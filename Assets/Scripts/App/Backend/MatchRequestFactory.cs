@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _matchId = matchId;
         }
 
+        public long MatchId => _matchId;
+
         public PlayerActionRequest CreateAction(PlayerAction playerAction)
         {
             return new PlayerActionRequest

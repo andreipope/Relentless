@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Menu_Sidebar_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 1e02dd08396da42c9b2efcebfbaf1940, type: 3}
+    totalSpriteSurfaceArea: 1567020
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: fa457010da6304e95a17dd5086d1d9dc, type: 3}
+  - {fileID: 21300000, guid: f3b6761063f6e412487041911301dce1, type: 3}
+  - {fileID: 21300000, guid: e12acf10bae3d45419cbea394ec76de5, type: 3}
+  - {fileID: 21300000, guid: 794e506177565483197af956aaf6ce14, type: 3}
+  - {fileID: 21300000, guid: a283764362e9f451fbcad2de4ab4355a, type: 3}
+  - {fileID: 21300000, guid: d1825a9594193487da08991aa50fe7be, type: 3}
+  - {fileID: 21300000, guid: dbf2cb27c86714089b619a3948f4a0db, type: 3}
+  - {fileID: 21300000, guid: 889d1ec91133c4c4e986ba908ab5c752, type: 3}
+  - {fileID: 21300000, guid: ecdc728d8dcee4ffcaffc2c716764bd1, type: 3}
+  - {fileID: 21300000, guid: 3f1ff0cf206694c88beafca22789c57b, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - sidebar_my_packs_normal
+  - sidebar_shop_normal
+  - sidebar_shop_selected
+  - sidebar_my_cards_normal
+  - sidebar_my_decks_normal
+  - sidebar_battle_selected
+  - sidebar_my_packs_selected
+  - sidebar_my_decks_selected
+  - sidebar_my_cards_selected
+  - sidebar_battle_normal
+  m_Tag: Menu_Sidebar_Atlas
+  m_IsVariant: 0

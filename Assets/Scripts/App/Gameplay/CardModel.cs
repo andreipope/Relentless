@@ -139,6 +139,8 @@ namespace Loom.ZombieBattleground
 
         public event PropertyChangedEvent<int> UnitDamageChanged;
 
+        public event Action UnitAboutToDie;
+
         public event Action<Enumerators.CardType> CardTypeChanged;
 
         public event Action<Enumerators.BuffType> BuffApplied;
@@ -345,6 +347,11 @@ namespace Loom.ZombieBattleground
         public void InvokeDefenseChanged(int oldValue, int currentDefense)
         {
             UnitDefenseChanged?.Invoke(oldValue, currentDefense);
+        }
+
+        public void InvokeAboutToDie()
+        {
+            UnitAboutToDie?.Invoke();
         }
 
         public void HandleDefenseBuffer(int damage)
@@ -1162,6 +1169,15 @@ namespace Loom.ZombieBattleground
             ClearUnitTypeEffects();
             ClearEffectsOnUnit();
             MaximumDamageFromAnySource = 999;
+        }
+        
+        public void ResetAfterTakenControl()
+        {
+            AttackedThisTurn = false;
+            if(NumTurnsOnBoard > 0 || HasFeral)
+            {
+                ForceSetCreaturePlayable();
+            }
         }
 
         public bool HasActiveMechanic(Enumerators.GameMechanicDescription gameMechanic)

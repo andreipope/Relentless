@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
                 GetParameters(out int defense, out int attack);
                 ChangeStatsOfTarget(TargetUnit, defense, attack);
 
+                InvokeActionTriggered(TargetUnit);
+                
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)
@@ -137,12 +139,14 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0 || !LastAuraState)
                 return;
 
-            for (int i = _affectedUnits.Count-1; i >= 0; i--)
+            for (int i = 0; i < _affectedUnits.Count; ++i)
             {
-                if (_affectedUnits[i].CardModel.OwnerPlayer != AbilityUnitOwner.OwnerPlayer)
+                CardStatInfo unit = _affectedUnits[i];
+                if (unit.CardModel.Card.Owner != AbilityUnitOwner.OwnerPlayer)
                 {
-                    RemoveBuffFromUnit(_affectedUnits[i].ModifiedDamage, _affectedUnits[i].ModifiedDefense, _affectedUnits[i]);
-                    _affectedUnits.Remove(_affectedUnits[i]);
+                    RemoveBuffFromUnit(unit.ModifiedDamage, unit.ModifiedDefense, unit);
+                    _affectedUnits.Remove(unit);
+                    --i;
                 }
             }
 
@@ -172,12 +176,20 @@ namespace Loom.ZombieBattleground
 
         protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
         {
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA && !(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo))
                 return;
 
             ResetAffectedUnits();
             _affectedUnits.Clear();
-            ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                PlayerCurrentGooChangedHandler(AbilityUnitOwner.OwnerPlayer.CurrentGoo);
+            }
+            else
+            {
+                ChangeStatsOfPlayerCards(newPlayer, Defense, Attack, false);
+            }
         }
 
         private void ChangeStatsToItself()
@@ -247,9 +259,9 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
+        private void ChangeStatsOfPlayerCards(Player player, int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
         {
-            List<CardModel> units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.ToList();
+            List<CardModel> units = player.PlayerCardsController.CardsOnBoard.ToList();
 
             if(filterUnits != null)
             {
@@ -270,6 +282,18 @@ namespace Loom.ZombieBattleground
                     ModifiedDefense = defense
                 });
             }
+        }
+        
+        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
+        {
+            ChangeStatsOfPlayerCards
+            (
+                PlayerCallerOfAbility,
+                defense,
+                damage,
+                withCaller,
+                filterUnits
+            );
         }
         
         private void ChangeStatsOfTarget(CardModel unit, int defense, int damage)
@@ -316,6 +340,12 @@ namespace Loom.ZombieBattleground
             }
 
             _affectedUnits.Clear();
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+            TargetUnit.IsPlayable = true;
         }
 
         class CardStatInfo

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Text.RegularExpressions;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -82,7 +83,7 @@ namespace Loom.ZombieBattleground
             Enumerators.Faction faction = GetFaction(overlordId);
 
             string path = "Images/UI/Overlord_Image/";
-            path = path + "champion_image_" + faction.ToString().ToLower();
+            path = path + "champion_image_" + faction.ToString().ToLowerInvariant();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
@@ -98,7 +99,7 @@ namespace Loom.ZombieBattleground
         public static Sprite GetOverlordImage(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/Overlord_Image/";
-            path = path + "champion_image_" + overlordFaction.ToString().ToLower();
+            path = path + "champion_image_" + overlordFaction.ToString().ToLowerInvariant();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
@@ -113,6 +114,9 @@ namespace Loom.ZombieBattleground
         {
             IDataManager dataManager = GameClient.Get<IDataManager>();
             Deck deck = dataManager.CachedDecksData.Decks.Find(cachedDeck => cachedDeck.Id == deckId);
+            if (deck == null)
+                return null;
+
             OverlordUserInstance overlord = dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
@@ -122,17 +126,17 @@ namespace Loom.ZombieBattleground
             switch (faction)
             {
                 case Enumerators.Faction.FIRE:
-                    return new Vector3(116f, -379f, 0f);
+                    return new Vector3(116f, -315f, 0f);
                 case Enumerators.Faction.WATER:
-                    return new Vector3(11f, -389f, 0f);
+                    return new Vector3(11f, -345f, 0f);
                 case Enumerators.Faction.EARTH:
-                    return new Vector3(-3f, -325f, 0f);
+                    return new Vector3(-3f, -275f, 0f);
                 case Enumerators.Faction.AIR:
-                    return new Vector3(-150f, -223f, 0f);
+                    return new Vector3(-150f, -200f, 0f);
                 case Enumerators.Faction.LIFE:
-                    return new Vector3(-42f, -219f, 0f);
+                    return new Vector3(-42f, -185f, 0f);
                 case Enumerators.Faction.TOXIC:
-                    return new Vector3(101f, -219f, 0f);
+                    return new Vector3(101f, -185f, 0f);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(faction), faction, null);
             }
@@ -162,9 +166,33 @@ namespace Loom.ZombieBattleground
         public static Sprite GetOverlordDeckIcon(Enumerators.Faction faction)
         {
             string path = "Images/UI/DeckIcons/";
-            path = path + "icon_" + faction.ToString().ToLower();
+            path = path + "icon_" + faction.ToString().ToLowerInvariant();
             return GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(path);
         }
 
+        public static Card ApplyCardVariantOverrides(IReadOnlyCard variantCard, Card standardCard)
+        {
+            return new Card(
+                variantCard.CardKey,
+                variantCard.Overrides?.Set ?? standardCard.Set,
+                variantCard.Overrides?.Name ?? standardCard.Name,
+                variantCard.Overrides?.Cost ?? standardCard.Cost,
+                variantCard.Overrides?.Description ?? standardCard.Description,
+                variantCard.Overrides?.FlavorText ?? standardCard.FlavorText,
+                variantCard.Overrides?.Picture ?? standardCard.Picture,
+                variantCard.Overrides?.Damage ?? standardCard.Damage,
+                variantCard.Overrides?.Defense ?? standardCard.Defense,
+                variantCard.Overrides?.Faction ?? standardCard.Faction,
+                variantCard.Overrides?.Frame ?? standardCard.Frame,
+                variantCard.Overrides?.Kind ?? standardCard.Kind,
+                variantCard.Overrides?.Rank ?? standardCard.Rank,
+                variantCard.Overrides?.Type ?? standardCard.Type,
+                variantCard.Overrides?.Abilities ?? standardCard.Abilities,
+                variantCard.Overrides?.PictureTransforms ?? standardCard.PictureTransforms,
+                variantCard.Overrides?.UniqueAnimation ?? standardCard.UniqueAnimation,
+                variantCard.Overrides?.Hidden ?? standardCard.Hidden,
+                null
+            );
+        }
     }
 }

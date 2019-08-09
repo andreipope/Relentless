@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.25";
+        internal const string CurrentVersionBase = "0.1.26";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -54,6 +54,8 @@ namespace Loom.ZombieBattleground.Common
 #endif
 
         internal const int TutorialPlayerOverlordId = 4;
+        
+        internal const string TutorialDefaultDeckName = "HORDE 1";
 
         internal const uint DeckMaxSize = 30;
 
@@ -146,7 +148,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxDecksCount = 10;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 30f;
+        public const float PvPCheckPlayerAvailableMaxTime = 20f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -180,8 +182,9 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
-        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.25f, 0.25f, 0.25f);
-
+        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.5f, 0.5f, 0.5f);
+        internal static Vector3 DefaultScaleForZoomedCardWhileDragging = new Vector3(0.5f, 0.5f, 0.5f);
+        
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
@@ -217,9 +220,15 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
+        internal const string BackendPurposeOverrideValuePlayerPrefsKey = "RL_BackendPurposeOverride";
+
+        internal const string ForceUseAuthPlayerPrefsKey = "RL_ForceUseAuth";
+
         internal const int LastTutorialId = 8;
 
         internal const string MarketPlaceLink = "https://loom.games/en/purchase";
+
+        internal const string PackOpenLink = "https://loom.games/en/my-packs";
 
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 

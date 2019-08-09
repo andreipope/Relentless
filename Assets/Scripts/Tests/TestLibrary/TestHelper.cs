@@ -8,12 +8,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -2139,7 +2137,7 @@ namespace Loom.ZombieBattleground.Test
 
         private string UppercaseFirst(string s)
         {
-            return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLower());
+            return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLowerInvariant());
         }
 
         public enum RecordedValue

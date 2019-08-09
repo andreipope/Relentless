@@ -240,6 +240,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitDied += UnitDiedHandler;
                         AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
                         AbilityUnitOwner.UnitDefenseChanged += UnitHpChangedHandler;
+                        AbilityUnitOwner.UnitAboutToDie += UnitIsPreparingToDie;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
@@ -311,9 +312,9 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
             PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
 
-            PlayerCallerOfAbility = player;
-
             PlayerOwnerHasChanged(PlayerCallerOfAbility, player);
+            
+            PlayerCallerOfAbility = player;
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
@@ -489,6 +490,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected virtual void UnitIsPreparingToDie()
+        {
+        }
+
         protected virtual void ChangeRageStatusAction(bool rageStatus)
         {
         }
@@ -542,6 +547,11 @@ namespace Loom.ZombieBattleground
                 LastAuraState = false;
                 ChangeAuraStatusAction(false);
             }
+        }
+
+        public void SetAuraStatusToFalse()
+        {
+            ChangeAuraStatusAction(false);
         }
 
         private void CheckRageStatus()

@@ -38,13 +38,10 @@ namespace Loom.ZombieBattleground.Editor
         private string _waterPackContractAddress;
 
         [SerializeField]
-        private string _smallPackContractAddress;
-
-        [SerializeField]
-        private string _minionPackContractAddress;
-
-        [SerializeField]
         private string _binancePackContractAddress;
+
+        [SerializeField]
+        private string _tronPackContractAddress;
 
         [SerializeField]
         private string _fiatPurchaseContractAddress;
@@ -75,11 +72,9 @@ namespace Loom.ZombieBattleground.Editor
 
         public string WaterPackContractAddress => _waterPackContractAddress;
 
-        public string SmallPackContractAddress => _smallPackContractAddress;
-
-        public string MinionPackContractAddress => _minionPackContractAddress;
-
         public string BinancePackContractAddress => _binancePackContractAddress;
+
+        public string TronPackContractAddress => _tronPackContractAddress;
 
         public string FiatPurchaseContractAddress => _fiatPurchaseContractAddress;
 
@@ -103,9 +98,8 @@ namespace Loom.ZombieBattleground.Editor
             string lifePackContractAddress,
             string toxicPackContractAddress,
             string waterPackContractAddress,
-            string smallPackContractAddress,
-            string minionPackContractAddress,
             string binancePackContractAddress,
+            string tronPackContractAddress,
             string fiatPurchaseContractAddress,
             string openLotteryContractAddress,
             string tronLotteryContractAddress)
@@ -120,9 +114,8 @@ namespace Loom.ZombieBattleground.Editor
             _lifePackContractAddress = lifePackContractAddress ?? throw new ArgumentNullException(nameof(lifePackContractAddress));
             _toxicPackContractAddress = toxicPackContractAddress ?? throw new ArgumentNullException(nameof(toxicPackContractAddress));
             _waterPackContractAddress = waterPackContractAddress ?? throw new ArgumentNullException(nameof(waterPackContractAddress));
-            _smallPackContractAddress = smallPackContractAddress ?? throw new ArgumentNullException(nameof(smallPackContractAddress));
-            _minionPackContractAddress = minionPackContractAddress ?? throw new ArgumentNullException(nameof(minionPackContractAddress));
             _binancePackContractAddress = binancePackContractAddress ?? throw new ArgumentNullException(nameof(binancePackContractAddress));
+            _tronPackContractAddress = tronPackContractAddress ?? throw new ArgumentNullException(nameof(tronPackContractAddress));
             _fiatPurchaseContractAddress = fiatPurchaseContractAddress ?? throw new ArgumentNullException(nameof(fiatPurchaseContractAddress));
             _openLotteryContractAddress = openLotteryContractAddress ?? throw new ArgumentNullException(nameof(openLotteryContractAddress));
             _tronLotteryContractAddress = tronLotteryContractAddress ?? throw new ArgumentNullException(nameof(tronLotteryContractAddress));

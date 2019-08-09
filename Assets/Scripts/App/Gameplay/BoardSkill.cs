@@ -210,7 +210,10 @@ namespace Loom.ZombieBattleground
         public void StartDoSkill(bool localPlayerOverride = false)
         {
             if (!IsSkillCanUsed())
+            {
+                CancelTargetingArrows();
                 return;
+            }
 
             if (OwnerPlayer.IsLocalPlayer && !localPlayerOverride)
             {

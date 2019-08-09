@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action(new object[] { PlayerCallerOfAbility, 1 });
+            Action(new object[] { AbilityUnitOwner.OwnerPlayer, 1 });
         }
 
         protected override void UnitDiedHandler()
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             if (_gooWasChanged)
             {
-                Action(new object[] { PlayerCallerOfAbility, -1 });
+                Action(new object[] { AbilityUnitOwner.OwnerPlayer, -1 });
             }
         }
 
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
 
             if (_gooWasChanged)
             {
-                Action(new object[] { PlayerCallerOfAbility, -1 });
+                Action(new object[] { AbilityUnitOwner.OwnerPlayer, -1 });
             }
         }
 
@@ -67,10 +67,7 @@ namespace Loom.ZombieBattleground
 
             player.ExtraGoo = Mathf.Clamp(player.ExtraGoo + (Value * revertSymbol), MinExtraGooValue, MaxExtraGooValue);
 
-            if (GameplayManager.CurrentTurnPlayer == player)
-            {
-                player.CurrentGoo += (Value * revertSymbol);
-            }
+            player.CurrentGoo += (Value * revertSymbol);
         }
     }
 }

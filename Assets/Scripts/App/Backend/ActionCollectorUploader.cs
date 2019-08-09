@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!_gameplayManager.IsTutorial)
             {
                 Dictionary<string, object> eventParameters = new Dictionary<string, object>();
-                eventParameters.Add(AnalyticsManager.PropertyMatchDuration, _gameplayManager.MatchDuration.GetTimeDiffrence());
+                eventParameters.Add(AnalyticsManager.PropertyMatchDuration, _gameplayManager.MatchDuration.GetTimeDifference());
                 eventParameters.Add(AnalyticsManager.PropertyMatchType, _matchManager.MatchType.ToString());
                 if (obj == Enumerators.EndGameType.CANCEL)
                 {
@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!_gameplayManager.IsTutorial)
             {
                 Dictionary<string, object> eventParameters = new Dictionary<string, object>();
-                eventParameters.Add(AnalyticsManager.PropertyTimeToFindOpponent, _matchManager.MatchType == Enumerators.MatchType.PVP ? _matchManager.FindOpponentTime.GetTimeDiffrence() : "0");
+                eventParameters.Add(AnalyticsManager.PropertyTimeToFindOpponent, _matchManager.MatchType == Enumerators.MatchType.PVP ? _matchManager.FindOpponentTime.GetTimeDifference() : "0");
                 eventParameters.Add(AnalyticsManager.PropertyMatchType, _matchManager.MatchType.ToString());
                 _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch, eventParameters);
             }
@@ -186,6 +186,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Player.CardPlayed -= CardPlayedHandler;
                     Player.CardAttacked -= CardAttackedHandler;
                     Player.LeaveMatch -= LeaveMatchHandler;
+                    GameClient.Get<IUIManager>().GetPopup<MulliganPopup>().MulliganCards -= MulliganHandler;
 
                     if (_skillsController.PlayerPrimarySkill != null)
                     {

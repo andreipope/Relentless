@@ -34,14 +34,11 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             AbilityProcessingAction?.TriggerActionExternally();
             AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-            
 
             foreach(Enumerators.Target target in AbilityData.Targets)
             {
@@ -55,6 +52,9 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+
+            InvokeActionTriggered();
+            base.UnitDiedHandler();
         }
 
         private void FillBoard(Player targetPlayer)

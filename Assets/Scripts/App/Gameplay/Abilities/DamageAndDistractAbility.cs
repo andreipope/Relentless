@@ -52,14 +52,14 @@ namespace Loom.ZombieBattleground
                 switch(target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
-                        _units.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Where(x => 
+                        _units.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Where(x =>
                             !x.IsDead &&
                             x.CurrentDefense > 0 &&
                             x != AbilityUnitOwner
                         ).ToList());
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
-                        _units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Where(x => 
+                        _units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Where(x =>
                             !x.IsDead &&
                             x.CurrentDefense > 0 &&
                             x != AbilityUnitOwner
@@ -67,6 +67,8 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+
+            InvokeActionTriggered(_units);
 
             if (_units.Count == 0)
                 return;
@@ -83,8 +85,6 @@ namespace Loom.ZombieBattleground
             {
                 cardModel.HandleDefenseBuffer(Damage);
             }
-
-            InvokeActionTriggered(_units);
 
             InvokeUseAbilityEvent(_units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
         }
@@ -124,6 +124,11 @@ namespace Loom.ZombieBattleground
             BattlegroundController.DistractUnit(boardUnit);
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
+
+            if (!boardUnit.IsDead || boardUnit.CurrentDefense > 0)
+            {
+                boardUnit.SetUnitActiveStatus(true);
+            }
         }
 
         public void OneActionCompleted(CardModel cardModel)

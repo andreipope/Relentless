@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
         private List<TutorialStep> _tutorialSteps;
         private int _currentTutorialStepIndex;
 
+        public int CurrentTutorialStepIndex => _currentTutorialStepIndex;
+
         private List<InGameTutorialData> _ingameTutorials;
 
         private List<TutorialDescriptionTooltipItem> _ingameTutorialActiveTooltips;
@@ -431,7 +433,7 @@ namespace Loom.ZombieBattleground
         {
             TutorialDuration.FinishTimer();
             Dictionary<string, object> eventParameters = new Dictionary<string, object>();
-            eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDiffrence());
+            eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDifference());
             _analyticsManager.SetEvent(eventName, eventParameters);
         }
 
@@ -592,7 +594,7 @@ namespace Loom.ZombieBattleground
                                                                                             item.Description,
                                                                                             item.Align,
                                                                                             item.Owner,
-                                                                                            (Vector3)item.Position,
+                                                                                            (Vector2) item.Position,
                                                                                             true,
                                                                                             false,
                                                                                             layer: Enumerators.TutorialObjectLayer.Default,
@@ -716,8 +718,8 @@ namespace Loom.ZombieBattleground
                 {
                     DrawPointer(handPointer.TutorialHandPointerType,
                                 handPointer.TutorialHandPointerOwner,
-                                (Vector3)handPointer.StartPosition,
-                                (Vector3)handPointer.EndPosition,
+                                (Vector2) handPointer.StartPosition,
+                                (Vector2) handPointer.EndPosition,
                                 handPointer.AppearDelay,
                                 handPointer.AppearOnce,
                                 handPointer.TutorialObjectIdStepOwner,
@@ -742,7 +744,7 @@ namespace Loom.ZombieBattleground
                                            tooltip.TutorialTooltipAlign,
                                            tooltip.TutorialTooltipOwner,
                                            tooltip.TutorialTooltipOwnerId,
-                                           (Vector3)tooltip.Position,
+                                           (Vector2) tooltip.Position,
                                            tooltip.Resizable,
                                            tooltip.AppearDelay,
                                            tooltip.DynamicPosition,
@@ -1116,7 +1118,7 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.TutorialTooltipAlign,
                                        tooltipInfo.TutorialTooltipOwner,
                                        tooltipInfo.TutorialTooltipOwnerId,
-                                       (Vector3)tooltipInfo.Position,
+                                       (Vector2) tooltipInfo.Position,
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,

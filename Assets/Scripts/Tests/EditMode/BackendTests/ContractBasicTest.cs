@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using CardKey = Loom.ZombieBattleground.Data.CardKey;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground.Test
 {

@@ -69,21 +69,7 @@ namespace Loom.ZombieBattleground
 			}
         }
 
-#if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-            if (ShiftedChild == null)
-                return;
-
-            if (!ShiftedChild.IsChildOf(transform))
-            {
-                ShiftedChild = null;
-            }
-        }
-#endif
-
-        private void UpdateShiftedChildPosition()
+        protected virtual void UpdateShiftedChildPosition()
         {
             if (ShiftedChild == null)
                 return;
@@ -116,5 +102,19 @@ namespace Loom.ZombieBattleground
             ShiftedChild.localPosition =
                 isShift ? _originalShiftedChildPosition + ShiftValue : _originalShiftedChildPosition;
         }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (ShiftedChild == null)
+                return;
+
+            if (ShiftedChild == transform || !ShiftedChild.IsChildOf(transform))
+            {
+                ShiftedChild = null;
+            }
+        }
+#endif
     }
 }

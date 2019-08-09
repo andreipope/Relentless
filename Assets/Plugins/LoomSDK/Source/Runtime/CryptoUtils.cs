@@ -1,7 +1,6 @@
 ﻿using Loom.Chaos.NaCl;
 using System;
 using System.Security.Cryptography;
-using System.Text;
 using Loom.Org.BouncyCastle.Crypto.Digests;
 
 namespace Loom.Client

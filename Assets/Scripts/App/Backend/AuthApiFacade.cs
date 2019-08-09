@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using log4net;
-using Loom.Client;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Iap;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 
@@ -20,9 +14,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private BackendDataControlMediator _backendDataControlMediator;
         private BackendFacade _backendFacade;
-        
+
         public string AuthApiHost { get; private set; }
-        
+
         public string VaultApiHost { get; private set; }
 
         public AuthApiFacade(string authApiHost, string vaultApiHost)
@@ -37,7 +31,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Log.Info("Auth Host: " + AuthApiHost);
             Log.Info("Vault Host: " + VaultApiHost);
         }
-        
+
         #region IService
 
         public void Init()
@@ -50,7 +44,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Dispose() { }
 
         #endregion
-        
+
         private const string userInfoEndPoint = "/user/info";
 
         private const string loginEndPoint = "/auth/email/login";
@@ -260,37 +254,26 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             ZbVersion.ZbVersionData versionData = zbVersion.Version;
 
-            PlasmachainEndpointsConfiguration plasmaChainEndpointsConfiguration;
-            if (String.IsNullOrEmpty(versionData.PlasmachainChainId) ||
-                String.IsNullOrEmpty(versionData.PlasmachainReaderHost))
-            {
-                // Until prod auth is updated
-                plasmaChainEndpointsConfiguration = fallbackPlasmachainEndpointsConfiguration;
-            }
-            else
-            {
-                plasmaChainEndpointsConfiguration = new PlasmachainEndpointsConfiguration(
-                    versionData.PlasmachainChainId,
-                    versionData.PlasmachainReaderHost,
-                    versionData.PlasmachainWriterHost,
-                    versionData.PlasmachainZbgCardContractAddress,
-                    versionData.PlasmachainCardFaucetContractAddress,
-                    versionData.PlasmachainBoosterPackContractAddress,
-                    versionData.PlasmachainSuperPackContractAddress,
-                    versionData.PlasmachainAirPackContractAddress,
-                    versionData.PlasmachainEarthPackContractAddress,
-                    versionData.PlasmachainFirePackContractAddress,
-                    versionData.PlasmachainLifePackContractAddress,
-                    versionData.PlasmachainToxicPackContractAddress,
-                    versionData.PlasmachainWaterPackContractAddress,
-                    versionData.PlasmachainSmallPackContractAddress,
-                    versionData.PlasmachainMinionPackContractAddress,
-                    versionData.PlasmachainBinancePackContractAddress,
-                    versionData.PlasmachainFiatPurchaseContractAddress,
-                    versionData.PlasmachainOpenLotteryContractAddress,
-                    versionData.PlasmachainTronLotteryContractAddress
-                );
-            }
+            PlasmachainEndpointsConfiguration plasmaChainEndpointsConfiguration = new PlasmachainEndpointsConfiguration(
+                versionData.PlasmachainChainId,
+                versionData.PlasmachainReaderHost,
+                versionData.PlasmachainWriterHost,
+                versionData.PlasmachainZbgCardContractAddress,
+                versionData.PlasmachainCardFaucetContractAddress,
+                versionData.PlasmachainBoosterPackContractAddress,
+                versionData.PlasmachainSuperPackContractAddress,
+                versionData.PlasmachainAirPackContractAddress,
+                versionData.PlasmachainEarthPackContractAddress,
+                versionData.PlasmachainFirePackContractAddress,
+                versionData.PlasmachainLifePackContractAddress,
+                versionData.PlasmachainToxicPackContractAddress,
+                versionData.PlasmachainWaterPackContractAddress,
+                versionData.PlasmachainBinancePackContractAddress,
+                versionData.PlasmachainTronPackContractAddress,
+                versionData.PlasmachainFiatPurchaseContractAddress,
+                versionData.PlasmachainOpenLotteryContractAddress,
+                versionData.PlasmachainTronLotteryContractAddress
+            );
 
             return new BackendEndpoint(
                 versionData.AuthUrl,

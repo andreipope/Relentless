@@ -42,35 +42,23 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: faa005fc360bf1d4e8368bbc6635c511, type: 3}
-    totalSpriteSurfaceArea: 5471488
+    totalSpriteSurfaceArea: 1211392
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 5786961164824aa40b0c7a426d0e1545, type: 3}
   - {fileID: 21300000, guid: c2d91f718c3df8447bc893df7655ec9b, type: 3}
-  - {fileID: 21300000, guid: e38133d11ec188a45bc3b7812f851886, type: 3}
   - {fileID: 21300000, guid: aecd589204deb0f41889e793468457bf, type: 3}
   - {fileID: 21300000, guid: d5014323ef5b3ce4a951d2c413fb98bf, type: 3}
-  - {fileID: 21300000, guid: 94572353051b8bf4bbd70f41a8db36ce, type: 3}
-  - {fileID: 21300000, guid: 0dbb62a597e90e94a84a2e61c7c6dd4c, type: 3}
   - {fileID: 21300000, guid: f129a3b694f6a514eb92751711f1f31b, type: 3}
-  - {fileID: 21300000, guid: 92082a898c405144ca2c0c7ca9c8d3fd, type: 3}
-  - {fileID: 21300000, guid: 8c7bae8a3e6a2c249aa1b3786f3a8eb8, type: 3}
-  - {fileID: 21300000, guid: 5d13aa9c03603fc4cb78d99a897785f7, type: 3}
   - {fileID: 21300000, guid: 06f41a4dcd6682d46bc3f7163f2af1b5, type: 3}
   - {fileID: 21300000, guid: 19632e3f3b3794c46abbaf02f9bd9cf2, type: 3}
   m_PackedSpriteNamesToIndex:
   - icon_element_air
   - icon_element_water
-  - portrait_life_hero
   - icon_element_earth
   - icon_element_fire
-  - portrait_toxic_hero
-  - portrait_water_hero
   - icon_element_toxic
-  - portrait_earth_hero
-  - portrait_air_hero
-  - portrait_fire_hero
   - icon_element_tool
   - icon_element_life
   m_Tag: Choose_Overlord_Portraits_Atlas

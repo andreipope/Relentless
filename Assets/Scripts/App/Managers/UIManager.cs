@@ -90,6 +90,7 @@ namespace Loom.ZombieBattleground
             UiPopups.Add(new SelectOverlordAbilitiesPopup());
             UiPopups.Add(new SelectOverlordPopup());
             UiPopups.Add(new RenamePopup());
+            UiPopups.Add(new SelectSkinPopup());
 
             foreach (IUIPopup popup in UiPopups)
             {

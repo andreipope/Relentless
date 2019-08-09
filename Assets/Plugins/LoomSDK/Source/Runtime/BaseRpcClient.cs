@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
 using UnityEngine;
 
 namespace Loom.Client.Internal
@@ -43,6 +39,7 @@ namespace Loom.Client.Internal
         }
 
         public event RpcClientConnectionStateChangedHandler ConnectionStateChanged;
+
         public event EventHandler<JsonRpcEventData> EventReceived;
 
         public abstract RpcConnectionState ConnectionState { get; }
@@ -50,7 +47,7 @@ namespace Loom.Client.Internal
         public abstract Task ConnectAsync();
         public abstract Task DisconnectAsync();
         public abstract Task SubscribeToEventsAsync(ICollection<string> topics);
-        public abstract Task UnsubscribeFromEventsAsync();
+        public abstract Task UnsubscribeFromEventAsync(string topic);
 
         protected abstract void Dispose(bool disposing);
 

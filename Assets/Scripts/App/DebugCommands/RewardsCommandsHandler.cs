@@ -40,7 +40,10 @@ namespace Loom.ZombieBattleground
             }
 
             GetPendingMintingTransactionReceiptsResponse response = await _backendFacade.GetPendingMintingTransactionReceipts(userId);
-            List<AuthFiatApiFacade.TransactionReceipt> receipts = response.ReceiptCollection.Receipts.Select(receipt => receipt.FromProtobuf()).ToList();
+            List<AuthFiatApiFacade.TransactionReceipt> receipts =
+                response.ReceiptCollection.Receipts
+                    .Select(receipt => receipt.FromProtobuf())
+                    .ToList();
             Debug.Log("Result: \n" + JsonConvert.SerializeObject(receipts, Formatting.Indented));
 
             string txIds = "Tx Ids:\n";
@@ -71,19 +74,40 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler(Description = "Give user a booster. If userId is left as -1, current user id will be used.")]
-        public static async void DebugMintBoosterPackReceipt(int boosterAmount, int userId = -1)
+        public static async void DebugMintBoosterPackReceipt(
+            int boosterAmount,
+            int superAmount = 0,
+            int binanceAmount = 0,
+            int userId = -1)
         {
             if (userId == -1)
             {
                 userId = (int) _backendDataControlMediator.UserDataModel.UserIdNumber;
             }
 
-            DebugMintBoosterPackReceiptResponse response = await _backendFacade.DebugMintBoosterPackReceipt(userId, boosterAmount);
+            DebugMintBoosterPackReceiptResponse response = await _backendFacade.DebugMintBoosterPackReceipt(
+                userId,
+                boosterAmount,
+                superAmount,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                binanceAmount
+            );
             Debug.Log("Result: \n" + JsonUtility.PrettyPrint(response.ReceiptJson));
         }
 
         [CommandHandler(Description = "Mint boosters and claim them immediately. If userId is left as -1, current user id will be used.")]
-        public static async void DebugMintAndClaimBoosterPacks(int boosterPackAmount, int userId = -1)
+        public static async void DebugMintAndClaimBoosterPacks(
+            int boosterAmount,
+            int superAmount = 0,
+            int binanceAmount = 0,
+            int userId = -1)
         {
             if (userId == -1)
             {
@@ -92,13 +116,31 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                DebugMintBoosterPackReceiptResponse response = await _backendFacade.DebugMintBoosterPackReceipt(userId, boosterPackAmount);
+                DebugMintBoosterPackReceiptResponse response = await _backendFacade.DebugMintBoosterPackReceipt(
+                    userId,
+                    boosterAmount,
+                    superAmount,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    binanceAmount
+                );
                 using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
                 {
                     await _plasmaChainBackendFacade.ClaimPacks(client, response.Receipt.FromProtobuf());
                 }
 
-                Debug.Log($"Added {boosterPackAmount} packs!");
+                await _backendFacade.ConfirmPendingMintingTransactionReceipt(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    response.Receipt.TxId.FromProtobuf()
+                );
+
+                Debug.Log($"Packs added!");
             }
             catch (Exception e)
             {

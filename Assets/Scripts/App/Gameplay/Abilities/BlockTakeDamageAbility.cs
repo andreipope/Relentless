@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
         private int Damage { get; }
         private CardModel _targetedUnit;
 
-        private Action _animationEndedAction;
+        public Action OnDeactivate;
 
         private int _previousMaximumDamageBuff;
 
@@ -69,6 +69,12 @@ namespace Loom.ZombieBattleground
                 ApplyMaximumDamageBuff(_targetedUnit, -Damage);
                 Deactivate();
             }
+        }
+
+        public override void Deactivate()
+        {
+            base.Deactivate();
+            OnDeactivate?.Invoke();
         }
 
         protected override void VFXAnimationEndedHandler()

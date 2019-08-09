@@ -189,9 +189,8 @@ namespace Loom.ZombieBattleground
                         addresses.LifePackContractAddress,
                         addresses.ToxicPackContractAddress,
                         addresses.WaterPackContractAddress,
-                        addresses.SmallPackContractAddress,
-                        addresses.MinionPackContractAddress,
                         addresses.BinancePackContractAddress,
+                        addresses.TronPackContractAddress,
                         addresses.FiatPurchaseContractAddress,
                         addresses.OpenLotteryContractAddress,
                         addresses.TronLotteryContractAddress
@@ -214,9 +213,8 @@ namespace Loom.ZombieBattleground
                 DrawAddress("LifePack", addresses.LifePackContractAddress, otherAddresses.LifePackContractAddress);
                 DrawAddress("ToxicPack", addresses.ToxicPackContractAddress, otherAddresses.ToxicPackContractAddress);
                 DrawAddress("WaterPack", addresses.WaterPackContractAddress, otherAddresses.WaterPackContractAddress);
-                DrawAddress("SmallPack", addresses.SmallPackContractAddress, otherAddresses.SmallPackContractAddress);
-                DrawAddress("MinionPack", addresses.MinionPackContractAddress, otherAddresses.MinionPackContractAddress);
                 DrawAddress("BinancePack", addresses.BinancePackContractAddress, otherAddresses.BinancePackContractAddress);
+                DrawAddress("TronPack", addresses.TronPackContractAddress, otherAddresses.TronPackContractAddress);
                 DrawAddress("FiatPurchase", addresses.FiatPurchaseContractAddress, otherAddresses.FiatPurchaseContractAddress);
                 DrawAddress("OpenLottery", addresses.OpenLotteryContractAddress, otherAddresses.OpenLotteryContractAddress);
                 DrawAddress("TronLottery", addresses.TronLotteryContractAddress, otherAddresses.TronLotteryContractAddress);

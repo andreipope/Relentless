@@ -48,6 +48,8 @@ namespace Loom.ZombieBattleground
 
         private int _normalSortingOrder;
 
+        private bool _isScaledUp;
+
         private ActionsQueueController _actionsQueueController;
 
         public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
@@ -91,15 +93,27 @@ namespace Loom.ZombieBattleground
                 Transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 newPos = Transform.position;
                 newPos.z = 0;
+                newPos.y += (4.7f*Transform.localScale.x/Constants.DefaultScaleForZoomedCardInHand.x);
                 Transform.position = newPos;
+                newPos.y -= (4.7f*Transform.localScale.x/Constants.DefaultScaleForZoomedCardInHand.x);
 
-                if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
+                if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(newPos) && _isHandCard)
                 {
                     _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, BoardCardView);
+                    if (_isScaledUp)
+                    {
+                        Transform.DOScale(BoardCardView.ScaleOnHand, Constants.DurationHoveringHandCard);
+                        _isScaledUp = false;
+                    }
                 }
                 else
                 {
                     _cardsController.ResetPlayerCardsOnBattlegroundPosition();
+                    if (!_isScaledUp)
+                    {
+                        Transform.DOScale(Constants.DefaultScaleForZoomedCardInHand, Constants.DurationHoveringHandCard);
+                        _isScaledUp = true;
+                    }
                 }
 
                 if (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape))
@@ -144,6 +158,9 @@ namespace Loom.ZombieBattleground
 
                 _playerController.IsCardSelected = true;
                 _alreadySelected = true;
+
+                _isScaledUp = true;
+                Transform.DOScale(Constants.DefaultScaleForZoomedCardWhileDragging, Constants.DurationHoveringHandCard);
             }
         }
 
@@ -174,7 +191,10 @@ namespace Loom.ZombieBattleground
 
             if (playable)
             {
-                if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard && BoardCardView.Model.CanBePlayed(BoardCardView.Model.Card.Owner))
+                Vector3 currentPosition = Transform.position;
+                currentPosition.y -= (4.7f*Transform.localScale.x/Constants.DefaultScaleForZoomedCardInHand.x);
+
+                if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(currentPosition) && _isHandCard && BoardCardView.Model.CanBePlayed(BoardCardView.Model.Card.Owner))
                 {
                     _isHandCard = false;
                     _cardsController.PlayPlayerCard(OwnerPlayer,
@@ -219,6 +239,9 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
+            Transform.DOKill();
+            _isScaledUp = false;
+            Transform.DOScale(BoardCardView.ScaleOnHand, 0.5f);
             Transform.DOMove(InitialPos, 0.5f)
                 .OnComplete(
                     () =>
@@ -254,6 +277,9 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
+            Transform.DOKill();
+            _isScaledUp = false;
+            Transform.DOScale(BoardCardView.ScaleOnHand, 0.5f);
             Transform.DOMove(InitialPos, 0.5f)
                 .OnComplete(
                     () =>
@@ -266,7 +292,8 @@ namespace Loom.ZombieBattleground
         public void HoveringAndZoom()
         {
             Transform.DOScale(Constants.DefaultScaleForZoomedCardInHand, Constants.DurationHoveringHandCard);
-            Transform.DOMove(new Vector3(BoardCardView.PositionOnHand.x, -5f, 0), Constants.DurationHoveringHandCard);
+            _isScaledUp = true;
+            Transform.DOMove(new Vector3(BoardCardView.PositionOnHand.x, -3.6f, 0), Constants.DurationHoveringHandCard);
             Transform.DORotate(Vector3.zero, 0.15f);
             _normalSortingOrder = _sortingGroup.sortingOrder;
             _sortingGroup.sortingOrder = 100;
@@ -277,10 +304,9 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded || GameObject == null)
                 return;
 
-            if (isMove)
-            {
-                Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
-            }
+            _isScaledUp = false;
+            Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
+
             Transform.DOScale(BoardCardView.ScaleOnHand, Constants.DurationHoveringHandCard);
             Transform.DORotate(BoardCardView.RotationOnHand, Constants.DurationHoveringHandCard).OnComplete(() =>
             {

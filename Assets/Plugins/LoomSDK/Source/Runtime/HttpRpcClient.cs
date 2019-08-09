@@ -6,7 +6,6 @@ using System.Text;
 using Loom.Client.Internal;
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
 using UnityEngine.Networking;
-using UnityEngine;
 
 namespace Loom.Client
 {
@@ -28,7 +27,7 @@ namespace Loom.Client
             throw new NotImplementedException();
         }
 
-        public override Task UnsubscribeFromEventsAsync()
+        public override Task UnsubscribeFromEventAsync(string topic)
         {
             throw new NotImplementedException();
         }

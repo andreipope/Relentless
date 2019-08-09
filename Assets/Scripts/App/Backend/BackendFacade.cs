@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Numerics;
 using Loom.Client;
 using Loom.Google.Protobuf;
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using Newtonsoft.Json;
-using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using System.Text;
 using log4net;
 using log4netUnitySupport;
 
@@ -18,12 +15,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
+        public const string MatchEventNamePrefix = "match";
+        public const string UserEventNamePrefix = "user";
+
         private IContractCallProxy _contractCallProxy;
-        private Func<RawChainEventContract, IContractCallProxy> _contractCallProxyFactory;
+        private readonly Func<RawChainEventContract, IContractCallProxy> _contractCallProxyFactory;
 
         public delegate void ContractCreatedEventHandler(RawChainEventContract oldContract, RawChainEventContract newContract);
 
-        public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
+        public delegate void PlayerActionEventReceivedHandler(PlayerActionEventData playerActionEventData);
+
+        public delegate void UserAutoCardCollectionSyncEventReceivedHandler(UserAutoCardCollectionSyncEventData userAutoCardCollectionSyncEventData);
+
+        public delegate void UserFullCardCollectionSyncEventReceivedHandler(UserFullCardCollectionSyncEventData userFullCardCollectionSyncEventData);
 
         public event ContractCreatedEventHandler ContractCreated;
 
@@ -303,7 +307,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _contractCallProxy.CallAsync(CreateAccountMethod, req);
         }
 
-        public async Task Login(string userId)
+        public async Task<LoginResponse> Login(string userId)
         {
             Protobuf.LoginRequest req = new Protobuf.LoginRequest
             {
@@ -311,7 +315,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            await _contractCallProxy.CallAsync(LoginMethod, req);
+            return await _contractCallProxy.CallAsync<LoginResponse>(LoginMethod, req);
         }
 
         #endregion
@@ -329,7 +333,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string AcceptMatchMethod = "AcceptMatch";
         private const string KeepAliveStatusMethod = "KeepAlive";
 
-        public event PlayerActionDataReceivedHandler PlayerActionDataReceived;
+        public event PlayerActionEventReceivedHandler PlayerActionEventReceived;
+
+        public event UserAutoCardCollectionSyncEventReceivedHandler UserAutoCardCollectionSyncEventReceived;
+
+        public event UserFullCardCollectionSyncEventReceivedHandler UserFullCardCollectionSyncEventReceived;
 
         public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
         {
@@ -425,19 +433,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
         }
 
-        public async Task SubscribeEvent(IList<string> topics)
+        public async Task SubscribeToEvents(string userId, IList<string> topics)
         {
-            await UnsubscribeEvent();
+            await UnsubscribeFromAllEvents(userId);
             Contract.EventReceived += EventHandler;
+            topics = new List<string>(topics);
+            topics.AddRange(GetPersistentUserIdEventTopics(userId));
             await Contract.Client.SubscribeToEvents(topics);
         }
 
-        public async Task UnsubscribeEvent()
+        public async Task UnsubscribeFromAllEvents(string userId)
         {
             Contract.EventReceived -= EventHandler;
             try
             {
-                await Contract.Client.UnsubscribeFromEvents();
+                HashSet<string> unsubscribedTopics = new HashSet<string>(Contract.Client.SubscribedTopics);
+                unsubscribedTopics.ExceptWith(GetPersistentUserIdEventTopics(userId));
+                await Contract.Client.UnsubscribeFromAllEvents();
             }
             catch (RpcClientException rpcClientException) when (rpcClientException.Message.Contains("Subscription not found"))
             {
@@ -447,6 +459,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Helpers.ExceptionReporter.SilentReportException(e);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
             }
+        }
+
+        public string GetMatchTopicName(long matchId)
+        {
+            return MatchEventNamePrefix + ":" + matchId;
         }
 
         public async Task SendPlayerAction(PlayerActionRequest request)
@@ -491,18 +508,105 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<AddSoloExperienceResponse>(AddSoloExperienceMethod, request);
         }
 
-        //attempt to implement a one message action policy
-        private byte[] _previousEventData;
-
-        private void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
+        private HashSet<string> GetPersistentUserIdEventTopics(string userId)
         {
-            if (_previousEventData == null || !_previousEventData.SequenceEqual(rawChainEventArgs.Data)) {
-                _previousEventData = rawChainEventArgs.Data;
-                PlayerActionDataReceived?.Invoke(rawChainEventArgs.Data);
+            return new HashSet<string>
+            {
+                UserEventNamePrefix + ":" + userId
+            };
+        }
+
+        //attempt to implement a one message action policy
+        private RawChainEventArgs _previousEventArgs;
+
+        private async void EventHandler(object sender, RawChainEventArgs rawChainEventArgs)
+        {
+            try
+            {
+
+                if (_previousEventArgs != null &&
+                    _previousEventArgs.BlockHeight == rawChainEventArgs.BlockHeight &&
+                    _previousEventArgs.CallerAddress == rawChainEventArgs.CallerAddress &&
+                    _previousEventArgs.Topics.SequenceEqual(rawChainEventArgs.Topics) &&
+                    _previousEventArgs.Data.SequenceEqual(rawChainEventArgs.Data)
+                )
+                    return;
+
+                _previousEventArgs = rawChainEventArgs;
+
+                bool ParseAndInvokeMatchEvent(IReadOnlyList<string> topicSplit)
+                {
+                    if (topicSplit.Count != 2)
+                        return false;
+
+                    long matchId = Convert.ToInt64(topicSplit[1]);
+                    PlayerActionEvent @event = PlayerActionEvent.Parser.ParseFrom(rawChainEventArgs.Data);
+                    PlayerActionEventData eventData = new PlayerActionEventData(matchId, @event);
+                    PlayerActionEventReceived?.Invoke(eventData);
+
+                    return true;
+                }
+
+                bool ParseAndInvokeUserEvent(IReadOnlyList<string> topicSplit)
+                {
+                    if (topicSplit.Count != 2)
+                        return false;
+
+                    UserEvent userEvent = UserEvent.Parser.ParseFrom(rawChainEventArgs.Data);
+                    switch (userEvent.EventCase)
+                    {
+                        case UserEvent.EventOneofCase.AutoCardCollectionSync:
+                        {
+                            UserAutoCardCollectionSyncEventData eventData = new UserAutoCardCollectionSyncEventData(userEvent.UserId);
+                            UserAutoCardCollectionSyncEventReceived?.Invoke(eventData);
+                            return true;
+                        }
+                        case UserEvent.EventOneofCase.FullCardCollectionSync:
+                        {
+                            UserFullCardCollectionSyncEventData eventData = new UserFullCardCollectionSyncEventData(userEvent.UserId);
+                            UserFullCardCollectionSyncEventReceived?.Invoke(eventData);
+                            return true;
+                        }
+                        case UserEvent.EventOneofCase.None:
+                        default:
+                            return false;
+                    }
+                }
+
+                if (ScenePlaybackDetector.IsPlaying)
+                {
+                    await Awaiters.NextFrame;
+                }
+
+                bool isParsed = false;
+                foreach (string topic in rawChainEventArgs.Topics)
+                {
+                    string[] topicSplit = topic.Split(':');
+                    if (topicSplit.Length == 0)
+                        continue;
+
+                    switch (topicSplit[0])
+                    {
+                        case MatchEventNamePrefix:
+                            isParsed = ParseAndInvokeMatchEvent(topicSplit);
+                            break;
+                        case UserEventNamePrefix:
+                            isParsed = ParseAndInvokeUserEvent(topicSplit);
+                            break;
+                    }
+                }
+
+                if (!isParsed)
+                {
+                    Log.Error("Unexpected event with topics: " + Utilites.FormatCallLogList(rawChainEventArgs.Topics));
+                }
+            } catch (Exception e)
+            {
+                Log.Error($"Exception in {nameof(EventHandler)}:", e);
             }
         }
 
-#endregion
+        #endregion
 
         #region Custom Game Modes
 
@@ -613,17 +717,84 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<DebugGetPendingCardAmountChangeItemsResponse>("DebugGetPendingCardAmountChangeItems", request);
         }
 
-        public async Task<DebugMintBoosterPackReceiptResponse> DebugMintBoosterPackReceipt(BigInteger userId, int boosterAmount)
+        public async Task<DebugMintBoosterPackReceiptResponse> DebugMintBoosterPackReceipt(
+            BigInteger userId,
+            int boosterAmount,
+            int superAmount,
+            int airAmount,
+            int earthAmount,
+            int fireAmount,
+            int lifeAmount,
+            int toxicAmount,
+            int waterAmount,
+            int smallAmount,
+            int minionAmount,
+            int binanceAmount
+            )
         {
             DebugMintBoosterPackReceiptRequest request = new DebugMintBoosterPackReceiptRequest
             {
                 UserId = userId.ToProtobufUInt(),
-                BoosterAmount = boosterAmount
+                BoosterAmount = (ulong) boosterAmount,
+                SuperAmount = (ulong) superAmount,
+                AirAmount = (ulong) airAmount,
+                EarthAmount = (ulong) earthAmount,
+                FireAmount = (ulong) fireAmount,
+                LifeAmount = (ulong) lifeAmount,
+                ToxicAmount = (ulong) toxicAmount,
+                WaterAmount = (ulong) waterAmount,
+                SmallAmount = (ulong) smallAmount,
+                MinionAmount = (ulong) minionAmount,
+                BinanceAmount = (ulong) binanceAmount,
             };
 
             return await _contractCallProxy.CallAsync<DebugMintBoosterPackReceiptResponse>("DebugMintBoosterPackReceipt", request);
         }
 
+        public async Task DebugCheatSetFullCardCollection(string userId)
+        {
+            DebugCheatSetFullCardCollectionRequest request = new DebugCheatSetFullCardCollectionRequest
+            {
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            await _contractCallProxy.CallAsync("DebugCheatSetFullCardCollection", request);
+        }
+
         #endregion
+
+        public struct PlayerActionEventData
+        {
+            public long MatchId { get; }
+
+            public PlayerActionEvent Event { get; }
+
+            public PlayerActionEventData(long matchId, PlayerActionEvent @event)
+            {
+                MatchId = matchId;
+                Event = @event;
+            }
+        }
+
+        public struct UserAutoCardCollectionSyncEventData
+        {
+            public string UserId { get; }
+
+            public UserAutoCardCollectionSyncEventData(string userId)
+            {
+                UserId = userId;
+            }
+        }
+
+        public struct UserFullCardCollectionSyncEventData
+        {
+            public string UserId { get; }
+
+            public UserFullCardCollectionSyncEventData(string userId)
+            {
+                UserId = userId;
+            }
+        }
     }
 }

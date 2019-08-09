@@ -23,9 +23,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string lifePackContractAddress,
             string toxicPackContractAddress,
             string waterPackContractAddress,
-            string smallPackContractAddress,
-            string minionPackContractAddress,
             string binancePackContractAddress,
+            string tronPackContractAddress,
             string fiatPurchaseContractAddress,
             string openLotteryContractAddress,
             string tronLotteryContractAddress)
@@ -43,16 +42,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
             LifePackContractAddress = Address.FromString(lifePackContractAddress, ChainId);
             ToxicPackContractAddress = Address.FromString(toxicPackContractAddress, ChainId);
             WaterPackContractAddress = Address.FromString(waterPackContractAddress, ChainId);
-            SmallPackContractAddress = Address.FromString(smallPackContractAddress, ChainId);
-            MinionPackContractAddress = Address.FromString(minionPackContractAddress, ChainId);
             BinancePackContractAddress = Address.FromString(binancePackContractAddress, ChainId);
+            TronPackContractAddress = Address.FromString(tronPackContractAddress, ChainId);
             FiatPurchaseContractAddress = Address.FromString(fiatPurchaseContractAddress, ChainId);
-            OpenLotteryContractAddress = !String.IsNullOrWhiteSpace(openLotteryContractAddress) ?
-                Address.FromString(openLotteryContractAddress, ChainId) :
-                new Address();
-            TronLotteryContractAddress = !String.IsNullOrWhiteSpace(tronLotteryContractAddress) ?
-                Address.FromString(tronLotteryContractAddress, ChainId) :
-                new Address();
+            OpenLotteryContractAddress = Address.FromString(openLotteryContractAddress, ChainId);
+            TronLotteryContractAddress = Address.FromString(tronLotteryContractAddress, ChainId);
         }
 
         [JsonProperty("plasmachain_chain_id")]
@@ -105,25 +99,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public Address WaterPackContractAddress { get; }
 
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
-        [JsonProperty("plasmachain_smallpack_contract_address")]
-        public Address SmallPackContractAddress { get; }
-
-        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
-        [JsonProperty("plasmachain_minionpack_contract_address")]
-        public Address MinionPackContractAddress { get; }
-
-        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_binancepack_contract_address")]
         public Address BinancePackContractAddress { get; }
+
+        [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
+        [JsonProperty("plasmachain_tronpack_contract_address")]
+        public Address TronPackContractAddress { get; }
 
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_fiatpurchase_contract_address")]
         public Address FiatPurchaseContractAddress { get; }
 
+        /// <summary>
+        /// Binance card faucet.
+        /// </summary>
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_openlottery_contract_address")]
         public Address OpenLotteryContractAddress { get; }
 
+        /// <summary>
+        /// Tron card faucet.
+        /// </summary>
         [JsonConverter(typeof(AddressToLocalAddressStringConverter))]
         [JsonProperty("plasmachain_tronlottery_contract_address")]
         public Address TronLotteryContractAddress { get; }

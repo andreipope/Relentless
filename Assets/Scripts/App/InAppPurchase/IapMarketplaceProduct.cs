@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine.Purchasing;
 
 namespace Loom.ZombieBattleground.Iap
@@ -9,10 +10,16 @@ namespace Loom.ZombieBattleground.Iap
 
         public ProductMetadata Metadata { get; }
 
-        public IapMarketplaceProduct(ProductDefinition definition, ProductMetadata metadata)
+        public IapMarketplaceProductExtraMetadata ExtraMetadata { get; }
+
+        public IapMarketplaceProduct(
+            ProductDefinition definition,
+            ProductMetadata metadata,
+            IapMarketplaceProductExtraMetadata extraMetadata)
         {
             Definition = definition ?? throw new ArgumentNullException(nameof(definition));
             Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
+            ExtraMetadata = extraMetadata ?? throw new ArgumentNullException(nameof(extraMetadata));
         }
     }
 }

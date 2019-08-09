@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         private List<CardModel> _units;
 
+        private bool _targetsAreReady;
+
         private int Count { get; }
 
         public DestroyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -59,41 +61,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            _units = new List<CardModel>();
-
-            foreach (Enumerators.Target target in AbilityTargets)
+            if (!_targetsAreReady)
             {
-                switch (target)
-                {
-                    case Enumerators.Target.OPPONENT_ALL_CARDS:
-                        IReadOnlyList<CardModel> boardCardsOpponent = GetOpponentOverlord().CardsOnBoard;
-                        for (int i = 0; i < boardCardsOpponent.Count; i++)
-                        {
-                            if (!boardCardsOpponent[i].IsDead && boardCardsOpponent[i].CurrentDefense > 0)
-                            {
-                                _units.Add(boardCardsOpponent[i]);
-                            }
-                        }
-                        break;
-                    case Enumerators.Target.PLAYER_ALL_CARDS:
-                        IReadOnlyList<CardModel> boardCardsPlayers = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard;
-                        for (int i = 0; i < boardCardsPlayers.Count; i++)
-                        {
-                            if (!boardCardsPlayers[i].IsDead && boardCardsPlayers[i].CurrentDefense > 0)
-                            {
-                                _units.Add(boardCardsPlayers[i]);
-                            }
-                        }
-
-                        if (AbilityUnitOwner != null)
-                        {
-                            if (_units.Contains(AbilityUnitOwner))
-                            {
-                                _units.Remove(AbilityUnitOwner);
-                            }
-                        }
-                        break;
-                }
+                PrepareTargets();
             }
 
             _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
@@ -107,22 +77,25 @@ namespace Loom.ZombieBattleground
             {
                 target.HandleDefenseBuffer(target.CurrentDefense);
                 target.SetUnitActiveStatus(false);
+                target.InvokeAboutToDie();
             }
 
             AbilityProcessingAction?.TriggerActionExternally();
-            AbilityProcessingAction = AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
 
             InvokeActionTriggered(_units);
         }
 
+        protected override void UnitIsPreparingToDie()
+        {
+            base.UnitIsPreparingToDie();
+
+            PrepareTargetsBeforeDeath();
+        }
+
         public void DestroyUnit(CardModel unit)
         {
-            bool withEffect = true;
-
-            if (AbilityData.VisualEffectsToPlay != null && AbilityData.VisualEffectsToPlay.Count > 0)
-            {
-                withEffect = false;
-            }
+            bool withEffect = !(AbilityData.VisualEffectsToPlay != null && AbilityData.VisualEffectsToPlay.Count > 0);
 
             BattlegroundController.DestroyBoardUnit(unit, withEffect);
             _units.Remove(unit);
@@ -131,7 +104,7 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
+            
             AbilityProcessingAction?.TriggerActionExternally();
 
             OnUpdateEvent = null;
@@ -171,6 +144,53 @@ namespace Loom.ZombieBattleground
             {
                 DestroyUnit(_units[i]);
             }
+        }
+
+        private void PrepareTargets() 
+        {
+            _units = new List<CardModel>();
+
+            foreach (Enumerators.Target target in AbilityTargets)
+            {
+                switch (target)
+                {
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        IReadOnlyList<CardModel> boardCardsOpponent = GetOpponentOverlord().CardsOnBoard;
+                        for (int i = 0; i < boardCardsOpponent.Count; i++)
+                        {
+                            if (!boardCardsOpponent[i].IsDead && boardCardsOpponent[i].CurrentDefense > 0)
+                            {
+                                _units.Add(boardCardsOpponent[i]);
+                            }
+                        }
+                        break;
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                        IReadOnlyList<CardModel> boardCardsPlayers = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard;
+                        for (int i = 0; i < boardCardsPlayers.Count; i++)
+                        {
+                            if (!boardCardsPlayers[i].IsDead && boardCardsPlayers[i].CurrentDefense > 0)
+                            {
+                                _units.Add(boardCardsPlayers[i]);
+                            }
+                        }
+
+                        if (AbilityUnitOwner != null)
+                        {
+                            if (_units.Contains(AbilityUnitOwner))
+                            {
+                                _units.Remove(AbilityUnitOwner);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            _targetsAreReady = true;
+        }
+
+        private void PrepareTargetsBeforeDeath()
+        {
+            PrepareTargets();
         }
     }
 }

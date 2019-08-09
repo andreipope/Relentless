@@ -16,11 +16,10 @@ namespace Loom.ZombieBattleground
         private Image _creatureCardImage;
         private Image _frameEffectImage;
 
+        private Image _setImage;
+
         private TextMeshProUGUI _gooAmountText;
         private TextMeshProUGUI _creatureNameText;
-
-        private CardCountIndicator _cardCountIndicator;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private Card _card;
@@ -38,13 +37,12 @@ namespace Loom.ZombieBattleground
             _creatureCardImage = _selfObject.transform.Find("Frame/Viewport/Picture").GetComponent<Image>();
             _frameEffectImage = _selfObject.transform.Find("Frame/Viewport/Frame_effect").GetComponent<Image>();
 
-            _cardCountIndicator = new CardCountIndicator();
-            _cardCountIndicator.Init(_selfObject);
+            _setImage = _selfObject.transform.Find("Frame/SetIconBg/SetIconImage").GetComponent<Image>();
 
             _card = null;
         }
 
-        public void FillCard(Card card, int cardAmount)
+        public void FillCard(Card card)
         {
             _card = card;
 
@@ -56,7 +54,8 @@ namespace Loom.ZombieBattleground
 
             _frameEffectImage.color = GetFactionColor(_card.Faction);
 
-            _cardCountIndicator.EnableIndicator(cardAmount);
+            string setName = $"Images/IconsSet/set_icon_{_card.CardKey.Variant.ToString().ToLowerInvariant()}";
+            _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
         }
 
         public Card GetCard()
@@ -74,9 +73,12 @@ namespace Loom.ZombieBattleground
             return _card;
         }
 
-        public void UpdateCard(int cardAmount)
+        public void Dispose()
         {
-            _cardCountIndicator.EnableIndicator(cardAmount);
+            if (_selfObject != null)
+            {
+                Object.Destroy(_selfObject);
+            }
         }
 
         private Color GetFactionColor(Enumerators.Faction faction)
@@ -105,48 +107,6 @@ namespace Loom.ZombieBattleground
             }
 
             return color;
-        }
-    }
-
-
-    public class CardCountIndicator
-    {
-        private ILoadObjectsManager _loadObjectsManager;
-
-        private GameObject _indicatorPrefab;
-
-        private const int MaxIndicatorCount = 4;
-
-        private List<Button> _indicators;
-
-        private Transform _meterTransform;
-
-        public void Init(GameObject obj)
-        {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-
-            _indicatorPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Cards/Indicator");
-
-            _meterTransform = obj.transform.Find("CardCount/Meter").transform;
-
-            _indicators = new List<Button>();
-            for (int i = 0; i < MaxIndicatorCount; i++)
-            {
-                var indicatorObj = Object.Instantiate(_indicatorPrefab, _meterTransform);
-                _indicators.Add(indicatorObj.GetComponent<Button>());
-            }
-
-            EnableIndicator(0);
-        }
-
-        public void EnableIndicator(int count)
-        {
-            _meterTransform.gameObject.SetActive(count > 0);
-
-            for (int i = 0; i < MaxIndicatorCount; i++)
-            {
-                _indicators[i].interactable = i < count;
-            }
         }
     }
 }

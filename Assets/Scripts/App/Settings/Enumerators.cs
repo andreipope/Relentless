@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        { 
+        {
             ANY,
             ONLY_DIFFERENT
         }
@@ -735,14 +735,20 @@ namespace Loom.ZombieBattleground.Common
             ZeuzArrival,
             CerberusArrival,
             TzunamyArrival,
-            ChernoBillArrival
+            ChernoBillArrival,
+            MountainArrival,
+            GargantuaArrival,
+            BlizzardArrival,
+            GoozillaArrival,
+            VortexArrival
         }
 
         public enum CardNameOfAbility
         {
             None,
             Bulldozer,
-            Lawnmover
+            Lawnmover,
+            Molotov
         }
 
         public enum AbilityEffectInfoPositionType
@@ -942,7 +948,7 @@ namespace Loom.ZombieBattleground.Common
             AbovePopups,
             AboveUI
         }
-        
+
         public enum MarketplaceCardPackType
         {
             Booster = 0,
@@ -953,8 +959,12 @@ namespace Loom.ZombieBattleground.Common
             Life = 5,
             Toxic = 6,
             Water = 7,
+            [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
             Small = 8,
-            Minion = 9            
+            [Obsolete("doesn't actually exist on Marketplace, don't use", true)]
+            Minion = 9,
+            Binance = 10,
+            Tron = 11
         }
 
         public enum TutorialStepType
@@ -977,12 +987,13 @@ namespace Loom.ZombieBattleground.Common
             BackToHand,
             BackFromGraveyard
         }
-        public enum CardSetType
+        public enum CardSet
         {
-            Basic,
-            KickStarter,
-            Season1,
-            Season2
+            Undefined = 0,
+            Season1 = 1,
+            Season2 = 2,
+            Season3 = 3,
+            KickstarterExclusive = 4
         }
 
         public enum CardVariant
@@ -992,6 +1003,18 @@ namespace Loom.ZombieBattleground.Common
             Limited = 2,
             Binance = 3,
             Tron = 4
+        }
+
+        public enum CardCollectionPageType
+        {
+            Army,
+            DeckEditing
+        }
+
+        public enum Layer
+        {
+            Default = 0,
+            Battleground = 9
         }
     }
 }

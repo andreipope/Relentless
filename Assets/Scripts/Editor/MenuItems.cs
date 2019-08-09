@@ -9,6 +9,8 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using Loom.ZombieBattleground.Editor.Tools;
+using UnityEditor.Experimental.SceneManagement;
+using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -57,7 +59,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion
-      
+
         #region project file hierarchy Utility
 
         [MenuItem("Utility/Editor/Delete Empty Folders")]
@@ -83,7 +85,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion project file hierarchy Utility
-        
+
         #region Auto Saving Scenes in Editor
 
         private static readonly int MinutesDelay = 2;
@@ -166,7 +168,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion Auto Saving Scenes in Editor
-        
+
         #region cached data, player prefs, and data in persistent data path
 
         [MenuItem("Utility/Data/Delete PlayerPrefs")]
@@ -205,7 +207,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion cached data, player prefs, and data in persistent data path
-        
+
         #region asset bundles and cache
 
         [MenuItem("Utility/CacheAndBundles/Clean Cache")]
@@ -338,7 +340,7 @@ namespace Loom.ZombieBattleground.Editor
         }
 
         #endregion asset bundles and cache
-        
+
         #region scene hierarchy Utility
 
         [MenuItem("Utility/Editor/Select GOs With Missing Scripts")]
@@ -374,6 +376,57 @@ namespace Loom.ZombieBattleground.Editor
                 rectTransform.sizeDelta = sizeDelta;
 
                 rectTransform.localScale = Vector3.one;
+            }
+        }
+
+        [MenuItem("Utility/Editor/Convert child SpriteRenderers to UI Image")]
+        public static void ConvertSpriteRenderersToImage()
+        {
+            if (Selection.activeGameObject == null)
+                return;
+
+            Undo.RecordObject(Selection.activeGameObject, "Convert child SpriteRenderers to UI Image");
+            SpriteRenderer[] spriteRenderers = Selection.activeGameObject.GetComponentsInChildren<SpriteRenderer>(true);
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                Image image = spriteRenderer.gameObject.AddComponent<Image>();
+                image.sprite = spriteRenderer.sprite;
+                image.raycastTarget = false;
+
+                SpriteMask spriteMask = spriteRenderer.GetComponent<SpriteMask>();
+                if (spriteMask != null)
+                {
+                    spriteRenderer.gameObject.AddComponent<Mask>();
+                    Object.DestroyImmediate(spriteMask);
+                }
+
+                Object.DestroyImmediate(spriteRenderer);
+            }
+        }
+
+        [MenuItem("Utility/Editor/Convert child Transform To RectTransform")]
+        public static void ConvertTransformToRectTransform()
+        {
+            if (Selection.activeGameObject == null)
+                return;
+
+            Undo.RecordObject(Selection.activeGameObject, "Convert child Transform To RectTransform");
+            Transform[] transforms = Selection.activeGameObject.GetComponentsInChildren<Transform>(true);
+            foreach (Transform transform in transforms)
+            {
+                if (transform is RectTransform)
+                    continue;
+
+                UnityEditor.EditorUtility.SetDirty(transform.gameObject);
+                transform.gameObject.AddComponent<RectTransform>();
+                Object.DestroyImmediate(transform);
+            }
+
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                EditorSceneManager.MarkSceneDirty(prefabStage.scene);
+                UnityEditor.EditorUtility.SetDirty(prefabStage.prefabContentsRoot);
             }
         }
 

@@ -5,10 +5,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using log4net;
 using Loom.ZombieBattleground.Common;
+#if UNITY_EDITOR
+using System.Collections.Generic;
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 public class UnitCardUI
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(UnitCardUI));
+
     private GameObject _selfObj;
     private GameObject _cardAmountTray;
 
@@ -53,6 +60,9 @@ public class UnitCardUI
 
         _grayScaleMaterial = _loadObjectsManager.GetObjectByPath<Material>("Materials/UI-Default-Grayscale");
 
+#if UNITY_EDITOR
+        MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
     }
 
     public void FillCardData(Card card, int cardCount = 0)
@@ -70,7 +80,7 @@ public class UnitCardUI
         _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
         string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.Rank);
-        string rankName = $"Images/IconsRanks/rank_icon_{rarity.ToLower()}";
+        string rankName = $"Images/IconsRanks/rank_icon_{rarity.ToLowerInvariant()}";
         _rankImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(rankName);
 
         string imagePath = $"{Constants.PathToCardsIllustrations}{card.Picture.ToLowerInvariant()}";
@@ -78,10 +88,7 @@ public class UnitCardUI
 
         _cardAmountTray.SetActive(cardCount != 0);
 
-        //TODO : Set icon according to card details filled by designer
-        //TODO : right now there is no way to get set type information
-        string setType = Enum.GetName(typeof(Enumerators.CardSetType), Enumerators.CardSetType.Basic);
-        string setName = $"Images/IconsSet/seticon_{setType.ToLower()}";
+        string setName = $"Images/IconsSets/set_icon_{card.CardKey.Variant.ToString().ToLowerInvariant()}";
         _setImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(setName);
     }
 
@@ -112,6 +119,14 @@ public class UnitCardUI
             return false;
 
         return _selfObj.activeSelf;
+    }
+
+    public void SetActive(bool active)
+    {
+        if (_selfObj == null)
+            return;
+
+        _selfObj.SetActive(active);
     }
 
 
@@ -150,4 +165,36 @@ public class UnitCardUI
         _rankImage.material = material;
         _setImage.material = material;
     }
+
+    public void EnableSetImage(bool enable)
+    {
+        _setImage.enabled = enable;
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (_selfObj == null)
+        {
+            MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+            return;
+        }
+
+        if (_card == null || !_selfObj.activeInHierarchy)
+            return;
+
+        List<string> lines = new List<string>();
+        lines.Add("Mould Id: " + _card.CardKey.MouldId.Id);
+        if (_card.CardKey.Variant != Enumerators.CardVariant.Standard)
+        {
+            lines.Add("Variant: " + _card.CardKey.Variant);
+        }
+        lines.Add("Name: " + _card.Name);
+
+        DebugCardInfoDrawer.DrawCustom(
+            _selfObj.transform.position,
+            lines,
+            false);
+    }
+#endif
 }

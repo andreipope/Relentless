@@ -909,6 +909,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
+                    abilityView = new ChangeStatAbilityView((ChangeStatAbility)ability);
                     break;
                 case Enumerators.AbilityType.STUN:
                     ability = new StunAbility(cardKind, abilityData);
@@ -919,6 +920,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.SUMMON:
                     ability = new SummonsAbility(cardKind, abilityData);
+                    abilityView = new SummonAbilityView((SummonsAbility)ability);
                     break;
                 case Enumerators.AbilityType.CARD_RETURN:
                     ability = new ReturnToHandAbility(cardKind, abilityData);
@@ -1176,6 +1178,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.FILL_BOARD_BY_UNITS:
                     ability = new FillBoardByUnitsAbility(cardKind, abilityData);
+                    abilityView = new FillBoardByUnitsAbilityView((FillBoardByUnitsAbility)ability);
                     break;
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS:
                     ability = new DealDamageToTargetThatAttackThisAbility(cardKind, abilityData);
@@ -1191,6 +1194,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DISTRACT_AND_CHANGE_STAT:
                     ability = new DistractAndChangeStatAbility(cardKind, abilityData);
+                    abilityView = new DistractAndChangeStatAbilityView((DistractAndChangeStatAbility)ability);
                     break;
                 case Enumerators.AbilityType.DAMAGE_AND_DISTRACT:
                     ability = new DamageAndDistractAbility(cardKind, abilityData);
@@ -1208,7 +1212,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
                     ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
-                    break; 
+                    abilityView = new ChangeStatThisTurnAbilityView((ChangeStatThisTurnAbility)ability);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }

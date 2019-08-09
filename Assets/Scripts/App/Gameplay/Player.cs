@@ -114,11 +114,14 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent)
+        public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent, bool onlyInit = false)
         {
             InstanceId = instanceId;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
+
+            if (onlyInit)
+                return;
 
             _dataManager = GameClient.Get<IDataManager>();
             _uiManager = GameClient.Get<IUIManager>();
@@ -262,9 +265,6 @@ namespace Loom.ZombieBattleground
                     Defense = SelfOverlord.Prototype.InitialDefense;
                     break;
             }
-
-            // TODO: REMOVE logs when issue will be fixed
-            Log.Debug($"SelfOverlord: {SelfOverlord}");
 
             InitialDefense = _defense;
             BuffedDefense = 0;

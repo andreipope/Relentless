@@ -15,8 +15,8 @@ namespace Loom.ZombieBattleground
         private List<BoardUnitView> _unitsViews;
 
         private BattlegroundController _battlegroundController;
-
-        private ICameraManager _cameraManager;
+        
+        public Coroutine CorrectActionReportPanelCoroutine;
 
         #region LawnmowerFields
 
@@ -31,19 +31,18 @@ namespace Loom.ZombieBattleground
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
 
-            _cameraManager = GameClient.Get<ICameraManager>();
-
             _unitsViews = new List<BoardUnitView>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
             List<CardModel> units = info as List<CardModel>;
-            float delayBeforeDestroy = 3f;
-            float delayAfter = 0;
+            float delayBeforeEffect = 3f;
+            float delayAfterEffect = 0;
             Vector3 offset = Vector3.zero;
             bool justPosition = false;
             Enumerators.CardNameOfAbility cardNameOfAbility = Enumerators.CardNameOfAbility.None;
+
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -51,24 +50,68 @@ namespace Loom.ZombieBattleground
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
                 {
-                    delayAfter = effectInfo.delayAfterEffect;
-                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    delayBeforeEffect = effectInfo.delayBeforeEffect;
+                    delayAfterEffect = effectInfo.delayAfterEffect;
                     cardNameOfAbility = effectInfo.cardNameOfAbility;
                     offset = effectInfo.offset;
                     justPosition = true;
                 }
 
-                Vector3 targetPosition = Vector3.zero;
+                Vector3 targetPosition = VfxObject.transform.position + offset;
 
                 if (Ability.CardModel != null && Ability.CardModel.Prototype.CardKey.MouldId == _lawnmowerCardMouldId)
                 {
-                    CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                    VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
-                    _lineObject = VfxObject.transform.Find("Lawnmover/BurstToxic").gameObject;
-                    _cardDissapearingPrefab = VfxObject.transform.Find("Lawnmover/CardsDissapearing/Tears").gameObject;
-                    _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        float posY = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 2f : -1.45f;
+                        Vector3 newTargetPosition = new Vector3(targetPosition.x, posY, targetPosition.z - 7f);
 
-                    Ability.OnUpdateEvent += OnUpdateEventHandler;
+                        CreateVfx(newTargetPosition, true, delayAfterEffect, true);
+
+
+                        Transform cameraGroupTransform = GameClient.Get<ICameraManager>().GetGameplayCameras();
+
+                        GameplayPage gameplayPage = GameClient.Get<IUIManager>().GetPage<GameplayPage>();
+                        gameplayPage.ChangeGraveyardLayer((int)Enumerators.Layer.Battleground);
+
+                        Transform actionReportPivot = GameObject.Find("ActionReportPivot").transform;
+                        GameObject pivotParent = new GameObject("PivotParent");
+                        Vector3 actionReportPivotCachePos = actionReportPivot.position;
+                        actionReportPivot.SetParent(pivotParent.transform);
+                        CorrectActionReportPanelCoroutine = MainApp.Instance.StartCoroutine
+                        (
+                            gameplayPage.CorrectReportPanelDuringCameraShake
+                            (
+                                cameraGroupTransform,
+                                VfxObject.transform.Find("Camera Anim/!! Camera shake")
+                            )
+                        );
+
+                        Ability.VFXAnimationEnded += () =>
+                        {
+                            if (CorrectActionReportPanelCoroutine != null)
+                            {
+                                MainApp.Instance.StopCoroutine(CorrectActionReportPanelCoroutine);
+                            }
+                            CorrectActionReportPanelCoroutine = null;
+
+                            gameplayPage.ChangeGraveyardLayer((int)Enumerators.Layer.Default);
+
+                            actionReportPivot.SetParent(null);
+                            actionReportPivot.position = actionReportPivotCachePos;
+                            gameplayPage.SyncActionReportPanelPositionWithPivot();
+                            Object.Destroy(pivotParent);
+                        };
+
+                        _lineObject = VfxObject.transform.Find("BurstToxic").gameObject;
+                        _cardDissapearingPrefab = VfxObject.transform.Find("CardsDissapearing").gameObject;
+                        _unitsViews = units.Select(unit => _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)).ToList();
+
+                        Ability.OnUpdateEvent += OnUpdateEventHandler;
+
+                    }, delayBeforeEffect);
+
+                    InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayBeforeEffect + delayAfterEffect);
                 }
                 else
                 {
@@ -77,7 +120,7 @@ namespace Loom.ZombieBattleground
                         switch (target)
                         {
                             case Enumerators.Target.OPPONENT_ALL_CARDS:
-                                CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
+                                CustomCreateVfx(offset, true, delayBeforeEffect, justPosition);
                                 break;
                             case Enumerators.Target.PLAYER_ALL_CARDS:
                                 foreach (CardModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
@@ -88,10 +131,10 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
                     }
-                }
 
+                    InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfterEffect);
+                }
             }
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
         private void CustomCreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
@@ -121,7 +164,6 @@ namespace Loom.ZombieBattleground
                         Ability.OneActionCompleted(_unitView.Model);
                         CreateSubParticle(_unitView.Transform.position);
                         _unitsViews.Remove(_unitView);
-                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
                     }
                 }
                 else
@@ -139,11 +181,6 @@ namespace Loom.ZombieBattleground
             ParticlesController.RegisterParticleSystem(subObject, true, duration);
             string clipTitle = "Lawnmover_Mangled_F1_V" + UnityEngine.Random.Range(1, 5).ToString();
             PlaySound(clipTitle, 0);
-        }
-
-        protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
-        {
-            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
         #endregion
     }

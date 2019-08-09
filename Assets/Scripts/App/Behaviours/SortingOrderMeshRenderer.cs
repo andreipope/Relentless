@@ -1,23 +1,36 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
 public class SortingOrderMeshRenderer : MonoBehaviour
 {
     [SerializeField]
-    private string _sortingLayer = "";
+    [SortingLayer]
+    private int _sortingLayer;
 
     [SerializeField]
-    private int _orderInLayer;
 
-    private void Start()
+    private int _orderInLayer;
+    private Renderer _renderer;
+
+    private void OnEnable()
     {
-        gameObject.GetComponent<Renderer>().sortingLayerName = _sortingLayer;
-        gameObject.GetComponent<Renderer>().sortingOrder = _orderInLayer;
+        UpdateSorting();
     }
 
-    private void Update()
+    private void OnValidate()
     {
-        gameObject.GetComponent<Renderer>().sortingLayerName = _sortingLayer;
-        gameObject.GetComponent<Renderer>().sortingOrder = _orderInLayer;
+        UpdateSorting();
+    }
+
+    private void UpdateSorting()
+    {
+        if (_renderer == null)
+        {
+            _renderer = GetComponent<Renderer>();
+        }
+
+        _renderer.sortingLayerID = _sortingLayer;
+        _renderer.sortingOrder = _orderInLayer;
     }
 }

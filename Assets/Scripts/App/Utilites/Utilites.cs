@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -58,7 +59,7 @@ namespace Loom.ZombieBattleground
         public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dtDateTime = UnixEpoch;
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
@@ -71,7 +72,7 @@ namespace Loom.ZombieBattleground
                 scenes[i] = SceneManager.GetSceneAt(i);
             }
 
-            return 
+            return
                 scenes
                     .Concat(new[]
                     {
@@ -121,7 +122,7 @@ namespace Loom.ZombieBattleground
 
             return true;
         }
-        
+
         /// <summary>
         /// Waits for the task to complete for up to <paramref name="timeoutMilliseconds"/>
         /// and returns whether it completed in time.
@@ -249,18 +250,18 @@ namespace Loom.ZombieBattleground
             output = output.Replace('_', '/');
             switch (output.Length % 4)
             {
-                case 0: 
-                    break; 
-                case 2: 
-                    output += "=="; 
+                case 0:
                     break;
-                case 3: 
-                    output += "="; 
-                    break; 
-                default: 
+                case 2:
+                    output += "==";
+                    break;
+                case 3:
+                    output += "=";
+                    break;
+                default:
                     throw new Exception("Illegal base64url string!");
             }
-            byte[] converted = Convert.FromBase64String(output); 
+            byte[] converted = Convert.FromBase64String(output);
             return converted;
         }
 

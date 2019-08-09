@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
         public bool AppearOnce;
         public bool IsEnabled;
         public Enumerators.TutorialObjectOwner Owner;
-        public FloatVector3 Position;
+        public FloatVector2 Position;
         public float AppearDelay;
         public string Tag;
     }

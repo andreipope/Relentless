@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI_Shop_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: ca20618b644ed334e9bef240cca7f7c8, type: 3}
+    totalSpriteSurfaceArea: 5848729
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 0b44eb3122a689440a97b0403601c906, type: 3}
+  - {fileID: 21300000, guid: 996581425406ed748a994ff47d3879eb, type: 3}
+  - {fileID: 21300000, guid: fa524db30a4d559439f1ac69e00593f5, type: 3}
+  - {fileID: 21300000, guid: dec22b543335c254f8f5fe38c4f1e669, type: 3}
+  - {fileID: 21300000, guid: 3f441ae49c4f7e9459a473f740ff4067, type: 3}
+  - {fileID: 21300000, guid: fb9727679fae2224da410293eb9bc68b, type: 3}
+  - {fileID: 21300000, guid: 1d84bd97ef465f949bff95d092f696b6, type: 3}
+  - {fileID: 21300000, guid: 369b2dc7257e7fd49ae6181321dd49f2, type: 3}
+  - {fileID: 21300000, guid: c61912286272cab42bcf2185184a55df, type: 3}
+  - {fileID: 21300000, guid: da193759656d8604fbe5dca20b556303, type: 3}
+  - {fileID: 21300000, guid: 6e8637bad911fc143abf49276ffb680b, type: 3}
+  - {fileID: 21300000, guid: d3a103da6e5d82849a2a37f94aa10075, type: 3}
+  - {fileID: 21300000, guid: a3c5563eb65231840988d7e56c01cd20, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - shop_selected
+  - shop_arrow_tube
+  - shop_idle
+  - shop_packs_5
+  - shop_ad_frame
+  - shop_ad_staytuned
+  - shop_arrow_selected
+  - shop_panel
+  - shop_packs_1
+  - shop_packs_100
+  - shop_packs_25
+  - shop_ad_upgrade_army
+  - shop_arrow_idle
+  m_Tag: UI_Shop_Atlas
+  m_IsVariant: 0

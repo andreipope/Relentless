@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.Iap
         private AuthFiatApiFacade.StoreData _dataData;
 
         // TODO: store between game restarts
-        private UniqueList<Product> _storePendingPurchases = new UniqueList<Product>();
+        private readonly UniqueList<Product> _storePendingPurchases = new UniqueList<Product>();
 
         private IapInitializationState _initializationState;
 
@@ -42,7 +42,11 @@ namespace Loom.ZombieBattleground.Iap
 
         public IReadOnlyList<Product> Products { get; private set; }
 
+        public IReadOnlyList<IapMarketplaceProduct> MarketplaceProductDefinitions { get; private set; }
+
         public IReadOnlyList<string> StringsRemovedFromProductTitles { get; private set; }
+
+        public IReadOnlyList<Product> StorePendingPurchases => _storePendingPurchases;
 
         /// <summary>
         /// Begins the IAP initialization process. The initialization can fail immediately.
@@ -78,6 +82,7 @@ namespace Loom.ZombieBattleground.Iap
                 return new IapException("Loading store data failed", e);
             }
 
+            MarketplaceProductDefinitions = productDefinitions;
             _iapPlatformStoreFacade.BeginInitialization(productDefinitions);
             return new Success();
         }
@@ -316,6 +321,19 @@ namespace Loom.ZombieBattleground.Iap
             return title.Trim();
         }
 
+        public IapMarketplaceProduct GetMarketplaceProduct(ProductDefinition productDefinition)
+        {
+            foreach (IapMarketplaceProduct marketplaceProduct in MarketplaceProductDefinitions)
+            {
+                if (marketplaceProduct.Definition.Equals(productDefinition))
+                {
+                    return marketplaceProduct;
+                }
+            }
+
+            return null;
+        }
+
         private async Task<OneOf<Success, IapPurchaseProcessingError, IapException>> ExecutePostPurchaseProcessingInternal(
             DAppChainClient plasmaChainClient,
             string receiptJson,
@@ -407,7 +425,10 @@ namespace Loom.ZombieBattleground.Iap
         private void IapPlatformStoreFacadeOnInitialized()
         {
             _initializationState = IapInitializationState.Initialized;
-            Products = _iapPlatformStoreFacade.StoreController.products.all.ToList();
+            Products =
+                _iapPlatformStoreFacade.StoreController.products.all
+                    .Where(product => product.availableToPurchase && product.definition.enabled)
+                    .ToList();
             Initialized?.Invoke();
         }
 
@@ -454,7 +475,8 @@ namespace Loom.ZombieBattleground.Iap
                     productData.Description,
                     storeData.Currency,
                     productData.Price / (decimal) storeData.UnitPercent
-                )
+                ),
+                new IapMarketplaceProductExtraMetadata(productData.Amount)
             );
         }
 

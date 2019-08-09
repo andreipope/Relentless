@@ -2,17 +2,9 @@ using System;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using log4net;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 using UnityEngine.TestTools;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -68,6 +67,19 @@ namespace Loom.ZombieBattleground
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
             jsonSerializerSettings.Converters.Add(new StringEnumConverter());
             Debug.Log("IapOpenPack Result:\n\n" + JsonConvert.SerializeObject(result, Formatting.Indented, jsonSerializerSettings));
+        }
+
+        [CommandHandler]
+        public static void IapConfirmAllPendingPlatformStorePurchases()
+        {
+            List<Product> pendingPurchases = _iapMediator.StorePendingPurchases.ToList();
+
+            IIapPlatformStoreFacade platformStoreFacade = GameClient.Get<IIapPlatformStoreFacade>();
+            foreach (Product pendingPurchase in pendingPurchases)
+            {
+                platformStoreFacade.StoreController.ConfirmPendingPurchase(pendingPurchase);
+            }
+            Debug.Log($"Confirmed {pendingPurchases.Count} pending platform store purchase(s). Please restart the game.");
         }
     }
 }

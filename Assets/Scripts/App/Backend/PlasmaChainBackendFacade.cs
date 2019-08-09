@@ -10,12 +10,13 @@ using Loom.ZombieBattleground.BackendCommunication;
 using log4net;
 using log4netUnitySupport;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
+using Loom.Nethereum.ABI.JsonDeserialisation;
+using Loom.Nethereum.ABI.Model;
 using Loom.Nethereum.Contracts;
 using Loom.Nethereum.Hex.HexTypes;
 using Loom.Nethereum.RPC.Eth.DTOs;
 using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
-using UnityEngine.Assertions;
 
 namespace Loom.ZombieBattleground.Iap
 {
@@ -34,7 +35,9 @@ namespace Loom.ZombieBattleground.Iap
 
         private const string ApproveMethod = "approve";
 
-        private const string OpenPackMethod = "openBoosterPack";
+        private const string OpenBoosterPackMethod = "openBoosterPack";
+
+        private const string OpenPackWithLotteryMethod = "openPackWithLottery";
 
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -42,7 +45,7 @@ namespace Loom.ZombieBattleground.Iap
 
         private IDataManager _dataManager;
 
-        private Dictionary<IapContractType, TextAsset> _abiDictionary;
+        private readonly Dictionary<IapContractType, ContractABI> _contractTypeToAbi = new Dictionary<IapContractType, ContractABI>();
 
         private byte[] UserPrivateKey => _backendDataControlMediator.UserDataModel.PrivateKey;
 
@@ -60,7 +63,7 @@ namespace Loom.ZombieBattleground.Iap
         public void SetEndpoints(PlasmachainEndpointsConfiguration endpointsConfiguration)
         {
             EndpointsConfiguration = endpointsConfiguration ?? throw new ArgumentNullException(nameof(endpointsConfiguration));
-            Log.Info("Endpoints: " + JsonConvert.SerializeObject(EndpointsConfiguration, Formatting.Indented));
+            Log.Info("Plasmachain Endpoints: " + JsonConvert.SerializeObject(EndpointsConfiguration, Formatting.Indented));
         }
 
         public void Init()
@@ -141,14 +144,33 @@ namespace Loom.ZombieBattleground.Iap
 
         public async Task<IReadOnlyList<CardKey>> CallOpenPack(DAppChainClient client, Enumerators.MarketplaceCardPackType packType)
         {
-            Log.Info($"{nameof(GetPackTypeBalance)}(packType = {packType})");
+            Log.Info($"{nameof(CallOpenPack)}(packType = {packType})");
             EvmContract zbgCardContract = GetContract(client, IapContractType.ZbgCard);
-            EvmContract cardFaucetContract = GetContract(client, IapContractType.CardFaucet);
+
+            // Binance and Tron have their own faucets
+            IapContractType faucetContractType;
+            string openPackMethod = OpenBoosterPackMethod;
+            switch (packType)
+            {
+                case Enumerators.MarketplaceCardPackType.Binance:
+                    faucetContractType = IapContractType.BinancePackFaucet;
+                    openPackMethod = OpenPackWithLotteryMethod;
+                    break;
+                case Enumerators.MarketplaceCardPackType.Tron:
+                    faucetContractType = IapContractType.TronPackFaucet;
+                    openPackMethod = OpenPackWithLotteryMethod;
+                    break;
+                default:
+                    faucetContractType = IapContractType.CardFaucet;
+                    break;
+            }
+
+            EvmContract faucetContract = GetContract(client, faucetContractType);
             EvmContract packContract = GetContract(client, GetPackContractTypeFromId(packType));
 
             const int amountToApprove = 1;
-            await packContract.CallAsync(ApproveMethod, EndpointsConfiguration.CardFaucetContractAddress.LocalAddress, amountToApprove);
-            BroadcastTxResult openPackTxResult = await cardFaucetContract.CallAsync(OpenPackMethod, packType);
+            await packContract.CallAsync(ApproveMethod, faucetContract.Address.LocalAddress, amountToApprove);
+            BroadcastTxResult openPackTxResult = await faucetContract.CallAsync(openPackMethod, packType);
             byte[] openPackTxHash = openPackTxResult.DeliverTx.Data;
             Log.Debug($"{nameof(CallOpenPack)}: openPackTxHash = {CryptoUtils.BytesToHexString(openPackTxHash)}");
 
@@ -157,7 +179,7 @@ namespace Loom.ZombieBattleground.Iap
                 // Get all events since call to OpenPackMethod
                 EvmEvent<T> evmEvent = zbgCardContract.GetEvent<T>(eventName);
                 NewFilterInput filterInput =
-                    evmEvent.CreateFilterInput(
+                    evmEvent.EventAbi.CreateFilterInput(
                         new BlockParameter(new HexBigInteger(openPackTxResult.Height)),
                         BlockParameter.CreatePending()
                     );
@@ -233,7 +255,7 @@ namespace Loom.ZombieBattleground.Iap
                 client,
                 GetContractAddress(contractType),
                 UserPlasmachainAddress,
-                _abiDictionary[contractType].text);
+                _contractTypeToAbi[contractType]);
         }
 
         private DAppChainClient CreateClient()
@@ -267,7 +289,7 @@ namespace Loom.ZombieBattleground.Iap
                 writer,
                 reader,
                 clientConfiguration,
-                new NotifyingDAppChainClientCallExecutor(clientConfiguration)
+                new DefaultDAppChainClientCallExecutor(clientConfiguration)
             )
             {
                 Logger = logger
@@ -296,17 +318,19 @@ namespace Loom.ZombieBattleground.Iap
             {
                 (IapContractType.ZbgCard, "Data/abi/MigratedZBGCardABI"),
                 (IapContractType.FiatPurchase, "Data/abi/FiatPurchaseABI"),
-                (IapContractType.CardFaucet, "Data/abi/CardFaucetABI")
+                (IapContractType.CardFaucet, "Data/abi/CardFaucetABI"),
+                (IapContractType.BinancePackFaucet, "Data/abi/OpenLotteryABI"),
+                (IapContractType.TronPackFaucet, "Data/abi/TronLotteryABI")
             };
 
-            _abiDictionary = new Dictionary<IapContractType, TextAsset>();
+            Dictionary<IapContractType, TextAsset> contractTypeToAbiTextAsset = new Dictionary<IapContractType, TextAsset>();
             foreach ((IapContractType contractType, string path) in contractTypeToPath)
             {
                 TextAsset textAsset = _loadObjectsManager.GetObjectByPath<TextAsset>(path);
                 if (textAsset == null)
                     throw new Exception("Unable to load ABI at path " + path);
 
-                _abiDictionary.Add(contractType, textAsset);
+                contractTypeToAbiTextAsset.Add(contractType, textAsset);
             }
 
             (IapContractType contractType, Enumerators.MarketplaceCardPackType cardPackType)[] contractTypeToCardPackType =
@@ -319,8 +343,8 @@ namespace Loom.ZombieBattleground.Iap
                 (IapContractType.LifePack, Enumerators.MarketplaceCardPackType.Life),
                 (IapContractType.ToxicPack, Enumerators.MarketplaceCardPackType.Toxic),
                 (IapContractType.WaterPack, Enumerators.MarketplaceCardPackType.Water),
-                (IapContractType.SmallPack, Enumerators.MarketplaceCardPackType.Small),
-                (IapContractType.MinionPack, Enumerators.MarketplaceCardPackType.Minion)
+                (IapContractType.BinancePack, Enumerators.MarketplaceCardPackType.Binance),
+                (IapContractType.TronPack, Enumerators.MarketplaceCardPackType.Tron)
             };
 
             for (int i = 0; i < contractTypeToCardPackType.Length; ++i)
@@ -330,7 +354,12 @@ namespace Loom.ZombieBattleground.Iap
                 if (textAsset == null)
                     throw new Exception("Unable to load ABI at path " + path);
 
-                _abiDictionary.Add(contractTypeToCardPackType[i].contractType, textAsset);
+                contractTypeToAbiTextAsset.Add(contractTypeToCardPackType[i].contractType, textAsset);
+            }
+
+            foreach (KeyValuePair<IapContractType, TextAsset> pair in contractTypeToAbiTextAsset)
+            {
+                _contractTypeToAbi.Add(pair.Key, new ABIDeserialiser().DeserialiseContract(pair.Value.text));
             }
         }
 
@@ -360,10 +389,14 @@ namespace Loom.ZombieBattleground.Iap
                     return EndpointsConfiguration.ToxicPackContractAddress;
                 case IapContractType.WaterPack:
                     return EndpointsConfiguration.WaterPackContractAddress;
-                case IapContractType.SmallPack:
-                    return EndpointsConfiguration.SmallPackContractAddress;
-                case IapContractType.MinionPack:
-                    return EndpointsConfiguration.MinionPackContractAddress;
+                case IapContractType.BinancePack:
+                    return EndpointsConfiguration.BinancePackContractAddress;
+                case IapContractType.TronPack:
+                    return EndpointsConfiguration.TronPackContractAddress;
+                case IapContractType.BinancePackFaucet:
+                    return EndpointsConfiguration.OpenLotteryContractAddress;
+                case IapContractType.TronPackFaucet:
+                    return EndpointsConfiguration.TronLotteryContractAddress;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(contractType), contractType, null);
             }
@@ -389,10 +422,10 @@ namespace Loom.ZombieBattleground.Iap
                     return IapContractType.ToxicPack;
                 case Enumerators.MarketplaceCardPackType.Water:
                     return IapContractType.WaterPack;
-                case Enumerators.MarketplaceCardPackType.Small:
-                    return IapContractType.SmallPack;
-                case Enumerators.MarketplaceCardPackType.Minion:
-                    return IapContractType.MinionPack;
+                case Enumerators.MarketplaceCardPackType.Binance:
+                    return IapContractType.BinancePack;
+                case Enumerators.MarketplaceCardPackType.Tron:
+                    return IapContractType.TronPack;
                 default:
                     throw new Exception($"Not found ContractType from pack id {packId}");
             }

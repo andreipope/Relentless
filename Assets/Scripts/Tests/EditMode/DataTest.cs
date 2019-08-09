@@ -9,7 +9,6 @@ using Loom.ZombieBattleground.Iap;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using UnityEngine;
 using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
@@ -21,11 +20,14 @@ namespace Loom.ZombieBattleground.Test
     [Category("EditQuickSubset")]
     public class DataTest
     {
+        private static readonly JsonSerializerSettings StringJsonSerializerSettings =
+            JsonUtility.CreateStrictSerializerSettings((sender, args) => throw args.ErrorContext.Error);
+
         [Test]
         public void ZbVersionDeserialization()
         {
             string json =
-                @"{""version"":{""id"":7,""major"":0,""minor"":1,""patch"":14,""environment"":""development"",""auth_url"":""https://dev-auth.loom.games"",""read_url"":""ws://battleground-testnet-asia2.dappchains.com:9999/queryws"",""write_url"":""ws://battleground-testnet-asia2.dappchains.com:46657/websocket"",""vault_url"":""https://dev-vault.delegatecall.com/v1"",""data_version"":""v6"",""is_maintenace_mode"":false,""is_force_update"":false,""download_url_pc"":""https://loom.games/releases/zombie-battleground-latest-pc.zip"",""download_url_mac"":""https://loom.games/releases/zombie-battleground-latest-mac.zip"",""download_url_app_store"":""https://itunes.apple.com/us/app/zombie-battleground-tcg/id1432628453"",""download_url_play_store"":""https://play.google.com/store/apps/details?id=games.loom.battleground"",""download_url_steam_store"":""https://store.steampowered.com/app/997630/Zombie_Battleground_TCG_BETA"",""plasmachain_chain_id"":""default"",""plasmachain_reader_host"":""wss://test-z-us1.dappchains.com/queryws"",""plasmachain_writer_host"":""wss://test-z-us1.dappchains.com/websocket"",""plasmachain_zbgcard_contract_address"":""0x2658d8c94062227d17a4ba61adb166e152369de3"",""plasmachain_cardfaucet_contract_address"":""0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41"",""plasmachain_boosterpack_contract_address"":""0xdc745ac9945c981a63748a6b46dc31c2909bc865"",""plasmachain_superpack_contract_address"":""0xd05b46ffb3828218d5b7d9b1225575477c9e79d7"",""plasmachain_airpack_contract_address"":""0x4408927c62a6c8013612c11d630c222c130fd4f8"",""plasmachain_earthpack_contract_address"":""0x2926196ef74fe0611c474ba822c3b41b8796373e"",""plasmachain_firepack_contract_address"":""0x5a1a9d8d8cb5ce2e1f664133effb1ba0c9597074"",""plasmachain_lifepack_contract_address"":""0xcc8450ab3f874e741d187d897602ec5a72c4a0be"",""plasmachain_toxicpack_contract_address"":""0x750ffb9928d9fb1dd3b8b7eda47c130b410dde72"",""plasmachain_waterpack_contract_address"":""0x4f5b70188f14b6d80e8bf0002eca2ab2863ece5e"",""plasmachain_smallpack_contract_address"":""0x0049493999a5ecc90654b5f0678d50a8952b9c3d"",""plasmachain_minionpack_contract_address"":""0x63c43b64f40b8115c2c9970e559405fd16377a57"",""plasmachain_binancepack_contract_address"":""0x837da2498b31d1654d51c1871b10fc4e3d192f02"",""plasmachain_fiatpurchase_contract_address"":""0xaff6212ab34f4066ee46f4b20429b2c74726eb67"",""plasmachain_openlottery_contract_address"":""0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"",""plasmachain_tronlottery_contract_address"":""""}}";
+                @"{""version"":{""id"":7,""major"":0,""minor"":1,""patch"":14,""environment"":""development"",""auth_url"":""https://dev-auth.loom.games"",""read_url"":""ws://battleground-testnet-asia2.dappchains.com:9999/queryws"",""write_url"":""ws://battleground-testnet-asia2.dappchains.com:46657/websocket"",""vault_url"":""https://dev-vault.delegatecall.com/v1"",""data_version"":""v6"",""is_maintenace_mode"":false,""is_force_update"":false,""download_url_pc"":""https://loom.games/releases/zombie-battleground-latest-pc.zip"",""download_url_mac"":""https://loom.games/releases/zombie-battleground-latest-mac.zip"",""download_url_app_store"":""https://itunes.apple.com/us/app/zombie-battleground-tcg/id1432628453"",""download_url_play_store"":""https://play.google.com/store/apps/details?id=games.loom.battleground"",""download_url_steam_store"":""https://store.steampowered.com/app/997630/Zombie_Battleground_TCG_BETA"",""plasmachain_chain_id"":""default"",""plasmachain_reader_host"":""wss://test-z-us1.dappchains.com/queryws"",""plasmachain_writer_host"":""wss://test-z-us1.dappchains.com/websocket"",""plasmachain_zbgcard_contract_address"":""0x2658d8c94062227d17a4ba61adb166e152369de3"",""plasmachain_cardfaucet_contract_address"":""0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41"",""plasmachain_boosterpack_contract_address"":""0xdc745ac9945c981a63748a6b46dc31c2909bc865"",""plasmachain_superpack_contract_address"":""0xd05b46ffb3828218d5b7d9b1225575477c9e79d7"",""plasmachain_airpack_contract_address"":""0x4408927c62a6c8013612c11d630c222c130fd4f8"",""plasmachain_earthpack_contract_address"":""0x2926196ef74fe0611c474ba822c3b41b8796373e"",""plasmachain_firepack_contract_address"":""0x5a1a9d8d8cb5ce2e1f664133effb1ba0c9597074"",""plasmachain_lifepack_contract_address"":""0xcc8450ab3f874e741d187d897602ec5a72c4a0be"",""plasmachain_toxicpack_contract_address"":""0x750ffb9928d9fb1dd3b8b7eda47c130b410dde72"",""plasmachain_waterpack_contract_address"":""0x4f5b70188f14b6d80e8bf0002eca2ab2863ece5e"",""plasmachain_binancepack_contract_address"":""0x837da2498b31d1654d51c1871b10fc4e3d192f02"",""plasmachain_fiatpurchase_contract_address"":""0xaff6212ab34f4066ee46f4b20429b2c74726eb67"",""plasmachain_openlottery_contract_address"":""0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"",""plasmachain_tronlottery_contract_address"":""""}}";
 
             ZbVersion zbVersion = JsonConvert.DeserializeObject<ZbVersion>(json, JsonUtility.CreateStrictSerializerSettings((sender, args) => throw args.ErrorContext.Error));
             Assert.NotNull(zbVersion);
@@ -83,10 +85,22 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [Test]
-        public void CardProtobufSerialization()
+        public void PictureTransformDeserialization()
         {
-            Card card = new Card(
+            string json =
+                "        {\r\n            \"position\": {\r\n                \"x\": 0.07,\r\n                \"y\": 0.02\r\n                },\r\n            \"scale\": 0.9\r\n        }";
+            PictureTransform pictureTransform = JsonConvert.DeserializeObject<PictureTransform>(json, StringJsonSerializerSettings);
+            Assert.AreEqual(0.07f, pictureTransform.Position.X);
+            Assert.AreEqual(0.02f, pictureTransform.Position.Y);
+            Assert.AreEqual(0.9f, pictureTransform.Scale);
+        }
+
+        [Test]
+        public void CardSerialization()
+        {
+            Card cardPrototype = new Card(
                 new CardKey(new MouldId(123), Enumerators.CardVariant.Standard),
+                Enumerators.CardSet.KickstarterExclusive,
                 "Foo",
                 3,
                 "description",
@@ -108,17 +122,121 @@ namespace Loom.ZombieBattleground.Test
                             new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null), "")
                         })
                 },
-                new PictureTransform(
-                    new FloatVector3(0.3f, 0.4f, 0.5f),
-                    FloatVector3.One
+                new Data.CardPictureTransforms(
+                    new PictureTransform(
+                        new FloatVector2(0.3f, 0.4f),
+                        1f
+                    ),
+                    new PictureTransform(
+                        new FloatVector2(0.5f, 0.6f),
+                        1.1f
+                    ),
+                    new PictureTransform(
+                        new FloatVector2(0.7f, 0.8f),
+                        1.2f
+                    )
                 ),
                 Enumerators.UniqueAnimation.ShammannArrival,
-                true
+                true,
+                new CardOverrideData(
+                    null,
+                    "OverrideName",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    Enumerators.Faction.WATER,
+                    "override frame",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                )
             );
 
-            WorkingCard original = new WorkingCard(card, card, null, new Data.InstanceId(373));
-            WorkingCard deserialized = original.ToProtobuf().FromProtobuf(null);
-            original.ShouldDeepEqual(deserialized);
+            string cardPrototypeSerializedToJson = JsonConvert.SerializeObject(cardPrototype, Formatting.Indented, StringJsonSerializerSettings);
+            Card cardPrototypeDeserializedFromJson = JsonConvert.DeserializeObject<Card>(cardPrototypeSerializedToJson, StringJsonSerializerSettings);
+            cardPrototype.ShouldDeepEqual(cardPrototypeDeserializedFromJson);
+
+            WorkingCard workingCardProtobuf = new WorkingCard(cardPrototype, cardPrototype, null, new Data.InstanceId(373));
+            WorkingCard workingCardDeserializedFromProtobuf = workingCardProtobuf.ToProtobuf().FromProtobuf(null);
+            workingCardProtobuf.ShouldDeepEqual(workingCardDeserializedFromProtobuf);
+        }
+
+        [Test]
+        public void CardDeserializationFromJson()
+        {
+            const string cardLibraryCardJson = @"
+     {
+      ""cardKey"": {
+        ""mouldId"": 3,
+        ""variant"": ""Limited""
+      },
+      ""kind"": ""CREATURE"",
+      ""faction"": ""AIR"",
+      ""name"": ""Whizper"",
+      ""description"": """",
+      ""flavorText"": ""The unfriendly ghost..."",
+      ""picture"": ""001"",
+      ""rank"": ""MINION"",
+      ""type"": ""WALKER"",
+      ""frame"": """",
+      ""damage"": 1,
+      ""defense"": 2,
+      ""cost"": 0,
+      ""pictureTransforms"": {
+        ""battleground"": {
+          ""position"": {
+            ""x"": 0.07,
+            ""y"": 0.36
+          },
+          ""scale"": 0.9
+        }
+      },
+      ""abilities"": [],
+      ""uniqueAnimation"": ""None"",
+      ""hidden"": false,
+      ""overrides"": {
+        ""cost"": null,
+        ""name"": {
+            ""value"": ""Legendary Zpitter""
+        },
+        ""flavorText"": {
+            ""value"": ""Zpittity-zpit, now with more zpit""
+        },
+        ""type"": {
+            ""value"": ""HEAVY""
+        },
+        ""faction"": {
+            ""value"": ""EARTH""
+        },
+        ""rank"": {
+            ""value"": ""GENERAL""
+        },
+        ""frame"": {
+            ""value"": ""legendary-frame.png""
+        },
+        ""picture"": {
+            ""value"": ""zpitter_legendary.png""
+        },
+		""hidden"": {
+            ""value"": false
+        }
+      }
+    }
+";
+            Card cardDeserializedFromJson = JsonConvert.DeserializeObject<Card>(cardLibraryCardJson, StringJsonSerializerSettings);
+            Protobuf.Card cardProtobufDeserializedFromJson = Protobuf.Card.Parser.ParseJson(cardLibraryCardJson);
+            Card cardFromProtobuf = cardProtobufDeserializedFromJson.FromProtobuf();
+            cardDeserializedFromJson.ShouldDeepEqual(cardFromProtobuf);
+
+            Assert.AreEqual("legendary-frame.png", cardDeserializedFromJson.Overrides.Frame);
+            Assert.AreEqual("legendary-frame.png", cardFromProtobuf.Overrides.Frame);
         }
 
         [Test]
@@ -129,9 +247,9 @@ namespace Loom.ZombieBattleground.Test
                 Id = 1,
                 Icon = "icon",
                 Name = "name",
+                ShortName = "short name",
                 ShortDescription = "short desc",
                 LongDescription = "long desc",
-
                 Faction = Protobuf.Faction.Types.Enum.Life,
                 Skills =
                 {
@@ -176,6 +294,7 @@ namespace Loom.ZombieBattleground.Test
                 new OverlordId(1),
                 "icon",
                 "name",
+                "short name",
                 "short desc",
                 "long desc",
                 Enumerators.Faction.LIFE,

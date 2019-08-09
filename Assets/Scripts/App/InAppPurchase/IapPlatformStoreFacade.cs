@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Purchasing;
 using log4net;
-using Loom.Org.BouncyCastle.Utilities;
 using OneOf;
 using OneOf.Types;
-using UnityEngine;
 using UnityEngine.Purchasing.Extension;
 
 namespace Loom.ZombieBattleground.Iap

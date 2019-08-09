@@ -13,31 +13,50 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(-0.25f, 3.21f, 0f);
-
-            const float delayBeforeSpawn = 5f;
+            const float delayBeforeSpawn = 6f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
             unitView.GameObject.SetActive(false);
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                        "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));
+                                                        "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));                                                        
 
-            PlaySound("CZB_AUD_Cherno_Bill_Arrival_F1_EXP");
+            Transform cameraVFXObj = animationVFX.transform.Find("!! Camera shake");
 
-            animationVFX.transform.position = unitView.PositionOfBoard + offset;
+            Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+            cameraGroupTransform.SetParent(cameraVFXObj);
+
+            Vector3 vfxPosition = unitView.PositionOfBoard;
+            animationVFX.transform.position = vfxPosition;
+            animationVFX.transform.Find("DestroyAllCards/Bubble").position = Vector3.zero;
+
+            Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+            cameraGroupTransform.localPosition = cameraLocalPosition;
 
             InternalTools.DoActionDelayed(() =>
-            {
-                unitView.GameObject.SetActive(true);
-                unitView.battleframeAnimator.Play(0, -1, 1);
-
+            {                
+                cameraGroupTransform.SetParent(null);
+                cameraGroupTransform.position = Vector3.zero; 
+                
                 Object.Destroy(animationVFX);
+                
+                if (unitView != null)
+                {
+                    unitView.GameObject.SetActive(true);
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+                    foreach (Transform child in unitView.battleframeAnimator.transform)
+                    {
+                        if (child.name == "ScrapFlies")
+                        {
+                            child.gameObject.SetActive(false);
+                            break;
+                        }
+                    }
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                }             
 
-                endArrivalCallback?.Invoke();
-
-                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                endArrivalCallback?.Invoke();                
 
                 IsPlaying = false;
 

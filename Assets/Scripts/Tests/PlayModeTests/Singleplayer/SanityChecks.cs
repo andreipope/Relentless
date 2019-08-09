@@ -1,9 +1,6 @@
 using System.Collections;
 using NUnit.Framework;
-using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.TestTools;
-using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Test

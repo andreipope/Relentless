@@ -14,10 +14,10 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(0f, 0.3f, 0f);
+            Vector3 offset = new Vector3(-0.32f, 0.7f, 0f);
 
             const float delayBeforeSpawn = 0.7f;
-            const float delayBeforeDestroyVFX = 3f;
+            const float delayBeforeDestroyVFX = 3.6f;
 
             BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
             SortingGroup unitSortingGroup = unitView.GameObject.GetComponent<SortingGroup>();
@@ -27,17 +27,34 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                            "Prefabs/VFX/UniqueArrivalAnimations/Cerberus_Arrival"), unitView.Transform, false);
+                                                            "Prefabs/VFX/UniqueArrivalAnimations/Cerberuz_Arrival"));
+
+                Transform cameraVFXObj = animationVFX.transform.Find("!!Null cam shake");
+
+                Transform cameraGroupTransform = CameraManager.GetGameplayCameras();
+                cameraGroupTransform.SetParent(cameraVFXObj);
 
                 PlaySound("ZB_AUD_CerberusArrival_F1_EXP");
 
                 animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
-                unitView.GameObject.SetActive(true);
+                Vector3 cameraLocalPosition = animationVFX.transform.position * -1;
+                cameraGroupTransform.localPosition = cameraLocalPosition;
+
+                GameObject battleFrameParticles = unitView.Transform.Find("Walker_Arrival_VFX(Clone)/ScrapFlies").gameObject;
 
                 InternalTools.DoActionDelayed(() =>
                 {
                     unitSortingGroup.enabled = true;
+
+                    unitView.GameObject.SetActive(true);
+
+                    battleFrameParticles.SetActive(false);
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+
+                    cameraGroupTransform.SetParent(null);
+                    cameraGroupTransform.position = Vector3.zero;
+
                     Object.Destroy(animationVFX);
 
                     endArrivalCallback?.Invoke();

@@ -105,14 +105,11 @@ namespace Loom.ZombieBattleground
             [JsonProperty("plasmachain_waterpack_contract_address")]
             public string PlasmachainWaterPackContractAddress { get; private set; }
 
-            [JsonProperty("plasmachain_smallpack_contract_address")]
-            public string PlasmachainSmallPackContractAddress { get; private set; }
-
-            [JsonProperty("plasmachain_minionpack_contract_address")]
-            public string PlasmachainMinionPackContractAddress { get; private set; }
-
             [JsonProperty("plasmachain_binancepack_contract_address")]
             public string PlasmachainBinancePackContractAddress { get; private set; }
+
+            [JsonProperty("plasmachain_tronpack_contract_address")]
+            public string PlasmachainTronPackContractAddress { get; private set; }
 
             [JsonProperty("plasmachain_fiatpurchase_contract_address")]
             public string PlasmachainFiatPurchaseContractAddress { get; private set; }
@@ -150,9 +147,8 @@ namespace Loom.ZombieBattleground
                 string plasmachainLifePackContractAddress,
                 string plasmachainToxicPackContractAddress,
                 string plasmachainWaterPackContractAddress,
-                string plasmachainSmallPackContractAddress,
-                string plasmachainMinionPackContractAddress,
                 string plasmachainBinancePackContractAddress,
+                string plasmachainTronPackContractAddress,
                 string plasmachainFiatPurchaseContractAddress,
                 string plasmachainOpenLotteryContractAddress,
                 string plasmachainTronLotteryContractAddress)
@@ -187,9 +183,8 @@ namespace Loom.ZombieBattleground
                 PlasmachainLifePackContractAddress = plasmachainLifePackContractAddress;
                 PlasmachainToxicPackContractAddress = plasmachainToxicPackContractAddress;
                 PlasmachainWaterPackContractAddress = plasmachainWaterPackContractAddress;
-                PlasmachainSmallPackContractAddress = plasmachainSmallPackContractAddress;
-                PlasmachainMinionPackContractAddress = plasmachainMinionPackContractAddress;
                 PlasmachainBinancePackContractAddress = plasmachainBinancePackContractAddress;
+                PlasmachainTronPackContractAddress = plasmachainTronPackContractAddress;
                 PlasmachainFiatPurchaseContractAddress = plasmachainFiatPurchaseContractAddress;
                 PlasmachainOpenLotteryContractAddress = plasmachainOpenLotteryContractAddress;
                 PlasmachainTronLotteryContractAddress = plasmachainTronLotteryContractAddress;

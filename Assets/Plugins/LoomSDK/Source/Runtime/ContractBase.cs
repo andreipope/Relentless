@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf;
 
@@ -37,6 +35,9 @@ namespace Loom.Client {
         /// <param name="callerAddress">Address of the caller, generated from the public key of the transaction signer.</param>
         protected ContractBase(DAppChainClient client, Address contractAddress, Address callerAddress)
         {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+
             this.Client = client;
             this.Address = contractAddress;
             this.Caller = callerAddress;
@@ -102,7 +103,9 @@ namespace Loom.Client {
     /// into and querying that contract.
     /// </summary>
     public abstract class ContractBase<TChainEvent> : ContractBase {
-        protected ContractBase(DAppChainClient client, Address contractAddress, Address callerAddress) : base(client,
+        protected ContractBase(DAppChainClient client, Address contractAddress, Address callerAddress)
+            : base(
+            client,
             contractAddress,
             callerAddress)
         {

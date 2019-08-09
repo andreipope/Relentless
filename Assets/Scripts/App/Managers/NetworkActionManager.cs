@@ -217,22 +217,23 @@ namespace Loom.ZombieBattleground
             IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
             ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
 
-            if (gameplayManager.CurrentPlayer == null)
-                return;
-
             if (connectionPopup.Self == null)
             {
-                Func<Task> connectFuncInGame = () =>
+                if (gameplayManager.CurrentPlayer != null)
                 {
-                    Clear();
-                    gameplayManager.CurrentPlayer.ThrowLeaveMatch();
-                    gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
-                    connectionPopup.Hide();
-                    return Task.CompletedTask;
-                };
+                    Func<Task> connectFuncInGame = () =>
+                    {
+                        Clear();
+                        gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                        gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                        GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                        connectionPopup.Hide();
+                        return Task.CompletedTask;
+                    };
 
-                connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                    connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                }
+
                 connectionPopup.Show();
                 connectionPopup.ShowFailedInGamePlay();
             }

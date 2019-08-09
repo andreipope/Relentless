@@ -209,13 +209,16 @@ namespace Loom.ZombieBattleground
             return deckListFromSelectedPageToDisplay;
         }
 
-        private void UpdateDeckInfoObjects()
+        public void UpdateDeckInfoObjects(bool emptyDeckList = false)
         {
             bool displayNewDeckButton = (_deckPageIndex == 0);
             _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
             _deckInfoObjectList[0].Button.gameObject.SetActive(!displayNewDeckButton);
 
-            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
+            List<Deck> deckListToDisplay =
+                !emptyDeckList ?
+                    GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton) :
+                    new List<Deck>();
 
             int startObjectIndex = displayNewDeckButton?1:0;
             int deckDataIndex = 0;
@@ -255,10 +258,21 @@ namespace Loom.ZombieBattleground
                 OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
                 deckInfoObject.DeckId = deck.Id;
-                deckInfoObject.TextDeckName.text = deckName;
+                deckInfoObject.TextDeckName.text = _tutorialManager.IsTutorial ? Constants.TutorialDefaultDeckName : deckName;
                 if (_tutorialManager.IsTutorial)
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+
+                    // hack for tutorial in count number
+                    if (_tutorialManager.CurrentTutorial.Id == 3)
+                    {
+                        if (_tutorialManager.CurrentTutorialStepIndex >= 10)
+                        {
+                            int cardCount = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent()
+                                .SpecificHordeInfo.MaximumCardsCount;
+                            deckInfoObject.TextCardsAmount.text = $"{cardCount}/{cardCount}";
+                        }
+                    }
                 }
                 else
                 {
@@ -365,7 +379,7 @@ namespace Loom.ZombieBattleground
         private List<Deck> GetDeckListBySearchKeywordToDisplay()
         {
             List<Deck> deckList = _myDeckPage.GetDeckList();
-            string keyword = _inputFieldSearchDeckName.text.Trim().ToLower();
+            string keyword = _inputFieldSearchDeckName.text.Trim().ToLowerInvariant();
 
             if(string.IsNullOrEmpty(keyword))
                 return deckList;
@@ -373,7 +387,7 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = new List<Deck>();
             for (int i = 0; i < deckList.Count; ++i)
             {
-                string deckName = deckList[i].Name.Trim().ToLower();
+                string deckName = deckList[i].Name.Trim().ToLowerInvariant();
                 if(deckName.Contains(keyword))
                     deckListToDisplay.Add(deckList[i]);
             }
@@ -546,6 +560,12 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
+            if (_myDeckPage.SelectedDeckId == -1)
+            {
+                ChangeSelectDeckIndex(GetDefaultDeckIndex());
+                _myDeckPage.SelectedDeckId = (int)_cacheDeckListToDisplay[_myDeckPage.SelectDeckIndex].Id.Id;
+            }
+
             _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
         }
 
@@ -619,7 +639,7 @@ namespace Loom.ZombieBattleground
 
             PlayClickSound();
 
-            _uiManager.DrawPopup<RenamePopup>(_myDeckPage.CurrentEditDeck);
+            _uiManager.DrawPopup<RenamePopup>(new object[] {_myDeckPage.CurrentEditDeck, false});
         }
 
         private void PlayClickSound()

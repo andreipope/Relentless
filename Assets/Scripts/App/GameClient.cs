@@ -28,7 +28,9 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName}");
+            Log.Info($"Starting game, version {BuildMetaInfo.Instance.FullVersionName} {BuildMetaInfo.Instance.GitBranchName} " +
+                $"{(BuildMetaInfo.Instance.CloudBuildTargetName != "" ? "(" + BuildMetaInfo.Instance.CloudBuildTargetName + ") " : "")}" +
+                $"on {Application.platform}");
 
             DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
@@ -76,6 +78,7 @@ namespace Loom.ZombieBattleground
             AddService<IIapPlatformStoreFacade>(new IapPlatformStoreFacade());
             AddService<IapMediator>(new IapMediator());
             AddService<PlasmachainBackendFacade>(new PlasmachainBackendFacade(backendEndpoint.PlasmachainEndpointsConfiguration));
+            AddService<BackendDataSyncService>(new BackendDataSyncService());
         }
 
         public override void InitServices() {
@@ -118,6 +121,12 @@ namespace Loom.ZombieBattleground
 #endif
             BackendPurpose backend = defaultBackend;
 
+            int backendOverrideValue = PlayerPrefs.GetInt(Constants.BackendPurposeOverrideValuePlayerPrefsKey, -1);
+            if (backendOverrideValue != -1)
+            {
+                backend = (BackendPurpose) backendOverrideValue;
+            }
+
 #if UNITY_EDITOR
             const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
             string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpointName);
@@ -128,6 +137,11 @@ namespace Loom.ZombieBattleground
 #endif
 
             return backend;
+        }
+
+        public static bool GetForceUseAuth()
+        {
+            return PlayerPrefs.GetInt(Constants.ForceUseAuthPlayerPrefsKey, 0) != 0;
         }
 
         public static GameClient Instance

@@ -2,6 +2,7 @@
 
 using System;
 using log4net;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonSaveRenameDeck;
         private Button _buttonCancel;
+        private Button _buttonBack;
         private Button _buttonContinue;
 
         private TMP_InputField _inputFieldRenameDeckName;
@@ -29,6 +31,9 @@ namespace Loom.ZombieBattleground
         public static Action<string> OnSaveNewDeckName;
 
         private Deck _deck;
+        private bool _openFromCreatingNewHorde;
+
+        private string _deckName;
 
         public void Init()
         {
@@ -49,6 +54,9 @@ namespace Loom.ZombieBattleground
             _inputFieldRenameDeckName.onEndEdit.AddListener(OnInputFieldRenameEndedEdit);
             _inputFieldRenameDeckName.text = "Deck Name";
 
+            _buttonBack = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Back").GetComponent<Button>();
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
+
             _buttonContinue = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
 
@@ -58,26 +66,51 @@ namespace Loom.ZombieBattleground
             _buttonCancel = Self.transform.Find("Tab_Rename/Panel_Deco/Button_Cancel").GetComponent<Button>();
             _buttonCancel.onClick.AddListener(ButtonCancelHandler);
 
+            EnablePanelButtons();
+
+            _deckName = _deck.Name;
+
+            // set the input field not intractable, if there is tutorial
+            bool isTutorial = GameClient.Get<ITutorialManager>().IsTutorial;
+            _inputFieldRenameDeckName.interactable = !isTutorial;
+            SetName(isTutorial ? Constants.TutorialDefaultDeckName : _deckName);
+        }
+
+        private void EnablePanelButtons()
+        {
             if (_deck.Id.Id == -1)
             {
+                if (_openFromCreatingNewHorde)
+                {
+                    _buttonBack.gameObject.SetActive(true);
+                    _buttonCancel.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _buttonBack.gameObject.SetActive(false);
+                    _buttonCancel.gameObject.SetActive(true);
+                }
+
                 _buttonSaveRenameDeck.gameObject.SetActive(false);
                 _buttonContinue.gameObject.SetActive(true);
             }
             else
             {
+                _buttonBack.gameObject.SetActive(false);
+                _buttonCancel.gameObject.SetActive(true);
                 _buttonSaveRenameDeck.gameObject.SetActive(true);
                 _buttonContinue.gameObject.SetActive(false);
             }
-
-            SetName(_deck.Name);
-
-            // set the input field not intractable, if there is tutorial
-            _inputFieldRenameDeckName.interactable = !GameClient.Get<ITutorialManager>().IsTutorial;
         }
 
         public void Show(object data)
         {
-            _deck = (Deck) data;
+            if (data is object[] param)
+            {
+                _deck = (Deck) param[0];
+                _openFromCreatingNewHorde = (bool) param[1];
+            }
+
             Show();
         }
 
@@ -110,7 +143,7 @@ namespace Loom.ZombieBattleground
 
         private void OnInputFieldRenameEndedEdit(string value)
         {
-
+            _deckName = value;
         }
 
         private void SetName(string name)
@@ -124,7 +157,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             DataUtilities.PlayClickSound();
-            string newDeckName = _inputFieldRenameDeckName.text;
+            string newDeckName = _deckName;
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
             if (!deckGeneratorController.VerifyDeckName(newDeckName))
                 return;
@@ -144,11 +177,22 @@ namespace Loom.ZombieBattleground
             OnSaveNewDeckName?.Invoke(deck.Name);
         }
 
+        private void ButtonBackHandler()
+        {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonBack.name))
+                return;
+                
+            DataUtilities.PlayClickSound();
+            Hide();
+            _uiManager.DrawPopup<SelectOverlordAbilitiesPopup>();
+        }
+
+
         private void ButtonContinueHandler()
         {
             DataUtilities.PlayClickSound();
 
-            string newDeckName = _inputFieldRenameDeckName.text;
+            string newDeckName = _deckName;
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
             if (!deckGeneratorController.VerifyDeckName(newDeckName))
                 return;

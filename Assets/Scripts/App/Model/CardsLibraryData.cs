@@ -85,7 +85,6 @@ namespace Loom.ZombieBattleground.Data
 
         private void InitData()
         {
-            Cards = Cards.OrderBy(card => card.Cost).ToList();
             Factions =
                 Cards
                     .GroupBy(card => card.Faction)
@@ -130,6 +129,12 @@ namespace Loom.ZombieBattleground.Data
     public class CardList
     {
         [JsonProperty("cards")]
-        public List<Card> Cards;
+        public IList<Card> Cards;
+    }
+
+    public class ReadonlyCardList
+    {
+        [JsonProperty("cards")]
+        public IList<IReadOnlyCard> Cards;
     }
 }

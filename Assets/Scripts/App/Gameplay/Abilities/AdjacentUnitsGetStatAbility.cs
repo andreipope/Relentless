@@ -122,6 +122,13 @@ namespace Loom.ZombieBattleground
             foreach (CardModel unit in units)
             {
                 _affectedUnits.Add(unit);
+                unit.UnitDistracted += () =>
+                {
+                    if (_affectedUnits != null && _affectedUnits.Contains(unit))
+                    {
+                        _affectedUnits.Remove(unit);
+                    }
+                };
                 if (defense != 0)
                 {
                     unit.BuffedDefense += defense;

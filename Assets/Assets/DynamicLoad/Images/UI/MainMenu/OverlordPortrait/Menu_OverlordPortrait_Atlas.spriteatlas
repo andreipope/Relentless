@@ -32,6 +32,39 @@ SpriteAtlas:
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
       m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: Standalone
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 10
+      m_TextureCompression: 1
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: iPhone
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 32
+      m_TextureCompression: 1
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: Android
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 64
+      m_TextureCompression: 1
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
       padding: 4
@@ -41,43 +74,23 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 07f68f1b8c1574090985417b9dae4e9c, type: 3}
-    totalSpriteSurfaceArea: 15703602
+    - {fileID: 102900000, guid: 2d665b7d8a4fa45898d9f4e059a55a29, type: 3}
+    totalSpriteSurfaceArea: 14136582
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: fa457010da6304e95a17dd5086d1d9dc, type: 3}
-  - {fileID: 21300000, guid: f3b6761063f6e412487041911301dce1, type: 3}
-  - {fileID: 21300000, guid: e12acf10bae3d45419cbea394ec76de5, type: 3}
-  - {fileID: 21300000, guid: 794e506177565483197af956aaf6ce14, type: 3}
-  - {fileID: 21300000, guid: a283764362e9f451fbcad2de4ab4355a, type: 3}
   - {fileID: 21300000, guid: dd440c1495772496fa90611b5c06b715, type: 3}
   - {fileID: 21300000, guid: 6c856a858956e43f7976f10c694ea0b0, type: 3}
-  - {fileID: 21300000, guid: d1825a9594193487da08991aa50fe7be, type: 3}
-  - {fileID: 21300000, guid: dbf2cb27c86714089b619a3948f4a0db, type: 3}
   - {fileID: 21300000, guid: 2982f6e81d225482ea72c90e15c664f1, type: 3}
-  - {fileID: 21300000, guid: 889d1ec91133c4c4e986ba908ab5c752, type: 3}
   - {fileID: 21300000, guid: d037ed6bccf9f403d87ea2911a3a8833, type: 3}
   - {fileID: 21300000, guid: dcd33b4d6c8b84ba7a9f9c19a1d1c0c7, type: 3}
-  - {fileID: 21300000, guid: ecdc728d8dcee4ffcaffc2c716764bd1, type: 3}
-  - {fileID: 21300000, guid: 3f1ff0cf206694c88beafca22789c57b, type: 3}
   - {fileID: 21300000, guid: c3bc1ffff2e1944e59b475489587f20b, type: 3}
   m_PackedSpriteNamesToIndex:
-  - sidebar_my_packs_normal
-  - sidebar_shop_normal
-  - sidebar_shop_selected
-  - sidebar_my_cards_normal
-  - sidebar_my_decks_normal
   - main_portrait_air
   - main_portrait_earth
-  - sidebar_battle_selected
-  - sidebar_my_packs_selected
   - main_portrait_water
-  - sidebar_my_decks_selected
   - main_portrait_fire
   - main_portrait_toxic
-  - sidebar_my_cards_selected
-  - sidebar_battle_normal
   - main_portrait_life
   m_Tag: Menu_OverlordPortrait_Atlas
   m_IsVariant: 0

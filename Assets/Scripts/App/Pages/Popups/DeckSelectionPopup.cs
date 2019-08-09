@@ -323,7 +323,11 @@ namespace Loom.ZombieBattleground
         {
             Deck selectedDeck = GetSelectedDeck();
             int deckIndex = GetSelectedDeckIndex();
-            _textDeckName.text = selectedDeck.Name;
+
+            if (selectedDeck == null)
+                return;
+
+            _textDeckName.text = (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 ) ? Constants.TutorialDefaultDeckName : selectedDeck.Name;
             OverlordUserInstance selectedOverlord = DataUtilities.GetOverlordDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Prototype.Faction);
 
@@ -412,8 +416,12 @@ namespace Loom.ZombieBattleground
 
             if (DeckId != null)
             {
-                Enumerators.Faction faction = DataUtilities.GetOverlordDataFromDeck((DeckId) DeckId).Prototype.Faction;
-                OverlordImage.sprite = DataUtilities.GetOverlordDeckIcon(faction);
+                OverlordUserInstance overlordUserInstance = DataUtilities.GetOverlordDataFromDeck((DeckId) DeckId);
+                if (overlordUserInstance != null)
+                {
+                    Enumerators.Faction faction = overlordUserInstance.Prototype.Faction;
+                    OverlordImage.sprite = DataUtilities.GetOverlordDeckIcon(faction);
+                }
             }
         }
 
