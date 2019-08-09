@@ -256,6 +256,7 @@ namespace Loom.ZombieBattleground
             }
 
             UpdateCardsUiList();
+            UpdateCardsAmountDisplay();
         }
 
         private void LoadEditionCards(Enumerators.CardVariant variant)
