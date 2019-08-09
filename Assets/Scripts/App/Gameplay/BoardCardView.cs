@@ -161,16 +161,8 @@ namespace Loom.ZombieBattleground
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
             RankIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(rankName);
 
-            if (Model.Card.Prototype.Set != Enumerators.CardSet.Undefined)
-            {
-                string setName = $"Images/IconsSet/seticon_{Model.Card.Prototype.Set.ToString().ToLowerInvariant()}";
-                SetIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(setName);
-            }
-            else
-            {
-                Log.Warn($"Card {Model.Card.Prototype} doesn't have Set defined");
-                SetIconSprite.sprite = null;
-            }
+            string setName = $"Images/IconsSet/set_icon_{Model.Card.Prototype.CardKey.Variant.ToString().ToLowerInvariant()}";
+            SetIconSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(setName);
 
             Model.CardPictureWasUpdated += PictureUpdatedEvent;
             PictureUpdatedEvent();
