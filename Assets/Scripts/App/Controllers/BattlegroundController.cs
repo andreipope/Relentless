@@ -779,6 +779,7 @@ namespace Loom.ZombieBattleground
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
             CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameplayInfo;
+            CurrentBoardCard.GetComponent<SortingGroup>().sortingOrder = 2;
             CurrentBoardCard.layer = LayerMask.NameToLayer("Default");
             CurrentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
