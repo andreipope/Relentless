@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using Loom.ZombieBattleground.Localization;
@@ -44,14 +45,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetLanguage(Enumerators.Language language, bool forceUpdate = false)
-        {            
+        public async Task SetLanguage(Enumerators.Language language, bool forceUpdate = false)
+        {
             if (language == CurrentLanguage && !forceUpdate)
                 return;
 
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;
             LocalizationUtil.SetLanguage(language);
+            
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             LanguageWasChangedEvent?.Invoke(CurrentLanguage);
         }

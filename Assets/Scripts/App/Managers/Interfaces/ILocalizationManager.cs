@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         void ApplyLocalization();
 
-        void SetLanguage(Enumerators.Language language, bool forceUpdate = false);
+        Task SetLanguage(Enumerators.Language language, bool forceUpdate = false);
 
         string GetUITranslation(string key);
     }

@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground.Localization
         
         private static Dictionary<LocalizationTerm, LocalizedString> LocalizedStringDictionary = new Dictionary<LocalizationTerm, LocalizedString>();
 
-        private static readonly Dictionary<Enumerators.Language, string> IsoLanguageCodeToFullLanguageNameMap = new Dictionary<Enumerators.Language, string>
+        public static readonly Dictionary<Enumerators.Language, string> IsoLanguageCodeToFullLanguageNameMap = new Dictionary<Enumerators.Language, string>
         {
             { Enumerators.Language.EN, "English" },
             { Enumerators.Language.ZH_CN, "Chinese" },
