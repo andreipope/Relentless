@@ -1,0 +1,37 @@
+﻿/* Note
+TMP Font https://forum.unity.com/threads/the-russian-letters-arent-shown-instead-of-them-blocks-help-please.468481/
+https://www.unicode.org/charts/PDF/U0E00.pdf
+
+CJK Font
+https://postapocalypticsightseeing.wordpress.com/2018/05/22/localizing-a-game-for-unity-part-1-fonts/
+https://forum.unity.com/threads/creating-asset-from-font-with-a-lot-of-characters.540842/
+https://forum.unity.com/threads/table-of-general-standard-chinese-characters.559882/
+
+JP
+https://stackoverflow.com/questions/19899554/unicode-range-for-japanese
+https://gametorrahod.com/using-most-japanese-characters-in-a-game-is-possible-with-1024x1024-texture/
+
+TH Unicode : 0E01-0E5B
+JP Unicode : 
+    Hiragana : 3041-3096,
+    Katakana : 30A0-30FF,
+    Full-width roman characters and half-width katakana : FF00-FFEF,
+    Symbols and Punctuation : 3000-303F,
+    Miscellaneous : 31F0-31FF,3220-3243,3280-337F,
+    Kanji Full : 4E00-9FAF,
+    Kanji Reduced : 3400-4DB5,4E00-9FCB,F900-FA6A
+    
+    Hiragana, Katakana and Punctuation Atlas : 3400-4DB5,4E00-7000,F900-FA6A, [3739/15650]
+    Kanji Atlas 01 : 7001-9FCB, [4239,12235]
+    Kanji Atlas 02 : 3041-3096,30A0-30FF,3000-303F, [209/246]
+    
+    All : 30A0-30FF,3041-309F,FF00-FFEF,3000-303F,31F0-31FF,3220-3243,3280-337F,4E00-9FAF
+    
+KR Unicode : AC00-D7A3
+    Atlas 01 : AC00-C000,
+    Atlas 02 : C001-D7A3,
+    
+CH Unicode :
+    https://en.wikipedia.org/wiki/Chinese_punctuation
+    Punctuation : 3000-303F,FE30–FE4F,FF00–FFEF,FE50–FE6F,FE10–FE1F
+*/

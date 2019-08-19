@@ -1,0 +1,7 @@
+Tab_Rename/Image_MainPanel/Header_Short/Text_RenameDeck,RenamePopup_Label_Head,_HeaderFonts
+Tab_Rename/Panel_Content/Text_NameYourDeck,RenamePopup_Label_Body,_HeaderFonts
+Tab_Rename/Panel_Content/InputText_DeckName/Text Area/Placeholder,RenamePopup_Placeholder_DeckName,_HeaderFonts
+Tab_Rename/Panel_Content/InputText_DeckName/Text Area/Text,,_HeaderFonts
+Tab_Rename/Panel_Deco/Button_Cancel/Shifted/Text,Common_Button_Cancel,_HeaderFonts
+Tab_Rename/Panel_Deco/Button_Save/Shifted/Text,Common_Button_Save,_HeaderFonts
+Tab_Rename/Panel_Deco/Button_Continue/Shifted/Text,Common_Button_Continue,_HeaderFonts

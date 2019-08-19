@@ -10,7 +10,8 @@
         "AdvancedFPSCounter",
         "ZombieBattleground.RuntimeEditorOnly",
         "Mixpanel",
-        "OneOf"
+        "OneOf",
+        "I2"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

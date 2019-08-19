@@ -1,0 +1,3 @@
+AbilityBar/Lock_Group/Lock_Details,AbilityBar_Label_Body,_HeaderFonts
+AbilityBar/Unlock_Group/Ability_Name_BG/Ability_Name,,_HeaderFonts
+AbilityBar/Unlock_Group/Ability_Description,,_BodyFonts

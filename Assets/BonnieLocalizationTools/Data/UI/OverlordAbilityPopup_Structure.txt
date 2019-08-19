@@ -1,0 +1,5 @@
+Abilities/Panel_BG/Top_Panel/Header_Long/Abilities_Title,SelectChampionAbilityPopup_Label_Header,_HeaderFonts
+Abilities/Panel_BG/Top_Panel/Header_Small/Abilities_Selected,SelectChampionAbilityPopup_Label_SelectedAmount,_BodyFonts
+Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Cancel/Shifted/Text,Common_Button_Cancel,_HeaderFonts
+Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Save/Shifted/Text,Common_Button_Save,_HeaderFonts
+Abilities/Panel_BG/Bottom_Panel/Panel_Deco/Button_Continue/Shifted/Text,Common_Button_Continue,_HeaderFonts
