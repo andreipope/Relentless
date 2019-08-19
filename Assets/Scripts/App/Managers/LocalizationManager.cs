@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
+using Loom.ZombieBattleground.Localization;
 
 namespace Loom.ZombieBattleground
 {
@@ -44,19 +45,33 @@ namespace Loom.ZombieBattleground
         }
 
         public void SetLanguage(Enumerators.Language language, bool forceUpdate = false)
-        {
+        {            
             if (language == CurrentLanguage && !forceUpdate)
                 return;
 
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;
+            LocalizationUtil.SetLanguage(language);
 
             LanguageWasChangedEvent?.Invoke(CurrentLanguage);
         }
 
         public string GetUITranslation(string key)
         {
+            if(Enum.TryParse(key, out LocalizationTerm localizationTerm ))
+            {
+                return LocalizationUtil.GetLocalizedString
+                (
+                     localizationTerm
+                );
+            }
+            
             return "";
+        }
+        
+        public string GetUITranslation(LocalizationTerm term)
+        {
+            return LocalizationUtil.GetLocalizedString(term);
         }
 
         public void Dispose()
@@ -78,9 +93,13 @@ namespace Loom.ZombieBattleground
         {
             SupportedLanguages = new Dictionary<SystemLanguage, Enumerators.Language>();
 
-            SupportedLanguages.Add(SystemLanguage.Russian, Enumerators.Language.RU);
             SupportedLanguages.Add(SystemLanguage.English, Enumerators.Language.EN);
-            SupportedLanguages.Add(SystemLanguage.German, Enumerators.Language.DE);
+            SupportedLanguages.Add(SystemLanguage.Chinese, Enumerators.Language.ZH_CN);
+            SupportedLanguages.Add(SystemLanguage.Korean, Enumerators.Language.KO);
+            SupportedLanguages.Add(SystemLanguage.Japanese, Enumerators.Language.JA);
+            // Spanish and Thai are not currently translated
+            //SupportedLanguages.Add(SystemLanguage.Spanish, Enumerators.Language.ES);
+            //SupportedLanguages.Add(SystemLanguage.Thai, Enumerators.Language.TH);
         }
     }
 }

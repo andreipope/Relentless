@@ -1,62 +1,66 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using log4net;
 using I2.Loc;
 using TMPro;
+using Loom.ZombieBattleground.Common;
 
-using Language = Loom.ZombieBattleground.Localization.LocalizationUtil.Language;
+using Language = Loom.ZombieBattleground.Common.Enumerators.Language;
 
 namespace Loom.ZombieBattleground.Localization
 {   
     public class LocalizationFontSettings : MonoBehaviour
     {
-        private readonly Dictionary<Language, float> CharacterSpacingDictionary = new Dictionary<Language, float>
+        private static readonly ILog Log = Logging.GetLog(nameof(LocalizationFontSettings));
+        
+        private readonly Dictionary<Language, float> CharacterSpacingMap = new Dictionary<Language, float>
         {
             {
-                Language.None, 0f
+                Language.NONE, 0f
             },
             {
-                Language.English, -6.7f
+                Language.EN, -6.7f
             },
             {
-                Language.Chinese, -3f
+                Language.ZH_CN, -3f
             },
             {
-                Language.Korean, 0f
+                Language.KO, 0f
             },
             {
-                Language.Japanese, 0f
+                Language.JA, 0f
             },
             {
-                Language.Spanish, 0f
+                Language.ES, 0f
             },
             {
-                Language.Thai, 0f
+                Language.TH, 0f
             }
         };
         
-        private readonly Dictionary<Language, FontStyles> FontStylesDictionary = new Dictionary<Language, FontStyles>
+        private readonly Dictionary<Language, FontStyles> FontStylesMap = new Dictionary<Language, FontStyles>
         {
             {
-                Language.None, FontStyles.Normal
+                Language.NONE, FontStyles.Normal
             },
             {
-                Language.English, FontStyles.Normal
+                Language.EN, FontStyles.Normal
             },
             {
-                Language.Chinese, FontStyles.Bold
+                Language.ZH_CN, FontStyles.Bold
             },
             {
-                Language.Korean, FontStyles.Normal
+                Language.KO, FontStyles.Normal
             },
             {
-                Language.Japanese, FontStyles.Normal
+                Language.JA, FontStyles.Normal
             },
             {
-                Language.Spanish, FontStyles.Normal
+                Language.ES, FontStyles.Normal
             },
             {
-                Language.Thai, FontStyles.Normal
+                Language.TH, FontStyles.Normal
             }
         };
         
@@ -78,9 +82,22 @@ namespace Loom.ZombieBattleground.Localization
         {
             if (_text == null)
                 return;
-                
-            _text.fontStyle = FontStylesDictionary[LocalizationUtil.CurrentLanguage];
-            _text.characterSpacing = CharacterSpacingDictionary[LocalizationUtil.CurrentLanguage];
+
+            try
+            {
+                _text.fontStyle = FontStylesMap
+                [
+                    GameClient.Get<ILocalizationManager>().CurrentLanguage
+                ];
+                _text.characterSpacing = CharacterSpacingMap
+                [
+                    GameClient.Get<ILocalizationManager>().CurrentLanguage
+                ];
+            }
+            catch
+            {
+                Log.Info($"Error applying font settings with current language");
+            }
         }
     }
 }

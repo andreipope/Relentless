@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using I2.Loc;
 using log4net;
+using Loom.ZombieBattleground.Common;
 using I2LocalizationManager = I2.Loc.LocalizationManager;
 
 namespace Loom.ZombieBattleground.Localization
@@ -12,23 +13,18 @@ namespace Loom.ZombieBattleground.Localization
     {
         private static readonly ILog Log = Logging.GetLog(nameof(LocalizationUtil));
         
-        public enum Language
-        {
-            None = -1,
-            English = 0,
-            Chinese = 1,
-            Korean = 2,            
-            Japanese = 3,
-            Spanish = 4,
-            Thai = 5,
-        }
-
-        public static event Action<Language> LanguageWasChangedEvent;
-        
-        public static Language CurrentLanguage { get; private set; } = Language.None;
-        
         private static Dictionary<LocalizationTerm, LocalizedString> LocalizedStringDictionary = new Dictionary<LocalizationTerm, LocalizedString>();
-    
+
+        private static readonly Dictionary<Enumerators.Language, string> IsoLanguageCodeToFullLanguageNameMap = new Dictionary<Enumerators.Language, string>
+        {
+            { Enumerators.Language.EN, "English" },
+            { Enumerators.Language.ZH_CN, "Chinese" },
+            { Enumerators.Language.KO, "Korean" },
+            { Enumerators.Language.JA, "Japanese" },
+            { Enumerators.Language.ES, "Spanish" },
+            { Enumerators.Language.TH, "Thai" }
+        };
+
         public static string GetLocalizedString(LocalizationTerm term)
         {
             if( !LocalizedStringDictionary.ContainsKey(term) )
@@ -49,22 +45,13 @@ namespace Loom.ZombieBattleground.Localization
             }
         }
 
-        public static void SetLanguage(Language language, bool forceUpdate = false)
+        public static void SetLanguage(Enumerators.Language language)
         {
-            if (language == CurrentLanguage && !forceUpdate)
-                return;
-                
-            SetLanguage(language.ToString());
-        }
-
-        private static void SetLanguage(string language)
-        {            
-            if (I2LocalizationManager.HasLanguage(language))
+            string fullLanguageName = GetFullLanguageName(language);
+            if (I2LocalizationManager.HasLanguage(fullLanguageName))
             {
-                I2LocalizationManager.CurrentLanguage = language;
-                LanguageWasChangedEvent?.Invoke(CurrentLanguage);
-                SaveCacheLanguage();
-                Log.Info($"Change game's language to {CurrentLanguage.ToString()}");
+                I2LocalizationManager.CurrentLanguage = fullLanguageName;
+                Log.Info($"Change game's language to {I2LocalizationManager.CurrentLanguage}");
             }
             else
             {
@@ -72,23 +59,11 @@ namespace Loom.ZombieBattleground.Localization
             }
         }
         
-        public static void ApplyLocalization()
+        private static string GetFullLanguageName(Enumerators.Language language)
         {
-            LoadCacheLanguage();
-            CurrentLanguage = Language.Chinese;
-            SetLanguage(CurrentLanguage, true);
-        }
-        
-        private static void LoadCacheLanguage()
-        {
-            //TODO : Load selected language from cache data
-            //_dataManager.CachedUserLocalData.AppLanguage
-        }
-        
-        private static void SaveCacheLanguage()
-        {
-            //TODO : Save selected language to cache data
-            //_dataManager.CachedUserLocalData.AppLanguage
+            return IsoLanguageCodeToFullLanguageNameMap.ContainsKey(language) ?
+                IsoLanguageCodeToFullLanguageNameMap[language] :
+                "";
         }
     }
 }
