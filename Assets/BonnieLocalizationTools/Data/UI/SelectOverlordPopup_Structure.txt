@@ -1,6 +1,0 @@
-Panel_Content/Panel/Left_Panel/Header_Short/Text_SelectOverlord,SelectChampionPopup_Label_Header,_HeaderFonts
-Panel_Content/Panel/Left_Panel/Champion_Data/Text_Weak_Against,SelectChampionPopup_Label_WeakAgainst,_BodyFonts
-Panel_Content/Panel/Left_Panel/Champion_Data/Text_Champion_Name,,_HeaderFonts
-Panel_Content/Panel/Left_Panel/Champion_Data/Champion_description,,_BodyFonts
-Panel_Content/Panel/Right_Panel/Button_Continue/Shifted/Text,Common_Button_Continue,_HeaderFonts
-Panel_Content/Panel/Right_Panel/Button_Cancel/Shifted/Text,Common_Button_Cancel,_HeaderFonts

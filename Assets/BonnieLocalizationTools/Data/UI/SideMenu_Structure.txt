@@ -1,5 +1,0 @@
-Group/Button_Battle/Text_Battle,SideMenu_Button_Battle,_BodyFonts
-Group/Button_Shop/Text_Shop,SideMenu_Button_Shop,_BodyFonts
-Group/Button_MyDecks/Text_MyDecks,SideMenu_Button_MyDecks,_BodyFonts
-Group/Button_MyPacks/Text_MyPacks,SideMenu_Button_MyPacks,_BodyFonts
-Group/Button_MyCards/Text_MyCards,SideMenu_Button_MyCards,_BodyFonts

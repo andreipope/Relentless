@@ -1,3 +1,0 @@
-ViewDeck/Top_Panel/Middle_Panel/Deck_Info/Button_AutoComplete/Shifted/Text,MyDecks_Editing_Button_Auto,_HeaderFonts
-ViewDeck/Top_Panel/Middle_Panel/Abilities_Info/Abilities_Title,ViewDeck_Label_Abilities,_HeaderFonts
-ViewDeck/Top_Panel/Middle_Panel/Abilities_Info/Button_Change/Shifted/Text,ViewDeck_Button_Change,_HeaderFonts

@@ -1,5 +1,0 @@
-Pivot/levelup_panel/UI/Button_Continue/Shifted/Text,Common_Button_Continue,_HeaderFonts
-Pivot/levelup_panel/UI/NoReward_Panel/Message,,_BodyFonts
-Pivot/levelup_panel/UI/RewardBoosterPack_Panel/Message,,_BodyFonts
-Pivot/levelup_panel/UI/RewardSkill_Panel/SkillName,,_BodyFonts
-Pivot/levelup_panel/UI/RewardSkill_Panel/SkillDescription,,_BodyFonts

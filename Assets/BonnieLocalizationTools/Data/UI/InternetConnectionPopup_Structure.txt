@@ -1,3 +1,0 @@
-Text_Message,InternetConnectionPopup_Label_Body,_BodyFonts
-Button_No/Text,Common_Button_Close,_HeaderFonts
-Button_Yes/Text,Common_Button_Retry,_HeaderFonts
