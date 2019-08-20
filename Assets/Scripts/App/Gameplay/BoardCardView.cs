@@ -142,8 +142,12 @@ namespace Loom.ZombieBattleground
 
             Model = cardModel;
 
-            NameText.text = Model.Card.Prototype.Name;
-            BodyText.text = Model.Card.Prototype.Description;
+            NameText.text = Enum.TryParse($"GameData_Cards_Name_{Model.Card.Prototype.CardKey.MouldId.Id.ToString()}", out LocalizationTerm nameTerm) ?
+                    LocalizationUtil.GetLocalizedString(nameTerm, Model.Card.Prototype.Name) :
+                    Model.Card.Prototype.Name;
+            BodyText.text = Enum.TryParse($"GameData_Cards_Description_{Model.Card.Prototype.CardKey.MouldId.Id.ToString()}", out LocalizationTerm descriptionTerm) ?
+                    LocalizationUtil.GetLocalizedString(descriptionTerm, Model.Card.Prototype.Description) :
+                    Model.Card.Prototype.Description;
             CostText.text = Model.Card.Prototype.Cost.ToString();
 
             IsNewCard = true;
