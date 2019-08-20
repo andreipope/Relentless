@@ -1,5 +1,7 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Localization;
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
@@ -13,6 +15,8 @@ namespace Loom.ZombieBattleground
         private const float PrepareForBattleSoundVolumeKoef = 0.25f;
 
         private ILoadObjectsManager _loadObjectsManager;
+        
+        private ILocalizationManager _localizationManager;
 
         private IUIManager _uiManager;
         private ISoundManager _soundManager;
@@ -28,6 +32,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
+            
             _battleFlavorLines = JsonConvert.DeserializeObject<BattleFlavorLines>(
                     _loadObjectsManager.GetObjectByPath<TextAsset>("Data/battle_flavor_1").text);
         }
@@ -79,10 +86,17 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+        
+        }
+
         private void ShowRandomFlavorText()
         {
             int randomVal = Random.Range(0, _battleFlavorLines.Lines.Length);
-            _flavorText.text = _battleFlavorLines.Lines[randomVal];
+            _flavorText.text = Enum.TryParse($"GameData_BattleFlavor_{randomVal}", out LocalizationTerm term) ?
+                LocalizationUtil.GetLocalizedString(term, _battleFlavorLines.Lines[randomVal]) :
+                _battleFlavorLines.Lines[randomVal];
         }
 
     }
