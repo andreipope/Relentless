@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground.Localization
                 Language.NONE, 0f
             },
             {
-                Language.EN, -6.7f
+                Language.EN, 0f
             },
             {
                 Language.ZH_CN, -3f
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground.Localization
                 Language.ZH_CN, FontStyles.Bold
             },
             {
-                Language.KO, FontStyles.Normal
+                Language.KO, FontStyles.Bold
             },
             {
                 Language.JA, FontStyles.Normal

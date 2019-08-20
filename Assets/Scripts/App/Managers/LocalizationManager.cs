@@ -59,22 +59,23 @@ namespace Loom.ZombieBattleground
             LanguageWasChangedEvent?.Invoke(CurrentLanguage);
         }
 
-        public string GetUITranslation(string key)
+        public string GetUITranslation(string key, string fallbackText = "")
         {
             if(Enum.TryParse(key, out LocalizationTerm localizationTerm ))
             {
                 return LocalizationUtil.GetLocalizedString
                 (
-                     localizationTerm
+                     localizationTerm,
+                     fallbackText
                 );
             }
             
-            return "";
+            return fallbackText;
         }
         
-        public string GetUITranslation(LocalizationTerm term)
+        public string GetUITranslation(LocalizationTerm term, string fallbackText = "")
         {
-            return LocalizationUtil.GetLocalizedString(term);
+            return LocalizationUtil.GetLocalizedString(term, fallbackText);
         }
 
         public void Dispose()

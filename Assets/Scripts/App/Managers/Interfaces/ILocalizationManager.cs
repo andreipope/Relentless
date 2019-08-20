@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
 
         Task SetLanguage(Enumerators.Language language, bool forceUpdate = false);
 
-        string GetUITranslation(string key);
+        string GetUITranslation(string key, string fallbackText);
+        
+        string GetUITranslation(LocalizationTerm term, string fallbackText);
     }
 }

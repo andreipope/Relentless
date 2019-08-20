@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground.Localization
             { Enumerators.Language.TH, "Thai" }
         };
 
-        public static string GetLocalizedString(LocalizationTerm term)
+        public static string GetLocalizedString(LocalizationTerm term, string fallbackText = "")
         {
             if( !LocalizedStringDictionary.ContainsKey(term) )
             {
@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground.Localization
             }
             catch
             {
-                return "N/A";
+                return fallbackText;
             }
         }
 
