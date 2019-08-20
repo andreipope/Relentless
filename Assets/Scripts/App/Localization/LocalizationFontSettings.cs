@@ -67,11 +67,14 @@ namespace Loom.ZombieBattleground.Localization
         private Localize _localize;
 
         private TextMeshProUGUI _text;
+
+        private TextMeshPro _tmpText;
         
         void Awake()
         {
             _localize = this.gameObject.GetComponent<Localize>();
             _text = this.gameObject.GetComponent<TextMeshProUGUI>();
+            _tmpText = this.gameObject.GetComponent<TextMeshPro>();
 
             _localize?.LocalizeEvent.AddListener(OnApplyFontSettings);
 
@@ -80,23 +83,41 @@ namespace Loom.ZombieBattleground.Localization
         
         private void OnApplyFontSettings()
         {
-            if (_text == null)
-                return;
-
-            try
+            if (_text != null)
             {
-                _text.fontStyle = FontStylesMap
-                [
-                    GameClient.Get<ILocalizationManager>().CurrentLanguage
-                ];
-                _text.characterSpacing = CharacterSpacingMap
-                [
-                    GameClient.Get<ILocalizationManager>().CurrentLanguage
-                ];
+                try
+                {
+                    _text.fontStyle = FontStylesMap
+                    [
+                        GameClient.Get<ILocalizationManager>().CurrentLanguage
+                    ];
+                    _text.characterSpacing = CharacterSpacingMap
+                    [
+                        GameClient.Get<ILocalizationManager>().CurrentLanguage
+                    ];
+                }
+                catch
+                {
+                    Log.Info($"Error applying font settings with current language");
+                }
             }
-            catch
+            else if(_tmpText != null)
             {
-                Log.Info($"Error applying font settings with current language");
+                try
+                {
+                    _tmpText.fontStyle = FontStylesMap
+                    [
+                        GameClient.Get<ILocalizationManager>().CurrentLanguage
+                    ];
+                    _tmpText.characterSpacing = CharacterSpacingMap
+                    [
+                        GameClient.Get<ILocalizationManager>().CurrentLanguage
+                    ];
+                }
+                catch
+                {
+                    Log.Info($"Error applying font settings with current language");
+                }
             }
         }
     }

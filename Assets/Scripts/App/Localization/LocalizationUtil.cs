@@ -65,5 +65,20 @@ namespace Loom.ZombieBattleground.Localization
                 IsoLanguageCodeToFullLanguageNameMap[language] :
                 "";
         }
+        
+        public static string CapitalizedText(string text)
+        {
+            if(string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+            
+            string capitalizedText = text;
+            capitalizedText = capitalizedText.Length > 1 ?
+                capitalizedText.Substring(0, 1).ToUpper() + capitalizedText.Substring(1).ToLower() :
+                capitalizedText.ToUpper();
+
+            return capitalizedText;
+        }
     }
 }
