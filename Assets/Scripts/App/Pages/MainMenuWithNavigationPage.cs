@@ -6,6 +6,7 @@ using DG.Tweening;
 using log4net;
 using Object = UnityEngine.Object;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
         private IAppStateManager _stateManager;
         
         private ISoundManager _soundManager;
+        
+        private ILocalizationManager _localizationManager;
         
         private IPlayerManager _playerManager;  
         
@@ -53,8 +56,10 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _gameMode = DefaultGameMode;
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
         
         public void Update()
@@ -109,6 +114,11 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateGameModeText();
+        }
 
         private void OnHide()
         {
@@ -230,15 +240,34 @@ namespace Loom.ZombieBattleground
             if(_gameMode == GameMode.SOLO)
             {
                 GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
-                _textGameMode.text = "SOLO";
             }
             else if(_gameMode == GameMode.VS)
             {
-                GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
-                _textGameMode.text = "VS\nCASUAL";                 
+                GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;             
             }
+            UpdateGameModeText();
         }
         
+        private void UpdateGameModeText()
+        {
+            if(_gameMode == GameMode.SOLO)
+            {
+                _textGameMode.text = _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.MainMenuBattleMode_Label_BattleMode_Solo, 
+                    "SOLO"
+                );
+            }
+            else if(_gameMode == GameMode.VS)
+            {
+                _textGameMode.text = _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.MainMenuBattleMode_Label_BattleMode_VS, 
+                    "VS\nCASUAL"
+                );               
+            }
+        }
+
         private void AnimateOverlordPortrait()
         {
             _imageOverlordPortrait.transform.localScale = Vector3.one;
