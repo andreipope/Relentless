@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,6 +39,8 @@ namespace Loom.ZombieBattleground
         public static Action<SkillId> OnSelectSkill;
         public static Action<Enumerators.Skill, Enumerators.Skill> OnSelectOverlordSkill;
         public static Action<Enumerators.Skill, Enumerators.Skill> OnSaveSelectedSkill;
+
+        private static int MaxSkillSlotAmount = 2;
 
         public GameObject Self { get; private set; }
 
@@ -215,7 +218,13 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCountDisplay(int abilityCount)
         {
-            _selectedAbilitiesCount.text = "<color=#FFFF00>"+ abilityCount +"/2</color> ABILITIES SELECTED";
+            _selectedAbilitiesCount.text = LocalizationUtil.GetLocalizedString
+            (
+                LocalizationTerm.ChampionSkillSelection_Label_SelectedAmount,
+                "<color=#FFFF00>" + abilityCount + "/2</color> ABILITIES SELECTED"
+            )
+            .Replace("{SELECTED_SKILL_AMOUNT}", abilityCount.ToString())
+            .Replace("{SKILLS_SLOT_AMOUNT}", MaxSkillSlotAmount.ToString());
         }
 
         private void ButtonSaveHandler()
