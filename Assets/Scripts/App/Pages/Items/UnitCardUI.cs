@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System;
 using log4net;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using ZombieBattleground.Editor.Runtime;
@@ -68,8 +69,12 @@ public class UnitCardUI
     public void FillCardData(Card card, int cardCount = 0)
     {
         _card = card;
-        _titleText.text = card.Name;
-        _bodyText.text = card.Description;
+        _titleText.text = Enum.TryParse($"GameData_Cards_Name_{card.CardKey.MouldId.Id.ToString()}", out LocalizationTerm nameTerm) ?
+            LocalizationUtil.GetLocalizedString(nameTerm, card.Name) :
+            card.Name;
+        _bodyText.text = Enum.TryParse($"GameData_Cards_Description_{card.CardKey.MouldId.Id.ToString()}", out LocalizationTerm descriptionTerm) ?
+            LocalizationUtil.GetLocalizedString(descriptionTerm, card.Description) :
+            card.Description;
         _gooText.text = card.Cost.ToString();
 
         _attackText.text = card.Damage != 0 ? card.Damage.ToString() : string.Empty;

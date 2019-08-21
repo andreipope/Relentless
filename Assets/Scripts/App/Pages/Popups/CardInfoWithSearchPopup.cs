@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -143,7 +145,10 @@ namespace Loom.ZombieBattleground
         private void UpdateCardDetails()
         {
             _unitCardUi.FillCardData(_cardList[_currentCardIndex] as Card);
-            _textDescription.text = !string.IsNullOrEmpty(_cardList[_currentCardIndex].FlavorText) ? _cardList[_currentCardIndex].FlavorText : string.Empty;
+            string flavorText = !string.IsNullOrEmpty(_cardList[_currentCardIndex].FlavorText) ? _cardList[_currentCardIndex].FlavorText : string.Empty;
+            _textDescription.text = Enum.TryParse($"GameData_Cards_FlavorText_{_cardList[_currentCardIndex].CardKey.MouldId.Id.ToString()}", out LocalizationTerm nameTerm) ?
+                LocalizationUtil.GetLocalizedString(nameTerm, flavorText) :
+                flavorText;
         }
 
         public void Show(object data)
