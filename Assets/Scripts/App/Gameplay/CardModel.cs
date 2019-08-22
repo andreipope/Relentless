@@ -530,9 +530,9 @@ namespace Loom.ZombieBattleground
             RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Feral);
         }
 
-        public void SetAsHeavyUnit()
+        public void SetAsHeavyUnit(bool isForce = false)
         {
-            if (HasHeavy)
+            if (HasHeavy && !isForce)
                 return;
 
             if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Distract))
@@ -553,10 +553,42 @@ namespace Loom.ZombieBattleground
                 IsPlayable = false;
             }
         }
-
-        public void SetAsWalkerUnit()
+        
+        public void AddHeavyTypeToUnit()
         {
-            if (!HasHeavy && !HasFeral && !HasBuffHeavy)
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Distract))
+            {
+                DisableDistract();
+            }
+            
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Heavy);
+            
+            HasHeavy = true;
+            
+            InitialUnitType = Enumerators.CardType.HEAVY;
+            CardTypeChanged?.Invoke(InitialUnitType);
+            
+            if (!AttackedThisTurn && IsPlayable)
+            {
+                ForceSetCreaturePlayable();
+            }
+        }
+        
+        public void RemoveHeavyTypeFromUnit()
+        {
+            if(InitialUnitType == Enumerators.CardType.FERAL)
+            {
+                SetAsFeralUnit(true);
+            }
+            else
+            {
+                SetAsWalkerUnit();
+            }
+        }
+
+        public void SetAsWalkerUnit(bool isForce = false)
+        {
+            if (!HasHeavy && !HasFeral && !HasBuffHeavy && !isForce)
                 return;
 
             ClearUnitTypeEffects();
@@ -569,9 +601,9 @@ namespace Loom.ZombieBattleground
             CardTypeChanged?.Invoke(InitialUnitType);
         }
 
-        public void SetAsFeralUnit()
+        public void SetAsFeralUnit(bool isForce = false)
         {
-            if (HasFeral)
+            if (HasFeral && !isForce)
                 return;
 
             if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Distract))
@@ -593,6 +625,42 @@ namespace Loom.ZombieBattleground
             }
 
             CardTypeChanged?.Invoke(InitialUnitType);
+        }
+
+        public void AddFeralTypeToUnit()
+        {
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Distract))
+            {
+                DisableDistract();
+            }
+
+            ClearUnitTypeEffects();
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Feral);
+            
+            HasFeral = true;
+
+            if(InitialUnitType == Enumerators.CardType.WALKER)
+            {
+                InitialUnitType = Enumerators.CardType.FERAL;
+            }
+            CardTypeChanged?.Invoke(InitialUnitType);
+            
+            if (!AttackedThisTurn && !IsPlayable)
+            {
+                ForceSetCreaturePlayable();
+            }
+        }
+
+        public void RemoveFeralTypeFromUnit()
+        {            
+            if(InitialUnitType == Enumerators.CardType.HEAVY)
+            {
+                SetAsHeavyUnit(true);
+            }
+            else
+            {
+                SetAsWalkerUnit();
+            }
         }
 
         public void SetInitialUnitType()
