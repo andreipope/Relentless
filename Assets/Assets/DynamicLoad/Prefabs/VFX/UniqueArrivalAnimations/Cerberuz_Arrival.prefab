@@ -53471,7 +53471,8 @@ GameObject:
   - component: {fileID: 4558224874155504}
   - component: {fileID: 198740161504253912}
   - component: {fileID: 199899911370522280}
-  m_Layer: 9
+  - component: {fileID: 1841042205416489494}
+  m_Layer: 0
   m_Name: Cracks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58225,6 +58226,17 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &1841042205416489494
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560172553110448}
+  m_Enabled: 1
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
+  m_SortingOrder: 0
 --- !u!1 &1569148603013962
 GameObject:
   m_ObjectHideFlags: 0
@@ -62934,7 +62946,8 @@ GameObject:
   - component: {fileID: 4238032765742294}
   - component: {fileID: 198308207137115378}
   - component: {fileID: 199128030070138588}
-  m_Layer: 9
+  - component: {fileID: 3782647141887191876}
+  m_Layer: 0
   m_Name: CracksGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67688,6 +67701,17 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &3782647141887191876
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596707121641220}
+  m_Enabled: 1
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
+  m_SortingOrder: 0
 --- !u!1 &1603066315895556
 GameObject:
   m_ObjectHideFlags: 0
