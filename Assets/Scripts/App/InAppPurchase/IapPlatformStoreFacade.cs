@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground.Iap
 
             Log.Debug($"{nameof(BeginInitialization)} (products = {Utilites.FormatCallLogList(products.Select(product => product.Definition.storeSpecificId))})");
             _initializationState = IapInitializationState.Initializing;
-#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS) && !USE_WEB_MARKETPLACE && !UNITY_EDITOR
             IPurchasingModule purchasingModule = StandardPurchasingModule.Instance();
 #else
             IPurchasingModule purchasingModule = new LoomWebMarketplacePurchasingModule(products);
