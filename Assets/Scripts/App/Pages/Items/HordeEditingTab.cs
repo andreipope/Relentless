@@ -4,6 +4,7 @@ using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -25,6 +26,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
 
         private IUIManager _uiManager;
+
+        private ILocalizationManager _localizationManager;
 
         private HordeSelectionWithNavigationPage _myDeckPage;
 
@@ -59,6 +62,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _collectionData = new CollectionData();
 
@@ -250,7 +254,14 @@ namespace Loom.ZombieBattleground
 
             DataUtilities.PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
+            _uiManager.DrawPopup<QuestionPopup>
+            (
+                _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.HordeEditing_Popup_ConfirmSaveProgress,
+                    "Would you like to save your progress?"
+                )
+            );
         }
 
         private void ConfirmSaveDeckHandler(bool status)
@@ -327,8 +338,14 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlordData = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
             if (Constants.FactionAgainstDictionary[overlordData.Prototype.Faction] == card.Faction)
             {
-                OpenAlertDialog(
-                    "Cannot add from the faction your Champion is weak against.");
+                OpenAlertDialog
+                (
+                    _localizationManager.GetUITranslation
+                    (
+                        LocalizationTerm.Warning_HordeEditing_AddCard_AgainstChampionFaction,
+                        "Cannot add from the faction your Champion is weak against."
+                    )
+                );
                 return;
             }
 
@@ -352,8 +369,14 @@ namespace Loom.ZombieBattleground
                 
                 if (collectionCardData.Amount <= 0)
                 {
-                    OpenAlertDialog(
-                        "You don't have enough of this card.\nBuy or earn packs to get more cards.");
+                    OpenAlertDialog
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Warning_HordeEditing_AddCard_NotEnough,
+                            "You don't have enough of this card.\nBuy or earn packs to get more cards."
+                        )
+                    );
                     return;
                 }
             }
@@ -369,14 +392,31 @@ namespace Loom.ZombieBattleground
             uint maxCopies = GetMaxCopiesValue(card);
             if ((existingCard != null || existingCard.Count > 0) && totalExistingAmount >= maxCopies)
             {
-                OpenAlertDialog("Cannot have more than " + maxCopies + " copies of an " +
-                    card.Rank.ToString().ToLowerInvariant() + " card in one deck.");
+                OpenAlertDialog
+                (
+                    _localizationManager.GetUITranslation
+                    (
+                        LocalizationTerm.Warning_HordeEditing_AddCard_RankMaxOut,
+                        "Cannot have more than " + maxCopies + " copies of an " +
+                        card.Rank.ToString().ToLowerInvariant() + " card in one deck."
+                    )
+                    .Replace("{MAX_COPIES}", maxCopies.ToString())
+                    .Replace("{CARD_RANK}", card.Rank.ToString().ToLowerInvariant())
+                );
                 return;
             }
 
             if (_myDeckPage.CurrentEditDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("Cannot have more than " + Constants.DeckMaxSize + " cards in one deck.");
+                OpenAlertDialog
+                (
+                    _localizationManager.GetUITranslation
+                    (
+                        LocalizationTerm.Warning_HordeEditing_AddCard_MaxDeckSize,
+                        "Cannot have more than " + Constants.DeckMaxSize + " cards in one deck."
+                    )
+                    .Replace("{MAX_DECK_SIZE}", Constants.DeckMaxSize.ToString())
+                );
                 return;
             }
 

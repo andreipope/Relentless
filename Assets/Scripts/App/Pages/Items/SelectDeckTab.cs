@@ -4,6 +4,7 @@ using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -394,7 +395,14 @@ namespace Loom.ZombieBattleground
 
             if(deckListToDisplay.Count <= 0)
             {
-                OpenAlertDialog($"No decks found with that search.");
+                OpenAlertDialog
+                (
+                    GameClient.Get<ILocalizationManager>().GetUITranslation
+                    (
+                        LocalizationTerm.Warning_HordeSelection_MaxDeck,
+                        "No decks found with that search."
+                    )
+                );
                 return deckList;
             }
 
@@ -577,7 +585,14 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             if (_myDeckPage.GetDeckList().Count <= 1)
             {
-                OpenAlertDialog("Cannot delete. You must have at least one deck.");
+                OpenAlertDialog
+                (
+                    GameClient.Get<ILocalizationManager>().GetUITranslation
+                    (
+                        LocalizationTerm.HordeSelection_Popup_InfoDeleteLastDeck,
+                        "Cannot delete. You must have at least one deck."
+                    )
+                );
                 return;
             }
 
@@ -586,7 +601,15 @@ namespace Loom.ZombieBattleground
             {
                 _buttonDelete.enabled = false;
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Are you sure you want to delete " + deck.Name + "?");
+                _uiManager.DrawPopup<QuestionPopup>
+                (
+                    GameClient.Get<ILocalizationManager>().GetUITranslation
+                    (
+                        LocalizationTerm.HordeSelection_Popup_ConfirmDeleteDeck,
+                        $"Are you sure you want to delete {deck.Name}?"
+                    )
+                    .Replace("{DECK_NAME}", deck.Name)
+                );
             }
         }
 
