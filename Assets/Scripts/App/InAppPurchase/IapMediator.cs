@@ -482,9 +482,9 @@ namespace Loom.ZombieBattleground.Iap
 
         private static string GetAuthPlatformName()
         {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !USE_WEB_MARKETPLACE
             return "PlayStore";
-#elif UNITY_IOS
+#elif UNITY_IOS && !USE_WEB_MARKETPLACE
             return "AppStore";
 #else
             return "MarketPlace";

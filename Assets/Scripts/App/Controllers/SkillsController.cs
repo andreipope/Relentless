@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
         public BoardSkill PlayerPrimarySkill { get; private set; }
 
         public BoardSkill PlayerSecondarySkill { get; private set; }
+        
+        public bool BlockEndTurnButton { get; private set; }
 
         public void Dispose()
         {
@@ -100,6 +102,7 @@ namespace Loom.ZombieBattleground
             PlayerSecondarySkill = null;
             OpponentPrimarySkill = null;
             OpponentSecondarySkill = null;
+            BlockEndTurnButton = false;
         }
 
         public void InitializeSkills()
@@ -1246,6 +1249,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
+                BlockEndTurnButton = true;
                 EpidemicUnit(owner, boardSkill, skill, unitModel, opponentUnitModel, callback);
             }
 
@@ -1265,6 +1269,7 @@ namespace Loom.ZombieBattleground
 
             InternalTools.DoActionDelayed(() =>
             {
+                BlockEndTurnButton = false;
                 _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                 unit, delay: 6f, isIgnoreCastVfx: true);

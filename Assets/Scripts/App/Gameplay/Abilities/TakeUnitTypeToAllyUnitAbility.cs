@@ -178,10 +178,30 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
                     {
                         //Aura status has already updated from ChangeAuraStatusAction method
+                        if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                        {            
+                            List<CardModel> allies = AbilityUnitOwner.OwnerPlayer.CardsOnBoard.Where
+                            (
+                                unit => !unit.IsDead &&
+                                unit.CurrentDefense > 0 &&
+                                unit.IsUnitActive
+                            ).ToList();
+            
+                            foreach (CardModel unit in allies)
+                            {                                    
+                                if (TakeTypeToUnit(unit))
+                                {
+                                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                    {
+                                        ActionEffectType = effectType,
+                                        Target = unit
+                                    });
+                                }
+                            }
+                        }
                     }
                     break;
             }
-
 
             if (targetEffects.Count > 0)
             {
@@ -377,10 +397,10 @@ namespace Loom.ZombieBattleground
             switch (UnitType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.SetAsHeavyUnit();
+                    unit.AddHeavyTypeToUnit();
                     return true;
                 case Enumerators.CardType.FERAL:
-                    unit.SetAsFeralUnit();
+                    unit.AddFeralTypeToUnit();
                     return true;
             }
 
@@ -418,16 +438,13 @@ namespace Loom.ZombieBattleground
         
         private void ResetAffectedUnit(CardModel unit)
         {
-            switch(unit.Card.InstanceCard.CardType)
+            switch (UnitType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.SetAsHeavyUnit();
-                    break;
-                case Enumerators.CardType.WALKER:
-                    unit.SetAsWalkerUnit();
+                    unit.RemoveHeavyTypeFromUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.SetAsFeralUnit();
+                    unit.RemoveFeralTypeFromUnit();
                     break;
             }
         }
