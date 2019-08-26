@@ -3055,6 +3055,8 @@ MonoBehaviour:
   - {fileID: 684679955}
   - {fileID: 1929293974}
   - {fileID: 1508040445}
+  - {fileID: 815065794}
+  - {fileID: 680325263}
   SelectBackendDropdown: {fileID: 1646291293}
   ForceUseAuthToggle: {fileID: 1508040447}
   RequestFullCardCollectionSyncButton: {fileID: 680325265}
