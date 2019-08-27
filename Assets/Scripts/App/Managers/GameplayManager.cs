@@ -5,6 +5,7 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -520,7 +521,14 @@ namespace Loom.ZombieBattleground
             const float sendTimeout = 5;
             float sendTime = Time.unscaledTime;
             WarningPopup warningPopup = _uiManager.GetPopup<WarningPopup>();
-            warningPopup.Show("Leaving the match and closing the game...");
+            warningPopup.Show
+            (
+                GameClient.Get<ILocalizationManager>().GetUITranslation
+                (
+                    LocalizationTerm.Warning_Gameplay_ClosingGame,
+                    "Leaving the match and closing the game..."
+                )                
+            );
             warningPopup.SetCloseButtonVisible(false);
             CurrentPlayer.ThrowLeaveMatch();
 

@@ -867,6 +867,25 @@
         GameData_Tutorial_2_TutorialStep_21_ChampionSayTooltip_0,
         GameData_Tutorial_2_TutorialStep_22_ChampionSayTooltip_0,
         LevelUp_Label_NoReward,
-        LevelUp_Label_NextLevelReward
+        LevelUp_Label_NextLevelReward,
+        SelectChampionPopup_Label_Header,
+        SelectChampionPopup_Label_WeakAgainst,
+        SelectChampionAbilityPopup_Label_Header,
+        SelectChampionAbilityPopup_Label_SelectedAmount,
+        AbilityBar_Label_Body,
+        RenamePopup_Label_Head,
+        RenamePopup_Label_Body,
+        RenamePopup_Placeholder_DeckName,
+        Warning_FilterCard_NoGooCost,
+        Warning_FilterCard_NoElement,
+        Warning_FilterCard_NoRank,
+        Warning_Shop_ExistingPurchasePending,
+        Warning_Shop_PaymentDeclined,
+        Warning_Shop_PurchasingUnavailable,
+        Warning_Gameplay_ClosingGame,
+        Warning_MatchMaker_Error_FindMatch,
+        Warning_MatchMaker_Error_CancelingFindMatch,
+        Warning_Tutorial_Error_DeleteDeck,
+        Confirm_PlayAgain_Available
     }
 }

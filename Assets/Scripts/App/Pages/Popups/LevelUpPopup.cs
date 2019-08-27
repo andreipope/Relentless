@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using TMPro;
 using log4net;
 using UnityEngine;
@@ -158,7 +159,11 @@ namespace Loom.ZombieBattleground
         {
             if (currentLevel >= _dataManager.CachedOverlordLevelingData.MaxLevel)
             {
-                _noRewardMessage.text = "You've collected all the rewards available for this champion!";
+                _noRewardMessage.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+                (
+                    LocalizationTerm.LevelUp_Label_NoReward,
+                    "You've collected all the rewards available for this champion!"
+                );
             }
             else
             {
@@ -168,7 +173,11 @@ namespace Loom.ZombieBattleground
                         .FirstOrDefault(reward => reward.Level > currentLevel);
 
                 Assert.IsNotNull(nextLevelReward);
-                _noRewardMessage.text = $"Get next reward at level {nextLevelReward?.Level ?? 0}!";
+                _noRewardMessage.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+                (
+                    LocalizationTerm.LevelUp_Label_NextLevelReward,
+                    $"Get next reward at level {nextLevelReward?.Level ?? 0}!"
+                ).Replace("{NextLevelReward}", (nextLevelReward?.Level ?? 0).ToString());
             }
         }
 

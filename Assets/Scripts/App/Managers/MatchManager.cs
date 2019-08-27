@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
@@ -87,7 +88,14 @@ namespace Loom.ZombieBattleground
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
                             matchMakingPopup.Hide();
-                            _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
+                            _uiManager.DrawPopup<WarningPopup>
+                            (
+                                GameClient.Get<ILocalizationManager>().GetUITranslation
+                                (
+                                    LocalizationTerm.Warning_MatchMaker_Error_FindMatch,
+                                    $"Error while finding a match:\n{e.Message}"
+                                )
+                            );
                         }
                     }
                     break;
@@ -117,7 +125,14 @@ namespace Loom.ZombieBattleground
                 Helpers.ExceptionReporter.SilentReportException(e);
                 Log.Warn(e.ToString());
                 _uiManager.GetPopup<MatchMakingPopup>().Hide();
-                _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
+                _uiManager.DrawPopup<WarningPopup>
+                (
+                    GameClient.Get<ILocalizationManager>().GetUITranslation
+                    (
+                        LocalizationTerm.Warning_MatchMaker_Error_CancelingFindMatch,
+                        $"Error while canceling finding a match:\n{e.Message}"
+                    )
+                );
             }
             finally
             {
