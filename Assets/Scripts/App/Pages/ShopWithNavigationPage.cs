@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Iap;
 using TMPro;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private ILocalizationManager _localizationManager;
+
         private GameObject _selfPage;
 
         private Button _purchaseButton;
@@ -49,6 +52,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _iapMediator = GameClient.Get<IapMediator>();
         }
@@ -119,7 +123,14 @@ namespace Loom.ZombieBattleground
             Log.Debug($"Initiating purchase: {product.definition.storeSpecificId}");
 #if (UNITY_IOS || UNITY_ANDROID) && !USE_WEB_MARKETPLACE
             ChangeState(State.Purchasing);
-            _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
+            _uiManager.DrawPopup<LoadingOverlayPopup>
+            (
+                _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.Spinner_Shop_InitiatedPurchase,
+                    "Activating Purchase..."
+                )
+            );
 
             async void OnIapMediatorOnPurchasingResultReceived(OneOf<PurchaseEventArgs, IapPlatformStorePurchaseError> oneOf)
             {
@@ -142,7 +153,14 @@ namespace Loom.ZombieBattleground
                 await _iapMediator.InitiatePurchase(product);
 #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?");
+            _uiManager.DrawPopup<QuestionPopup>
+            (
+                _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.ArmyPage_Popup_ConfirmMarketplace,
+                    "Would you like to visit the Marketplace website?"
+                )
+            );
 #endif
         }
 
@@ -173,42 +191,105 @@ namespace Loom.ZombieBattleground
                     break;
                 case State.InitializingStore:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Initializing store...");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_InitStore,
+                            "Initializing store..."
+                        )
+                    );
                     break;
                 case State.ClaimingPendingPurchases:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Checking for purchases...");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_RequestFiatClaim,
+                            "Checking for purchases..."
+                        )
+                    );
                     break;
                 case State.WaitForInput:
                     _uiManager.HidePopup<LoadingOverlayPopup>();
                     break;
                 case State.InitiatedPurchase:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Activating Purchase...");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_InitiatedPurchase,
+                            "Activating Purchase..."
+                        )
+                    );
                     break;
                 case State.Purchasing:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Processing Purchase...");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_Purchasing,
+                            "Processing Purchase..."
+                        )
+                    );
                     break;
                 case State.RequestFiatValidation:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Processing payment...");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_RequestFiatValidation,
+                            "Processing payment..."
+                        )
+                    );
                     break;
                 case State.RequestFiatTransaction:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_RequestFiatTransaction,
+                            "Fetching your packs"
+                        )
+                    );
                     break;
                 case State.RequestPack:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs.");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_RequestPack,
+                            "Fetching your packs."
+                        )
+                    );
                     break;
                 case State.WaitForRequestPackResponse:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs..");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_RequestPack,
+                            "Fetching your packs.."
+                        )
+                    );
                     break;
                 case State.RequestFiatClaim:
                     _unfinishedState = _state;
-                    _uiManager.DrawPopup<LoadingOverlayPopup>("Fetching your packs...");
+                    _uiManager.DrawPopup<LoadingOverlayPopup>
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Spinner_Shop_RequestFiatClaim,
+                            "Fetching your packs..."
+                        )
+                    );
                     break;
                 case State.TransitionToPackOpener:
                     _unfinishedState = State.Undefined;
@@ -339,8 +420,11 @@ namespace Loom.ZombieBattleground
                     switch (failure.AsT0)
                     {
                         case InitializationFailureReason.PurchasingUnavailable:
-                            message =
-                                "Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.";
+                            message = _localizationManager.GetUITranslation
+                            (
+                                LocalizationTerm.Warning_Shop_PurchasingUnavailable,
+                                "Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device."
+                            );
                             break;
                         case InitializationFailureReason.NoProductsAvailable:
                         case InitializationFailureReason.AppNotKnown:
@@ -360,7 +444,11 @@ namespace Loom.ZombieBattleground
         private async Task<bool> ClaimPendingPurchases()
         {
             ChangeState(State.ClaimingPendingPurchases);
-            const string error = "Failed to claim pending purchases. Please try again.";
+            string error = _localizationManager.GetUITranslation
+            (
+                LocalizationTerm.Warning_Shop_ClaimPending_Failed,
+                "Failed to claim pending purchases. Please try again."
+            );
 
             OneOf<Success, IapPurchaseProcessingError, IapException> claimStorePurchases = await _iapMediator.ClaimStorePurchases();
             if (!claimStorePurchases.IsT0)
@@ -385,7 +473,14 @@ namespace Loom.ZombieBattleground
         private void FailAndGoToMainMenu(string customMessage = null)
         {
             _uiManager.HidePopup<LoadingOverlayPopup>();
-            _uiManager.DrawPopup<WarningPopup>(customMessage ?? "Failed to initialize store.\n Please try again");
+            _uiManager.DrawPopup<WarningPopup>
+            (
+                _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.Warning_Shop_InitStore_Failed,
+                    customMessage ?? "Failed to initialize store.\n Please try again"
+                )
+            );
             ChangeState(State.Undefined);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
@@ -403,7 +498,14 @@ namespace Loom.ZombieBattleground
         private async void OnFinishRequestPack()
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
-            _uiManager.DrawPopup<LoadingOverlayPopup>($"Successfully request for pack(s).");
+            _uiManager.DrawPopup<LoadingOverlayPopup>            
+            (
+                _localizationManager.GetUITranslation
+                (
+                    LocalizationTerm.Warning_Shop_RequestPack_Success,
+                    "Successfully request for pack(s)."
+                )
+            );
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingOverlayPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
@@ -420,13 +522,34 @@ namespace Loom.ZombieBattleground
                     // Don't show error on user cancel
                     return true;
                 case PurchaseFailureReason.ExistingPurchasePending:
-                    OpenAlertDialog("Purchase for this product is already in progress. Please try again.");
+                    OpenAlertDialog
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Warning_Shop_ExistingPurchasePending,
+                            "Purchase for this product is already in progress. Please try again."
+                        )
+                    );
                     return true;
                 case PurchaseFailureReason.PaymentDeclined:
-                    OpenAlertDialog("Payment was declined.");
+                    OpenAlertDialog
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Warning_Shop_PaymentDeclined,
+                            "Payment was declined."
+                        )
+                    );
                     return true;
                 case PurchaseFailureReason.PurchasingUnavailable:
-                    OpenAlertDialog("Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device.");
+                    OpenAlertDialog
+                    (
+                        _localizationManager.GetUITranslation
+                        (
+                            LocalizationTerm.Warning_Shop_PurchasingUnavailable,
+                            "Purchasing is not available.\n\nCheck if you are using a valid account and purchasing is allowed on your device."
+                        )
+                    );
                     return true;
                 case PurchaseFailureReason.ProductUnavailable:
                 case PurchaseFailureReason.SignatureInvalid:
