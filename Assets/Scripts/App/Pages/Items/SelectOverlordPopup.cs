@@ -221,8 +221,16 @@ namespace Loom.ZombieBattleground
             OverlordUserInstance overlord = _dataManager.CachedOverlordData.Overlords.Find(overlords => overlords.Prototype.Id == overlordId);
 
             _overlordImage.sprite = DataUtilities.GetOverlordImage(overlord.Prototype.Faction);
-            _textSelectOverlordName.text = overlord.Prototype.ShortName;
-            _textSelectOverlordDescription.text = overlord.Prototype.ShortDescription;
+            _textSelectOverlordName.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+            (
+                $"GameData_Champion_Name_{overlordId.Id}",
+                overlord.Prototype.ShortName
+            );
+            _textSelectOverlordDescription.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+            (
+                $"GameData_Champion_ShortDescription_{overlordId.Id}",
+                overlord.Prototype.ShortDescription
+            );
 
             Enumerators.Faction againstFaction = Constants.FactionAgainstDictionary[overlord.Prototype.Faction];
 

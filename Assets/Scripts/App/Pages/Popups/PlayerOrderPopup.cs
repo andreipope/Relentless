@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
@@ -112,8 +113,16 @@ namespace Loom.ZombieBattleground
 
         private void ApplyInfoAboutOverlords(OverlordUserInstance player, OverlordUserInstance opponent)
         {
-            _playerOverlordNameText.text = player.Prototype.ShortName.ToUpperInvariant();
-            _opponentOverlordNameText.text = opponent.Prototype.ShortName.ToUpperInvariant();
+            _playerOverlordNameText.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+            (
+                $"GameData_Champion_Name_{player.Prototype.Id.Id}",
+                player.Prototype.ShortName.ToUpperInvariant()
+            );
+            _opponentOverlordNameText.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+            (
+                $"GameData_Champion_Name_{opponent.Prototype.Id.Id}",
+                opponent.Prototype.ShortName.ToUpperInvariant()
+            );
 
             _playerOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
