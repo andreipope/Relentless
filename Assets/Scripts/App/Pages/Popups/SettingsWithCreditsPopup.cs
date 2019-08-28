@@ -378,6 +378,7 @@ namespace Loom.ZombieBattleground
             if (_infoDataFilled)
             {
                 PlayClickSound();
+                await _localizationManager.SetLanguage(AvailableLanguages[index]);
                 GameClient.Get<IUIManager>().GetPopup<LoadingOverlayPopup>().Show
                 (
                     _localizationManager.GetUITranslation
@@ -387,7 +388,6 @@ namespace Loom.ZombieBattleground
                     )                
                 );
                 Hide();
-                await _localizationManager.SetLanguage(AvailableLanguages[index]);
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 Show();
                 GameClient.Get<IUIManager>().HidePopup<LoadingOverlayPopup>();
