@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Localization;
 using Loom.ZombieBattleground.Gameplay;
 using System;
 using System.Collections.Generic;
@@ -599,8 +600,16 @@ namespace Loom.ZombieBattleground
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon")
                     .GetComponent<SpriteRenderer>();
 
-                _triggerText.text = skill.Title.ToUpperInvariant();
-                _descriptionText.text = "    " + skill.Description;
+                _triggerText.text = GameClient.Get<ILocalizationManager>().GetUITranslation
+                (
+                    $"GameData_ChampionSkill_Title_{skill.Id.Id}",
+                    skill.Title.ToUpperInvariant()
+                );
+                _descriptionText.text = "    " + GameClient.Get<ILocalizationManager>().GetUITranslation
+                (
+                    $"GameData_ChampionSkill_Description_{skill.Id.Id}",
+                    skill.Description
+                );
 
                 _buffIconPicture.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" +
