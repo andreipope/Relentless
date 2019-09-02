@@ -55,6 +55,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.SetUnitCannotDie(true);
                 unit.SetUnitActiveStatus(false);
+                BattlegroundController.GetCardViewByModel<BoardUnitView>(unit).CancelTargetingArrows();
             }
 
             InvokeActionTriggered(Units);
