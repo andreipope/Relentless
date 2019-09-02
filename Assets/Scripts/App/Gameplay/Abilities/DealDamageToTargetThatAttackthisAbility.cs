@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDamagedHandler(from);
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE && fromGettingAttacked)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE || !fromGettingAttacked)
                 return;
 
             if (from is CardModel boardUnit)
