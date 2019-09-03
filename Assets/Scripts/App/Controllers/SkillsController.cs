@@ -1058,6 +1058,9 @@ namespace Loom.ZombieBattleground
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
+                if (!unit.IsUnitActive)
+                    return;
+                    
                 int unitAtk = unit.CurrentDamage;
 
                 _vfxController.CreateVfx(
@@ -1266,6 +1269,8 @@ namespace Loom.ZombieBattleground
             _vfxController.CreateVfx(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/InfectVFX"),
             unit, delay: 8f, isIgnoreCastVfx: true);
+
+            unit.SetUnitActiveStatus(false);
 
             InternalTools.DoActionDelayed(() =>
             {
