@@ -260,7 +260,9 @@ namespace Loom.ZombieBattleground
                 (
                     unit => !unit.IsDead &&
                     unit.CurrentDefense > 0 &&
-                    unit.IsUnitActive
+                    unit.IsUnitActive &&
+                    !(unit.HasFeral && UnitType == Enumerators.CardType.FERAL) &&
+                    !(unit.HasHeavy && UnitType == Enumerators.CardType.HEAVY)
                 ).ToList();
 
                 foreach (CardModel unit in unitsToAffect)
@@ -302,15 +304,13 @@ namespace Loom.ZombieBattleground
                     (
                         unit => !unit.IsDead &&
                         unit.CurrentDefense > 0 &&
-                        unit.IsUnitActive
+                        unit.IsUnitActive &&
+                        _affectedUnits.Contains(unit)
                     ).ToList();
                     foreach (CardModel unit in unitsToAffect)
                     {
                         ResetAffectedUnit(unit);
-                        if(_affectedUnits.Contains(unit))
-                        {
-                            _affectedUnits.Remove(unit);
-                        }
+                        _affectedUnits.Remove(unit);
                     }
                 }
             }
