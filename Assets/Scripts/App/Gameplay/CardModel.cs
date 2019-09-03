@@ -334,7 +334,7 @@ namespace Loom.ZombieBattleground
 
         public void AddToCurrentCostHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
-            int oldValue = CurrentDamage;
+            int oldValue = CurrentCost;
             CurrentCostHistory.Add(new ValueHistory(value, reason, forced: forced));
         }
         public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)

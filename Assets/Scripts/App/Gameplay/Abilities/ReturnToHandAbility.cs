@@ -74,8 +74,8 @@ namespace Loom.ZombieBattleground
             }
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
-            {                
-                unit.AddToCurrentCostHistory((currentCost - unit.CurrentCost) + Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+            {            
+                unit.AddToCurrentCostHistory( (currentCost - unit.Prototype.Cost) + Cost, Enumerators.ReasonForValueChange.AbilityBuff);
                 
                 BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);                
 
