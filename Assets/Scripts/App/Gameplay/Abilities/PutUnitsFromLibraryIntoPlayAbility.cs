@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
@@ -37,7 +38,12 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            Action();
+            //Wait until other units death trigger finish resolving then take this ability action afterward
+            InternalTools.DoActionDelayed
+            (
+                () => Action(),
+                0.1f
+            );
         }
 
         public override void Action(object info = null)
