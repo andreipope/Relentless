@@ -44,6 +44,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
+            VFXAnimationEnded += VFXAnimationEndedHandler;
             Action();
         }
 
@@ -82,6 +83,18 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction?.TriggerActionExternally();
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+
+            InvokeActionTriggered();
+        }
+        
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            AbilityProcessingAction?.TriggerActionExternally();
+            
             if (!_targetsAreReady)
             {
                 PrepareTargets();
@@ -101,8 +114,6 @@ namespace Loom.ZombieBattleground
                     TargetEffects = _targetEffects
                 });
             }
-
-            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         private void PutCardOnBoard(Player owner, CardModel cardModel, ref List<PastActionsPopup.TargetEffectParam> targetEffects)

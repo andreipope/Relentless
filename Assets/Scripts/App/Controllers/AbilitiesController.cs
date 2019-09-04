@@ -1202,6 +1202,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.PUT_UNITS_FROM_DISCARD_INTO_PLAY:
                     ability = new PutUnitsFromDiscardIntoPlayAbility(cardKind, abilityData);
+                    abilityView = new PutUnitsFromDiscardIntoPlayAbilityView((PutUnitsFromDiscardIntoPlayAbility)ability);
                     break;
                 case Enumerators.AbilityType.PUT_UNITS_FRON_LIBRARY_INTO_PLAY:
                     ability = new PutUnitsFromLibraryIntoPlayAbility(cardKind, abilityData);
