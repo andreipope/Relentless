@@ -117,6 +117,8 @@ namespace Loom.ZombieBattleground
 
         private void ChangeStats(List<CardModel> units, int defense, int damage)
         {
+            units.RemoveAll(x => x.WasDistracted);
+            
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             foreach (CardModel unit in units)
