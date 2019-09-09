@@ -336,6 +336,10 @@ namespace Loom.ZombieBattleground
         {
             foreach(CardStatInfo cardStat in _affectedUnits)
             {
+                if( cardStat.CardModel.OwnerPlayer.PlayerCardsController.CardsInHand.Contains(cardStat.CardModel) )
+                {
+                    continue;
+                }
                 RemoveBuffFromUnit(cardStat.ModifiedDamage, cardStat.ModifiedDefense, cardStat);
             }
 
