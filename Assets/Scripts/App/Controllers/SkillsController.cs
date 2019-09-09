@@ -1060,6 +1060,8 @@ namespace Loom.ZombieBattleground
             {
                 if (!unit.IsUnitActive)
                     return;
+
+                unit.IsPlayable = false;
                     
                 int unitAtk = unit.CurrentDamage;
 
