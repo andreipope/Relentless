@@ -798,6 +798,7 @@ namespace Loom.ZombieBattleground
                 if (boardCardView != null) 
                     {
                         boardCardView.UpdateCardCost();
+                        boardCardView.UpdateCardStatus();
 
                         bool isActive = boardCardView.Model.CurrentCost < boardCardView.Model.Card.Prototype.Cost;
                         boardCardView.costHighlightObject.SetActive(isActive);

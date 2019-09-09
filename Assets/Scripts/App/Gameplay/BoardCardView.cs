@@ -271,7 +271,11 @@ namespace Loom.ZombieBattleground
         public void UpdateCardCost()
         {
             CostText.text = Model.CurrentCost.ToString();
-            UpdateColorOfCost();
+            UpdateColorOfCost();            
+        }
+        public void UpdateCardStatus()
+        {
+            UpdateCardsStatusEventHandler(Model.OwnerPlayer);
         }
         public virtual void UpdateAmount(int amount)
         {
