@@ -44,14 +44,7 @@ namespace Loom.ZombieBattleground
                 GameObject battleFrameParticles = unitView.Transform.Find("Walker_Arrival_VFX(Clone)/ScrapFlies").gameObject;
 
                 InternalTools.DoActionDelayed(() =>
-                {
-                    unitSortingGroup.enabled = true;
-
-                    unitView.GameObject.SetActive(true);
-
-                    battleFrameParticles.SetActive(false);
-                    unitView.battleframeAnimator.Play(0, -1, 1);
-
+                {    
                     cameraGroupTransform.SetParent(null);
                     cameraGroupTransform.position = Vector3.zero;
 
@@ -62,6 +55,17 @@ namespace Loom.ZombieBattleground
                     BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
+                    
+                    unitSortingGroup.enabled = true;
+
+                    unitView.GameObject.SetActive(true);
+
+                    unitView.battleframeAnimator.Play(0, -1, 1);
+
+                    if (battleFrameParticles != null)
+                    {
+                        battleFrameParticles.SetActive(false);
+                    }
                 }, delayBeforeDestroyVFX);
             }, delayBeforeSpawn);
         }
