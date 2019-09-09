@@ -60,6 +60,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 _movedUnits.Add(unit);
+                unit.IsChangingOwner = true;
             }
 
             InvokeActionTriggered(_movedUnits);

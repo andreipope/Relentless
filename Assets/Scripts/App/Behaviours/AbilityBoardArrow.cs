@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
-            if (unit.Model.CurrentDefense <= 0 || unit.Model.IsDead || !unit.Model.IsUnitActive)
+            if (unit.Model.CurrentDefense <= 0 || unit.Model.IsDead || !unit.Model.IsUnitActive || unit.Model.IsChangingOwner)
                 return;
 
             if (TutorialManager.IsTutorial)

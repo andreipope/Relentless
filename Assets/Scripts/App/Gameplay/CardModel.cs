@@ -67,6 +67,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
+        public bool IsChangingOwner;
+
         public bool CannotDie { get; private set; }
 
         public InstanceId InstanceId => Card.InstanceId;
@@ -1219,6 +1221,7 @@ namespace Loom.ZombieBattleground
             IsPlayable = false;
             IsAttacking = false;
             IsDead = false;
+            IsChangingOwner = false;
             CannotDie = false;
             AttackAsFirst = false;
             IsUnitActive = true;

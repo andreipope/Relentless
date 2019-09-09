@@ -995,6 +995,7 @@ namespace Loom.ZombieBattleground
             {
                 ability.ChangePlayerCallerOfAbility(newPlayerOwner);
             }
+            unit.IsChangingOwner = false;
         }
 
         public void DistractUnit(CardModel card)
