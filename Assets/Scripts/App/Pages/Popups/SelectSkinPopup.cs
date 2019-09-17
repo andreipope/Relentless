@@ -11,8 +11,6 @@ namespace Loom.ZombieBattleground
     public class SelectSkinPopup : IUIPopup
     {
         public GameObject Self { get; private set; }
-        public event Action<List<CardModel>> MulliganCards;
-
         private ILoadObjectsManager _loadObjectsManager;
         private ISoundManager _soundManager;
         private IUIManager _uiManager;

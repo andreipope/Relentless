@@ -657,7 +657,7 @@ namespace Loom.ZombieBattleground
 
             if (!boardCardView.WasDestroyed)
             {
-                boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("BoardCards");
                 Object.Destroy(boardCardView.GameObject.GetComponent<BoxCollider2D>());
             }
         }
@@ -681,14 +681,14 @@ namespace Loom.ZombieBattleground
 
                 if (!boardCardView.WasDestroyed)
                 {
-                    boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                    boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("BoardCards");
                     Object.Destroy(boardCardView.GameObject.GetComponent<BoxCollider2D>());
                 }
             }
             else if (_aiController.CurrentItemCard != null && cardModel == _aiController.CurrentItemCard.Model)
             {
                 _aiController.CurrentItemCard.SetHighlightingEnabled(false);
-                _aiController.CurrentItemCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                _aiController.CurrentItemCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("BoardCards");
                 Object.Destroy(_aiController.CurrentItemCard.GameObject.GetComponent<BoxCollider2D>());
                 Sequence sequence = DOTween.Sequence();
                 sequence.PrependInterval(2.0f);
@@ -778,7 +778,7 @@ namespace Loom.ZombieBattleground
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
-            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameplayInfo;
+            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("GameplayInfo");
             CurrentBoardCard.GetComponent<SortingGroup>().sortingOrder = 2;
             CurrentBoardCard.layer = LayerMask.NameToLayer("Default");
             CurrentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
@@ -877,7 +877,7 @@ namespace Loom.ZombieBattleground
 
                 pivot.x += handWidth / boardCardViews.Count;
 
-                card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
+                card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("HandCards");
                 card.GameObject.GetComponent<SortingGroup>().sortingOrder = i * -1;
             }
         }
@@ -943,7 +943,7 @@ namespace Loom.ZombieBattleground
             if (card.layer == 0)
             {
                 SortingGroup group = card.GetComponent<SortingGroup>();
-                group.sortingLayerID = SRSortingLayers.Default;
+                group.sortingLayerID = SortingLayer.NameToID("Default");
                 group.sortingOrder = -1;
                 List<GameObject> allUnitObj = card.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
                 foreach (GameObject child in allUnitObj)
@@ -987,7 +987,7 @@ namespace Loom.ZombieBattleground
             newPlayerOwner.PlayerCardsController.TakeControlOfUnit(unit);
             RegisterCardView(view, newPlayerOwner);
 
-            view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            view.Transform.tag = newPlayerOwner.IsLocalPlayer ? "PlayerOwned" : "OpponentOwned";
 
             _boardController.UpdateWholeBoard(null);
 
@@ -1054,7 +1054,7 @@ namespace Loom.ZombieBattleground
             GameObject playerBoard = owner.IsLocalPlayer ? PlayerBoardObject : OpponentBoardObject;
 
             BoardUnitView boardUnitView = new BoardUnitView(cardModel, playerBoard.transform);
-            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? "PlayerOwned" : "OpponentOwned";
             boardUnitView.Transform.SetParent(playerBoard.transform);
             boardUnitView.Transform.position = new Vector2(1.9f * owner.CardsOnBoard.Count, 0);
 

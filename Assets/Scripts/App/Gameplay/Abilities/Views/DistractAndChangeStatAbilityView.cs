@@ -7,8 +7,6 @@ namespace Loom.ZombieBattleground
 {
     public class DistractAndChangeStatAbilityView : AbilityViewBase<DistractAndChangeStatAbility>
     {
-        private float _delayBeforeMove;
-        private float _delayBeforeDestroyMoved;
         private float _delayAfterImpact;
         private float _delayBeforeDestroyImpact;
 
@@ -24,10 +22,8 @@ namespace Loom.ZombieBattleground
             Debug.LogWarning("On ability action called === ");
             SetDelays();
 
-            float durationOfMoving = 0.5f;
             Vector3 offset = Vector3.zero;
             Vector3 localOffset = Vector3.zero;
-            bool isRotate = false;
 
             soundClipTitle = string.Empty;
 
@@ -76,10 +72,8 @@ namespace Loom.ZombieBattleground
 
         private void SetDelays()
         {
-            _delayBeforeMove = 0;
             _delayAfterImpact = 0;
             _delayBeforeDestroyImpact = 0;
-            _delayBeforeDestroyMoved = 0;
         }
     }
 }

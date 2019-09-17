@@ -330,7 +330,7 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.OpponentBoardObject;
 
             BoardUnitView boardUnitView = new BoardUnitView(cardModel, playerBoard.transform);
-            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? "PlayerOwned" : "OpponentOwned";
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.CardsOnBoard.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnitView.Model.Card.Owner = owner;
@@ -429,7 +429,7 @@ namespace Loom.ZombieBattleground
                                 boardUnitViewElement = new BoardUnitView(cardModel, _battlegroundController.OpponentBoardObject.transform);
                                 GameObject boardUnit = boardUnitViewElement.GameObject;
 
-                                boardUnit.tag = SRTags.OpponentOwned;
+                                boardUnit.tag = "OpponentOwned";
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                                 boardUnit.SetActive(false);
 

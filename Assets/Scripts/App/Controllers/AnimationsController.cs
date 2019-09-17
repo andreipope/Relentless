@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             int oldSortingOrder = sortingGroup.sortingOrder;
             string oldsortingLayerName = sortingGroup.sortingLayerName;
 
-            sortingGroup.sortingLayerID = SRSortingLayers.BoardCards;
+            sortingGroup.sortingLayerID = SortingLayer.NameToID("BoardCard");
             sortingGroup.sortingOrder = 1000;
 
             Vector3 partWay;

@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
             _previewCard.GameObject.transform.position = card.GameObject.transform.position;
             _previewCard.GameObject.transform.localScale = card.GameObject.transform.lossyScale;
 
-            _previewCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI2;
+            _previewCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("GameUI2");
 
             PreviewCardInstantiated?.Invoke(_previewCard);
 

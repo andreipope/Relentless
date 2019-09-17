@@ -273,7 +273,7 @@ namespace Loom.ZombieBattleground
                     animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 0f), .45f));
 
                     // Changing layers to all child objects to set them Behind the Graveyard Card
-                    sortingGroup.sortingLayerID = SRSortingLayers.Foreground;
+                    sortingGroup.sortingLayerID = SortingLayer.NameToID("Foreground");
                     sortingGroup.sortingOrder = 7;
 
                     sortingGroup.gameObject.layer = 0;
@@ -336,10 +336,10 @@ namespace Loom.ZombieBattleground
             animationSequence2.OnComplete(
                 () =>
                 {
-                    opponentHandCard.GameObject.layer = SRLayers.Default;
+                    opponentHandCard.GameObject.layer = LayerMask.NameToLayer("Default");
                     for (int i = 0; i < opponentHandCard.Transform.childCount; i++)
                     {
-                        opponentHandCard.Transform.GetChild(i).gameObject.layer = SRLayers.Default;
+                        opponentHandCard.Transform.GetChild(i).gameObject.layer = LayerMask.NameToLayer("Default");
                     }
 
                     sortingGroup.sortingOrder = 7; // Foreground layer
@@ -498,7 +498,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         BoardUnitView boardUnitView = new BoardUnitView(card.Model, PlayerBoard.transform);
-                        boardUnitView.Transform.tag = SRTags.PlayerOwned;
+                        boardUnitView.Transform.tag = "PlayerOwned";
                         boardUnitView.Transform.parent = PlayerBoard.transform;
                         boardUnitView.Transform.position = new Vector2(1.9f * player.CardsOnBoard.Count, 0);
 
@@ -593,7 +593,7 @@ namespace Loom.ZombieBattleground
                             _battlegroundController.UnregisterCardView(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-                        card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                        card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("BoardCards");
                         card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
                         card.RemoveCardParticle.Play();
@@ -682,7 +682,7 @@ namespace Loom.ZombieBattleground
                 Constants.CardsMoveSoundVolume);
 
             SortingGroup group = opponentHandCard.Transform.GetComponent<SortingGroup>();
-            group.sortingLayerID = SRSortingLayers.Foreground;
+            group.sortingLayerID = SortingLayer.NameToID("Foreground");
             group.sortingOrder = _gameplayManager.OpponentPlayer.CardsInHand.FindIndex(x => x == opponentHandCard.Model);
             List<GameObject> allUnitObj = opponentHandCard.Transform.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
             foreach (GameObject child in allUnitObj)
@@ -862,7 +862,7 @@ namespace Loom.ZombieBattleground
             _parentOfSelectableCards = container.transform;
             collider.size = Vector2.one * 100f;
             group.sortingOrder = 22;
-            group.sortingLayerID = SRSortingLayers.GameplayInfo;
+            group.sortingLayerID = SortingLayer.NameToID("GameplayInfo");
 
             foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
             {

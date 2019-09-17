@@ -90,9 +90,6 @@ namespace Loom.ZombieBattleground
 
         private void OnDestroy()
         {
-            // FIXME: Mixpanel crashes when sending events during app shutdown
-            //GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
-
             if (Instance == this)
             {
                 GameClient.Instance.Dispose();

@@ -90,9 +90,9 @@ namespace Loom.ZombieBattleground
 
             if (TargetsType.Contains(Enumerators.SkillTarget.ALL_CARDS) ||
                 TargetsType.Contains(Enumerators.SkillTarget.PLAYER_CARD) &&
-                unit.Transform.CompareTag(SRTags.PlayerOwned) ||
+                unit.Transform.CompareTag("PlayerOwned") ||
                 TargetsType.Contains(Enumerators.SkillTarget.OPPONENT_CARD) &&
-                unit.Transform.CompareTag(SRTags.OpponentOwned))
+                unit.Transform.CompareTag("OpponentOwned"))
             {
                 bool opponentHasProvoke = OpponentHasHeavyUnits();
                 if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
@@ -141,9 +141,9 @@ namespace Loom.ZombieBattleground
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTarget.OPPONENT) &&
-                player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
+                player.AvatarObject.CompareTag("OpponentOwned") ||
                 TargetsType.Contains(Enumerators.SkillTarget.PLAYER) &&
-                player.AvatarObject.CompareTag(SRTags.PlayerOwned))
+                player.AvatarObject.CompareTag("PlayerOwned"))
             {
                 if (!OpponentHasHeavyUnits() || IgnoreHeavy)
                 {

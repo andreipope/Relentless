@@ -246,7 +246,7 @@ namespace Loom.ZombieBattleground
             }
 
             Vector3 point = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            RaycastHit2D hit = Physics2D.Raycast(point, Vector3.forward, Mathf.Infinity, LayerMask.NameToLayer("Default"));
             if (hit.collider != null)
             {
                 if (hit.collider.gameObject == _cardListScrollRect)
