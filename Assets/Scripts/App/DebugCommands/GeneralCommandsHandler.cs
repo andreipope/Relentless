@@ -2,7 +2,6 @@ using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -14,13 +13,10 @@ namespace Loom.ZombieBattleground
 
         public static void Initialize()
         {
-            CommandHandlers.RegisterCommandHandlers(typeof(GeneralCommandsHandler));
-
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade = GameClient.Get<BackendFacade>();
         }
 
-        [CommandHandler(Description = "Logs in into the game with a fake random user")]
         private static async void FakeLogin()
         {
             long userId = UnityEngine.Random.Range(100000, int.MaxValue);
@@ -39,7 +35,6 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
         }
 
-        [CommandHandler(Description = "Skips tutorial if you inside it")]
         public static void SkipTutorialFlow()
         {
             if (!GameClient.Get<ITutorialManager>().IsTutorial)
@@ -62,14 +57,12 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IGameplayManager>().IsSpecificGameplayBattleground = false;
         }
 
-        [CommandHandler(Description = "Get notifications from server")]
         public static async void GetNotifications()
         {
             GetNotificationsResponse response = await GameClient.Get<BackendFacade>().GetNotifications(_backendDataControlMediator.UserDataModel.UserId);
             Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
         }
 
-        [CommandHandler(Description = "Clear notification on server")]
         public static async void ClearNotification(int notificationId)
         {
             ClearNotificationsResponse response =
@@ -77,7 +70,6 @@ namespace Loom.ZombieBattleground
             Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
         }
 
-        [CommandHandler(Description = "Add experience to an overlord")]
         public static async void AddSoloExperience(int overlordId, int experience, int deckId = 1, bool isWin = true)
         {
             await GameClient.Get<BackendFacade>()
@@ -92,7 +84,6 @@ namespace Loom.ZombieBattleground
             Debug.Log("Added experience");
         }
 
-        [CommandHandler(Description = "Get overlord user instance from server")]
         public static async void GetOverlordUserInstance(int overlordId)
         {
             GetOverlordUserInstanceResponse getOverlordUserInstanceResponse =
@@ -105,31 +96,26 @@ namespace Loom.ZombieBattleground
             Debug.Log(JsonUtility.PrettyPrint(getOverlordUserInstanceResponse.Overlord.ToString()));
         }
 
-        [CommandHandler]
         public static void ShowYouWonYouLostPopup(bool win = true)
         {
             GameClient.Get<IUIManager>().DrawPopup<YouWonYouLostPopup>(new object[] { win });
         }
 
-        [CommandHandler]
         public static void HideYouWonYouLostPopup()
         {
             GameClient.Get<IUIManager>().HidePopup<YouWonYouLostPopup>();
         }
 
-        [CommandHandler]
         public static void ShowPackOpenerV1()
         {
             GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBar>();
         }
 
-        [CommandHandler]
         public static void ShowPackOpenerV2()
         {
             GameClient.Get<IUIManager>().SetPage<PackOpenerPageWithNavigationBar>();
         }
 
-        [CommandHandler]
         public static async void DebugGetUserIdByAddress()
         {
             string userId = await _backendFacade.DebugGetUserIdByAddress(_backendDataControlMediator.UserDataModel.Address);
@@ -137,7 +123,6 @@ namespace Loom.ZombieBattleground
             Debug.Log("Mapped User Id: " + userId);
         }
 
-        [CommandHandler]
         public static async void DebugGetPendingCardAmountChangeItems()
         {
             DebugGetPendingCardAmountChangeItemsResponse response =

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -67,6 +68,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
+            Debug.LogWarning("HERE");
             SelectedPlayer = null;
             SelectedPlayer?.SetGlowStatus(false);
 
@@ -88,12 +90,15 @@ namespace Loom.ZombieBattleground
                 BlockedUnitStatusTypes = new List<Enumerators.UnitSpecialStatus>();
             }
 
+            Debug.LogWarning("THERE");
+
             if (TargetsType.Contains(Enumerators.SkillTarget.ALL_CARDS) ||
                 TargetsType.Contains(Enumerators.SkillTarget.PLAYER_CARD) &&
-                unit.Transform.CompareTag(SRTags.PlayerOwned) ||
+                unit.Transform.CompareTag("PlayerOwned") ||
                 TargetsType.Contains(Enumerators.SkillTarget.OPPONENT_CARD) &&
-                unit.Transform.CompareTag(SRTags.OpponentOwned))
+                unit.Transform.CompareTag("OpponentOwned"))
             {
+                Debug.LogWarning("FINAL");
                 bool opponentHasProvoke = OpponentHasHeavyUnits();
                 if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
@@ -141,9 +146,9 @@ namespace Loom.ZombieBattleground
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTarget.OPPONENT) &&
-                player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
+                player.AvatarObject.CompareTag("OpponentOwned") ||
                 TargetsType.Contains(Enumerators.SkillTarget.PLAYER) &&
-                player.AvatarObject.CompareTag(SRTags.PlayerOwned))
+                player.AvatarObject.CompareTag("PlayerOwned"))
             {
                 if (!OpponentHasHeavyUnits() || IgnoreHeavy)
                 {

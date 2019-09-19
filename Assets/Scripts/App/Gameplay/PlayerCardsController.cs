@@ -583,7 +583,7 @@ namespace Loom.ZombieBattleground
             GameObject board = Player.IsLocalPlayer ? _cardsController.PlayerBoard : _cardsController.OpponentBoard;
 
             BoardUnitView boardUnitView = new BoardUnitView(card.Model, board.transform);
-            boardUnitView.Transform.tag = Player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.tag = Player.IsLocalPlayer ? "PlayerOwned" : "OpponentOwned";
             boardUnitView.Transform.parent = board.transform;
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * Player.CardsOnBoard.Count, 0);
 
@@ -891,7 +891,7 @@ namespace Loom.ZombieBattleground
                 throw new Exception("card.Owner != owner, shouldn't those be the same");
 
             BoardUnitView boardUnitView = new BoardUnitView(cardModel, playerBoard.transform);
-            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? "PlayerOwned" : "OpponentOwned";
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.CardsOnBoard.Count, unitYPositionOnBoard);
 

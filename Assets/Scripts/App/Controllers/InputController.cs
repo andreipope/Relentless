@@ -95,12 +95,12 @@ namespace Loom.ZombieBattleground
                         case TouchPhase.Began:
                             GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
 
-                            CastRay(touch.position, SRLayerMask.Battleground);
+                            CastRay(touch.position, LayerMask.GetMask("Battleground"));
                             _pointerEventSolver.PushPointer(PointerEventSolver.DefaultDelta);
                             break;
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
-                            CastRay(touch.position, SRLayerMask.Battleground, true);
+                            CastRay(touch.position, LayerMask.GetMask("Battleground"), true);
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
@@ -120,19 +120,19 @@ namespace Loom.ZombieBattleground
             {
                 if (_gameplayManager.IsTutorial && !_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle && _gameplayManager.IsGameStarted)
                 {
-                    CastRay(Input.mousePosition, SRLayerMask.Battleground, isHovering: true);
+                    CastRay(Input.mousePosition, LayerMask.GetMask("Battleground"), isHovering: true);
                 }
 
                 if (Input.GetMouseButtonDown(0))
                 {
                     GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
 
-                    CastRay(Input.mousePosition, SRLayerMask.Battleground);
+                    CastRay(Input.mousePosition, LayerMask.GetMask("Battleground"));
                     _pointerEventSolver.PushPointer(PointerEventSolver.DefaultDelta);
                 }
                 else if (Input.GetMouseButton(0))
                 {
-                    CastRay(Input.mousePosition, SRLayerMask.Battleground, true);
+                    CastRay(Input.mousePosition, LayerMask.GetMask("Battleground"), true);
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_gameplayManager.GetController<BoardArrowController>().CurrentBoardArrow is AbilityBoardArrow)
                     {
-                        CastRay(Input.mousePosition, SRLayerMask.Battleground, true);
+                        CastRay(Input.mousePosition, LayerMask.GetMask("Battleground"), true);
                     }
                 }
             }

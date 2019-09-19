@@ -949,7 +949,7 @@ namespace Loom.ZombieBattleground
                     {
                         BoardUnitView boardUnitViewElement = new BoardUnitView(cardModel, GameObject.Find("OpponentBoard").transform);
                         GameObject boardUnit = boardUnitViewElement.GameObject;
-                        boardUnit.tag = SRTags.OpponentOwned;
+                        boardUnit.tag = "OpponentOwned";
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                         _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
                         _battlegroundController.RegisterCardView(boardUnitViewElement, _gameplayManager.OpponentPlayer, ItemPosition.End);

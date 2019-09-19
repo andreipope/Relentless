@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Iap;
-using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -22,8 +20,6 @@ namespace Loom.ZombieBattleground
 
         public static void Initialize()
         {
-            CommandHandlers.RegisterCommandHandlers(typeof(CollectionCommandHandler));
-
             _backendFacade = GameClient.Get<BackendFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -31,20 +27,17 @@ namespace Loom.ZombieBattleground
             _backendDataSyncService = GameClient.Get<BackendDataSyncService>();
         }
 
-        [CommandHandler]
         public static async void RequestUserFullCardCollectionSync()
         {
             await _backendFacade.RequestUserFullCardCollectionSync(_backendDataControlMediator.UserDataModel.UserId);
             Debug.Log("Added request for full card sync");
         }
 
-        [CommandHandler]
         public static void SetUserCollectionDirtyFlag()
         {
             _backendDataSyncService.SetCollectionDataDirtyFlag();
         }
 
-        [CommandHandler]
         public static async void PlasmachainGetOwnedCards()
         {
             using (DAppChainClient client = await _plasmaChainBackendFacade.GetConnectedClient())
@@ -60,7 +53,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        [CommandHandler]
         public static async Task DebugCheatSetFullCardCollection()
         {
             await _backendFacade.DebugCheatSetFullCardCollection(_backendDataControlMediator.UserDataModel.UserId);

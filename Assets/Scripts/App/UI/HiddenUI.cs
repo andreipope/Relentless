@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using CodeStage.AdvancedFPSCounter;
 using log4net;
-using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Loom.Google.Protobuf;
@@ -28,17 +27,16 @@ namespace Loom.ZombieBattleground
 
         public Button RequestFullCardCollectionSyncButton;
         public Button DebugCheatSetFullCardCollectionButton;
-
-        private AFPSCounter _afpsCounter;
         private bool _isVisible;
 
-        private bool ShouldBeVisible => _afpsCounter.OperationMode == OperationMode.Normal;
+        private readonly List<Vector2> gesturePoints = new List<Vector2>();
+		private int gestureCount;
+
+        private bool ShouldBeVisible;
 
         void Start()
         {
-            _afpsCounter = FindObjectOfType<AFPSCounter>();
-            if (_afpsCounter == null)
-                throw new Exception("AFPSCounter instance not found in scene");
+            ShouldBeVisible = false;
 
             SelectBackendDropdown.options.Clear();
             SelectBackendDropdown.options.Add(new Dropdown.OptionData("No Override"));
@@ -67,6 +65,11 @@ namespace Loom.ZombieBattleground
 
         private void Update()
         {
+            if (PerformedCircleOnScreen())
+			{
+				ShouldBeVisible = ShouldBeVisible ? false : true;
+			}
+
             UpdateVisibility();
         }
 
@@ -96,11 +99,6 @@ namespace Loom.ZombieBattleground
             if (this.UIRoot != null)
             {
                 UIRoot.gameObject.SetActive(visible);
-            }
-
-            if (DebugConsole.Instance != null && visible)
-            {
-                DebugConsole.IsVisible = false;
             }
         }
 
@@ -145,16 +143,7 @@ namespace Loom.ZombieBattleground
 
         public void OpenDebugConsole()
         {
-            if (DebugConsole.Instance == null)
-                return;
-
-            _afpsCounter.OperationMode = OperationMode.Disabled;
-            DebugConsole.IsVisible = true;
-        }
-
-        public void SkipTutorial()
-        {
-            GeneralCommandsHandler.SkipTutorialFlow();
+            ShouldBeVisible = false;
         }
 
         public async void DebugCheatSetFullCardCollection()
@@ -183,6 +172,71 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
+
+        private bool PerformedCircleOnScreen()
+		{
+			int pointsCount = gesturePoints.Count;
+
+			if (Input.GetMouseButton(0))
+			{
+				Vector2 mousePosition = Input.mousePosition;
+				if (pointsCount == 0 || (mousePosition - gesturePoints[pointsCount - 1]).magnitude > 10)
+				{
+					gesturePoints.Add(mousePosition);
+					pointsCount++;
+				}
+			}
+			else if (Input.GetMouseButtonUp(0))
+			{
+				pointsCount = 0;
+				gestureCount = 0;
+				gesturePoints.Clear();
+			}
+
+			if (pointsCount < 10)
+				return false;
+
+			float finalDeltaLength = 0;
+
+			Vector2 finalDelta = Vector2.zero;
+			Vector2 previousPointsDelta = Vector2.zero;
+
+			for (int i = 0; i < pointsCount - 2; i++)
+			{
+				Vector2 pointsDelta = gesturePoints[i + 1] - gesturePoints[i];
+				finalDelta += pointsDelta;
+
+				float pointsDeltaLength = pointsDelta.magnitude;
+				finalDeltaLength += pointsDeltaLength;
+
+				float dotProduct = Vector2.Dot(pointsDelta, previousPointsDelta);
+				if (dotProduct < 0f)
+				{
+					gesturePoints.Clear();
+					gestureCount = 0;
+					return false;
+				}
+
+				previousPointsDelta = pointsDelta;
+			}
+
+			bool result = false;
+			int gestureBase = (Screen.width + Screen.height) / 4;
+
+			if (finalDeltaLength > gestureBase && finalDelta.magnitude < gestureBase / 2f)
+			{
+				gesturePoints.Clear();
+				gestureCount++;
+
+				if (gestureCount >= 4)
+				{
+					gestureCount = 0;
+					result = true;
+				}
+			}
+
+			return result;
+		}
 
         public void DumpState()
         {

@@ -11,8 +11,6 @@ using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Analytics;
 using Object = UnityEngine.Object;
-using mixpanel;
-
 public class AnalyticsManager : IAnalyticsManager, IService
 {
     private static readonly ILog Log = Logging.GetLog(nameof(AnalyticsManager));
@@ -95,8 +93,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
         Log.Info("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
-
-        Mixpanel.Track(title);
 #endif
     }
 
@@ -153,14 +149,10 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
         _googleAnalytics.androidTrackingCode = "UA-124278621-1";
         _googleAnalytics.otherTrackingCode = "UA-124278621-1";
-
-        MixpanelSettings.Instance.RuntimeToken = MixpanelSettings.Instance.DebugToken = "609343ab4cfd24db2e55c89ddd834dfc";
 #else
         _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
         _googleAnalytics.androidTrackingCode = "UA-130846432-1";
         _googleAnalytics.otherTrackingCode = "UA-130846432-1";
-
-        MixpanelSettings.Instance.RuntimeToken = MixpanelSettings.Instance.DebugToken = "7378161f22b124e736e23d71002981df";
 #endif
 
         _fbManager = GameClient.Get<IFacebookManager>();
@@ -177,13 +169,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName)
     {
 #if !DISABLE_ANALYTICS
-        // Mixpanel
-        Value props = new Value();
-        FillBasicProps(props);
-
-        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
-        Mixpanel.Track(eventName, props);
-
         // FB
         _fbManager.LogEvent(eventName, null, new Dictionary<string, object>());
 #endif
@@ -192,53 +177,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName, Dictionary<string, object> paramters)
     {
 #if !DISABLE_ANALYTICS
-        // Mixpanel
-        Value props = new Value();
-        FillBasicProps(props);
-
-        foreach (KeyValuePair<string, object> parameter in paramters)
-        {
-            props[parameter.Key] = parameter.Value.ToString();
-        }
-
-        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
-        Mixpanel.Track(eventName, props);
-
         // FB
         _fbManager.LogEvent(eventName, null, paramters);
 #endif
-    }
-
-    public void SetPeopleProperty(string identityId, string property, string value)
-    {
-#if !DISABLE_ANALYTICS
-        if (string.IsNullOrEmpty(identityId))
-            return;
-
-        Mixpanel.Identify(identityId);
-        Mixpanel.People.Set(property, value);
-#endif
-    }
-
-    public void SetSuperProperty(string property, string value)
-    {
-#if !DISABLE_ANALYTICS
-        Mixpanel.Register(property, value);
-#endif
-    }
-
-    public void SetPeopleIncrement(string property, int value)
-    {
-#if !DISABLE_ANALYTICS
-        Mixpanel.People.Increment(property, value);
-#endif
-    }
-
-    private void FillBasicProps(Value props)
-    {
-        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
-
-        // FIXME
-        //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
     }
 }

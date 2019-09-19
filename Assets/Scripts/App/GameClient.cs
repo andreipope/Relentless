@@ -71,7 +71,6 @@ namespace Loom.ZombieBattleground
                     Logging.GetLog(nameof(BackendFacade) + "Rpc")
                 ));
             AddService<INetworkActionManager>(new NetworkActionManager());
-            AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<AuthApiFacade>(new AuthApiFacade(backendEndpoint.AuthHost, backendEndpoint.VaultHost));
             AddService<AuthFiatApiFacade>(new AuthFiatApiFacade(backendEndpoint.AuthHost));

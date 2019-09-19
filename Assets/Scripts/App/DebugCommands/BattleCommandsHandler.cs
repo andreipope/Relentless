@@ -6,7 +6,6 @@ using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
 static class BattleCommandsHandler
@@ -27,8 +26,6 @@ static class BattleCommandsHandler
 
     public static void Initialize()
     {
-        CommandHandlers.RegisterCommandHandlers(typeof(BattleCommandsHandler));
-
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _dataManager = GameClient.Get<IDataManager>();
         _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
@@ -43,19 +40,16 @@ static class BattleCommandsHandler
 
     }
 
-    [CommandHandler(Description = "Reduce the current def of the Player overlord")]
     private static void PlayerOverlordSetDef(int defenseValue)
     {
         _gameplayManager.CurrentPlayer.Defense = defenseValue;
     }
 
-    [CommandHandler(Description = "Reduce the current def of the AI overlord")]
     private static void EnemyOverlordSetDef(int defenseValue)
     {
         _gameplayManager.OpponentPlayer.Defense = defenseValue;
     }
 
-    [CommandHandler(Description = "Player Overlord Ability Slot (0 or 1) and Cool Down Timer")]
     private static void PlayerOverlordSetAbilityTurn(int abilitySlot, int coolDownTimer)
     {
         if (abilitySlot == 0)
@@ -82,7 +76,6 @@ static class BattleCommandsHandler
         }
     }
 
-    [CommandHandler(Description = "AI Overlord Ability Slot (0 or 1) and Cool Down Timer")]
     private static void EnemyOverlordSetAbilityTurn(int abilitySlot, int coolDownTimer)
     {
         if (abilitySlot == 0)
@@ -95,21 +88,17 @@ static class BattleCommandsHandler
         }
     }
 
-    [CommandHandler(Description = "Allow Player to Play Cards without costing any goo")]
     private static void PlayerInfiniteGoo(bool useInfiniteGoo)
     {
         _gameplayManager.AvoidGooCost = useInfiniteGoo;
     }
 
-
-    [CommandHandler(Description = "Enemy Mode - DoNothing / Normal / DontAttack")]
     private static void EnemyMode(Enumerators.AiBrainType aiBrainType)
     {
         _gameplayManager.GetController<AIController>().SetAiBrainType(aiBrainType);
     }
 
-    [CommandHandler(Description = "Player Draw Next - Draw next Card with Card Name")]
-    private static void PlayerDrawNext([Autocomplete(typeof(BattleCommandsHandler), "CardsInDeck")] string cardName)
+    private static void PlayerDrawNext(string cardName)
     {
         Player player = _gameplayManager.CurrentPlayer;
 
@@ -141,7 +130,6 @@ static class BattleCommandsHandler
         return deckNames;
     }
 
-    [CommandHandler(Description = "Will list down the cards that started in the Enemy Overlord's deck.")]
     private static void EnemyShowDeck()
     {
         Player player = _gameplayManager.OpponentPlayer;
@@ -163,7 +151,6 @@ static class BattleCommandsHandler
         Log.Info(cardsInHand);
     }
 
-    [CommandHandler(Description = "Sets the number of goo vials / bottles for the player where x is the number of goo vials")]
     private static void PlayerSetGooVial(int gooVials)
     {
         Player player = _gameplayManager.CurrentPlayer;
@@ -182,7 +169,6 @@ static class BattleCommandsHandler
         player.GooVials = gooVials;
     }
 
-    [CommandHandler(Description = "Sets the number of goo (max will be determined by current number of vials of course) for the player")]
     private static void PlayerSetGooAmount(int gooAmount)
     {
         Player player = _gameplayManager.CurrentPlayer;
@@ -217,7 +203,6 @@ static class BattleCommandsHandler
     }
 
 
-    [CommandHandler(Description = "Player Draw - Draw Card from Library with Card Name")]
     private static void PlayerDraw(string cardName)
     {
         Player player = _gameplayManager.CurrentPlayer;
@@ -230,7 +215,6 @@ static class BattleCommandsHandler
         player.PlayerCardsController.CreateNewCardAndAddToHand(card);
     }
 
-    [CommandHandler(Description = "AI Draw - Draw Card from Library with Card Name")]
     private static void AIDraw(string cardName)
     {
         Player player = _gameplayManager.CurrentPlayer;
@@ -253,7 +237,6 @@ static class BattleCommandsHandler
         }
     }
 
-    [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
     private static void PlayerInfiniteAbility(bool useInfiniteAbility)
     {
         Player player = _gameplayManager.CurrentPlayer;
@@ -286,8 +269,6 @@ static class BattleCommandsHandler
         }
     }
 
-
-    [CommandHandler(Description = "Enemy Draw - Puts a card into play for the side of the AI/enemy from the library")]
     private static void EnemyOverlordPlayAnyCard(string cardName)
     {
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
@@ -302,7 +283,6 @@ static class BattleCommandsHandler
         _aiController.PlayCardOnBoard(cardModel, true);
     }
 
-    [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
     private static void EnemyOverlordPlayCard(string cardName)
     {
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
@@ -343,7 +323,6 @@ static class BattleCommandsHandler
     }
 
 
-    [CommandHandler(Description = "Undoes the Previous Action")]
     private static void Undo()
     {
         if (_gameplayManager.CurrentTurnPlayer != _gameplayManager.CurrentPlayer)
@@ -684,7 +663,6 @@ static class BattleCommandsHandler
         unitModel.AddToCurrentDefenseHistory(-boardSkill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
     }
 
-    [CommandHandler(Description = "Unlocks current overlord abilities")]
     private static void UnlockAllCurrentOverlordAbilities()
     {
         foreach (var skill in _gameplayManager.CurrentPlayer.SelfOverlord.Skills)
@@ -693,14 +671,12 @@ static class BattleCommandsHandler
         }
     }
 
-    [CommandHandler(Description = "Show Player and Opponent XP")]
     private static void ShowPlayerAndOpponentXP()
     {
         Debug.Log("Player Experience = " + _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived);
         Debug.Log("Opponent Experience = " + _overlordExperienceManager.OpponentMatchMatchExperienceInfo.ExperienceReceived);
     }
 
-    [CommandHandler(Description = "Set Player and Opponent XP")]
     private static void SetPlayerAndOpponentXP(int playerExperience, int opponentExperience)
     {
         _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived = playerExperience;

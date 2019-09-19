@@ -1,5 +1,4 @@
 ﻿using Loom.ZombieBattleground.Common;
-using Opencoding.CommandHandlerSystem;
 
 namespace Loom.ZombieBattleground
 {
@@ -9,11 +8,9 @@ namespace Loom.ZombieBattleground
     
         public static void Initialize()
         {
-            CommandHandlers.RegisterCommandHandlers(typeof(TutorialRewardCommandsHandler));
             _gameplayManager = GameClient.Get<IGameplayManager>();
         }
         
-        [CommandHandler(Description = "Skips to last tutorial")]
         public static void SkipToLastTutorial()
         {
             if (!GameClient.Get<ITutorialManager>().IsTutorial)
@@ -33,13 +30,11 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = Constants.LastTutorialId;
         }
         
-        [CommandHandler(Description = "Reduce the current def of the AI overlord to zero")]
         private static void WinBattle()
         {
             _gameplayManager.OpponentPlayer.Defense = 0;
         }
         
-        [CommandHandler(Description = "Reduce the current def of the Playwe overlord to zero")]
         private static void LoseBattle()
         {
             _gameplayManager.CurrentPlayer.Defense = 0;

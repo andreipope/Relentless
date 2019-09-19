@@ -890,7 +890,7 @@ namespace Loom.ZombieBattleground
                 BoardCardView.Transform.localRotation = Quaternion.identity;
                 BoardCardView.Transform.localPosition = Vector3.zero;
                 SortingGroup sortingGroup = BoardCardView.GameObject.GetComponent<SortingGroup>();
-                sortingGroup.sortingLayerID = SRSortingLayers.GameUI1;
+                sortingGroup.sortingLayerID = SortingLayer.NameToID("GameUI1");
                 sortingGroup.sortingOrder = 15;
                 BoardCardView.SetHighlightingEnabled(false);
                 BoardCardView.GameObject.SetActive(false);

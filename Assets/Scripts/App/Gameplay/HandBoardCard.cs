@@ -272,7 +272,7 @@ namespace Loom.ZombieBattleground
             IsReturnToHand = true;
             _isHandCard = true;
             Enabled = true;
-            GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
+            GameObject.GetComponent<SortingGroup>().sortingLayerID = SortingLayer.NameToID("HandCards");
             GameObject.GetComponent<SortingGroup>().sortingOrder = 0;
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);

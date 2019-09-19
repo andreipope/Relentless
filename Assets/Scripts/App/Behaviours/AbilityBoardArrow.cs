@@ -59,9 +59,9 @@ namespace Loom.ZombieBattleground
             }
 
             if (PossibleTargets.Contains(Enumerators.Target.PLAYER_CARD) &&
-                unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
+                unit.GameObject.CompareTag("PlayerOwned") ||
                 PossibleTargets.Contains(Enumerators.Target.OPPONENT_CARD) &&
-                unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
+                unit.GameObject.CompareTag("OpponentOwned") ||
                 PossibleTargets.Contains(Enumerators.Target.ALL))
             {
                 if(SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis)
@@ -124,9 +124,9 @@ namespace Loom.ZombieBattleground
             }
 
             if (PossibleTargets.Contains(Enumerators.Target.PLAYER) &&
-                player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
+                player.AvatarObject.CompareTag("PlayerOwned") ||
                 PossibleTargets.Contains(Enumerators.Target.OPPONENT) &&
-                player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
+                player.AvatarObject.CompareTag("OpponentOwned") ||
                 PossibleTargets.Contains(Enumerators.Target.ALL))
             {
                 SelectedPlayer = player;

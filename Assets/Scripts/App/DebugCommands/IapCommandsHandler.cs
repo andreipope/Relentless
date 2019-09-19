@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OneOf;
 using OneOf.Types;
-using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using CardKey = Loom.ZombieBattleground.Data.CardKey;
@@ -25,7 +24,6 @@ namespace Loom.ZombieBattleground
 
         public static void Initialize()
         {
-            CommandHandlers.RegisterCommandHandlers(typeof(IapCommandsHandler));
             _iapMediator = GameClient.Get<IapMediator>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
@@ -33,14 +31,12 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
-        [CommandHandler]
         public static async void IapMediatorInitialize()
         {
             OneOf<Success, IapException> result = await _iapMediator.BeginInitialization();
             Debug.Log("Result: " + result);
         }
 
-        [CommandHandler]
         public static async void IapMediatorInitiatePurchase(string productId = "booster_pack_1")
         {
             Product product = _iapMediator.Products.Single(p => p.definition.storeSpecificId == productId);
@@ -48,14 +44,12 @@ namespace Loom.ZombieBattleground
             Debug.Log("Result: " + result);
         }
 
-        [CommandHandler]
         public static async void AuthApiGetTransactions()
         {
             List<AuthFiatApiFacade.TransactionReceipt> list = await _authFiatApiFacade.ListPendingTransactions();
             Debug.Log(JsonUtility.PrettyPrint(JsonConvert.SerializeObject(list)));
         }
 
-        [CommandHandler]
         public static async void IapOpenPack()
         {
             IReadOnlyList<CardKey> result;
@@ -69,7 +63,6 @@ namespace Loom.ZombieBattleground
             Debug.Log("IapOpenPack Result:\n\n" + JsonConvert.SerializeObject(result, Formatting.Indented, jsonSerializerSettings));
         }
 
-        [CommandHandler]
         public static void IapConfirmAllPendingPlatformStorePurchases()
         {
             List<Product> pendingPurchases = _iapMediator.StorePendingPurchases.ToList();

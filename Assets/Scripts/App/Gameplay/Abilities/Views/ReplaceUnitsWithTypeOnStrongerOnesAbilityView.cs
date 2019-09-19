@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (GameObject child in unit.GameObject.GetComponentsInChildren<Transform>().Select(x => x.gameObject))
             {
-                child.layer = SRLayers.Default;
+                child.layer = LayerMask.NameToLayer("Default");
             }
         }
     }

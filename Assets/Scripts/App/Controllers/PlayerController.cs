@@ -379,7 +379,7 @@ namespace Loom.ZombieBattleground
 
         private void CastRay(Vector3 point)
         {
-            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, LayerMask.GetMask("Default"));
             hits = hits.Where(hit => !hit.collider.name.Equals(Constants.BattlegroundTouchZone)).ToArray();
 
             if (hits.Length > 0 && !IsCardSelected)

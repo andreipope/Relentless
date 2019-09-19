@@ -1,4 +1,3 @@
-using CodeStage.AdvancedFPSCounter;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using System;
@@ -135,8 +134,6 @@ public class UserReportingScript : MonoBehaviour
     public Image ThumbnailViewer;
 
     private UnityUserReportingUpdater unityUserReportingUpdater;
-
-    private AFPSCounter _afpsCounter;
 
     private bool _isCrashing;
 
@@ -381,10 +378,6 @@ public class UserReportingScript : MonoBehaviour
         {
             UnityUserReporting.Configure();
         }
-
-        _afpsCounter = FindObjectOfType<AFPSCounter>();
-        if (_afpsCounter == null)
-            throw new Exception("AFPSCounter instance not found in scene");
     }
 
     /// <summary>
@@ -396,12 +389,6 @@ public class UserReportingScript : MonoBehaviour
         if (this.isCreatingUserReport)
         {
             yield break;
-        }
-
-        // Hide FPS counter
-        if (_afpsCounter != null)
-        {
-            _afpsCounter.OperationMode = OperationMode.Background;
         }
 
         // Set Creating Flag
@@ -502,10 +489,6 @@ public class UserReportingScript : MonoBehaviour
             AttachHtmlLog(br);
 
             br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
-            br.DeviceMetadata.Add(new UserReportNamedValue("Min FPS", _afpsCounter.fpsCounter.LastMinimumValue.ToString()));
-            br.DeviceMetadata.Add(new UserReportNamedValue("Max FPS", _afpsCounter.fpsCounter.LastMaximumValue.ToString()));
-            br.DeviceMetadata.Add(new UserReportNamedValue("Average FPS", _afpsCounter.fpsCounter.LastAverageValue.ToString()));
-
             // Dimensions
             string platform = "Unknown";
             string version = BuildMetaInfo.Instance.DisplayVersionName;

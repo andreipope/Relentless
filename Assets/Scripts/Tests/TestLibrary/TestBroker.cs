@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground.Test
 
         public string GetSRTags(Enumerators.MatchPlayer matchPlayer)
         {
-            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? "PlayerOwned" : "OpponentOwned";
         }
     }
 }

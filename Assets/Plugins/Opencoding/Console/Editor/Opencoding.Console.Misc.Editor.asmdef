@@ -1,8 +1,0 @@
-{
-    "name": "Opencoding.Console.Misc.Editor",
-    "references": [],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": []
-}
