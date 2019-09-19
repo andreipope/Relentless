@@ -4,7 +4,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using log4net;
-using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Loom.Google.Protobuf;
@@ -101,11 +100,6 @@ namespace Loom.ZombieBattleground
             {
                 UIRoot.gameObject.SetActive(visible);
             }
-
-            if (DebugConsole.Instance != null && visible)
-            {
-                DebugConsole.IsVisible = false;
-            }
         }
 
         #region UI Handlers
@@ -149,16 +143,7 @@ namespace Loom.ZombieBattleground
 
         public void OpenDebugConsole()
         {
-            if (DebugConsole.Instance == null)
-                return;
-
             ShouldBeVisible = false;
-            DebugConsole.IsVisible = true;
-        }
-
-        public void SkipTutorial()
-        {
-            GeneralCommandsHandler.SkipTutorialFlow();
         }
 
         public async void DebugCheatSetFullCardCollection()

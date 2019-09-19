@@ -1,7 +1,6 @@
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
-using Opencoding.CommandHandlerSystem;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
@@ -16,26 +15,21 @@ namespace Loom.ZombieBattleground
 
         public static void Initialize()
         {
-            CommandHandlers.RegisterCommandHandlers(typeof(PvPCommandsHandler));
-
             _pvpManager = GameClient.Get<IPvPManager>();
             _networkActionManager = GameClient.Get<INetworkActionManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
-        [CommandHandler(Description = "Whether to use backend-based game logic, or trust the clients")]
         private static void UseBackendGameLogic(bool useBackendGameLogic)
         {
             _pvpManager.UseBackendGameLogic = useBackendGameLogic;
         }
 
-        [CommandHandler]
         private static void EnableCheats(bool enableCheats)
         {
             _pvpManager.DebugCheats.Enabled = enableCheats;
         }
 
-        [CommandHandler]
         private static void DestroyCardOnBoard(int cardId)
         {
             if (!_pvpManager.DebugCheats.Enabled)

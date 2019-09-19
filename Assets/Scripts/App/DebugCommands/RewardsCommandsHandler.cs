@@ -8,7 +8,6 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Iap;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
-using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -23,7 +22,6 @@ namespace Loom.ZombieBattleground
 
         public static void Initialize()
         {
-            CommandHandlers.RegisterCommandHandlers(typeof(RewardsCommandsHandler));
             _iapMediator = GameClient.Get<IapMediator>();
             _authFiatApiFacade = GameClient.Get<AuthFiatApiFacade>();
             _plasmaChainBackendFacade = GameClient.Get<PlasmachainBackendFacade>();
@@ -31,7 +29,6 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
-        [CommandHandler]
         public static async void GetPendingMintingTransactionReceipts(string userId = null)
         {
             if (userId == null)
@@ -55,7 +52,6 @@ namespace Loom.ZombieBattleground
             Debug.Log(txIds);
         }
 
-        [CommandHandler]
         public static async void ConfirmPendingMintingTransactionReceipt(string txId, string userId = null)
         {
             if (userId == null)
@@ -73,7 +69,6 @@ namespace Loom.ZombieBattleground
             Debug.Log("Done!");
         }
 
-        [CommandHandler(Description = "Give user a booster. If userId is left as -1, current user id will be used.")]
         public static async void DebugMintBoosterPackReceipt(
             int boosterAmount,
             int superAmount = 0,
@@ -102,7 +97,6 @@ namespace Loom.ZombieBattleground
             Debug.Log("Result: \n" + JsonUtility.PrettyPrint(response.ReceiptJson));
         }
 
-        [CommandHandler(Description = "Mint boosters and claim them immediately. If userId is left as -1, current user id will be used.")]
         public static async void DebugMintAndClaimBoosterPacks(
             int boosterAmount,
             int superAmount = 0,

@@ -4,7 +4,6 @@ using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Opencoding.CommandHandlerSystem;
 
 static class QuickPlayCommandsHandler
 {
@@ -17,15 +16,12 @@ static class QuickPlayCommandsHandler
 
     public static void Initialize()
     {
-        CommandHandlers.RegisterCommandHandlers(typeof(QuickPlayCommandsHandler));
-
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _uiManager = GameClient.Get<IUIManager>();
         _dataManager = GameClient.Get<IDataManager>();
         _matchManager = GameClient.Get<IMatchManager>();
     }
 
-    [CommandHandler(Description = "Print Settings for QuickPlay")]
     private static void Print()
     {
         DeckId playerDeckId = _uiManager.GetPage<GameplayPage>().CurrentDeckId;
@@ -40,7 +36,6 @@ static class QuickPlayCommandsHandler
                   $"(3). Starting Turn : {_gameplayManager.StartingTurn}\n");
     }
 
-    [CommandHandler(Description = "Starts the battle")]
     private static void QuickplayStart()
     {
         int index = _dataManager.CachedDecksData.Decks.FindIndex(
@@ -66,14 +61,12 @@ static class QuickPlayCommandsHandler
         _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
     }
 
-    [CommandHandler(Description = "Set Start Turn  - Player / Enemy")]
     private static void StartingTurn(Enumerators.StartingTurn startingTurn)
     {
         _gameplayManager.StartingTurn = startingTurn;
     }
 
-    [CommandHandler(Description = "Set which player horde to fight with. Accepts deck name.")]
-    private static void SetPlayerHorde([Autocomplete(typeof(QuickPlayCommandsHandler), "PlayerDecksName")] string deckName)
+    private static void SetPlayerHorde(string deckName)
     {
         int index = _dataManager.CachedDecksData.Decks.FindIndex(deck => deck.Name == deckName);
         if (index == -1)
@@ -85,8 +78,7 @@ static class QuickPlayCommandsHandler
         _uiManager.GetPage<GameplayPage>().CurrentDeckId = _dataManager.CachedDecksData.Decks[index].Id;
     }
 
-    [CommandHandler(Description = "Set which enemy horde to fight with. Accepts deck name.")]
-    private static void QuickPlaySetEnemyHorde([Autocomplete(typeof(QuickPlayCommandsHandler), "AIDecksName")] string deckName)
+    private static void QuickPlaySetEnemyHorde(string deckName)
     {
         int index = _dataManager.CachedAiDecksData.Decks.FindIndex(aiDeck => aiDeck.Deck.Name == deckName);
         if (index == -1)
